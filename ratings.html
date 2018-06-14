@@ -1,4 +1,5 @@
 
+
 <html ng-app="sjs">
 <head>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
@@ -77,26 +78,6 @@
                 };
             })();
 
-            (function() {
-                var drop = document.getElementById('drop');
-                if(!drop.addEventListener) return;
-
-                function handleDrop(e) {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    do_file(e.dataTransfer.files);
-                }
-
-                function handleDragover(e) {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    e.dataTransfer.dropEffect = 'copy';
-                }
-
-                drop.addEventListener('dragenter', handleDragover, false);
-                drop.addEventListener('dragover', handleDragover, false);
-                drop.addEventListener('drop', handleDrop, false);
-            })();
             (function() {
                 var xlf = document.getElementById('xlf');
                 if(!xlf.addEventListener) return;
