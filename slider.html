@@ -1,0 +1,209 @@
+<html ng-app="competency" class="desktop-menu-open" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Compentency Rating</title>
+
+    <!-- meta name="description" content="Description of the page less than 150 characters" --> <!-- meta description -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i">
+    <link rel="stylesheet" href="https://basecoat.cdn.dimensiondata.com/2.1.0/css/dd.basecoat.min.css">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://basecoat.cdn.dimensiondata.com/2.1.0/img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://basecoat.cdn.dimensiondata.com/2.1.0/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://basecoat.cdn.dimensiondata.com/2.1.0/img/favicon/favicon-16x16.png">
+    <link rel="mask-icon" href="https://basecoat.cdn.dimensiondata.com/2.1.0/img/favicon/safari-pinned-tab.svg" color="#72bf44">
+    <link rel="shortcut icon" href="https://basecoat.cdn.dimensiondata.com/2.1.0/img/favicon/favicon.ico">
+    <meta name="theme-color" content="#ffffff">
+
+    <link rel="stylesheet" href="https://rawgit.com/rzajac/angularjs-slider/master/dist/rzslider.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.0/shim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.0/xlsx.full.min.js"></script>
+    <script src="https://rawgit.com/rzajac/angularjs-slider/master/dist/rzslider.js"></script>
+</head>
+<body>
+    <div ng-controller="sheetjs">
+    
+        <header class="site-header">
+        <div class="row" >
+                <div class="col-md-12">
+                    <input type="file" name="xlfile" id="xlf" /> click here to select a file
+                </div>
+            </div>
+        </header>
+    
+        <main class="page-wrapper">
+            <div>
+                <div class="container-fluid table-responsive">
+                    <table id="sjs-table" class="table table-hover table-striped">
+                    <thead>
+                        <tr><th>Competency</th><th>Rating</th></tr>
+                    </thead>
+                    <tbody ng-repeat="(k, v) in data | groupBy: 'CompetencyCategory'">
+                        <tr>
+                            <td colspan="2"><div class="subscript-heading" style="display: inline-block; font-weight: bold">{{k|capitalize}}</div> <span class="btn btn-danger pull-right" ng-click="zero(k)">Mark all as N/A</span></td>
+                        </tr>
+                        <tr ng-repeat="row in v">
+                            <td style="padding-left: 50px;">{{row.CompetencyFormatted}}</td>
+                            <td width="40%">
+                                <rzslider 
+                                    rz-slider-model="row['Assessed Rating']"
+                                    rz-slider-options="slider.options"></rzslider>
+                            </td>
+                        </tr>
+                    </tbody>
+                    </table>
+                    </div>
+                </div>
+        </main>
+    
+        <footer class="site-footer">
+            <p>Once completed export the results <button id="exportbtn" ng-click="export()">Export Results</button>.</p>
+        </footer>
+    </div>
+        
+    
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+<!-- <script src="https://basecoat.cdn.dimensiondata.com/2.1.0/js/dd.basecoat.min.js"></script> -->
+<!-- <script defer src="https://basecoat.cdn.dimensiondata.com/2.1.0/js/outdated-browser.min.js"></script> -->
+
+<script>
+    var app = angular.module('competency', ['rzModule']);
+    app.controller('sheetjs', function($scope, $http) {
+        $scope.data = false;
+        $scope.slider = {
+            options: {
+                floor: 0,
+                ceil: 5,
+                showTicks: true
+            }
+        };
+        $scope.loadTemplate = function(){
+            $http({
+                method: 'GET',
+                url: '/template.xlsx',
+                responseType:'arraybuffer'
+                }).then(function successCallback(response) {
+                    $scope.template = XLSX.read(response.data, {type: 'array'});
+                });
+        };
+        $scope.zero = function(value){
+            if (confirm('Are you sure you want set all values of this competency group to 0?')) {
+                for (var i=0; i< $scope.data.length; i++){
+                    if ($scope.data[i]['CompetencyCategory'] == value){
+                        $scope.data[i]['Assessed Rating'] = 0;
+                    }
+                }
+                $scope.$broadcast('rzSliderForceRender');
+            }
+        };
+        $scope.export = function(){
+            // TODO: validate results.
+            var wb = $scope.template;
+            var ws = wb.Sheets['Manage Competencies'];
+            var data = new Array();
+            for (var i=0; i<$scope.data.length; i++){
+                var t = {
+                    key: 1,
+                    emp_id: 12345,
+                    row_id: i+1,
+                    competency: $scope.data[i]['Competency'],
+                    rating: $scope.data[i]['Assessed Rating'],
+                };
+                data.push(t);
+            }
+            XLSX.utils.sheet_add_json(ws, data, {origin:"B6", skipHeader:true});
+            XLSX.writeFile(wb, "export.xlsx");
+        };
+        var do_file = (function() {
+            var rABS = typeof FileReader !== "undefined" && (FileReader.prototype||{}).readAsBinaryString;
+            var domrabs = document.getElementsByName("userabs")[0];
+            if(!rABS) domrabs.disabled = !(domrabs.checked = false);
+
+            var use_worker = typeof Worker !== 'undefined';
+            var domwork = document.getElementsByName("useworker")[0];
+            if(!use_worker) domwork.disabled = !(domwork.checked = false);
+
+            var xw = function xw(data, cb) {
+                var worker = new Worker(XW.worker);
+                worker.onmessage = function(e) {
+                    switch(e.data.t) {
+                        case 'ready': break;
+                        case 'e': console.error(e.data.d); break;
+                        case XW.msg: cb(JSON.parse(e.data.d)); break;
+                    }
+                };
+                worker.postMessage({d:data,b:rABS?'binary':'array'});
+            };
+            function ec(r, c){
+                return XLSX.utils.encode_cell({r:r,c:c});
+            }
+            function delete_row(ws, row_index){
+                var variable = XLSX.utils.decode_range(ws["!ref"])
+                for(var R = row_index; R < variable.e.r; ++R){
+                    for(var C = variable.s.c; C <= variable.e.c; ++C){
+                    ws[ec(R,C)] = ws[ec(R+1,C)];
+                    }
+                }
+                variable.e.r--
+                ws['!ref'] = XLSX.utils.encode_range(variable.s, variable.e);
+            }
+            return function do_file(files) {
+                $scope.loadTemplate();
+                rABS = true;
+                use_worker = true;
+                var f = files[0];
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    if(typeof console !== 'undefined') console.log("onload", new Date(), rABS, use_worker);
+                    var data = e.target.result;
+                    var wb = XLSX.read(data, {type: rABS ? 'binary' : 'array'});
+                    var ws = wb.Sheets[wb.SheetNames[0]];
+                    delete_row(ws, 0);
+                    var d = XLSX.utils.sheet_to_json(ws);
+                    for (var i=0; i < d.length; i++){
+                        var parts = d[i]['Competency'].split("_", 2);
+                        d[i]['CompetencyCategory'] = parts[0];
+                        d[i]['CompetencyFormatted'] = parts[1];
+                    }
+                    $scope.data = d;
+                    $scope.$apply();
+                };
+                if(rABS) reader.readAsBinaryString(f);
+                else reader.readAsArrayBuffer(f);
+            };
+        })();
+
+        (function() {
+            var xlf = document.getElementById('xlf');
+            if(!xlf.addEventListener) return;
+            function handleFile(e) { do_file(e.target.files); }
+            xlf.addEventListener('change', handleFile, false);
+        })();
+    });
+    app.filter('capitalize', function() {
+        return function(input) {
+        return (!!input) ? input.charAt(0).toUpperCase() + input.substr(1).toLowerCase() : '';
+        }
+    });
+    app.filter('groupBy', function ($timeout) {
+        return function (data, key) {
+            if (!key) return data;
+            var outputPropertyName = '__groupBy__' + key;
+            if(!data[outputPropertyName]){
+                var result = {};  
+                for (var i=0;i < data.length;i++) {
+                    if (!result[data[i][key]])
+                        result[data[i][key]]=[];
+                    result[data[i][key]].push(data[i]);
+                }
+                Object.defineProperty(data, outputPropertyName, {enumerable:false, configurable:true, writable: false, value:result});
+                $timeout(function(){delete data[outputPropertyName];},0,false);
+            }
+            return data[outputPropertyName];
+        };
+    });
+</script>
+</body>
+</html>
