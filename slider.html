@@ -160,12 +160,17 @@
                     var data = e.target.result;
                     var wb = XLSX.read(data, {type: rABS ? 'binary' : 'array'});
                     var ws = wb.Sheets[wb.SheetNames[0]];
+                    ws['!ref'] = "A1:G500";
                     delete_row(ws, 0);
                     var d = XLSX.utils.sheet_to_json(ws);
                     for (var i=0; i < d.length; i++){
                         var parts = d[i]['Competency'].split("_", 2);
                         d[i]['CompetencyCategory'] = parts[0];
                         d[i]['CompetencyFormatted'] = parts[1];
+                        if (!("Assessed Rating" in d[i])) d[i]['Assessed Rating'] = 0;
+                        if (typeof d[i]['Assessed Rating'] === 'string' || d[i]['Assessed Rating'] instanceof String) {
+                            d[i]['Assessed Rating'] = Number(d[i]['Assessed Rating'].split(' ', 1)[0]);
+                        }
                     }
                     $scope.data = d;
                     $scope.$apply();
@@ -189,6 +194,7 @@
     });
     app.filter('groupBy', function ($timeout) {
         return function (data, key) {
+            if (!data) return;
             if (!key) return data;
             var outputPropertyName = '__groupBy__' + key;
             if(!data[outputPropertyName]){
