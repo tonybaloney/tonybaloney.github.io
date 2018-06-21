@@ -26,16 +26,17 @@
     <div ng-controller="sheetjs">
     
         <header class="site-header">
-        <div class="row" >
-                <div class="col-md-12">
-                    <input type="file" name="xlfile" id="xlf" /> click here to select a file
-                </div>
-            </div>
+            <h1>Compentency Rating Tool</h1>
         </header>
     
         <main class="page-wrapper">
             <div>
                 <div class="container-fluid table-responsive">
+                    <div class="row" ng-hide="loaded">
+                            <div class="col-md-12">
+                                <input type="file" name="xlfile" id="xlf" /> click here to select a file
+                            </div>
+                        </div>
                     <table id="sjs-table" class="table table-hover table-striped">
                     <thead>
                         <tr><th>Competency</th><th>Rating</th></tr>
@@ -82,7 +83,7 @@
         $scope.loadTemplate = function(){
             $http({
                 method: 'GET',
-                url: '/template.xlsx',
+                url: 'template.xlsx',
                 responseType:'arraybuffer'
                 }).then(function successCallback(response) {
                     $scope.template = XLSX.read(response.data, {type: 'array'});
@@ -173,6 +174,7 @@
                         }
                     }
                     $scope.data = d;
+                    $scope.loaded = true;
                     $scope.$apply();
                 };
                 if(rABS) reader.readAsBinaryString(f);
