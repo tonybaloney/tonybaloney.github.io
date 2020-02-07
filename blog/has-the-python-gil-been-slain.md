@@ -1,3 +1,8 @@
+blog_heading: Has the Python GIL been slain?
+blog_subheading: Something something"
+blog_author: Anthony Shaw
+blog_publish_date: May 15, 2019
+---
 # Has the Python GIL been slain?
 
 by Anthony Shaw, published May 15, 2019
