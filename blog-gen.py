@@ -16,12 +16,12 @@ def main():
 
     for post in posts:
         print("rendering {0}".format(post))
-
+        url = post.replace(".md", ".html").replace("blog/", "posts/")
         with open(post) as post_f:
             html = _md.convert(post_f.read())
-            doc = template.render(content=html, **_md.Meta)
+            doc = template.render(content=html, baseurl="https://tonybaloney.github.io/", url=url, **_md.Meta)
 
-        post_html = post.replace(".md", ".html").replace("blog/", "posts/")
+        post_html = url
         with open(post_html, "w") as post_html_f:
             post_html_f.write(doc)
 

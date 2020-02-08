@@ -11,6 +11,18 @@
 
     <title>My favourite Python stories of 2019</title>
 
+    <!-- Facebook Meta tags -->
+    <meta property="og:title" content="My favourite Python stories of 2019">
+    <meta property="og:description" content="A collection of the things I really enjoyed reading in 2019">
+    <meta property="og:image" content="https://tonybaloney.github.io/img/home-bg0.jpg">
+    <meta property="og:url" content="https://tonybaloney.github.io/posts/favourite-python-stories-2019.html">
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:title" content="My favourite Python stories of 2019">
+    <meta name="twitter:description" content="A collection of the things I really enjoyed reading in 2019">
+    <meta name="twitter:image" content="'https://tonybaloney.github.io/img/home-bg0.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@anthonypjshaw">
+
     <!-- Bootstrap Core CSS -->
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
@@ -87,7 +99,7 @@
 
     <!-- Page Header -->
     <!-- Set your background image for this header on the line below. -->
-    <header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <header class="intro-header" style="background-image: url('/img/home-bg0.jpg')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -103,8 +115,9 @@
 
     <!-- Main Content -->
     <div class="container">
-        <div class="container">
-        <h2>“What makes Python a great language?” by Steve Dower</h2>
+        <div class="row">
+            <div class="col-md-12">
+                <h2>“What makes Python a great language?” by Steve Dower</h2>
 <p>“If you came expecting a well researched article full of citations to peer-reviewed literature, you came to the wrong place. Similarly if you were hoping for unbiased and objective analysis. I’m not even going to link to external sources for definitions. This is literally just me on a soap box, and you can take it or leave it.”</p>
 <p>What makes Python a great language?
 I know I&rsquo;m far from the only person who has opined about this topic, but figured I&rsquo;d take my turn. A while ago I hinted…</p>
@@ -154,6 +167,14 @@ This article is no exception, Trey presents some funny, ugly and confusing anti-
 <p>Thank you for reading,
 Have a great holiday and New Year</p>
 <p>Anthony Shaw</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-8">
+                <a class="twitter-share-button"
+                   href="https://twitter.com/intent/tweet">
+                    Tweet</a>
+            </div>
         </div>
     </div>
 
@@ -206,6 +227,25 @@ Have a great holiday and New Year</p>
 
     <!-- Theme JavaScript -->
     <script src="/js/clean-blog.min.js"></script>
+
+    <!-- Twitter Helper -->
+    <script>window.twttr = (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0],
+            t = window.twttr || {};
+        if (d.getElementById(id)) return t;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://platform.twitter.com/widgets.js";
+        fjs.parentNode.insertBefore(js, fjs);
+
+        t._e = [];
+        t.ready = function(f) {
+            t._e.push(f);
+        };
+
+        return t;
+    }(document, "script", "twitter-wjs"));</script>
+
 
 </body>
 

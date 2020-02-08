@@ -11,6 +11,18 @@
 
     <title>{{blog_heading[0]}}</title>
 
+    <!-- Facebook Meta tags -->
+    <meta property="og:title" content="{{blog_heading[0]}}">
+    <meta property="og:description" content="{{blog_subheading[0]}}">
+    <meta property="og:image" content="{{baseurl}}img/{{blog_header_image[0]}}">
+    <meta property="og:url" content="{{baseurl}}{{url}}">
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:title" content="{{blog_heading[0]}}">
+    <meta name="twitter:description" content="{{blog_subheading[0]}}">
+    <meta name="twitter:image" content="'{{baseurl}}img/{{blog_header_image[0]}}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@anthonypjshaw">
+
     <!-- Bootstrap Core CSS -->
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
@@ -87,7 +99,7 @@
 
     <!-- Page Header -->
     <!-- Set your background image for this header on the line below. -->
-    <header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <header class="intro-header" style="background-image: url('/img/{{blog_header_image[0]}}')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -103,8 +115,17 @@
 
     <!-- Main Content -->
     <div class="container">
-        <div class="container">
-        {{content}}
+        <div class="row">
+            <div class="col-md-12">
+                {{content}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-8">
+                <a class="twitter-share-button"
+                   href="https://twitter.com/intent/tweet">
+                    Tweet</a>
+            </div>
         </div>
     </div>
 
@@ -157,6 +178,24 @@
 
     <!-- Theme JavaScript -->
     <script src="/js/clean-blog.min.js"></script>
+
+    <!-- Twitter Helper -->
+    <script>window.twttr = (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0],
+            t = window.twttr || {};
+        if (d.getElementById(id)) return t;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://platform.twitter.com/widgets.js";
+        fjs.parentNode.insertBefore(js, fjs);
+
+        t._e = [];
+        t.ready = function(f) {
+            t._e.push(f);
+        };
+        return t;
+    }(document, "script", "twitter-wjs"));</script>
+
 
 </body>
 

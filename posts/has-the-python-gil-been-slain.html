@@ -11,6 +11,18 @@
 
     <title>Has the Python GIL been slain?</title>
 
+    <!-- Facebook Meta tags -->
+    <meta property="og:title" content="Has the Python GIL been slain?">
+    <meta property="og:description" content="Exploring new features in upcoming Python 3.8 and how they address the GIL.">
+    <meta property="og:image" content="https://tonybaloney.github.io/img/posts/gil_header.jpeg">
+    <meta property="og:url" content="https://tonybaloney.github.io/posts/has-the-python-gil-been-slain.html">
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:title" content="Has the Python GIL been slain?">
+    <meta name="twitter:description" content="Exploring new features in upcoming Python 3.8 and how they address the GIL.">
+    <meta name="twitter:image" content="'https://tonybaloney.github.io/img/posts/gil_header.jpeg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@anthonypjshaw">
+
     <!-- Bootstrap Core CSS -->
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
@@ -87,7 +99,7 @@
 
     <!-- Page Header -->
     <!-- Set your background image for this header on the line below. -->
-    <header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <header class="intro-header" style="background-image: url('/img/posts/gil_header.jpeg')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -103,8 +115,11 @@
 
     <!-- Main Content -->
     <div class="container">
-        <div class="container">
-        <p>In early 2003, Intel launched the new Pentium 4 “HT” processor. This processor was clocked at 3 GHz and had “Hyper-Threading” Technology.</p>
+        <div class="row">
+            <div class="col-md-12">
+                <p>In early 2003, Intel launched the new Pentium 4 “HT” processor. This processor was clocked at 3 GHz and had “Hyper-Threading” Technology.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/AmwzUrL3vMc?controls=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 <p>Over the following years, Intel and AMD battled to achieve the best desktop computer performance by increasing bus-speed, L2 cache size and reducing die size to minimize latency. The 3Ghz HT was superseded in 2004 by the “Prescott” model 580, which clocked up to 4 GHz.</p>
 <p>It seemed like the path forward for better performance was higher clock speed, but CPUs were plagued by high power consumption and earth-warming heat output.</p>
 <p>Do you have a 4Ghz CPU in your desktop? Unlikely, because the way forward for performance was higher-bus speed and multiple cores. The Intel Core 2 superseded the Pentium 4 in 2006, with clock speeds far lower.</p>
@@ -115,6 +130,7 @@ Python 2.5 had one major limitation when it came to utilizing Intel’s Core 2 o
 <p>The GIL, or <strong>Global Interpreter Lock</strong>, is a boolean value in the Python interpreter, protected by a mutex. The lock is used by the core bytecode evaluation loop in CPython to set which thread is currently executing statements.</p>
 <p>CPython supports multiple threads within a single interpreter, but threads must request access to the GIL in order to execute Opcodes (low-level operations). This, in turn, means that Python developers can utilize async code, multi-threaded code and never have to worry about acquiring locks on any variables or having processes crash from deadlocks.
 The GIL makes multithreaded programming in Python simple.</p>
+<p><img src="/img/posts/breakdance.gif" width=50% /> </p>
 <p>The GIL also means that whilst CPython can be multi-threaded, only 1 thread can be executing at any given time. This means that your quad-core CPU is doing this — (minus the bluescreen, hopefully)</p>
 <p>The current version of the GIL was written in 2009, to support async features and has survived relatively untouched even after many attempts to remove it or reduce the requirement for it.</p>
 <p>The requirement for any proposal to remove the GIL is that it should not degrade the performance of any single-threaded code. Anyone who ever enabled Hyper-Threading back in 2003 will appreciate why that is important.</p>
@@ -143,9 +159,11 @@ What if there was a better way?
 The clue in bypassing the GIL is in the name, the global interpreter lock is part of the global interpreter state. CPython processes can have multiple interpreters, and hence multiple locks, however, this feature is rarely used because it is only exposed via the C-API.
 One of the features proposed for CPython 3.8 is PEP554, the implementation of sub-interpreters and an API with a new interpreters module in the standard library.
 This enables creating multiple interpreters, from Python within a single process. Another change for Python 3.8 is that interpreters will all have individual GILs —</p>
+<p><img src="/img/posts/multiprocessing.png" width=75% /></p>
 <p>Because Interpreter state contains the memory allocation arena, a collection of all pointers to Python objects (local and global), sub-interpreters in PEP 554 cannot access the global variables of other interpreters.
 Similar to multiprocessing, the way to share objects between interpreters would be to serialize them and use a form of IPC (network, disk or shared memory). There are many ways to serialize objects in Python, there’s the marshal module, the pickle module and more standardized methods like json and simplexml. Each of these has pro’s and con’s, all of them have an overhead.
 First prize would be to have a shared memory space that is mutable and controlled by the owning process. That way, objects could be sent from a master-interpreter and received by other interpreters. This would be a lookup managed-memory space of PyObject pointers that could be accessed by each interpreter, with the main process controlling the locks.</p>
+<p><img src="/img/posts/multiinterpreters.png" width=75% /></p>
 <p>The API for this is still being worked out, but it will probably look like this:</p>
 <pre><code class="python">import _xxsubinterpreters as interpreters
 import threading
@@ -280,6 +298,14 @@ If you want concurrent code in Python 3.8, you have CPU-bound concurrency proble
 <h3>When?</h3>
 <p>Pickle v5 and shared memory for multiprocessing will likely be Python 3.8 (October 2019) and sub-interpreters will be between 3.8 and 3.9.
 If you want to play with my examples now, I’ve built a custom branch with all of the code required https://github.com/tonybaloney/cpython/tree/subinterpreters</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-8">
+                <a class="twitter-share-button"
+                   href="https://twitter.com/intent/tweet">
+                    Tweet</a>
+            </div>
         </div>
     </div>
 
@@ -332,6 +358,25 @@ If you want to play with my examples now, I’ve built a custom branch with all 
 
     <!-- Theme JavaScript -->
     <script src="/js/clean-blog.min.js"></script>
+
+    <!-- Twitter Helper -->
+    <script>window.twttr = (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0],
+            t = window.twttr || {};
+        if (d.getElementById(id)) return t;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://platform.twitter.com/widgets.js";
+        fjs.parentNode.insertBefore(js, fjs);
+
+        t._e = [];
+        t.ready = function(f) {
+            t._e.push(f);
+        };
+
+        return t;
+    }(document, "script", "twitter-wjs"));</script>
+
 
 </body>
 

@@ -1,5 +1,6 @@
 blog_heading: Modifying the Python language in 6 minutes
-blog_subheading: Something something"
+blog_subheading: Showing you how to hack the Python grammar and compiler
+blog_header_image: posts/token-s2.png
 blog_author: Anthony Shaw
 blog_publish_date: April 17, 2017
 ---

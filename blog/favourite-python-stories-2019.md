@@ -1,5 +1,6 @@
 blog_heading: My favourite Python stories of 2019
-blog_subheading: Something something"
+blog_subheading: A collection of the things I really enjoyed reading in 2019
+blog_header_image: home-bg0.jpg
 blog_author: Anthony Shaw
 blog_publish_date: December 19, 2019
 ---

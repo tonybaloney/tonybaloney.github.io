@@ -11,6 +11,18 @@
 
     <title>Modifying the Python language in 6 minutes</title>
 
+    <!-- Facebook Meta tags -->
+    <meta property="og:title" content="Modifying the Python language in 6 minutes">
+    <meta property="og:description" content="Showing you how to hack the Python grammar and compiler">
+    <meta property="og:image" content="https://tonybaloney.github.io/img/posts/token-s2.png">
+    <meta property="og:url" content="https://tonybaloney.github.io/posts/modifying-the-python-language-in-6-minutes.html">
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:title" content="Modifying the Python language in 6 minutes">
+    <meta name="twitter:description" content="Showing you how to hack the Python grammar and compiler">
+    <meta name="twitter:image" content="'https://tonybaloney.github.io/img/posts/token-s2.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@anthonypjshaw">
+
     <!-- Bootstrap Core CSS -->
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
@@ -87,7 +99,7 @@
 
     <!-- Page Header -->
     <!-- Set your background image for this header on the line below. -->
-    <header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <header class="intro-header" style="background-image: url('/img/posts/token-s2.png')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -103,8 +115,9 @@
 
     <!-- Main Content -->
     <div class="container">
-        <div class="container">
-        <p>This week I raised <a href="https://github.com/python/cpython/pull/1069">my first pull-request</a> to the CPython core project, which was declined :-( but as to not completely waste my time I’m writing my findings on how CPython works and show you how easy it is to modify the Python syntax.
+        <div class="row">
+            <div class="col-md-12">
+                <p>This week I raised <a href="https://github.com/python/cpython/pull/1069">my first pull-request</a> to the CPython core project, which was declined :-( but as to not completely waste my time I’m writing my findings on how CPython works and show you how easy it is to modify the Python syntax.
 I’m going to show you how to add a new feature to the Python syntax. That syntax is the increment/decrement operator, a common operator in most languages. Just to prove, open up the REPL and try it.</p>
 <p><img src="../img/posts/bad-syntax.png" width="75%"/></p>
 <h2>Level 1: PEPs</h2>
@@ -268,6 +281,14 @@ That’s it!</p>
 <p>If you’re interested in interpreters, I’ve given a talk on Pyjion, a plugin architecture for CPython which became PEP523</p>
 <p>If you still want to play, I pushed the code up to GitHub, along with my changes to the await tokenizer.</p>
 <p><a href="https://realpython.com/cpython-source-code-guide/">See also my article on realpython.com giving a full breakdown of the Python compiler</a></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-8">
+                <a class="twitter-share-button"
+                   href="https://twitter.com/intent/tweet">
+                    Tweet</a>
+            </div>
         </div>
     </div>
 
@@ -320,6 +341,25 @@ That’s it!</p>
 
     <!-- Theme JavaScript -->
     <script src="/js/clean-blog.min.js"></script>
+
+    <!-- Twitter Helper -->
+    <script>window.twttr = (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0],
+            t = window.twttr || {};
+        if (d.getElementById(id)) return t;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://platform.twitter.com/widgets.js";
+        fjs.parentNode.insertBefore(js, fjs);
+
+        t._e = [];
+        t.ready = function(f) {
+            t._e.push(f);
+        };
+
+        return t;
+    }(document, "script", "twitter-wjs"));</script>
+
 
 </body>
 

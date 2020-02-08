@@ -1,10 +1,13 @@
 blog_heading: Has the Python GIL been slain?
-blog_subheading: Something something"
+blog_subheading: Exploring new features in upcoming Python 3.8 and how they address the GIL.
+blog_header_image: posts/gil_header.jpeg
 blog_author: Anthony Shaw
 blog_publish_date: May 15, 2019
 ---
 
 In early 2003, Intel launched the new Pentium 4 “HT” processor. This processor was clocked at 3 GHz and had “Hyper-Threading” Technology.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/AmwzUrL3vMc?controls=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 Over the following years, Intel and AMD battled to achieve the best desktop computer performance by increasing bus-speed, L2 cache size and reducing die size to minimize latency. The 3Ghz HT was superseded in 2004 by the “Prescott” model 580, which clocked up to 4 GHz.
 
@@ -23,6 +26,8 @@ The GIL, or __Global Interpreter Lock__, is a boolean value in the Python interp
 
 CPython supports multiple threads within a single interpreter, but threads must request access to the GIL in order to execute Opcodes (low-level operations). This, in turn, means that Python developers can utilize async code, multi-threaded code and never have to worry about acquiring locks on any variables or having processes crash from deadlocks.
 The GIL makes multithreaded programming in Python simple.
+
+<img src="/img/posts/breakdance.gif" width=50% /> 
 
 The GIL also means that whilst CPython can be multi-threaded, only 1 thread can be executing at any given time. This means that your quad-core CPU is doing this — (minus the bluescreen, hopefully)
 
@@ -62,9 +67,13 @@ The clue in bypassing the GIL is in the name, the global interpreter lock is par
 One of the features proposed for CPython 3.8 is PEP554, the implementation of sub-interpreters and an API with a new interpreters module in the standard library.
 This enables creating multiple interpreters, from Python within a single process. Another change for Python 3.8 is that interpreters will all have individual GILs —
 
+<img src="/img/posts/multiprocessing.png" width=75% />
+
 Because Interpreter state contains the memory allocation arena, a collection of all pointers to Python objects (local and global), sub-interpreters in PEP 554 cannot access the global variables of other interpreters.
 Similar to multiprocessing, the way to share objects between interpreters would be to serialize them and use a form of IPC (network, disk or shared memory). There are many ways to serialize objects in Python, there’s the marshal module, the pickle module and more standardized methods like json and simplexml. Each of these has pro’s and con’s, all of them have an overhead.
 First prize would be to have a shared memory space that is mutable and controlled by the owning process. That way, objects could be sent from a master-interpreter and received by other interpreters. This would be a lookup managed-memory space of PyObject pointers that could be accessed by each interpreter, with the main process controlling the locks.
+
+<img src="/img/posts/multiinterpreters.png" width=75% />
 
 The API for this is still being worked out, but it will probably look like this:
 
