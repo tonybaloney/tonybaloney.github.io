@@ -106,7 +106,7 @@
         <div class="container">
         <p>This week I raised <a href="https://github.com/python/cpython/pull/1069">my first pull-request</a> to the CPython core project, which was declined :-( but as to not completely waste my time I’m writing my findings on how CPython works and show you how easy it is to modify the Python syntax.
 I’m going to show you how to add a new feature to the Python syntax. That syntax is the increment/decrement operator, a common operator in most languages. Just to prove, open up the REPL and try it.</p>
-<p><img alt="" src="../img/posts/bad-syntax.png"></p>
+<p><img src="../img/posts/bad-syntax.png" width="75%"/></p>
 <h2>Level 1: PEPs</h2>
 <p>Before the Python syntax is changed, a proposal needs to be made with a set of reasons, design and behaviours. All language changes are discussed by the core Python team and approved by the BDFL. Increment operators are not approved (and probably never will be), which gives us a good test.</p>
 <h2>Level 2: Grammar</h2>
@@ -178,10 +178,12 @@ const char *_PyParser_TokenNames[] = {
 </code></pre>
 
 <p>Those are defined in token.h</p>
-<h1>define INCREMENT 58</h1>
-<h1>define DECREMENT 59</h1>
+<pre><code class="default">#define INCREMENT 58
+#define DECREMENT 59
+</code></pre>
+
 <p>Now, when we run Python with -d and try our statement we see:</p>
-<p><img alt="" src="../img/posts/token-s.png"></p>
+<p><img src="../img/posts/token-s.png" width="75%"/></p>
 <p>It’s a token we know — Success!</p>
 <h2>Level 4 : Parser</h2>
 <p>The parser takes those tokens and generates a structure that shows their relationship to each other. For Python and many other langauges, this is the Abstract Syntax Tree (or AST). The compiler then takes the AST and turns it into one (or more) code objects. Finally, the interpreter takes each code object executes the code it represents. Think of your code as a tree. The top level is the root, a function might be a branch, a class is a branch and the class methods branch off that. The statements are leaves within a branch.
@@ -234,7 +236,7 @@ ast_for_expr_stmt(struct compiling *c, const node *n)
 </code></pre>
 
 <p>This returns an Augmented Assignment — instead of a new Expression type with a constant value of 1. The operator is either Add or Sub(tract) depending on the token type incr_stmt or decr_stmt. Going back into the Python REPL after compiling — we can see our new statement!</p>
-<p><img alt="" src="../img/posts/token-s2.png"></p>
+<p><img src="../img/posts/token-s2.png" width="75%"/></p>
 <p>At the REPL, you can try this : ast.parse(&ldquo;test=1; test++).body[1] and you’ll see the AugAssign type returned. The AST has just converted the statement into a statement expression which can then be handled by the compiler. The AugAssign function sets the field Kind which is used by the compiler.</p>
 <h2>Level 5: Compiler</h2>
 <p>The compiler then takes the syntax tree and ‘visits’ each branch, the CPython compiler has a method for visiting a statement, called compile_visit_stmt which is just a big switch statement looking at the statement kind. Our’s was a AugAssign type, so it calls out to compiler_augassign to handle the details. This function then converts our statement into a set of Byte-codes. These are an intermediary language between machine code (01010101) and the syntax tree. The Byte-code sequence is the thing cached in .pyc files.</p>
@@ -258,7 +260,7 @@ compiler_augassign(struct compiler *c, stmt_ty s)
 
 <p>The output would be VISIT (load value — which is 1 for us), ADDOP (add operation of a binary op, depending on the operator (subtract, add), and STORE_NAME (store the result of ADDOP to the Name). Those methods respond with more specific byte-codes.
 If you load the dis module you can see the byte-code for yourself</p>
-<p><img alt="" src="../img/opcodes.png"></p>
+<p><img src="../img/posts/opcodes.png" width="75%"/></p>
 <h2>Level 6: Interpreter</h2>
 <p>The final level is the interpreter. That takes the byte-code sequence and converts it into machine-specific operations. This is why Python.exe and Python for mac and Linux are all seperate binaries. Some byte codes need OS specific handling and checks. The threading API for example needs to work with GNU/Linux’s thread API which is very different to Windows threading.
 That’s it!</p>
