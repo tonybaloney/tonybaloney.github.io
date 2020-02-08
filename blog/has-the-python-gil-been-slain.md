@@ -3,9 +3,6 @@ blog_subheading: Something something"
 blog_author: Anthony Shaw
 blog_publish_date: May 15, 2019
 ---
-# Has the Python GIL been slain?
-
-by Anthony Shaw, published May 15, 2019
 
 In early 2003, Intel launched the new Pentium 4 “HT” processor. This processor was clocked at 3 GHz and had “Hyper-Threading” Technology.
 

@@ -3,9 +3,6 @@ blog_subheading: Something something"
 blog_author: Anthony Shaw
 blog_publish_date: December 19, 2019
 ---
-# My favourite Python stories of 2019
-
-by Anthony Shaw, published December 19, 2019.
 
 ## “What makes Python a great language?” by Steve Dower
 
