@@ -7,7 +7,7 @@ blog_publish_date: April 17, 2017
 This week I raised [my first pull-request](https://github.com/python/cpython/pull/1069) to the CPython core project, which was declined :-( but as to not completely waste my time I’m writing my findings on how CPython works and show you how easy it is to modify the Python syntax.
 I’m going to show you how to add a new feature to the Python syntax. That syntax is the increment/decrement operator, a common operator in most languages. Just to prove, open up the REPL and try it.
 
-<img src="../img/posts/bad-syntax.png" width="75%"/>
+![](/img/posts/bad-syntax.png){: .img-responsive .center-block}
 
 ## Level 1: PEPs
 
@@ -103,7 +103,7 @@ Those are defined in token.h
 
 Now, when we run Python with -d and try our statement we see:
 
-<img src="../img/posts/token-s.png" width="75%"/>
+![](/img/posts/token-s.png){: .img-responsive .center-block}
 
 It’s a token we know — Success!
 
@@ -162,7 +162,7 @@ ast_for_expr_stmt(struct compiling *c, const node *n)
 
 This returns an Augmented Assignment — instead of a new Expression type with a constant value of 1. The operator is either Add or Sub(tract) depending on the token type incr_stmt or decr_stmt. Going back into the Python REPL after compiling — we can see our new statement!
 
-<img src="../img/posts/token-s2.png" width="75%"/>
+![](/img/posts/token-s2.png){: .img-responsive .center-block}
 
 At the REPL, you can try this : ast.parse("test=1; test++).body[1] and you’ll see the AugAssign type returned. The AST has just converted the statement into a statement expression which can then be handled by the compiler. The AugAssign function sets the field Kind which is used by the compiler.
 
@@ -192,7 +192,7 @@ compiler_augassign(struct compiler *c, stmt_ty s)
 The output would be VISIT (load value — which is 1 for us), ADDOP (add operation of a binary op, depending on the operator (subtract, add), and STORE_NAME (store the result of ADDOP to the Name). Those methods respond with more specific byte-codes.
 If you load the dis module you can see the byte-code for yourself
 
-<img src="../img/posts/opcodes.png" width="75%"/>
+![](/img/posts/opcodes.png){: .img-responsive .center-block}
 
 ## Level 6: Interpreter
 

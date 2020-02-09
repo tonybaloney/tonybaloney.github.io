@@ -27,7 +27,7 @@ The GIL, or __Global Interpreter Lock__, is a boolean value in the Python interp
 CPython supports multiple threads within a single interpreter, but threads must request access to the GIL in order to execute Opcodes (low-level operations). This, in turn, means that Python developers can utilize async code, multi-threaded code and never have to worry about acquiring locks on any variables or having processes crash from deadlocks.
 The GIL makes multithreaded programming in Python simple.
 
-<img src="/img/posts/breakdance.gif" width=50% /> 
+![](/img/posts/breakdance.gif){: .img-responsive .center-block}
 
 The GIL also means that whilst CPython can be multi-threaded, only 1 thread can be executing at any given time. This means that your quad-core CPU is doing this — (minus the bluescreen, hopefully)
 
@@ -67,13 +67,13 @@ The clue in bypassing the GIL is in the name, the global interpreter lock is par
 One of the features proposed for CPython 3.8 is PEP554, the implementation of sub-interpreters and an API with a new interpreters module in the standard library.
 This enables creating multiple interpreters, from Python within a single process. Another change for Python 3.8 is that interpreters will all have individual GILs —
 
-<img src="/img/posts/multiprocessing.png" width=75% />
+![](/img/posts/multiprocessing.png){: .img-responsive .center-block}
 
 Because Interpreter state contains the memory allocation arena, a collection of all pointers to Python objects (local and global), sub-interpreters in PEP 554 cannot access the global variables of other interpreters.
 Similar to multiprocessing, the way to share objects between interpreters would be to serialize them and use a form of IPC (network, disk or shared memory). There are many ways to serialize objects in Python, there’s the marshal module, the pickle module and more standardized methods like json and simplexml. Each of these has pro’s and con’s, all of them have an overhead.
 First prize would be to have a shared memory space that is mutable and controlled by the owning process. That way, objects could be sent from a master-interpreter and received by other interpreters. This would be a lookup managed-memory space of PyObject pointers that could be accessed by each interpreter, with the main process controlling the locks.
 
-<img src="/img/posts/multiinterpreters.png" width=75% />
+![](/img/posts/multiinterpreters.png){: .img-responsive .center-block}
 
 The API for this is still being worked out, but it will probably look like this:
 

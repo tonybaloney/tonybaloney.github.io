@@ -39,7 +39,7 @@ If you have a single-threaded, single interpreter application. **It will make no
 
 If you wanted to implement concurrency within a single interpreter (Python process) by using threading, and your threads were IO intensive (e.g. Network IO or Disk IO), you would see the consequences of GIL-contention.
 
-![](/img/posts/beazley-graph.png){: .img-fluid .mx-auto}
+![](/img/posts/beazley-graph.png){: .img-responsive .center-block}
 
 If you have a web-application (e.g. Django) and you’re using WSGI, then each request to your web-app is a **separate** Python interpreter, so there is only 1 lock per request. Because the Python interpreter is slow to start, some WSGI implementations have a “Daemon Mode” which [keep Python process(es) on the go for you](https://www.slideshare.net/GrahamDumpleton/secrets-of-a-wsgi-master).
 
@@ -124,7 +124,7 @@ Now python.exe will have Dtrace tracers throughout the code. Paul Ross wrote [an
 
 The `py_callflow` tracer shows all the function calls in your application
 
-![](/img/posts/dtrace.gif){: .img-fluid .mx-auto}
+![](/img/posts/dtrace.gif){: .img-responsive .center-block}
 
 So, does Python’s dynamic typing make it slow?
 

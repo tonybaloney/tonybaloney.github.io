@@ -137,7 +137,7 @@ Here are the top theories:
 <h3>What does this mean to the performance of Python application?</h3>
 <p>If you have a single-threaded, single interpreter application. <strong>It will make no difference to the speed</strong>. Removing the GIL would have no impact on the performance of your code.</p>
 <p>If you wanted to implement concurrency within a single interpreter (Python process) by using threading, and your threads were IO intensive (e.g. Network IO or Disk IO), you would see the consequences of GIL-contention.</p>
-<p><img alt="" class="img-fluid mx-auto" src="/img/posts/beazley-graph.png"></p>
+<p><img alt="" class="img-responsive center-block" src="/img/posts/beazley-graph.png"></p>
 <p>If you have a web-application (e.g. Django) and you’re using WSGI, then each request to your web-app is a <strong>separate</strong> Python interpreter, so there is only 1 lock per request. Because the Python interpreter is slow to start, some WSGI implementations have a “Daemon Mode” which <a href="https://www.slideshare.net/GrahamDumpleton/secrets-of-a-wsgi-master">keep Python process(es) on the go for you</a>.</p>
 <h3>What about other Python runtimes?</h3>
 <p><a href="http://doc.pypy.org/en/latest/faq.html#does-pypy-have-a-gil-why">PyPy has a GIL</a> and it is typically &gt;3x faster than CPython.
@@ -185,7 +185,7 @@ make
 <p>Now python.exe will have Dtrace tracers throughout the code. Paul Ross wrote <a href="https://github.com/paulross/dtrace-py#the-lightning-talk">an awesome Lightning Talk on Dtrace</a>. You can download <a href="https://github.com/paulross/dtrace-py/tree/master/toolkit">DTrace starter files for Python</a> to measure function calls, execution time, CPU time, syscalls, all sorts of fun. e.g.</p>
 <p><code>sudo dtrace -s toolkit/&lt;tracer&gt;.d -c ‘../cpython/python.exe script.py’</code></p>
 <p>The <code>py_callflow</code> tracer shows all the function calls in your application</p>
-<p><img alt="" class="img-fluid mx-auto" src="/img/posts/dtrace.gif"></p>
+<p><img alt="" class="img-responsive center-block" src="/img/posts/dtrace.gif"></p>
 <p>So, does Python’s dynamic typing make it slow?</p>
 <ul>
 <li>Comparing and converting types is costly, every time a variable is read, written to or referenced the type is checked</li>
