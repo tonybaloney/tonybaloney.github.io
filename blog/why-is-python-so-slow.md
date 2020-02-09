@@ -35,13 +35,13 @@ The challenge then becomes when variables are shared within multiple threads, ho
 
 ### What does this mean to the performance of Python application?
 
-If you have a single-threaded, single interpreter application. It will make no difference to the speed. Removing the GIL would have no impact on the performance of your code.
+If you have a single-threaded, single interpreter application. **It will make no difference to the speed**. Removing the GIL would have no impact on the performance of your code.
 
 If you wanted to implement concurrency within a single interpreter (Python process) by using threading, and your threads were IO intensive (e.g. Network IO or Disk IO), you would see the consequences of GIL-contention.
 
 ![](/img/posts/beazley-graph.png){: .img-fluid .mx-auto}
 
-If you have a web-application (e.g. Django) and you’re using WSGI, then each request to your web-app is a separate Python interpreter, so there is only 1 lock per request. Because the Python interpreter is slow to start, some WSGI implementations have a “Daemon Mode” which [keep Python process(es) on the go for you](https://www.slideshare.net/GrahamDumpleton/secrets-of-a-wsgi-master).
+If you have a web-application (e.g. Django) and you’re using WSGI, then each request to your web-app is a **separate** Python interpreter, so there is only 1 lock per request. Because the Python interpreter is slow to start, some WSGI implementations have a “Daemon Mode” which [keep Python process(es) on the go for you](https://www.slideshare.net/GrahamDumpleton/secrets-of-a-wsgi-master).
 
 ### What about other Python runtimes?
 
@@ -83,7 +83,7 @@ If you have a single Python process running for a long time, with code that can 
 
 However, CPython is a **general-purpose** implementation. So if you were developing command-line applications using Python, having to wait for a JIT to start every time the CLI was called would be horribly slow.
 
-CPython has to try and serve as many use cases as possible. There was the possibility of plugging a JIT into CPython but this project has largely stalled.
+CPython has to try and serve as many use cases as possible. There was the [possibility of plugging a JIT](https://www.slideshare.net/AnthonyShaw5/pyjion-a-jit-extension-system-for-cpython) into CPython but this project has largely stalled.
 
 --If you want the benefits of a JIT and you have a workload that suits it, use PyPy.--
 
@@ -118,13 +118,13 @@ cd v3.6.6
 make
 ```
 
-Now python.exe will have Dtrace tracers throughout the code. Paul Ross wrote an awesome Lightning Talk on Dtrace. You can download DTrace starter files for Python to measure function calls, execution time, CPU time, syscalls, all sorts of fun. e.g.
+Now python.exe will have Dtrace tracers throughout the code. Paul Ross wrote [an awesome Lightning Talk on Dtrace](https://github.com/paulross/dtrace-py#the-lightning-talk). You can download [DTrace starter files for Python](https://github.com/paulross/dtrace-py/tree/master/toolkit) to measure function calls, execution time, CPU time, syscalls, all sorts of fun. e.g.
 
 `sudo dtrace -s toolkit/<tracer>.d -c ‘../cpython/python.exe script.py’`
 
 The `py_callflow` tracer shows all the function calls in your application
 
-<img src="/img/posts/dtrace.gif" width=50% />
+![](/img/posts/dtrace.gif){: .img-fluid .mx-auto}
 
 So, does Python’s dynamic typing make it slow?
 
@@ -144,6 +144,6 @@ For parts of your code where performance is critical and you have more staticall
 
 ### Further reading
 
-* [Jake VDP’s excellent article (although slightly dated)](https://jakevdp.github.io/blog/2014/05/09/why-python-is-slow/)
-* [Dave Beazley’s talk on the GIL](http://www.dabeaz.com/python/GIL.pdf)
-* [All about JIT compilers](https://hacks.mozilla.org/2017/02/a-crash-course-in-just-in-time-jit-compilers/)
+* Jake VDP’s [excellent article (although slightly dated)](https://jakevdp.github.io/blog/2014/05/09/why-python-is-slow/)
+* Dave Beazley’s [talk on the GIL](http://www.dabeaz.com/python/GIL.pdf)
+* All about [JIT compilers](https://hacks.mozilla.org/2017/02/a-crash-course-in-just-in-time-jit-compilers/)

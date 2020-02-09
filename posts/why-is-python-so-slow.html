@@ -135,10 +135,10 @@ Here are the top theories:
 <p>When CPython creates variables, it allocates the memory and then counts how many references to that variable exist, this is a concept known as reference counting. If the number of references is 0, then it frees that piece of memory from the system. This is why creating a “temporary” variable within say, the scope of a for loop, doesn’t blow up the memory consumption of your application.</p>
 <p>The challenge then becomes when variables are shared within multiple threads, how CPython locks the reference count. There is a “global interpreter lock” that carefully controls thread execution. The interpreter can only execute one operation at a time, regardless of how many threads it has.</p>
 <h3>What does this mean to the performance of Python application?</h3>
-<p>If you have a single-threaded, single interpreter application. It will make no difference to the speed. Removing the GIL would have no impact on the performance of your code.</p>
+<p>If you have a single-threaded, single interpreter application. <strong>It will make no difference to the speed</strong>. Removing the GIL would have no impact on the performance of your code.</p>
 <p>If you wanted to implement concurrency within a single interpreter (Python process) by using threading, and your threads were IO intensive (e.g. Network IO or Disk IO), you would see the consequences of GIL-contention.</p>
 <p><img alt="" class="img-fluid mx-auto" src="/img/posts/beazley-graph.png"></p>
-<p>If you have a web-application (e.g. Django) and you’re using WSGI, then each request to your web-app is a separate Python interpreter, so there is only 1 lock per request. Because the Python interpreter is slow to start, some WSGI implementations have a “Daemon Mode” which <a href="https://www.slideshare.net/GrahamDumpleton/secrets-of-a-wsgi-master">keep Python process(es) on the go for you</a>.</p>
+<p>If you have a web-application (e.g. Django) and you’re using WSGI, then each request to your web-app is a <strong>separate</strong> Python interpreter, so there is only 1 lock per request. Because the Python interpreter is slow to start, some WSGI implementations have a “Daemon Mode” which <a href="https://www.slideshare.net/GrahamDumpleton/secrets-of-a-wsgi-master">keep Python process(es) on the go for you</a>.</p>
 <h3>What about other Python runtimes?</h3>
 <p><a href="http://doc.pypy.org/en/latest/faq.html#does-pypy-have-a-gil-why">PyPy has a GIL</a> and it is typically &gt;3x faster than CPython.
 <a href="http://www.jython.org/jythonbook/en/1.0/Concurrency.html#no-global-interpreter-lock">Jython does not have a GIL</a> because a Python thread in Jython is represented by a Java thread and benefits from the JVM memory-management system.</p>
@@ -160,7 +160,7 @@ JavaScript does not have a GIL, but it’s also single-threaded so it doesn’t 
 <p>There are downsides to JITs: one of those is startup time. CPython startup time is already comparatively slow, PyPy is 2–3x slower to start than CPython. The Java Virtual Machine is notoriously slow to boot. The .NET CLR gets around this by starting at system-startup, but the developers of the CLR also develop the Operating System on which the CLR runs.</p>
 <p>If you have a single Python process running for a long time, with code that can be optimized because it contains “hot spots”, then a JIT makes a lot of sense.</p>
 <p>However, CPython is a <strong>general-purpose</strong> implementation. So if you were developing command-line applications using Python, having to wait for a JIT to start every time the CLI was called would be horribly slow.</p>
-<p>CPython has to try and serve as many use cases as possible. There was the possibility of plugging a JIT into CPython but this project has largely stalled.</p>
+<p>CPython has to try and serve as many use cases as possible. There was the <a href="https://www.slideshare.net/AnthonyShaw5/pyjion-a-jit-extension-system-for-cpython">possibility of plugging a JIT</a> into CPython but this project has largely stalled.</p>
 <p>&ndash;If you want the benefits of a JIT and you have a workload that suits it, use PyPy.&ndash;</p>
 <h2>“It’s because its a dynamically typed language”</h2>
 <p>In a “Statically-Typed” language, you have to specify the type of a variable when it is declared. Those would include C, C++, Java, C#, Go.</p>
@@ -182,10 +182,10 @@ cd v3.6.6
 make
 </code></pre>
 
-<p>Now python.exe will have Dtrace tracers throughout the code. Paul Ross wrote an awesome Lightning Talk on Dtrace. You can download DTrace starter files for Python to measure function calls, execution time, CPU time, syscalls, all sorts of fun. e.g.</p>
+<p>Now python.exe will have Dtrace tracers throughout the code. Paul Ross wrote <a href="https://github.com/paulross/dtrace-py#the-lightning-talk">an awesome Lightning Talk on Dtrace</a>. You can download <a href="https://github.com/paulross/dtrace-py/tree/master/toolkit">DTrace starter files for Python</a> to measure function calls, execution time, CPU time, syscalls, all sorts of fun. e.g.</p>
 <p><code>sudo dtrace -s toolkit/&lt;tracer&gt;.d -c ‘../cpython/python.exe script.py’</code></p>
 <p>The <code>py_callflow</code> tracer shows all the function calls in your application</p>
-<p><img src="/img/posts/dtrace.gif" width=50% /></p>
+<p><img alt="" class="img-fluid mx-auto" src="/img/posts/dtrace.gif"></p>
 <p>So, does Python’s dynamic typing make it slow?</p>
 <ul>
 <li>Comparing and converting types is costly, every time a variable is read, written to or referenced the type is checked</li>
@@ -199,9 +199,9 @@ make
 <p>For parts of your code where performance is critical and you have more statically-typed variables, consider using Cython.</p>
 <h3>Further reading</h3>
 <ul>
-<li><a href="https://jakevdp.github.io/blog/2014/05/09/why-python-is-slow/">Jake VDP’s excellent article (although slightly dated)</a></li>
-<li><a href="http://www.dabeaz.com/python/GIL.pdf">Dave Beazley’s talk on the GIL</a></li>
-<li><a href="https://hacks.mozilla.org/2017/02/a-crash-course-in-just-in-time-jit-compilers/">All about JIT compilers</a></li>
+<li>Jake VDP’s <a href="https://jakevdp.github.io/blog/2014/05/09/why-python-is-slow/">excellent article (although slightly dated)</a></li>
+<li>Dave Beazley’s <a href="http://www.dabeaz.com/python/GIL.pdf">talk on the GIL</a></li>
+<li>All about <a href="https://hacks.mozilla.org/2017/02/a-crash-course-in-just-in-time-jit-compilers/">JIT compilers</a></li>
 </ul>
             </div>
         </div>
