@@ -70,6 +70,8 @@ During an unfortunately-brief visit last year I got a tour of Harare and it’s 
 
 Cybersecurity and the adoption of Python in Zimbabwe are being driven by people like [Tendai Marengereke](https://twitter.com/marengz), a professor at HIT. Do you know of any Cybersecurity degrees being taught using Python at your local university? I don’t, they’re still teaching Pascal and Java.
 
+### South Africa
+
 South Africa’s capital city Johannesburg is one of the business-capitals in Africa, host to big tech names like Microsoft, Oracle, Amazon and Dimension Data (who I work for).
 
 The software engineering job market in South Africa is growing, rapidly. So much so that Google and the PSF funded a startup to help people [find dev jobs quickly](http://ventureburn.com/2016/02/this-google-backed-startup-from-sa-is-training-thousands-of-coders/). Powered of course by Python.
