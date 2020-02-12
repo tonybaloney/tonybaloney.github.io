@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Azure Pipelines with Python - by example</title>
+
+    <!-- Facebook Meta tags -->
+    <meta property="og:title" content="Azure Pipelines with Python - by example">
+    <meta property="og:description" content="A tutorial on Microsoft Azure pipelines and how to use it effectively for your Python projects.">
+    <meta property="og:image" content="https://tonybaloney.github.io/img/home-bg.jpg">
+    <meta property="og:url" content="https://tonybaloney.github.io/posts/azure-pipelines-with-python-by-example.html">
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:title" content="Azure Pipelines with Python - by example">
+    <meta name="twitter:description" content="A tutorial on Microsoft Azure pipelines and how to use it effectively for your Python projects.">
+    <meta name="twitter:image" content="https://tonybaloney.github.io/img/home-bg.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@anthonypjshaw">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="/css/clean-blog.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    Menu <i class="fa fa-bars"></i>
+                </button>
+
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/#">Home</a>
+                    </li>
+                    <li>
+                        <a href="/#projects">Projects</a>
+                    </li>
+                    <li>
+                        <a href="/#contributions">Contributions</a>
+                    </li>
+                    <li>
+                        <a href="/#courses">Courses</a>
+                    </li>
+                    <li>
+                        <a href="/#podcasts">Podcasts</a>
+                    </li>
+                    <li>
+                        <a href="/#talks">Talks</a>
+                    </li>
+                    <li>
+                        <a href="/#blog">Blog</a>
+                    </li>
+                    <li>
+                        <a href="https://twitter.com/anthonypjshaw"><i class='fa fa-2x fa-twitter'></i></a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/tonybaloney"><i class='fa fa-2x fa-github'></i></a>
+                    </li>
+                    <li>
+                        <a href="/rss.xml"><i class='fa fa-2x fa-rss-square'></i></a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="site-heading">
+                        <h1>Azure Pipelines with Python - by example</h1>
+                        <hr class="small">
+                        <span class="subheading">by Anthony Shaw, January 2, 2019</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <p>In this tutorial, I’ll show you <strong>-by example-</strong> how to use Azure Pipelines to automate the testing, validation, and publishing of your Python projects.</p>
+<p>Azure Pipelines is a cloud service that supports many environments, languages, and tools. It is configured via a master azure-pipelines.yml YAML file within your project.</p>
+<p>Your project can exist in multiple source repositories, and automated integrations are available for GitHub.</p>
+<p>If you want to see the project layouts and how the configuration looks, everything in this tutorial is on <a href="https://github.com/tonybaloney/azure-pipelines-python-examples">my GitHub repository</a>. It’s licensed as MIT, so you can do with it as you wish!</p>
+<h2>The Azure Pipeline Build</h2>
+<p>A build can have multiple jobs. You might want to segment your jobs by tasks like:</p>
+<ul>
+<li>Build</li>
+<li>Deploy</li>
+<li>Install</li>
+</ul>
+<p>In these examples, I’ve focused on testing. Because Python is an interpreted language, the build stage is typically replaced with dynamic and static checkers, known as ‘linters’.</p>
+<p>Having automated tests for any Python project can give you fast notifications when a change to the code has broken an existing feature in your application.</p>
+<p>Your azure pipelines build will consist of jobs, these jobs consist of a number of steps. Some steps are pre-defined and called “Tasks”, you can find the full list on <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/?view=vsts">the Microsoft Azure Pipelines website</a>.</p>
+<p>You can also define your own tasks consisting of scripts in either Bash (Linux and MacOS) or PowerShell (Windows).</p>
+<p>Some of the pre-defined tasks you’ll need for Python are:</p>
+<p><code>UsePythonVersion@0</code> — Use a specific Python version (like a virtual environment)</p>
+<p><code>PublishTestResults@2</code> — Publish the test results to the dashboard. Test results should be in the Junit XML format.</p>
+<h3>Selecting an Operating System</h3>
+<p>When configuring a job, you have to pick which Virtual Machine image to use for the job agent to execute your steps. For Linux, there are many images to choose from, Ubuntu 16 has the latest versions of Python available.</p>
+<pre><code class="yaml">- job: 'your_job_name' 
+  pool:    
+    vmImage: 'Ubuntu-16.04'
+</code></pre>
+
+<p>To test on Windows, the best image to choose is the vs2017-win2016 image, which has Visual Studio 2017 on Windows Server 2016.</p>
+<pre><code class="yaml">- job: 'your_job_name' 
+  pool:    
+    vmImage: 'vs2017-win2016'
+</code></pre>
+
+<p>Some of the other images include:
+* macOS 10.13 (<code>macOS-10.13</code>)
+* Windows Server 1803 (<code>win1803</code>) - for running Windows containers
+* Visual Studio 2015 on Windows Server 2012R2 (<code>vs2015-win2012r2</code>)</p>
+<h2>Templating steps for re-use across jobs</h2>
+<p>Because steps are defined in a job, and a job can only have 1 operating system it can get very tedious to copy steps between jobs and keep the up to date.</p>
+<p>If your build and test steps are the same across Linux and Windows, you can move the steps into a separate file (in this example, called templates/steps.yml) and include it in the job.</p>
+<pre><code class="yaml">jobs: 
+- job: Build_Linux 
+  pool:  
+   vmImage: 'ubuntu-16.04'
+  steps: 
+    - template: templates/steps.yml
+- job: Build_Windows  
+  pool:  
+   vmImage: 'vs2017-win2016'
+  steps: 
+    - template: templates/steps.yml
+</code></pre>
+
+<h2>Test Output</h2>
+<p>Once you’ve configured your testing jobs to output a Junit XML file and you’ve successfully configured the PublishTestResults task, you will see a detailed test dashboard. All test failures will be available here. In the examples, I’ve named the Test Results based on the operating system, job name and the version of Python so it’s easier to see what’s happening. You can add any variable or label to the test names.</p>
+<p><img alt="Screenshot of Azure Pipelines Test Console" class="img-responsive center-block" src="/img/posts/azure-test-output.png"></p>
+<h2>Testing a Django application</h2>
+<p>To test a Django application, there are 4 basic steps you need to add to a build job:</p>
+<h3>1. Choose the Python version.</h3>
+<p>This is important as Django can behave very differently between Python versions. This example tests Python 3.6 and 3.7. You can change these for other versions, like 3.5.</p>
+<h3>2. Install Django</h3>
+<p>The installation of Django would be via. pip . This script task updates the pip binary and then installs any dependencies in django-basic/requirements.txt, which is the example Django Project I’ve set up for this tutorial.</p>
+<pre><code class="yaml">- script: |      
+    python -m pip install --upgrade pip      
+    pip install -r django-basic/requirements.txt    
+  displayName: 'Install dependencies'
+</code></pre>
+
+<h3>3. Test your Django application</h3>
+<p>To test a Django application you can use the python manage.py test command, or use another tool like Pytest.
+Because Azure Pipelines test output can be viewed and sorted online, it’s beneficial to use the Junit XML output. Pytest is the easiest way to generate this. The pytest-django package is a plugin for Pytest that will work with your existing Django tests. You only need to make a small change. Create a pytest.ini file in your project directory with these settings:</p>
+<pre><code>[pytest]
+python_files = tests.py test_*.py *_tests.py
+DJANGO_SETTINGS_MODULE = your_module_name.settings
+</code></pre>
+
+<p>The task itself brings together these tools to test an application:</p>
+<pre><code class="yaml">- script: |     
+   pip install pytest-django      
+   cd django-basic/azuredemo      
+   pytest --junitxml=../../reports/django-basic.xml    
+  displayName: 'Run tests'
+</code></pre>
+
+<h3>4. Publish the test output</h3>
+<p>Lastly, use the builtin task to copy the test output to the Azure Pipelines service.
+Here is the <code>azure-pipelines.yml</code> for the example Django app which can be <a href="https://github.com/tonybaloney/azure-pipelines-python-examples/tree/master/django-basic">found on GitHub</a>.</p>
+<pre><code class="yaml">trigger:
+- master
+jobs:
+- job: 'django_basic'
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+    maxParallel: 2
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+  - script: |
+      python -m pip install --upgrade pip
+      pip install -r django-basic/requirements.txt
+    displayName: 'Install dependencies'
+  - script: |
+      pip install pytest-django
+      cd django-basic/azuredemo
+      pytest --junitxml=../../reports/django-basic.xml
+    displayName: 'Run tests'
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'reports/django-basic.xml'
+      testRunTitle: '$(Agent.OS) - $(Build.DefinitionName) - Python $(python.version)'
+    condition: succeededOrFailed()
+</code></pre>
+
+<h2>A multi-environment Django test</h2>
+<p>If you want to test your Django application against multiple versions of Django, or a particular plugin, you can add extra version numbers as variables in the build matrix.
+In this example, I’m testing 2 versions of Django across 2 versions of Python. This generates multiple jobs automatically.</p>
+<p>Because there is no built-in task for selecting the version of Django, we use the variable to control the version installed in pip.
+This script task adds the django.version variable defined in the matrix to the pip install command.</p>
+<pre><code class="yaml">- script: |   
+   python -m pip install --upgrade pip
+   pip install django==$(django.version)  
+  displayName: 'Install dependencies'
+</code></pre>
+
+<p>Here is the final azure-pipelines.yml for the matrixed Django test:</p>
+<pre><code class="yaml">trigger:
+- master
+name: $(Date:yyyyMMdd)$(Rev:.r)
+jobs:
+ - job: 'django_multi_environment'
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  strategy:
+    matrix:
+      Python36_Django213:
+        python.version: '3.6'
+        django.version: '2.1.3'
+      Python37_Django213:
+        python.version: '3.7'
+        django.version: '2.1.3'
+      Python37_Django214:
+        python.version: '3.7'
+        django.version: '2.1.4'
+    maxParallel: 3
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+  - script: |
+      python -m pip install --upgrade pip
+      pip install django==$(django.version)
+    displayName: 'Install dependencies'
+  - script: |
+      pip install pytest-django
+      cd django-multi-environment/azuredemo
+      pytest --junitxml=../../reports/django-multi-environment.xml
+    displayName: 'Run tests'
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'reports/django-multi-environment.xml'
+      testRunTitle: '$(Agent.OS) - $(Build.BuildNumber)[$(Agent.JobName)] - Python $(python.version) - Django $(django.version)'
+    condition: succeededOrFailed()
+</code></pre>
+
+<h2>A basic Flask test</h2>
+<p>If you’re using the Flask web framework, the steps are very similar to Django, but it doesn’t require a Pytest plugin.</p>
+<p>In the example repository, I’ve simply copied the Flask example web application which comes with tests. To use this on Azure Pipelines, you need to run the setup.py command using pip install -e . from the application directory. Adding the <code>[test]</code> suffix will install the testing tools.</p>
+<pre><code class="yaml">trigger:
+- master
+name: $(Date:yyyyMMdd)$(Rev:.r)
+jobs:
+ - job: 'flask_basic'
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+    maxParallel: 2
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+  - script: |
+      python -m pip install --upgrade pip
+      cd flask-basic
+      pip install '.[test]'
+    displayName: 'Install dependencies'
+  - script: |
+      pip install pytest
+      cd flask-basic
+      pytest --junitxml=../reports/flask-basic.xml
+    displayName: 'Run tests'
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'reports/flask-basic.xml'
+      testRunTitle: '$(Agent.OS) - $(Build.BuildNumber)[$(Agent.JobName)] - Python $(python.version)'
+    condition: succeededOrFailed()
+</code></pre>
+
+<h2>A Flask test with coverage</h2>
+<p>If you wanted to calculate the test coverage of your application, you combine the testing task with the <code>coverage</code> package.
+For the <code>flask-basic</code> example project, you install both Pytest and coverage, then run pytest through the coverage run command.</p>
+<pre><code class="yaml">- script: |   
+   pip install pytest coverage   
+   cd flask-basic   
+   coverage run -m pytest --junitxml=../reports/flask-basic-coverage.xml  
+   coverage report  
+  displayName: 'Run tests and coverage'
+</code></pre>
+
+<p>You will be able to view the coverage data in the Azure Pipelines portal.</p>
+<pre><code class="yaml">trigger:
+- master
+name: $(Date:yyyyMMdd)$(Rev:.r)
+jobs:
+ - job: 'flask_basic_with_coverage'
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+    maxParallel: 2
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+  - script: |
+      python -m pip install --upgrade pip
+      cd flask-basic
+      pip install '.[test]'
+    displayName: 'Install dependencies'
+  - script: |
+      pip install pytest coverage
+      cd flask-basic
+      coverage run -m pytest --junitxml=../reports/flask-basic-coverage.xml
+      coverage report
+    displayName: 'Run tests and coverage'
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'reports/flask-basic-coverage.xml'
+      testRunTitle: '$(Agent.OS) - $(Build.BuildNumber)[$(Agent.JobName)] - Python $(python.version)'
+    condition: succeededOrFailed()
+</code></pre>
+
+<h2>Testing a basic Python library</h2>
+<p>If you’re building Python libraries for distribution via shared files, PyPi or another artifact system, this example illustrates how to build source and binary distributions on Azure Pipelines.
+Aside from the test commands that have been shown throughout this tutorial, we need to add a couple of extra tasks.
+Azure Pipelines comes with an artifact publishing, hosting and indexing API that you can use through the tasks. You can also see the artifacts from a build in the web interface.</p>
+<p><img alt="Screenshot of the Azure Artifacts popup" class="img-responsive center-block" src="/img/posts/azure-artifacts.png"></p>
+<p>In the example project, I’ve created a really simple Python package, with a <code>setup.py</code> and <code>setuptools</code> configured.</p>
+<p>To install the dependencies, this time we’ll install the package using <code>pip install -e</code> . once we’ve changed to the source directory.</p>
+<pre><code class="yaml">- script: |   
+   python -m pip install --upgrade pip  
+   pip install -r library-basic/requirements.txt   
+   cd library-basic   
+   pip install -e .  
+  displayName: 'Install dependencies'
+</code></pre>
+
+<p>Now, to test the library we can use Pytest again to generate the Junit XML output:</p>
+<pre><code class="yaml">- script: |   
+   cd library-basic  
+   pytest --junitxml=../reports/library-basic.xml  
+  displayName: 'Run tests'
+</code></pre>
+
+<p>Then, after the test results have been published, the sdist (source distribution, a tar.gz copy of the source files, and a binary wheel can be built and published in the artifact repository using the <code>CopyFiles</code> and <code>PublishBuildArtifacts</code> tasks:</p>
+<pre><code class="yaml">- script: |    
+    cd library-basic   
+    python setup.py sdist bdist_wheel 
+  displayName: 'Run tests'
+- task: CopyFiles@2 
+   inputs:   
+     contents: library-basic/dist/**   
+     targetFolder: $(Build.ArtifactStagingDirectory) 
+- task: PublishBuildArtifacts@1 
+   inputs:   
+     pathtoPublish: $(Build.ArtifactStagingDirectory)        
+     artifactName: Library_Basic_Wheel
+</code></pre>
+
+<p>Azure Pipelines has support for publishing the packages to PyPi, but I haven’t added that to my examples. It’s <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pypi?view=vsts&amp;tabs=yaml">well documented on the website</a>.</p>
+<pre><code class="yaml">trigger:
+- master
+name: $(Date:yyyyMMdd)$(Rev:.r)
+jobs:
+ - job: 'library_basic'
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+    maxParallel: 2
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+  - script: |
+      python -m pip install --upgrade pip
+      pip install -r library-basic/requirements.txt
+      cd library-basic
+      pip install -e .
+    displayName: 'Install dependencies'
+  - script: |
+      cd library-basic
+      pytest --junitxml=../reports/library-basic.xml
+    displayName: 'Run tests'
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'reports/library-basic.xml'
+      testRunTitle: '$(Agent.OS) - $(Build.BuildNumber)[$(Agent.JobName)] - Python $(python.version)'
+    condition: succeededOrFailed()
+  - script: |
+      cd library-basic
+      python setup.py sdist bdist_wheel
+    displayName: 'Run tests'
+  - task: CopyFiles@2
+    inputs:
+      contents: library-basic/dist/**
+      targetFolder: $(Build.ArtifactStagingDirectory)
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: $(Build.ArtifactStagingDirectory)
+      artifactName: Library_Basic_Wheel
+</code></pre>
+
+<h2>Testing a modern Python library with pyproject.toml</h2>
+<p>If you’re using <code>pyproject.toml</code> as your configuration file and using Flit to publish and build packages, there are a few changes to make to the previous example.</p>
+<ul>
+<li>Run <code>flit install</code> instead of <code>pip install -e</code> .</li>
+<li>Run <code>flit build</code> instead of <code>python setup.py sdist bdist_wheel</code></li>
+<li>Replace the version number with the build number</li>
+</ul>
+<pre><code class="yaml">- job: 'library_flit'
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+    maxParallel: 2
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+  - script: |
+      python -m pip install --upgrade pip
+      pip install pytest flit mock codecov pydocstyle pytest-cov
+      cd library-flit
+      flit install
+    displayName: 'Install dependencies'
+  - script: |
+      cd library-flit
+      python -m pytest tests/ --junitxml=../reports/library-flit.xml --cov=demolib
+      codecov
+    displayName: 'pytest'
+    env:
+      CODECOV_TOKEN: '&lt;CODECOV.IO TOKEN'
+  - script: pydocstyle --ignore=D301,D212,D203 library-flit/demolib
+    displayName: 'pydocstyle'
+  - script: |
+      cd library-flit
+      sed 's/.dev/.dev$(Build.BuildNumber)/g' demolib/__init__.py
+      flit build
+    displayName: 'Build wheel'
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'reports/library-flit.xml'
+      testRunTitle: '$(Agent.OS) - $(Build.BuildNumber)[$(Agent.JobName)] - Python $(python.version)'
+    condition: succeededOrFailed()
+  - task: CopyFiles@2
+    inputs:
+      contents: library-flit/dist/**
+      targetFolder: $(Build.ArtifactStagingDirectory)
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: $(Build.ArtifactStagingDirectory)
+      artifactName: Library_Flit_Wheel
+</code></pre>
+
+<p>Finally, if you want to download the artifacts and install them as a final verification, you can add an additional job like this:</p>
+<pre><code class="yaml">- job: 'install_library'
+  dependsOn: 'library_flit'
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+    maxParallel: 2
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      buildType: 'current'
+      downloadType: 'single'
+      artifactName: 'Library_Flit_Wheel'
+      itemPattern: '**'
+      downloadPath: '$(System.ArtifactsDirectory)' 
+  - script: |
+      python -m pip install --upgrade pip
+      find $(System.ArtifactsDirectory)/Library_Flit_Wheel/library-flit/dist/*.whl | xargs pip install
+    displayName: 'Install package'
+</code></pre>
+
+<p>Some other pointers I learned whilst writing these examples:</p>
+<ul>
+<li>Each script step will start from the root path, even if the previous step changed directories.</li>
+<li>Try to avoid using too much bash-scripting in your steps that is specific to Linux, this makes it easier to copy steps for Windows. In PowerShell, many of the commands you would expect in Linux exist, like <code>cd</code> <code>ls</code> <code>mkdir</code> <code>rm</code> .</li>
+</ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-8">
+                <a class="btn-default btn"
+                   href="https://twitter.com/intent/tweet">
+                    <i class="fa fa-twitter"></i>
+                    Share on Twitter</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="https://twitter.com/anthonypjshaw">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://medium.com/@anthonypjshaw">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-medium fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/tonybaloney">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Copyright &copy; Anthony Shaw 2020</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="/js/clean-blog.min.js"></script>
+
+    <!-- Twitter Helper -->
+    <script>window.twttr = (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0],
+            t = window.twttr || {};
+        if (d.getElementById(id)) return t;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://platform.twitter.com/widgets.js";
+        fjs.parentNode.insertBefore(js, fjs);
+
+        t._e = [];
+        t.ready = function(f) {
+            t._e.push(f);
+        };
+        return t;
+    }(document, "script", "twitter-wjs"));</script>
+</body>
+</html>

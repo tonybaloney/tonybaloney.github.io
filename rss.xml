@@ -7,7 +7,7 @@
             A collection of technology articles
         </description>
         <link>https://tonybaloney.github.io/#blog</link>
-        <lastBuildDate>Wed, 12 Feb 2020 13:36:03 -0000</lastBuildDate>
+        <lastBuildDate>Wed, 12 Feb 2020 17:59:42 -0000</lastBuildDate>
         <pubDate>Sat, 4 Jan 2020 19:15:54 -0500</pubDate>
         <atom:link href="https://tonybaloney.github.io/rss.xml" rel="self" type="application/rss+xml" />
         
@@ -42,6 +42,17 @@
             <pubDate>Fri, 18 Jan 2019 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
             <guid>https://tonybaloney.github.io/posts/a-letter-to-the-python-community-in-africa.html</guid>
+        </item>
+        
+        <item>
+            <title>Azure Pipelines with Python - by example</title>
+            <description>
+                A tutorial on Microsoft Azure pipelines and how to use it effectively for your Python projects.
+            </description>
+            <link>https://tonybaloney.github.io/posts/azure-pipelines-with-python-by-example.html</link>
+            <pubDate>Wed, 02 Jan 2019 00:00:00 -0000</pubDate>
+            <dc:creator>Anthony Shaw</dc:creator>
+            <guid>https://tonybaloney.github.io/posts/azure-pipelines-with-python-by-example.html</guid>
         </item>
         
         <item>
