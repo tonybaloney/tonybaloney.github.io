@@ -1,6 +1,6 @@
 blog_heading: A letter to the Python community in Africa
 blog_subheading: Some of the amazing stories from the African continent
-blog_header_image: posts/pycon-namibia.jpeg
+blog_header_image: posts/pycon-namibia-heading.jpeg
 blog_author: Anthony Shaw
 blog_publish_date: January 18, 2019
 ---
