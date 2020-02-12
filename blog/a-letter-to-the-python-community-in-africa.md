@@ -46,8 +46,7 @@ Python in Namibia is driven by people like [Ngazetungue Muheue](https://twitter.
 
 The hard work of the Namibia community is delivering within both the youth and adult professional groups, like this story from a year 12 student building a Python app and being featured in the national news:
 
-<div class="center-block">
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">YouthPaper | Herman Mutalya (17), a Grade 12 pupil at Windhoek Technical High School, is in the final stages of developing a mobile application called Study-Pal, which he says will make studying easier for Grade 12 pupils in Namibia. <a href="https://t.co/6Bhv9ZjmaN">https://t.co/6Bhv9ZjmaN</a> <a href="https://t.co/oj85mX2Hcp">pic.twitter.com/oj85mX2Hcp</a></p>&mdash; The Namibian (@TheNamibian) <a href="https://twitter.com/TheNamibian/status/1004022553093066753?ref_src=twsrc%5Etfw">June 5, 2018</a></blockquote></div>
+<blockquote class="twitter-tweet tw-align-center"><p lang="en" dir="ltr">YouthPaper | Herman Mutalya (17), a Grade 12 pupil at Windhoek Technical High School, is in the final stages of developing a mobile application called Study-Pal, which he says will make studying easier for Grade 12 pupils in Namibia. <a href="https://t.co/6Bhv9ZjmaN">https://t.co/6Bhv9ZjmaN</a> <a href="https://t.co/oj85mX2Hcp">pic.twitter.com/oj85mX2Hcp</a></p>&mdash; The Namibian (@TheNamibian) <a href="https://twitter.com/TheNamibian/status/1004022553093066753?ref_src=twsrc%5Etfw">June 5, 2018</a></blockquote>
 
 ### Botswana
 Botswana is using Python to tackle global issues. The [Botswana-Harvard HIV/AIDs partnership](https://twitter.com/BotsHarvard) is using Python and Django to power it’s clinical trials unit.
@@ -61,15 +60,13 @@ The Python community in Zimbabwe is booming, thanks to a group of impassioned Py
 
 Marlene founded ZimboPy, an education programme for local women wanting to get into Python. The courses are free, local and teacher-led. One of the students has gone on to study at Harvard, others to pursue professional development careers.
 
-<div class="center-block">
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">ZimboPy August 2018 Mentorship Week <a href="https://t.co/1X3iuIdK6x">https://t.co/1X3iuIdK6x</a> <a href="https://t.co/kKxLQ3RVQ5">pic.twitter.com/kKxLQ3RVQ5</a></p>&mdash; Vuyisile Ndlovu (@TerraMeijar) <a href="https://twitter.com/TerraMeijar/status/1031970554427961345?ref_src=twsrc%5Etfw">August 21, 2018</a></blockquote></div>
+<blockquote class="twitter-tweet tw-align-center"><p lang="en" dir="ltr">ZimboPy August 2018 Mentorship Week <a href="https://t.co/1X3iuIdK6x">https://t.co/1X3iuIdK6x</a> <a href="https://t.co/kKxLQ3RVQ5">pic.twitter.com/kKxLQ3RVQ5</a></p>&mdash; Vuyisile Ndlovu (@TerraMeijar) <a href="https://twitter.com/TerraMeijar/status/1031970554427961345?ref_src=twsrc%5Etfw">August 21, 2018</a></blockquote>
 
 2 things I was not expecting to find in Harare were a world-leading Cybersecurity programme using Python and one of the worlds largest supercomputers running Jupyter.
 
 During an unfortunately-brief visit last year I got a tour of Harare and it’s new HPC facility. This is the existing suite, the new one is going to be one of the largest in the world. Local students and researchers are invited to the facility to run tests, hypothesis, and algorithms with Jupyter Notebooks fully integrated into their PC lab. This is cutting-edge technology.
 
-<div class="center-block">
-<blockquote class="twitter-tweet "><p lang="en" dir="ltr">ZimboPy August 2018 Mentorship Week <a href="https://t.co/1X3iuIdK6x">https://t.co/1X3iuIdK6x</a> <a href="https://t.co/kKxLQ3RVQ5">pic.twitter.com/kKxLQ3RVQ5</a></p>&mdash; Vuyisile Ndlovu (@TerraMeijar) <a href="https://twitter.com/TerraMeijar/status/1031970554427961345?ref_src=twsrc%5Etfw">August 21, 2018</a></blockquote></div>
+<blockquote class="twitter-tweet tw-align-center"><p lang="en" dir="ltr">ZimboPy August 2018 Mentorship Week <a href="https://t.co/1X3iuIdK6x">https://t.co/1X3iuIdK6x</a> <a href="https://t.co/kKxLQ3RVQ5">pic.twitter.com/kKxLQ3RVQ5</a></p>&mdash; Vuyisile Ndlovu (@TerraMeijar) <a href="https://twitter.com/TerraMeijar/status/1031970554427961345?ref_src=twsrc%5Etfw">August 21, 2018</a></blockquote>
 
 Cybersecurity and the adoption of Python in Zimbabwe are being driven by people like [Tendai Marengereke](https://twitter.com/marengz), a professor at HIT. Do you know of any Cybersecurity degrees being taught using Python at your local university? I don’t, they’re still teaching Pascal and Java.
 
@@ -100,8 +97,7 @@ Kenya’s capital, Nairobi has a regular [Python meetup with over 1300 members](
 
 Kenya’s PyCon “PyCon-KE” was sponsored by International tech companies like Microsoft and Google, as well as innovative African FinTech [Jumo](https://www.jumo.world/company).
 
-<div class="center-block">
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr"><a href="https://twitter.com/PeterOkwara?ref_src=twsrc%5Etfw">@PeterOkwara</a> conducting a workshop on getting info of an EOS <a href="https://twitter.com/hashtag/Blockchain?src=hash&amp;ref_src=twsrc%5Etfw">#Blockchain</a> node using Python <a href="https://twitter.com/hashtag/PyConKE2018?src=hash&amp;ref_src=twsrc%5Etfw">#PyConKE2018</a> <a href="https://twitter.com/StrathU?ref_src=twsrc%5Etfw">@StrathU</a> <a href="https://twitter.com/PyNBO?ref_src=twsrc%5Etfw">@PyNBO</a> <a href="https://t.co/JDgbKIxCkP">pic.twitter.com/JDgbKIxCkP</a></p>&mdash; EOS Nairobi (@EosNairobi) <a href="https://twitter.com/EosNairobi/status/1055817953785057280?ref_src=twsrc%5Etfw">October 26, 2018</a></blockquote></div>
+<blockquote class="twitter-tweet tw-align-center"><p lang="en" dir="ltr"><a href="https://twitter.com/PeterOkwara?ref_src=twsrc%5Etfw">@PeterOkwara</a> conducting a workshop on getting info of an EOS <a href="https://twitter.com/hashtag/Blockchain?src=hash&amp;ref_src=twsrc%5Etfw">#Blockchain</a> node using Python <a href="https://twitter.com/hashtag/PyConKE2018?src=hash&amp;ref_src=twsrc%5Etfw">#PyConKE2018</a> <a href="https://twitter.com/StrathU?ref_src=twsrc%5Etfw">@StrathU</a> <a href="https://twitter.com/PyNBO?ref_src=twsrc%5Etfw">@PyNBO</a> <a href="https://t.co/JDgbKIxCkP">pic.twitter.com/JDgbKIxCkP</a></p>&mdash; EOS Nairobi (@EosNairobi) <a href="https://twitter.com/EosNairobi/status/1055817953785057280?ref_src=twsrc%5Etfw">October 26, 2018</a></blockquote>
 
 The tracks at PyCon-KE 2018 focused on IoT, AI, Data Science and Web Development. It’s easy to see how with African tech startup and local innovators, these companies can thrive. Data Science featured heavily at the PyCon in Nairobi, even getting the local youth involved with “__Data Science for Kids__” talk by a local high school student.
 
@@ -120,8 +116,7 @@ CfA’s projects include “Drone Journalism” initiatives to give citizens ‘
 Host to a thriving developer community, Rwanda is a small country with 12 million. That doesn’t stop them from innovating in the fields of data science and AI.
 Local DjangoGirls team, “Django Girls Kigali” host workshops in the countries capital to teach them about software development, Internet tech and web development.
 
-<div class="center-block">
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Here is what you missed!<a href="https://twitter.com/hashtag/DjangoGirlsKGL?src=hash&amp;ref_src=twsrc%5Etfw">#DjangoGirlsKGL</a> <a href="https://t.co/1f8Ch9Qauq">pic.twitter.com/1f8Ch9Qauq</a></p>&mdash; Django Girls Kigali (@DjangoGirlsKgl) <a href="https://twitter.com/DjangoGirlsKgl/status/1041700384895627264?ref_src=twsrc%5Etfw">September 17, 2018</a></blockquote></div>
+<blockquote class="twitter-tweet tw-align-center"><p lang="en" dir="ltr">Here is what you missed!<a href="https://twitter.com/hashtag/DjangoGirlsKGL?src=hash&amp;ref_src=twsrc%5Etfw">#DjangoGirlsKGL</a> <a href="https://t.co/1f8Ch9Qauq">pic.twitter.com/1f8Ch9Qauq</a></p>&mdash; Django Girls Kigali (@DjangoGirlsKgl) <a href="https://twitter.com/DjangoGirlsKgl/status/1041700384895627264?ref_src=twsrc%5Etfw">September 17, 2018</a></blockquote>
 
 There are also social startups in Kigali, like [Nyaruka](https://nyaruka.com/), who use Django and other open-source technology to build software for local companies and NGO’s.
 Artificial Intelligence again is being researched and taught in Rwanda, with a local group [“AI Saturdays”](https://twitter.com/AISaturdaysKG0), a social club for AI developers and researchers.
@@ -129,8 +124,6 @@ Artificial Intelligence again is being researched and taught in Rwanda, with a l
 ## Central and West Africa
 
 Central Africa has huge swathes of lush rainforest, the rainforest in the Congo is the 2nd largest in the world after the Amazon. Population density is low in the center due to the environment, so if you go further West and work up and around the coast, you’ll find Pythonista’s-a-plenty.
-
-![Map of Central-West Africa](/img/posts/central-west-africa.png){: .img-responsive .center-block}
 
 ### Nigeria 
 
@@ -146,8 +139,7 @@ For a quick glimpse of what you missed (apparently, some really hot chili sauce)
 
 Another large city in Nigeria is Abuja, the nation’s capital, and host to some growing Python communities. One of those communities is [Django Girls Abuja](https://djangogirls.org/abuja/).
 
-<div class="center-block">
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">7 more days to the close of registrations for Django Girls Abuja Workshop. Let all the Women in your life be aware of this golden opportunity to begin a career in programming and apps development. Absolutely free! To register, Visit: <a href="https://t.co/xddOryUzTr">https://t.co/xddOryUzTr</a> Please Retweet. Thanks <a href="https://t.co/LpfljiPB5A">pic.twitter.com/LpfljiPB5A</a></p>&mdash; Django Girls Abuja (@djangogirlsabj) <a href="https://twitter.com/djangogirlsabj/status/1047385213138079744?ref_src=twsrc%5Etfw">October 3, 2018</a></blockquote></div>
+<blockquote class="twitter-tweet tw-align-center"><p lang="en" dir="ltr">7 more days to the close of registrations for Django Girls Abuja Workshop. Let all the Women in your life be aware of this golden opportunity to begin a career in programming and apps development. Absolutely free! To register, Visit: <a href="https://t.co/xddOryUzTr">https://t.co/xddOryUzTr</a> Please Retweet. Thanks <a href="https://t.co/LpfljiPB5A">pic.twitter.com/LpfljiPB5A</a></p>&mdash; Django Girls Abuja (@djangogirlsabj) <a href="https://twitter.com/djangogirlsabj/status/1047385213138079744?ref_src=twsrc%5Etfw">October 3, 2018</a></blockquote>
 
 DG Abuja is run by a team of volunteer coaches, like [Akoh James](https://twitter.com/akohrr) and [Adeshola Funmilayo](https://twitter.com/@desamoye). It could be easy to sit back and look at all this success and think it “just happens”, but it can’t without the dedication and hard work of all these inspiring people.
 
@@ -155,24 +147,21 @@ DG Abuja is run by a team of volunteer coaches, like [Akoh James](https://twitte
 
 To the west of Benin, Togo is new on the Python scene and is joining forces with Python Ghana and [Python CI](https://twitter.com/PythonCI). The 3 countries are bordering and sit on the south western coast of Africa. There’s an upcoming [GDG event](https://www.meetup.com/GDG-Lome/events/254972383/) in the Lomé with AI on the agenda (I think, it’s written in Français).
 
-###Ghana
+### Ghana
 
 Next door Ghana is host to the **first [PyCon Africa](https://twitter.com/pyconafrica) in 2019**. After reading all these stories, I’d decided I cannot miss out so I’ve marked it in my calendar and I’ll see everyone in Accra.
 
 PyCon Ghana 2018 was the first PyCon in Ghana, but it looked like a huge success
 
-<div class="center-block">
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">The DSF warmly congratulates PyCon Ghana, its organisers and all the Ghanaian Python community on a very successful first edition of the conference.<a href="https://twitter.com/PyconGhana?ref_src=twsrc%5Etfw">@PyConGhana</a> <a href="https://twitter.com/hashtag/PyConGhana?src=hash&amp;ref_src=twsrc%5Etfw">#PyConGhana</a> <a href="https://t.co/ERsShcfPO9">pic.twitter.com/ERsShcfPO9</a></p>&mdash; Django (@djangoproject) <a href="https://twitter.com/djangoproject/status/1028421627137204224?ref_src=twsrc%5Etfw">August 11, 2018</a></blockquote></div>
+<blockquote class="twitter-tweet tw-align-center"><p lang="en" dir="ltr">The DSF warmly congratulates PyCon Ghana, its organisers and all the Ghanaian Python community on a very successful first edition of the conference.<a href="https://twitter.com/PyconGhana?ref_src=twsrc%5Etfw">@PyConGhana</a> <a href="https://twitter.com/hashtag/PyConGhana?src=hash&amp;ref_src=twsrc%5Etfw">#PyConGhana</a> <a href="https://t.co/ERsShcfPO9">pic.twitter.com/ERsShcfPO9</a></p>&mdash; Django (@djangoproject) <a href="https://twitter.com/djangoproject/status/1028421627137204224?ref_src=twsrc%5Etfw">August 11, 2018</a></blockquote>
 
 PyLadies Ghana is up and running thanks to people like [Mimi Darteh](https://twitter.com/dartehmimi) and [Abigail Dogbe](https://twitter.com/mesrenyame12). There are workshops in Wa, to the North, Ho to the east and the major cities Accra and Kumasi.
 
-<div class="center-block">
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">We could actually jump for the whole world😄.This is to every <a href="https://twitter.com/hashtag/PyLady?src=hash&amp;ref_src=twsrc%5Etfw">#PyLady</a> out there, for all your continuous effort and hard work in advancing, educating and promoting the use of <a href="https://twitter.com/hashtag/Python?src=hash&amp;ref_src=twsrc%5Etfw">#Python</a> both at your various work places and to the Community as a whole.<a href="https://twitter.com/hashtag/PyLadies?src=hash&amp;ref_src=twsrc%5Etfw">#PyLadies</a> <a href="https://twitter.com/hashtag/PyLadiesGhana?src=hash&amp;ref_src=twsrc%5Etfw">#PyLadiesGhana</a> <a href="https://twitter.com/hashtag/WCW?src=hash&amp;ref_src=twsrc%5Etfw">#WCW</a> <a href="https://t.co/C8DryDjmN5">pic.twitter.com/C8DryDjmN5</a></p>&mdash; PyLadies Ghana (@PyLadiesGhana) <a href="https://twitter.com/PyLadiesGhana/status/1085470051183067138?ref_src=twsrc%5Etfw">January 16, 2019</a></blockquote></div>
+<blockquote class="twitter-tweet tw-align-center"><p lang="en" dir="ltr">We could actually jump for the whole world😄.This is to every <a href="https://twitter.com/hashtag/PyLady?src=hash&amp;ref_src=twsrc%5Etfw">#PyLady</a> out there, for all your continuous effort and hard work in advancing, educating and promoting the use of <a href="https://twitter.com/hashtag/Python?src=hash&amp;ref_src=twsrc%5Etfw">#Python</a> both at your various work places and to the Community as a whole.<a href="https://twitter.com/hashtag/PyLadies?src=hash&amp;ref_src=twsrc%5Etfw">#PyLadies</a> <a href="https://twitter.com/hashtag/PyLadiesGhana?src=hash&amp;ref_src=twsrc%5Etfw">#PyLadiesGhana</a> <a href="https://twitter.com/hashtag/WCW?src=hash&amp;ref_src=twsrc%5Etfw">#WCW</a> <a href="https://t.co/C8DryDjmN5">pic.twitter.com/C8DryDjmN5</a></p>&mdash; PyLadies Ghana (@PyLadiesGhana) <a href="https://twitter.com/PyLadiesGhana/status/1085470051183067138?ref_src=twsrc%5Etfw">January 16, 2019</a></blockquote>
 
 The PyLadies in Ghana went on a recent field trip to Esoko, a company that uses technology and mobile applications to help farmers in remote communities.
 
-<div class="center-block">
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Glad I was part of the <a href="https://twitter.com/PyLadiesGhana?ref_src=twsrc%5Etfw">@PyLadiesGhana</a> <a href="https://twitter.com/hashtag/FieldTrip?src=hash&amp;ref_src=twsrc%5Etfw">#FieldTrip</a><br>to <a href="https://twitter.com/Esoko?ref_src=twsrc%5Etfw">@Esoko</a>. The team<br>received us warmly and we learnt about the products and services they offer and how it is to work with their company.They were also glad to answer all our questions. <a href="https://twitter.com/hashtag/AProIn60Mins?src=hash&amp;ref_src=twsrc%5Etfw">#AProIn60Mins</a> <a href="https://twitter.com/hashtag/PyladiesGhana?src=hash&amp;ref_src=twsrc%5Etfw">#PyladiesGhana</a> <a href="https://twitter.com/hashtag/PythonGhana?src=hash&amp;ref_src=twsrc%5Etfw">#PythonGhana</a> <a href="https://t.co/ASv0zld8zx">pic.twitter.com/ASv0zld8zx</a></p>&mdash; Aseda O. Addai-Deseh (@AsedaAD) <a href="https://twitter.com/AsedaAD/status/1083733117838471168?ref_src=twsrc%5Etfw">January 11, 2019</a></blockquote></div>
+<blockquote class="twitter-tweet tw-align-center"><p lang="en" dir="ltr">Glad I was part of the <a href="https://twitter.com/PyLadiesGhana?ref_src=twsrc%5Etfw">@PyLadiesGhana</a> <a href="https://twitter.com/hashtag/FieldTrip?src=hash&amp;ref_src=twsrc%5Etfw">#FieldTrip</a><br>to <a href="https://twitter.com/Esoko?ref_src=twsrc%5Etfw">@Esoko</a>. The team<br>received us warmly and we learnt about the products and services they offer and how it is to work with their company.They were also glad to answer all our questions. <a href="https://twitter.com/hashtag/AProIn60Mins?src=hash&amp;ref_src=twsrc%5Etfw">#AProIn60Mins</a> <a href="https://twitter.com/hashtag/PyladiesGhana?src=hash&amp;ref_src=twsrc%5Etfw">#PyladiesGhana</a> <a href="https://twitter.com/hashtag/PythonGhana?src=hash&amp;ref_src=twsrc%5Etfw">#PythonGhana</a> <a href="https://t.co/ASv0zld8zx">pic.twitter.com/ASv0zld8zx</a></p>&mdash; Aseda O. Addai-Deseh (@AsedaAD) <a href="https://twitter.com/AsedaAD/status/1083733117838471168?ref_src=twsrc%5Etfw">January 11, 2019</a></blockquote>
 
 ### Cotê d’Ivoire
 
@@ -186,15 +175,13 @@ Sadly a different story than the other regions, with major humanitarian crises i
 ### Morocco
 Host to [a new Pydata meetup](http://nodesandedges.me/article.php?id=18) in Casablanca, which covers data science in Python talks from local researchers and developers
 
-<div class="center-block">
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Making discovery by accident and sagacity <a href="https://twitter.com/lammiia?ref_src=twsrc%5Etfw">@lammiia</a> <a href="https://t.co/oAcA0YAcJp">pic.twitter.com/oAcA0YAcJp</a></p>&mdash; PyData Casa/Rabat (@PyDataCasaRabat) <a href="https://twitter.com/PyDataCasaRabat/status/1014955523173765120?ref_src=twsrc%5Etfw">July 5, 2018</a></blockquote> </div>
+<blockquote class="twitter-tweet tw-align-center"><p lang="en" dir="ltr">Making discovery by accident and sagacity <a href="https://twitter.com/lammiia?ref_src=twsrc%5Etfw">@lammiia</a> <a href="https://t.co/oAcA0YAcJp">pic.twitter.com/oAcA0YAcJp</a></p>&mdash; PyData Casa/Rabat (@PyDataCasaRabat) <a href="https://twitter.com/PyDataCasaRabat/status/1014955523173765120?ref_src=twsrc%5Etfw">July 5, 2018</a></blockquote>
 
 ### Egypt
 
 Egypt’s capital Cairo has [a PyData chapter](https://twitter.com/PyDataCairo) also with some interesting talks and research
 
-<div class="center-block">
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Check out this Meetup: 2nd <a href="https://twitter.com/hashtag/PyDataCairo?src=hash&amp;ref_src=twsrc%5Etfw">#PyDataCairo</a> <a href="https://twitter.com/hashtag/Meetup?src=hash&amp;ref_src=twsrc%5Etfw">#Meetup</a>: The Role of Thermal Imaging in Crowd Counting &amp; Control. Main speaker: Dr. Nermin Negied. Join us at <a href="https://t.co/32KJB6Oemn">https://t.co/32KJB6Oemn</a> <a href="https://twitter.com/hashtag/Meetup?src=hash&amp;ref_src=twsrc%5Etfw">#Meetup</a> via <a href="https://twitter.com/Meetup?ref_src=twsrc%5Etfw">@Meetup</a><a href="https://twitter.com/PyData?ref_src=twsrc%5Etfw">@PyData</a> <a href="https://twitter.com/NumFOCUS?ref_src=twsrc%5Etfw">@NumFOCUS</a></p>&mdash; PyData Cairo (@PyDataCairo) <a href="https://twitter.com/PyDataCairo/status/1012313782360698881?ref_src=twsrc%5Etfw">June 28, 2018</a></blockquote></div>
+<blockquote class="twitter-tweet tw-align-center"><p lang="en" dir="ltr">Check out this Meetup: 2nd <a href="https://twitter.com/hashtag/PyDataCairo?src=hash&amp;ref_src=twsrc%5Etfw">#PyDataCairo</a> <a href="https://twitter.com/hashtag/Meetup?src=hash&amp;ref_src=twsrc%5Etfw">#Meetup</a>: The Role of Thermal Imaging in Crowd Counting &amp; Control. Main speaker: Dr. Nermin Negied. Join us at <a href="https://t.co/32KJB6Oemn">https://t.co/32KJB6Oemn</a> <a href="https://twitter.com/hashtag/Meetup?src=hash&amp;ref_src=twsrc%5Etfw">#Meetup</a> via <a href="https://twitter.com/Meetup?ref_src=twsrc%5Etfw">@Meetup</a><a href="https://twitter.com/PyData?ref_src=twsrc%5Etfw">@PyData</a> <a href="https://twitter.com/NumFOCUS?ref_src=twsrc%5Etfw">@NumFOCUS</a></p>&mdash; PyData Cairo (@PyDataCairo) <a href="https://twitter.com/PyDataCairo/status/1012313782360698881?ref_src=twsrc%5Etfw">June 28, 2018</a></blockquote>
 
 ## Conclusion
 
