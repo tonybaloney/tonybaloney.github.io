@@ -20,8 +20,6 @@ Speaking to non-Software people about Python in Africa, you might get some funny
 
 “Southern Africa”, generally includes the nations of Angola, Botswana, Eswatini (Swaziland), Lesotho, Malawi, Mozambique, Namibia, South Africa, Zambia, and Zimbabwe. The UN’s definition would exclude Mozambique, Zambia, and Zimbabwe.
 
-![Map of Southern Africa](/img/posts/southern-africa-map.png){: .img-responsive .center-block}
-
 Some of these countries are very small, Lesotho is a small, mountainous, land-locked country in the middle of South Africa. South Africa is a huge country with almost 60 million people and a GDP higher than Denmark. To say this is a diverse group of countries would be a gross understatement.
 
 There are some large metropolitan cities in Southern Africa, mainly Cape Town, Luanda, Johannesburg, and Durban.
