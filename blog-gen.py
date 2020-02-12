@@ -14,7 +14,7 @@ def main():
     _md = markdown.Markdown(extensions=extensions, output_format='html5')
 
     loader = jinja2.FileSystemLoader(searchpath="./")
-    env = jinja2.Environment(loader=loader, autoescape=True)
+    env = jinja2.Environment(loader=loader)
 
     all_posts = []
     for post in posts:
