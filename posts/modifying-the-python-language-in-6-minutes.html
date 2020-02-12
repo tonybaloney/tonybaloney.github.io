@@ -84,10 +84,10 @@
                         <a href="https://twitter.com/anthonypjshaw"><i class='fa fa-2x fa-twitter'></i></a>
                     </li>
                     <li>
-                        <a href="https://medium.com/@anthonypjshaw"><i class='fa fa-2x fa-medium'></i></a>
+                        <a href="https://github.com/tonybaloney"><i class='fa fa-2x fa-github'></i></a>
                     </li>
                     <li>
-                        <a href="https://github.com/tonybaloney"><i class='fa fa-2x fa-github'></i></a>
+                        <a href="/rss.xml"><i class='fa fa-2x fa-rss-square'></i></a>
                     </li>
                 </ul>
             </div>
@@ -116,92 +116,92 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <p>This week I raised <a href="https://github.com/python/cpython/pull/1069">my first pull-request</a> to the CPython core project, which was declined :-( but as to not completely waste my time I’m writing my findings on how CPython works and show you how easy it is to modify the Python syntax.
-I’m going to show you how to add a new feature to the Python syntax. That syntax is the increment/decrement operator, a common operator in most languages. Just to prove, open up the REPL and try it.</p>
-<p><img alt="" class="img-responsive center-block" src="/img/posts/bad-syntax.png"></p>
-<h2>Level 1: PEPs</h2>
-<p>Before the Python syntax is changed, a proposal needs to be made with a set of reasons, design and behaviours. All language changes are discussed by the core Python team and approved by the BDFL. Increment operators are not approved (and probably never will be), which gives us a good test.</p>
-<h2>Level 2: Grammar</h2>
-<p>The Grammar file is simple text file describing all the elements of the Python language. This is used by not just CPython, but other implementations like PyPy to keep consistency and agree on the types of language semantics.
-Internally, these keys form the tokens, which are parsed by the lexer. When you <code>make -j</code> a command converts these into a set of enums and constants in the C headers. This allows us to reference them later on.</p>
-<pre><code class="default">stmt: simple_stmt | compound_stmt
-simple_stmt: small_stmt (';' small_stmt)* [';'] NEWLINE
+                &lt;p&gt;This week I raised &lt;a href=&#34;https://github.com/python/cpython/pull/1069&#34;&gt;my first pull-request&lt;/a&gt; to the CPython core project, which was declined :-( but as to not completely waste my time I’m writing my findings on how CPython works and show you how easy it is to modify the Python syntax.
+I’m going to show you how to add a new feature to the Python syntax. That syntax is the increment/decrement operator, a common operator in most languages. Just to prove, open up the REPL and try it.&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;&#34; class=&#34;img-responsive center-block&#34; src=&#34;/img/posts/bad-syntax.png&#34;&gt;&lt;/p&gt;
+&lt;h2&gt;Level 1: PEPs&lt;/h2&gt;
+&lt;p&gt;Before the Python syntax is changed, a proposal needs to be made with a set of reasons, design and behaviours. All language changes are discussed by the core Python team and approved by the BDFL. Increment operators are not approved (and probably never will be), which gives us a good test.&lt;/p&gt;
+&lt;h2&gt;Level 2: Grammar&lt;/h2&gt;
+&lt;p&gt;The Grammar file is simple text file describing all the elements of the Python language. This is used by not just CPython, but other implementations like PyPy to keep consistency and agree on the types of language semantics.
+Internally, these keys form the tokens, which are parsed by the lexer. When you &lt;code&gt;make -j&lt;/code&gt; a command converts these into a set of enums and constants in the C headers. This allows us to reference them later on.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;default&#34;&gt;stmt: simple_stmt | compound_stmt
+simple_stmt: small_stmt (&#39;;&#39; small_stmt)* [&#39;;&#39;] NEWLINE
 # ...
-pass_stmt: 'pass'
+pass_stmt: &#39;pass&#39;
 flow_stmt: break_stmt | continue_stmt | return_stmt | raise_stmt | yield_stmt
-break_stmt: 'break'
-continue_stmt: 'continue'
+break_stmt: &#39;break&#39;
+continue_stmt: &#39;continue&#39;
 # ..
-import_as_name: NAME ['as' NAME]
-</code></pre>
+import_as_name: NAME [&#39;as&#39; NAME]
+&lt;/code&gt;&lt;/pre&gt;
 
-<p>So, a <code>simple_stmt</code> is a simple statement, it can optionally have a semicolon, like when you put <code>import pdb; pdb.set_trace()</code> and ends in a new line <code>NEWLINE</code>. A <code>pass_stmt</code> is the word pass, a <code>break_stmt</code> is the work break. Simple, right?
-Let’s add an increment and decrement expression, something which does not exist in the language. It would be another option in an expression statement, along with yields, augmented assignment and regular assignment, i.e.foo=1.</p>
-<pre><code class="default"># Add increment and decrement to expression statement
+&lt;p&gt;So, a &lt;code&gt;simple_stmt&lt;/code&gt; is a simple statement, it can optionally have a semicolon, like when you put &lt;code&gt;import pdb; pdb.set_trace()&lt;/code&gt; and ends in a new line &lt;code&gt;NEWLINE&lt;/code&gt;. A &lt;code&gt;pass_stmt&lt;/code&gt; is the word pass, a &lt;code&gt;break_stmt&lt;/code&gt; is the work break. Simple, right?
+Let’s add an increment and decrement expression, something which does not exist in the language. It would be another option in an expression statement, along with yields, augmented assignment and regular assignment, i.e.foo=1.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;default&#34;&gt;# Add increment and decrement to expression statement
 expr_stmt: testlist_star_expr (annassign | augassign (yield_expr|testlist) |
-                     ('=' (yield_expr|testlist_star_expr))* | incr_stmt | decr_stmt)
-annassign: ':' test ['=' test]
-testlist_star_expr: (test|star_expr) (',' (test|star_expr))* [',']
-augassign: ('+=' | '-=' | '*=' | '@=' | '/=' | '%=' | '&amp;=' | '|=' | '^=' |
-            '&lt;&lt;=' | '&gt;&gt;=' | '**=' | '//=')
+                     (&#39;=&#39; (yield_expr|testlist_star_expr))* | incr_stmt | decr_stmt)
+annassign: &#39;:&#39; test [&#39;=&#39; test]
+testlist_star_expr: (test|star_expr) (&#39;,&#39; (test|star_expr))* [&#39;,&#39;]
+augassign: (&#39;+=&#39; | &#39;-=&#39; | &#39;*=&#39; | &#39;@=&#39; | &#39;/=&#39; | &#39;%=&#39; | &#39;&amp;amp;=&#39; | &#39;|=&#39; | &#39;^=&#39; |
+            &#39;&amp;lt;&amp;lt;=&#39; | &#39;&amp;gt;&amp;gt;=&#39; | &#39;**=&#39; | &#39;//=&#39;)
 # For normal and annotated assignments, additional restrictions enforced by the interpreter
-del_stmt: 'del' exprlist
+del_stmt: &#39;del&#39; exprlist
 
 # New statements
-incr_stmt: '++'
-decr_stmt: '--'
-</code></pre>
+incr_stmt: &#39;++&#39;
+decr_stmt: &#39;--&#39;
+&lt;/code&gt;&lt;/pre&gt;
 
-<p>We add it to the possible list of small statements (this will become obvious in the AST). The <code>incr_stmt</code> will be our increment method and <code>decr_stmt</code> will be a decrement. Both follow a <code>NAME</code> (a variable name) and form a small standalone statement. When we build the Python project it will generate the components for us (not yet).
-If you start Python with -d and try it you should get:</p>
-<p>Token <ERRORTOKEN>/’++’ … Illegal token</p>
-<p>What is a token? Let’s find out..</p>
-<h2>Level 3 : Lexer</h2>
-<p>There are four steps that Python takes when you hit return: lexing, parsing, compiling, and interpreting. Lexing is breaking the line of code you just typed into tokens. The CPython lexer is called tokenizer.c. It has the functions that read from a file (like python file.py, a string (like the REPL). It also handles the special encoding comment at the top of files and parses your file as UTF-8, etc. It handles nesting, async and yield keywords, detects sets and tuple assignment, but only the grammar. It doesn’t know what those things are or what to do with them. It just cares about the text.
+&lt;p&gt;We add it to the possible list of small statements (this will become obvious in the AST). The &lt;code&gt;incr_stmt&lt;/code&gt; will be our increment method and &lt;code&gt;decr_stmt&lt;/code&gt; will be a decrement. Both follow a &lt;code&gt;NAME&lt;/code&gt; (a variable name) and form a small standalone statement. When we build the Python project it will generate the components for us (not yet).
+If you start Python with -d and try it you should get:&lt;/p&gt;
+&lt;p&gt;Token &lt;ERRORTOKEN&gt;/’++’ … Illegal token&lt;/p&gt;
+&lt;p&gt;What is a token? Let’s find out..&lt;/p&gt;
+&lt;h2&gt;Level 3 : Lexer&lt;/h2&gt;
+&lt;p&gt;There are four steps that Python takes when you hit return: lexing, parsing, compiling, and interpreting. Lexing is breaking the line of code you just typed into tokens. The CPython lexer is called tokenizer.c. It has the functions that read from a file (like python file.py, a string (like the REPL). It also handles the special encoding comment at the top of files and parses your file as UTF-8, etc. It handles nesting, async and yield keywords, detects sets and tuple assignment, but only the grammar. It doesn’t know what those things are or what to do with them. It just cares about the text.
 For example, the code that allows you to use the o notation for octal values is in the tokenizer. The code to actually create octal values is in the compiler.
-Let’s add 2 things to <code>Parser/tokenizer.c</code>, the new INCREMENT and DECREMENT tokens, these are the keys that get returned by the tokenizer for each part of the code.</p>
-<pre><code class="c">/* Token names */
+Let’s add 2 things to &lt;code&gt;Parser/tokenizer.c&lt;/code&gt;, the new INCREMENT and DECREMENT tokens, these are the keys that get returned by the tokenizer for each part of the code.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;c&#34;&gt;/* Token names */
 
 const char *_PyParser_TokenNames[] = {
-    &quot;ENDMARKER&quot;,
-    &quot;NAME&quot;,
-    &quot;NUMBER&quot;,
+    &amp;quot;ENDMARKER&amp;quot;,
+    &amp;quot;NAME&amp;quot;,
+    &amp;quot;NUMBER&amp;quot;,
 ...
-    &quot;INCREMENT&quot;,
-    &quot;DECREMENT&quot;,
+    &amp;quot;INCREMENT&amp;quot;,
+    &amp;quot;DECREMENT&amp;quot;,
 ...
-</code></pre>
+&lt;/code&gt;&lt;/pre&gt;
 
-<p>Then, we add check to return a <code>INCREMENT</code> or <code>DECREMENT</code> token, whenever we see ++ or — . There is already a function for 2 character operators, so we extend this to suit our case.</p>
-<pre><code class="c">@@ -1175,11 +1177,13 @@ PyToken_TwoChars(int c1, int c2)
+&lt;p&gt;Then, we add check to return a &lt;code&gt;INCREMENT&lt;/code&gt; or &lt;code&gt;DECREMENT&lt;/code&gt; token, whenever we see ++ or — . There is already a function for 2 character operators, so we extend this to suit our case.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;c&#34;&gt;@@ -1175,11 +1177,13 @@ PyToken_TwoChars(int c1, int c2)
          break;
-     case '+':
+     case &#39;+&#39;:
          switch (c2) {
-+        case '+':               return INCREMENT;
-         case '=':               return PLUSEQUAL;
++        case &#39;+&#39;:               return INCREMENT;
+         case &#39;=&#39;:               return PLUSEQUAL;
          }
          break;
-     case '-':
+     case &#39;-&#39;:
          switch (c2) {
-+        case '-':               return DECREMENT;
-         case '=':               return MINEQUAL;
-         case '&gt;':               return RARROW;
++        case &#39;-&#39;:               return DECREMENT;
+         case &#39;=&#39;:               return MINEQUAL;
+         case &#39;&amp;gt;&#39;:               return RARROW;
          }
-</code></pre>
+&lt;/code&gt;&lt;/pre&gt;
 
-<p>Those are defined in token.h</p>
-<pre><code class="default">#define INCREMENT 58
+&lt;p&gt;Those are defined in token.h&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;default&#34;&gt;#define INCREMENT 58
 #define DECREMENT 59
-</code></pre>
+&lt;/code&gt;&lt;/pre&gt;
 
-<p>Now, when we run Python with -d and try our statement we see:</p>
-<p><img alt="" class="img-responsive center-block" src="/img/posts/token-s.png"></p>
-<p>It’s a token we know — Success!</p>
-<h2>Level 4 : Parser</h2>
-<p>The parser takes those tokens and generates a structure that shows their relationship to each other. For Python and many other langauges, this is the Abstract Syntax Tree (or AST). The compiler then takes the AST and turns it into one (or more) code objects. Finally, the interpreter takes each code object executes the code it represents. Think of your code as a tree. The top level is the root, a function might be a branch, a class is a branch and the class methods branch off that. The statements are leaves within a branch.
+&lt;p&gt;Now, when we run Python with -d and try our statement we see:&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;&#34; class=&#34;img-responsive center-block&#34; src=&#34;/img/posts/token-s.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;It’s a token we know — Success!&lt;/p&gt;
+&lt;h2&gt;Level 4 : Parser&lt;/h2&gt;
+&lt;p&gt;The parser takes those tokens and generates a structure that shows their relationship to each other. For Python and many other langauges, this is the Abstract Syntax Tree (or AST). The compiler then takes the AST and turns it into one (or more) code objects. Finally, the interpreter takes each code object executes the code it represents. Think of your code as a tree. The top level is the root, a function might be a branch, a class is a branch and the class methods branch off that. The statements are leaves within a branch.
 The AST is defined in both ast.py and ast.c. ast.c is the file we need to change. The AST code is broken into methods that handle the types of tokens, ast_for_stmt handles statements, ast_for_expr handles expressions. We put the incr_stmtand decr_stmt as possible expression statements. They are almost identical to Augmented Expressions, e.g. test += 1 but there is no right-hand expression (1), it is implicit.
-This is the code for us to add to handle increment and decrement.</p>
-<pre><code class="c">static stmt_ty
+This is the code for us to add to handle increment and decrement.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;c&#34;&gt;static stmt_ty
 ast_for_expr_stmt(struct compiling *c, const node *n)
 {
     ...
@@ -223,63 +223,63 @@ ast_for_expr_stmt(struct compiling *c, const node *n)
         if (!expr1) {
             return NULL;
         }
-        switch (expr1-&gt;kind) {
+        switch (expr1-&amp;gt;kind) {
             case Name_kind:
-                if (forbidden_name(c, expr1-&gt;v.Name.id, n, 0)) {
+                if (forbidden_name(c, expr1-&amp;gt;v.Name.id, n, 0)) {
                     return NULL;
                 }
-                expr1-&gt;v.Name.ctx = Store;
+                expr1-&amp;gt;v.Name.ctx = Store;
                 break;
             default:
                 ast_error(c, ch,
-                          &quot;illegal target for increment/decrement&quot;);
+                          &amp;quot;illegal target for increment/decrement&amp;quot;);
                 return NULL;
         }
         // Create a PyObject for the number 1
-        PyObject *pynum = parsenumber(c, &quot;1&quot;);
+        PyObject *pynum = parsenumber(c, &amp;quot;1&amp;quot;);
 
-        if (PyArena_AddPyObject(c-&gt;c_arena, pynum) &lt; 0) {
+        if (PyArena_AddPyObject(c-&amp;gt;c_arena, pynum) &amp;lt; 0) {
             Py_DECREF(pynum);
             return NULL;
         }
         // Create that as an expression on the same line and offset as the ++/--
-        expr2 = Num(pynum, LINENO(n), n-&gt;n_col_offset, c-&gt;c_arena);
-        return AugAssign(expr1, operator, expr2, LINENO(n), n-&gt;n_col_offset, c-&gt;c_arena);
-</code></pre>
+        expr2 = Num(pynum, LINENO(n), n-&amp;gt;n_col_offset, c-&amp;gt;c_arena);
+        return AugAssign(expr1, operator, expr2, LINENO(n), n-&amp;gt;n_col_offset, c-&amp;gt;c_arena);
+&lt;/code&gt;&lt;/pre&gt;
 
-<p>This returns an Augmented Assignment — instead of a new Expression type with a constant value of 1. The operator is either Add or Sub(tract) depending on the token type incr_stmt or decr_stmt. Going back into the Python REPL after compiling — we can see our new statement!</p>
-<p><img alt="" class="img-responsive center-block" src="/img/posts/token-s2.png"></p>
-<p>At the REPL, you can try this : ast.parse(&ldquo;test=1; test++).body[1] and you’ll see the AugAssign type returned. The AST has just converted the statement into a statement expression which can then be handled by the compiler. The AugAssign function sets the field Kind which is used by the compiler.</p>
-<h2>Level 5: Compiler</h2>
-<p>The compiler then takes the syntax tree and ‘visits’ each branch, the CPython compiler has a method for visiting a statement, called compile_visit_stmt which is just a big switch statement looking at the statement kind. Our’s was a AugAssign type, so it calls out to compiler_augassign to handle the details. This function then converts our statement into a set of Byte-codes. These are an intermediary language between machine code (01010101) and the syntax tree. The Byte-code sequence is the thing cached in .pyc files.</p>
-<pre><code class="c">static int
+&lt;p&gt;This returns an Augmented Assignment — instead of a new Expression type with a constant value of 1. The operator is either Add or Sub(tract) depending on the token type incr_stmt or decr_stmt. Going back into the Python REPL after compiling — we can see our new statement!&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;&#34; class=&#34;img-responsive center-block&#34; src=&#34;/img/posts/token-s2.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;At the REPL, you can try this : ast.parse(&amp;ldquo;test=1; test++).body[1] and you’ll see the AugAssign type returned. The AST has just converted the statement into a statement expression which can then be handled by the compiler. The AugAssign function sets the field Kind which is used by the compiler.&lt;/p&gt;
+&lt;h2&gt;Level 5: Compiler&lt;/h2&gt;
+&lt;p&gt;The compiler then takes the syntax tree and ‘visits’ each branch, the CPython compiler has a method for visiting a statement, called compile_visit_stmt which is just a big switch statement looking at the statement kind. Our’s was a AugAssign type, so it calls out to compiler_augassign to handle the details. This function then converts our statement into a set of Byte-codes. These are an intermediary language between machine code (01010101) and the syntax tree. The Byte-code sequence is the thing cached in .pyc files.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;c&#34;&gt;static int
 compiler_augassign(struct compiler *c, stmt_ty s)
 {
-    expr_ty e = s-&gt;v.AugAssign.target;
+    expr_ty e = s-&amp;gt;v.AugAssign.target;
     expr_ty auge;
 
-    assert(s-&gt;kind == AugAssign_kind);
+    assert(s-&amp;gt;kind == AugAssign_kind);
 
-    switch (e-&gt;kind) {
+    switch (e-&amp;gt;kind) {
 ...
     case Name_kind:
-        if (!compiler_nameop(c, e-&gt;v.Name.id, Load))
+        if (!compiler_nameop(c, e-&amp;gt;v.Name.id, Load))
             return 0;
-        VISIT(c, expr, s-&gt;v.AugAssign.value);
-        ADDOP(c, inplace_binop(c, s-&gt;v.AugAssign.op));
-        return compiler_nameop(c, e-&gt;v.Name.id, Store);
-</code></pre>
+        VISIT(c, expr, s-&amp;gt;v.AugAssign.value);
+        ADDOP(c, inplace_binop(c, s-&amp;gt;v.AugAssign.op));
+        return compiler_nameop(c, e-&amp;gt;v.Name.id, Store);
+&lt;/code&gt;&lt;/pre&gt;
 
-<p>The output would be VISIT (load value — which is 1 for us), ADDOP (add operation of a binary op, depending on the operator (subtract, add), and STORE_NAME (store the result of ADDOP to the Name). Those methods respond with more specific byte-codes.
-If you load the dis module you can see the byte-code for yourself</p>
-<p><img alt="" class="img-responsive center-block" src="/img/posts/opcodes.png"></p>
-<h2>Level 6: Interpreter</h2>
-<p>The final level is the interpreter. That takes the byte-code sequence and converts it into machine-specific operations. This is why Python.exe and Python for mac and Linux are all seperate binaries. Some byte codes need OS specific handling and checks. The threading API for example needs to work with GNU/Linux’s thread API which is very different to Windows threading.
-That’s it!</p>
-<h2>Further Reading</h2>
-<p>If you’re interested in interpreters, I’ve given a talk on Pyjion, a plugin architecture for CPython which became PEP523</p>
-<p>If you still want to play, I pushed the code up to GitHub, along with my changes to the await tokenizer.</p>
-<p><a href="https://realpython.com/cpython-source-code-guide/">See also my article on realpython.com giving a full breakdown of the Python compiler</a></p>
+&lt;p&gt;The output would be VISIT (load value — which is 1 for us), ADDOP (add operation of a binary op, depending on the operator (subtract, add), and STORE_NAME (store the result of ADDOP to the Name). Those methods respond with more specific byte-codes.
+If you load the dis module you can see the byte-code for yourself&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;&#34; class=&#34;img-responsive center-block&#34; src=&#34;/img/posts/opcodes.png&#34;&gt;&lt;/p&gt;
+&lt;h2&gt;Level 6: Interpreter&lt;/h2&gt;
+&lt;p&gt;The final level is the interpreter. That takes the byte-code sequence and converts it into machine-specific operations. This is why Python.exe and Python for mac and Linux are all seperate binaries. Some byte codes need OS specific handling and checks. The threading API for example needs to work with GNU/Linux’s thread API which is very different to Windows threading.
+That’s it!&lt;/p&gt;
+&lt;h2&gt;Further Reading&lt;/h2&gt;
+&lt;p&gt;If you’re interested in interpreters, I’ve given a talk on Pyjion, a plugin architecture for CPython which became PEP523&lt;/p&gt;
+&lt;p&gt;If you still want to play, I pushed the code up to GitHub, along with my changes to the await tokenizer.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://realpython.com/cpython-source-code-guide/&#34;&gt;See also my article on realpython.com giving a full breakdown of the Python compiler&lt;/a&gt;&lt;/p&gt;
             </div>
         </div>
         <div class="row">
@@ -335,10 +335,6 @@ That’s it!</p>
     <!-- Bootstrap Core JavaScript -->
     <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
 
-    <!-- Contact Form JavaScript -->
-    <script src="/js/jqBootstrapValidation.js"></script>
-    <script src="/js/contact_me.js"></script>
-
     <!-- Theme JavaScript -->
     <script src="/js/clean-blog.min.js"></script>
 
@@ -358,8 +354,5 @@ That’s it!</p>
         };
         return t;
     }(document, "script", "twitter-wjs"));</script>
-
-
 </body>
-
 </html>

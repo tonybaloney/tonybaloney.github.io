@@ -1,0 +1,70 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>
+            Anthony Shaw's blog
+        </title>
+        <description>
+            A collection of technology articles
+        </description>
+        <link>https://tonybaloney.github.io/#blog</link>
+        <lastBuildDate>Wed, 12 Feb 2020 12:10:20 -0000</lastBuildDate>
+        <pubDate>Sat, 4 Jan 2020 19:15:54 -0500</pubDate>
+        <atom:link href="https://tonybaloney.github.io/rss.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>My favourite Python stories of 2019</title>
+            <description>
+                A collection of the things I really enjoyed reading in 2019
+            </description>
+            <link>https://tonybaloney.github.io/posts/favourite-python-stories-2019.html</link>
+            <pubDate>Thu, 19 Dec 2019 00:00:00 -0000</pubDate>
+            <dc:creator>Anthony Shaw</dc:creator>
+            <guid>https://tonybaloney.github.io/posts/favourite-python-stories-2019.html</guid>
+        </item>
+        
+        <item>
+            <title>Has the Python GIL been slain?</title>
+            <description>
+                Exploring new features in upcoming Python 3.8 and how they address the GIL.
+            </description>
+            <link>https://tonybaloney.github.io/posts/has-the-python-gil-been-slain.html</link>
+            <pubDate>Wed, 15 May 2019 00:00:00 -0000</pubDate>
+            <dc:creator>Anthony Shaw</dc:creator>
+            <guid>https://tonybaloney.github.io/posts/has-the-python-gil-been-slain.html</guid>
+        </item>
+        
+        <item>
+            <title>A letter to the Python community in Africa</title>
+            <description>
+                Some of the amazing stories from the African continent
+            </description>
+            <link>https://tonybaloney.github.io/posts/a-letter-to-the-python-community-in-africa.html</link>
+            <pubDate>Fri, 18 Jan 2019 00:00:00 -0000</pubDate>
+            <dc:creator>Anthony Shaw</dc:creator>
+            <guid>https://tonybaloney.github.io/posts/a-letter-to-the-python-community-in-africa.html</guid>
+        </item>
+        
+        <item>
+            <title>Why is Python so slow?</title>
+            <description>
+                A look into what makes Python slower than other languages
+            </description>
+            <link>https://tonybaloney.github.io/posts/why-is-python-so-slow.html</link>
+            <pubDate>Mon, 16 Jul 2018 00:00:00 -0000</pubDate>
+            <dc:creator>Anthony Shaw</dc:creator>
+            <guid>https://tonybaloney.github.io/posts/why-is-python-so-slow.html</guid>
+        </item>
+        
+        <item>
+            <title>Modifying the Python language in 6 minutes</title>
+            <description>
+                Showing you how to hack the Python grammar and compiler
+            </description>
+            <link>https://tonybaloney.github.io/posts/modifying-the-python-language-in-6-minutes.html</link>
+            <pubDate>Mon, 17 Apr 2017 00:00:00 -0000</pubDate>
+            <dc:creator>Anthony Shaw</dc:creator>
+            <guid>https://tonybaloney.github.io/posts/modifying-the-python-language-in-6-minutes.html</guid>
+        </item>
+        
+    </channel>
+</rss>
