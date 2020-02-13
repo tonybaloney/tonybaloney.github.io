@@ -7,7 +7,7 @@
             A collection of technology articles
         </description>
         <link>https://tonybaloney.github.io/#blog</link>
-        <lastBuildDate>Wed, 12 Feb 2020 17:59:42 -0000</lastBuildDate>
+        <lastBuildDate>Thu, 13 Feb 2020 15:41:22 -0000</lastBuildDate>
         <pubDate>Sat, 4 Jan 2020 19:15:54 -0500</pubDate>
         <atom:link href="https://tonybaloney.github.io/rss.xml" rel="self" type="application/rss+xml" />
         
@@ -53,6 +53,17 @@
             <pubDate>Wed, 02 Jan 2019 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
             <guid>https://tonybaloney.github.io/posts/azure-pipelines-with-python-by-example.html</guid>
+        </item>
+        
+        <item>
+            <title>5 coding projects to do with kids</title>
+            <description>
+                5 fun and simple coding projects to do with your kids
+            </description>
+            <link>https://tonybaloney.github.io/posts/5-coding-projects-to-do-with-kids.html</link>
+            <pubDate>Wed, 26 Dec 2018 00:00:00 -0000</pubDate>
+            <dc:creator>Anthony Shaw</dc:creator>
+            <guid>https://tonybaloney.github.io/posts/5-coding-projects-to-do-with-kids.html</guid>
         </item>
         
         <item>
