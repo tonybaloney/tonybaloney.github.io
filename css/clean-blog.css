@@ -253,6 +253,9 @@ hr.small {
     font-size: 36px;
   }
 }
+.talk-preview {
+  padding-top: 90px;
+}
 .section-heading {
   font-size: 36px;
   margin-top: 60px;
