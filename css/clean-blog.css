@@ -15,6 +15,9 @@ p {
 p a {
   text-decoration: underline;
 }
+.img-thumbnail {
+  margin-top: 30px;
+}
 h1,
 h2,
 h3,
