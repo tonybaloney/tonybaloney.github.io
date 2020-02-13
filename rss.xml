@@ -7,7 +7,7 @@
             A collection of technology articles
         </description>
         <link>https://tonybaloney.github.io/#blog</link>
-        <lastBuildDate>Thu, 13 Feb 2020 15:41:22 -0000</lastBuildDate>
+        <lastBuildDate>Thu, 13 Feb 2020 16:04:04 -0000</lastBuildDate>
         <pubDate>Sat, 4 Jan 2020 19:15:54 -0500</pubDate>
         <atom:link href="https://tonybaloney.github.io/rss.xml" rel="self" type="application/rss+xml" />
         
@@ -75,6 +75,17 @@
             <pubDate>Mon, 16 Jul 2018 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
             <guid>https://tonybaloney.github.io/posts/why-is-python-so-slow.html</guid>
+        </item>
+        
+        <item>
+            <title>10 common security gotchas in Python and how to avoid them</title>
+            <description>
+                A list of common security holes in Python applications, what causes them and how not to make those mistakes.
+            </description>
+            <link>https://tonybaloney.github.io/posts/10-common-security-gotchas-in-python.html</link>
+            <pubDate>Mon, 18 Jun 2018 00:00:00 -0000</pubDate>
+            <dc:creator>Anthony Shaw</dc:creator>
+            <guid>https://tonybaloney.github.io/posts/10-common-security-gotchas-in-python.html</guid>
         </item>
         
         <item>

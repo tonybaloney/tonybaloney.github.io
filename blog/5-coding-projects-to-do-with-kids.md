@@ -1,6 +1,6 @@
 blog_heading: 5 coding projects to do with kids
 blog_subheading: 5 fun and simple coding projects to do with your kids
-blog_header_image: posts/coding-kids-header.jpg
+blog_header_image: posts/coding-kids-header.jpeg
 blog_author: Anthony Shaw
 blog_publish_date: December 26, 2018
 ---
