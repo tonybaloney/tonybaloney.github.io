@@ -7,7 +7,7 @@
             A collection of technology articles
         </description>
         <link>https://tonybaloney.github.io/#blog</link>
-        <lastBuildDate>Thu, 13 Feb 2020 16:04:04 -0000</lastBuildDate>
+        <lastBuildDate>Fri, 14 Feb 2020 11:19:42 -0000</lastBuildDate>
         <pubDate>Sat, 4 Jan 2020 19:15:54 -0500</pubDate>
         <atom:link href="https://tonybaloney.github.io/rss.xml" rel="self" type="application/rss+xml" />
         
@@ -86,6 +86,17 @@
             <pubDate>Mon, 18 Jun 2018 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
             <guid>https://tonybaloney.github.io/posts/10-common-security-gotchas-in-python.html</guid>
+        </item>
+        
+        <item>
+            <title>Tips for getting a raise at work</title>
+            <description>
+                A breakdown of how increases work (at most companies), how to navigate them and how to convince your boss to pay you more
+            </description>
+            <link>https://tonybaloney.github.io/posts/tips-for-getting-a-raise.html</link>
+            <pubDate>Mon, 07 May 2018 00:00:00 -0000</pubDate>
+            <dc:creator>Anthony Shaw</dc:creator>
+            <guid>https://tonybaloney.github.io/posts/tips-for-getting-a-raise.html</guid>
         </item>
         
         <item>
