@@ -121,19 +121,26 @@
 <p>In this tutorial, we will cover:</p>
 <ul>
 <li><a href="#setting-up-requirements">How to set up your development environment for reproducability</a></li>
+<li><a href="#web-application">How to setup Azure Web App for Django</a></li>
+<li><a href="#database">How to use Azure Postgres services for the Django database</a></li>
+<li><a href="#storage">How to use Azure Storage to host your static and media files</a></li>
 <li>How to test your application locally and on CI/CD</li>
-<li>How to use Azure Postgres services for the Django database</li>
-<li>How to use Azure Storage to host your static and media files</li>
 <li>(Optionally) Integrating Django Auth with Azure Active Directory</li>
 <li>How to harden the security of your development and runtime environments</li>
 <li>How to test the performance of your application and fine tune it</li>
 <li>How to setup error monitoring and performance metrics in Azure Application Insights</li>
 </ul>
 <p>The code for this tutorial is up on <a href="https://github.com/tonybaloney/django-on-azure-demo">my GitHub</a>.</p>
+<p>I&rsquo;m assuming that you already have:</p>
+<ul>
+<li>A subscription to Microsoft Azure</li>
+<li>Knowledge and experience with Python and Django</li>
+<li>Something to deploy :-)</li>
+</ul>
 <h2 id="setting-up-requirements">Setting up your requirements</h2>
 <p>A common developer workflow is to create a local virtual environment, install the dependencies and tools needed for running the application, testing it, and linting it into the same
-virtual environment, then running <code>pip freeze &gt; requirements.txt</code> to save the state of the environment so that it is reproducable.</p>
-<p>Something really important to note is that the Azure deployment script will automatically install your PyPi requirements listed in <code>requirements.txt</code> onto the container <strong>each</strong> time it is deployed.</p>
+virtual environment, and then running <code>pip freeze &gt; requirements.txt</code> to save the state of the environment so that it is reproducable.</p>
+<p>Something really important to note, is that the Azure deployment script will automatically install your PyPi requirements listed in <code>requirements.txt</code> onto the container <strong>each</strong> time it is deployed.</p>
 <p>For that reason, I recommend that you put additional planning into <strong>separating the requirements of your virtual environments</strong>. I recommend <strong>not</strong> to have a single <code>requirements.txt</code> file, because:</p>
 <ul>
 <li>You are deploying packages into the environment of the production image that are not required</li>
@@ -141,7 +148,7 @@ virtual environment, then running <code>pip freeze &gt; requirements.txt</code> 
 <li>You are more likely to to have security holes by deploying more packages onto production</li>
 </ul>
 <p>Instead, I recommend either to use an environment manager, or to keep your requirements separate between runtime, development and testing.</p>
-<p>These are the 3 sets of package requirements I would setup instead.</p>
+<p>These are the 3 sets of package requirements I would setup instead:</p>
 <ol>
 <li><code>requirements.txt</code> - the runtime requirements for production and staging environments</li>
 <li><code>requirements-dev.txt</code> - the additional requirements for</li>
@@ -170,12 +177,454 @@ pytest-cov
 tox
 </code></pre>
 
-<h2>Database</h2>
-<h2>Static files and media files</h2>
+<h2 id="web-application">Web Application</h2>
+<p>To run the Django application, Azure provides a Web Application service, <strong>Azure App Service</strong>.</p>
+<p>I recommend having a minimum of two Apps deployed,</p>
+<ol>
+<li>A staging environment running the P1V2 App Service Plan (or above)</li>
+<li>A production environment running one or more P2V2 (or above) App Service Plans</li>
+</ol>
+<p>Most web applications are memory-hungry before they are CPU-hungry, which is why I recommend the P2V2 for production. Running a P1V2 just for staging might be an excessive cost for some, so you can either stop the image outside of testing cycles, or drop this down to a slower app plan.</p>
+<p>During this tutorial, we will make major optimizations to our application to get the most out of each instance.</p>
+<h3>Deployment by CLI</h3>
+<p>If you want to deploy using the CLI, then first create a deployment user using the Azure CLI:</p>
+<pre><code class="console">az webapp deployment user set --user-name &lt;username&gt; --password &lt;password&gt;
+</code></pre>
+
+<p>Next, create the plans for staging and production:</p>
+<pre><code class="console">az appservice plan create --name staging --resource-group yourResourceGroup --sku P1V2 --is-linux
+az appservice plan create --name production --resource-group yourResourceGroup --sku P2V2 --is-linux
+</code></pre>
+
+<p>Next, create the two applications on Python 3.7, change <code>app-staging</code> and <code>app-production</code> with whatever you like:</p>
+<pre><code class="console">az webapp create --resource-group yourResourceGroup --plan staging --name app-staging --runtime &quot;PYTHON|3.7&quot; --deployment-local-git 
+az webapp create --resource-group yourResourceGroup --plan production --name app-production --runtime &quot;PYTHON|3.7&quot; --deployment-local-git
+</code></pre>
+
+<p>Once you&rsquo;ve created the Web App, there are some defaults that I recommend changing:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Configuration Area</th>
+<th align="left">Setting</th>
+<th align="left">Recommended Value</th>
+<th align="left">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Settings -&gt; Configuration -&gt; General Settings</td>
+<td align="left">FTP State</td>
+<td align="left">Disabled</td>
+<td align="left">Disables FTP and FTPS deployments</td>
+</tr>
+<tr>
+<td align="left">Settings -&gt; Configuration -&gt; General Settings</td>
+<td align="left">Remote Debugging</td>
+<td align="left">Disabled</td>
+<td align="left">Stops remote application access for debuggers</td>
+</tr>
+<tr>
+<td align="left">Settings -&gt; TLS/SSL Settings</td>
+<td align="left">HTTPS only</td>
+<td align="left">On</td>
+<td align="left">Requires HTTPS connections</td>
+</tr>
+<tr>
+<td align="left">Settings -&gt; TLS/SSL Settings</td>
+<td align="left">Minimum TLS Version</td>
+<td align="left">1.2</td>
+<td align="left">Requires minimum TLS 1.2</td>
+</tr>
+</tbody>
+</table>
+<h3>Setting up Environment Variables</h3>
+<p>There are two ways of changing environment variables, by using the CLI or within the UI.</p>
+<p>To change environment variables in the CLI, you can use a command like:</p>
+<pre><code>az webapp config appsettings set --name &lt;app-name&gt; --resource-group &lt;resourcegroup-name&gt; --settings ...
+</code></pre>
+
+<p>To change them inside the UI, they are within <code>Settings -&gt; Configuration -&gt; Application Settings</code>. The <code>Advanced Edit</code> button shows all of the environment variables in JSON format.</p>
+<p>These secrets are encrypted at rest and in-transit, but if you still want to use Azure Vault, you can use <a href="https://docs.microsoft.com/en-us/azure/app-service/app-service-key-vault-references">Key References</a> instead of the actual passwords.</p>
+<h3>Deployment</h3>
+<p>The easiest ways to deploy to either instance is from Visual Studio Code using the Azure extensions, or using Deploy from Local Git.</p>
+<p>Each instance would have its own Git URL, shown in the UI or on the CLI during creation.</p>
+<pre><code class="console">git remote add staging &lt;staging-git-url&gt;
+git remote add production &lt;production-git-url&gt;
+</code></pre>
+
+<p>Then, to deploy you can simply push to either remote and the rest will happen for you.</p>
+<pre><code class="console">git push staging master
+</code></pre>
+
+<p>The default deployment process for Django will:</p>
+<ul>
+<li>Install all packages listed in <code>requirements.txt</code></li>
+<li>Run <code>python manage.py collectstatic</code></li>
+</ul>
+<p>It will <strong>not</strong> run <code>python manage.py migrate</code> or <code>python manage.py makemigrations</code>, so you need to complete these steps manually.</p>
+<h3>Changing the startup script</h3>
+<p>By default, Azure Web Apps will terminate HTTPS traffic and connect to your Django application using the WSGI entry-point and Gunicorn.</p>
+<p>Azure effectively replaces the job that NGINX would normally do. It comes with a very conservative default configuration, so you will find that even on the more powerful App Plans, HTTP requests will get queued.<br>
+The more requests you throw at it, the longer the queue will get, even when the CPU is idle.</p>
+<p>Instead, you can change the startup script by adding a file to your repository (called <code>startup.txt</code>) with the command to run. I recommend using this to increase the number of Gunicorn threads and workers.</p>
+<p>For Django 3, on the P2V2 Service Plan, use ASGI (async WSGI) instead of WSGI. The response time will remain the same, but the application will handle multiple simultaneous requests without blocking workers.
+This is my preferred configuration. Later in the article we will do some benchmarking if you want to adjust the workers and threads:</p>
+<pre><code>gunicorn --workers 8 --threads 4 --timeout 60 --access-logfile \
+    '-' --error-logfile '-' --bind=0.0.0.0:8000  -k uvicorn.workers.UvicornWorker \
+     --chdir=/home/site/wwwroot django_on_azure.asgi
+</code></pre>
+
+<p>For Django 2, use the WSGI entry point with Gunicorn</p>
+<pre><code>gunicorn --workers 8 --threads 4 --timeout 60 --access-logfile \
+    '-' --error-logfile '-' --bind=0.0.0.0:8000 \
+     --chdir=/home/site/wwwroot django_on_azure.wsgi
+</code></pre>
+
+<p>To enable this startup command, you need to set the startup command to <code>startup.txt</code> in <code>Settings -&gt; Configuration -&gt; General Settings -&gt; Startup command</code>. After making these changes, the application will restart.</p>
+<h3>Configuring your IDE</h3>
+<p>For Visual Studio Code, create a <code>launch.json</code> file inside the <code>.vscode</code> directory and put the environment variables into this file.</p>
+<p>Just remember to <strong>not</strong> commit this file to Git!</p>
+<p>You can add as many Django commands to this as you need:</p>
+<pre><code class="javascript">{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    &quot;version&quot;: &quot;0.2.0&quot;,
+    &quot;configurations&quot;: [
+        {
+            &quot;name&quot;: &quot;Run Django&quot;,
+            &quot;type&quot;: &quot;python&quot;,
+            &quot;request&quot;: &quot;launch&quot;,
+            &quot;program&quot;: &quot;${workspaceFolder}/manage.py&quot;,
+            &quot;args&quot;: [
+                &quot;runserver&quot;,
+                &quot;--noreload&quot;
+            ],
+            &quot;env&quot;:
+                { 
+                    /// Your environment variables...
+                    &quot;DJANGO_DEVELOPMENT&quot;: &quot;True&quot; 
+                },
+            &quot;django&quot;: true
+        }, {
+            &quot;name&quot;: &quot;Run Django Migrations&quot;,
+            &quot;type&quot;: &quot;python&quot;,
+            &quot;request&quot;: &quot;launch&quot;,
+            &quot;program&quot;: &quot;${workspaceFolder}/manage.py&quot;,
+            &quot;args&quot;: [
+                &quot;migrate&quot;
+            ],
+            &quot;env&quot;:
+                { 
+                    /// Your environment variables...
+                    &quot;DJANGO_DEVELOPMENT&quot;: &quot;True&quot; 
+                },
+            &quot;django&quot;: true
+        }
+    ]
+}
+</code></pre>
+
+<p>For PyCharm, change the environment variables from the Run Configuration window.</p>
+<h2 id="database">Database</h2>
+<p>Microsoft Azure has a PaaS option for Postgres. This is a great option for Django applications, because:</p>
+<ul>
+<li>It comes with built-in backup functionality</li>
+<li>You don&rsquo;t need to worry about deploying a database server</li>
+<li>The security can be managed from the Azure Portal</li>
+</ul>
+<p>To deploy using my ARM template, use this command in the demo repository:</p>
+<pre><code class="console">az deployment group create \
+  --resource-group your_resource_group \
+  --template-file .arm-templates/db/template.json \
+  --parameters server_name='mydatabase' region_code='southeastasia'
+</code></pre>
+
+<p>Once this is setup, you will want to go through the security policies. The security policies for Postgres can&rsquo;t (or won&rsquo;t) be exported to ARM at the moment. I don&rsquo;t really understand why, so here are the things I would check before proceeding:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Configuration Area</th>
+<th align="left">Setting</th>
+<th align="left">Recommended Value</th>
+<th align="left">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Settings -&gt; Connection Security</td>
+<td align="left">Firewall Rule</td>
+<td align="left">…</td>
+<td align="left">Configure web service IP</td>
+</tr>
+<tr>
+<td align="left">Settings -&gt; Connection Security</td>
+<td align="left">Allow Access to Azure Services</td>
+<td align="left">No</td>
+<td align="left">Removes Azure IP acesss and requires private endpoint connections</td>
+</tr>
+<tr>
+<td align="left">Settings -&gt; Connection Security</td>
+<td align="left">SSL Settings - Enforce SSL connection</td>
+<td align="left">Enabled</td>
+<td align="left">Blocks plain-text connection</td>
+</tr>
+<tr>
+<td align="left">Security -&gt; Advanced Thread Protection</td>
+<td align="left">Advanced Threat Protection</td>
+<td align="left">On</td>
+<td align="left">Monitors the logs for unusual activity</td>
+</tr>
+</tbody>
+</table>
+<p>I&rsquo;m recommending against <strong>Allow Access to Azure Services</strong> because it doesn&rsquo;t just apply to IPs in your tenant, it applies to IPs in <strong>any</strong> tenant.
+Having this enabled (which is the default) means any server deployed on Azure, <strong>no matter who it belongs to</strong> can connect to your database if they know the password.</p>
+<p>The downside of disabling this is that you need to use the Layer 7 firewall built into Postgres and specify the IP address of every client you want to allow connections from. This needs to include the Web Applications that you create.</p>
+<h3>(Optional) Using Private VNETS</h3>
+<p>An alternative deployment model is to create a private VNET just for your database connections and add a private endpoint to the database server. At the time of writing, the Azure Web Applications for Linux support for Private Endpoint Connections is <strong>experimental</strong> and when trying to set it up, I hit a number of major issues.</p>
+<p>If you want to have auto-scaling, then manually adding an Allow rule for each deployment isn&rsquo;t going to work, so this would be the preferred deployment model.</p>
+<h3>Creating the database</h3>
+<p>Something really important to note that isn&rsquo;t specific to Azure is that Django will not create the database in Postgres automatically like it does with SQLite.</p>
+<p>Before you can run your database migrations you will need to create a new database. Use <code>psql</code> or a Postgres client to create the application database.</p>
+<p>If you followed my advice about using named Client IPs only to connect to Postgres, you will need to add a rule on the Postgres instance for your local IP address.</p>
+<h3>Configuring Django</h3>
+<p>With the initial database deployed, you can now configure Django to use the Postgresql service. This requires an additional package in your virtual environment, <code>psycopg2</code>.</p>
+<p>Install the <code>psycopg2-binary</code> package to add support.</p>
+<p>For local development, you can choose to either use SQLite or use the Postgres server in Azure, or install one locally.</p>
+<p>Something important to consider is the testing and CI/CD pipeline, and for that reason I recommend sticking with two environments, Postgres for Staging and Production, and SQLite for development and testing.</p>
+<p>To accomplish this, we&rsquo;re going to use <em>environment variables</em> to configure Django because you should <strong>never put passwords in <code>settings.py</code></strong> files. This has another benefit that environment variables are really simple to setup in Azure Web Apps.</p>
+<p>These are the environment variables our app will use for databases:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Category</th>
+<th align="left">Variable</th>
+<th align="left">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Database</td>
+<td align="left"><code>DJANGO_DATABASE_PASSWORD</code></td>
+<td align="left">Postgres login password</td>
+</tr>
+<tr>
+<td align="left">Database</td>
+<td align="left"><code>DJANGO_DATABASE_NAME</code></td>
+<td align="left">Postgres database name</td>
+</tr>
+<tr>
+<td align="left">Database</td>
+<td align="left"><code>DJANGO_DATABASE_USER</code></td>
+<td align="left">Postgres login username</td>
+</tr>
+<tr>
+<td align="left">Database</td>
+<td align="left"><code>DJANGO_DATABASE_SERVER</code></td>
+<td align="left">Postgres server hostname</td>
+</tr>
+</tbody>
+</table>
+<p>Your <code>settings.py</code> file should now have two database options, one for Staging/Production, and another for CI/CD:</p>
+<pre><code class="python">import os
+
+...
+
+if 'DJANGO_DATABASE_PASSWORD' in os.environ.keys():
+    # Staging or production database
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ['DJANGO_DATABASE_NAME'],
+            'USER': os.environ['DJANGO_DATABASE_USER'],
+            'PASSWORD': os.environ['DJANGO_DATABASE_PASSWORD'],
+            'HOST': os.environ['DJANGO_DATABASE_SERVER'],
+            'PORT': '5432',
+            'OPTIONS': {
+                'sslmode': 'require',
+            },
+        }
+    }
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+            'LOCATION': 'cache_table',
+        }
+    }
+else:
+    # development database
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        }
+    }
+</code></pre>
+
+<h3>Caching on Postgres</h3>
+<p>In the Staging/Production branch, I&rsquo;ve enabled <a href="https://docs.djangoproject.com/en/3.0/topics/cache/#database-caching">database-caching for Django</a>. Postgres on Azure is fast, low-latency and well-indexed- its an ideal alternative to REDIS.
+To enable caching, add <code>'django.middleware.cache.UpdateCacheMiddleware'</code>, and <code>'django.middleware.cache.FetchFromCacheMiddleware'</code> to your <code>MIDDLEWARE</code> list.</p>
+<p>Then, similar to the database setup have a configuration branch for production and a configuration branch for development and test. The development branch will use <code>DummyCache</code>, which is what you want for local development:</p>
+<pre><code class="python">MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    ...
+]
+
+...
+
+if 'DJANGO_DATABASE_PASSWORD' in os.environ.keys():
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+            'LOCATION': 'cache_table',
+        }
+    }
+else:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        }
+    }
+</code></pre>
+
+<p>After configuring caching, run <code>python manage.py createcachetable</code> to create the cache table, making sure you have the database environment variables set on your console (otherwise this does nothing).</p>
+<h3>Running migrations</h3>
+<p>To run database migrations, you need to run the <code>python manage.py migrate</code> command, but with the correct environment variables configured, or it will just update SQLite.</p>
+<h2 id="storage">Static files and media files</h2>
+<p>The tutorials for Django on Azure encourage using the Whitenoise static files app. This is great to get started with, but it puts a lot of load onto the Web App container. Because you have a limited number of connections per-container, you want to move the delivery of static and media files
+onto a dedicated endpoint.</p>
+<p>Azure offers the services for this, called Azure Storage. Azure Storage can host &ldquo;blobs&rdquo;, like images, CSS and JavaScript files and deliver them to your users over HTTP. You can also add an Azure CDN endpoint (which I strongly recommend) to cache those assets in numerous geographic locations.</p>
+<p>To get started, you need to:</p>
+<ol>
+<li>Create an Azure Storage account and configure two containers named <code>'static'</code> and <code>'media'</code>.</li>
+<li>Set the permission levels of those containers to <code>Blob</code>.</li>
+<li>Get a storage access key from <code>Storage Account &gt; (your account) &gt; Settings &gt; Access keys &gt; key1 &gt; key</code>.</li>
+</ol>
+<p>Then you can configure your application to use the new storage containers. I&rsquo;ve been using the <code>django-storages</code> extension because it has support for Azure Storage and can also upload the files for you.
+Because Azure Web Apps will run <code>manage.py collectstatic</code> on deployment, you will notice deployments take significantly longer after configuring this step.</p>
+<ol>
+<li>Install <code>django-storage[azure]</code> into your virtual environment and add it to your <code>requirements.txt</code> file</li>
+<li>Add <code>'storages'</code> to the list of <code>INSTALLED_APPS</code></li>
+<li>Create a <code>backend</code> module inside your application and define two (or more) classes for static and media files</li>
+</ol>
+<p>There are plenty of options for the <code>AzureStorage</code> class, check them out at the <a href="https://django-storages.readthedocs.io/en/latest/backends/azure.html#settings">plugin documentation</a>.</p>
+<p>I recommend something simple to start with, a class for static files and a class for media files.</p>
+<pre><code class="python">from django.conf import settings
+from storages.backends.azure_storage import AzureStorage
+
+
+class AzureMediaStorage(AzureStorage):
+    account_name = settings.AZURE_ACCOUNT_NAME
+    account_key = settings.AZURE_STORAGE_KEY
+    azure_container = settings.AZURE_MEDIA_CONTAINER
+    expiration_secs = None
+    overwrite_files = True
+
+
+class AzureStaticStorage(AzureStorage):
+    account_name = settings.AZURE_ACCOUNT_NAME
+    account_key = settings.AZURE_STORAGE_KEY
+    azure_container = settings.AZURE_STATIC_CONTAINER
+    expiration_secs = None
+
+</code></pre>
+
+<p>Next, in <code>settings.py</code> configure the default media storage (<code>DEFAULT_FILE_STORAGE</code>) and static files storage to the Azure Storage containers.</p>
+<p>Again, we&rsquo;re going to use environment variables, one for the storage key and another for the container names:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Category</th>
+<th align="left">Variable</th>
+<th align="left">Purpose</th>
+<th align="left">Required (Dev)</th>
+<th align="left">Required (Production)</th>
+<th align="left">Default Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Azure Storage</td>
+<td align="left"><code>AZURE_STORAGE_KEY</code></td>
+<td align="left">Azure Blob Storage API Key</td>
+<td align="left">No</td>
+<td align="left">Yes</td>
+<td align="left">False</td>
+</tr>
+<tr>
+<td align="left">Azure Storage</td>
+<td align="left"><code>AZURE_MEDIA_CONTAINER</code></td>
+<td align="left">Azure Storage Container name for media files</td>
+<td align="left">No</td>
+<td align="left">Yes</td>
+<td align="left"><code>media</code></td>
+</tr>
+<tr>
+<td align="left">Azure Storage</td>
+<td align="left"><code>AZURE_STATIC_CONTAINER</code></td>
+<td align="left">Azure Storage Container name for static files</td>
+<td align="left">No</td>
+<td align="left">Yes</td>
+<td align="left"><code>static</code></td>
+</tr>
+</tbody>
+</table>
+<p>You need to get a storage access key from <code>Storage Account &gt; (your account) &gt; Settings &gt; Access keys &gt; key1 &gt; key</code>.
+Set the value of this key to the environment variable <code>'AZURE_STORAGE_NAME'</code>.</p>
+<p>If you want to have separate media or static containers between production and development/test, you can use environment variables to accomplish this.</p>
+<p>Next, update <code>settings.py</code> to reflect the new setup:</p>
+<pre><code class="python">DEFAULT_FILE_STORAGE = 'django_on_azure.backend.AzureMediaStorage'
+STATICFILES_STORAGE  = 'django_on_azure.backend.AzureStaticStorage'
+
+AZURE_STORAGE_KEY = os.environ.get('AZURE_STORAGE_KEY', False)
+AZURE_ACCOUNT_NAME = &quot;demo&quot;  # your account name
+AZURE_MEDIA_CONTAINER = os.environ.get('AZURE_MEDIA_CONTAINER', 'media')
+AZURE_STATIC_CONTAINER = os.environ.get('AZURE_STATIC_CONTAINER', 'static')
+
+# AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.azureedge.net'  # CDN URL
+AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'  # Files URL
+
+STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{AZURE_STATIC_CONTAINER}/'
+MEDIA_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{AZURE_MEDIA_CONTAINER}/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# any static paths you want to publish
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'demo', 'static')
+]
+</code></pre>
+
+<p>There are two options for deployment, using the Azure Storage containers default HTTP/HTTPS endpoint, or using an Azure CDN Caching endpoint.
+I strongly recommend setting up a CDN endpoint as it will dramatically improve performance for your users. To create an endpoint, <code>Storage Account &gt; (your account) &gt; Blob service &gt; Azure CDN &gt; New Endpoint</code>.</p>
+<p>In <code>settings.py</code>, change the <code>AZURE_CUSTOM_DOMAIN</code> to the <code>.azureedge.net</code> URL (default), or if you configured a custom URL, put this URL in here:</p>
+<pre><code class="python">AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.azureedge.net'  # CDN URL
+</code></pre>
+
+<p>Now that you&rsquo;ve configured everything, its time to test this out and run <code>collectstatic</code>. This task will collect all the static files <strong>and upload them to the container</strong>.</p>
+<p>One additional thing to note is that when you use the Azure CDN, it will cache assets by default. If you&rsquo;ve changed your assets (e.g. a CSS file), you will always see the cached asset.</p>
+<p>I recommend configuring a global rule to bypass the cache when the <code>Cache-Control</code> is <code>no-cache</code>:</p>
+<p><img alt="" class="img-responsive center-block" src="/img/posts/azure-cdn.png"></p>
+<p>With this enabled, when you do a hard refresh in a browser, it will show the latest version from the Azure Storage container.</p>
 <h2>Testing</h2>
+<ul>
+<li>The environments are reproducable</li>
+<li>You can run unit tests and integration tests</li>
+<li>You can test the performance and security</li>
+</ul>
+<p>We will come</p>
 <h3>Reproducable Environment Testing</h3>
 <p>In the test cycle, its going to be really important that the environments are as identical-as-possible. For example, if you develop locally on Python 3.8, and you test on Python 3.8 locally,
-but your production environment is Pyth</p>
+but your production environment is Python 3.7 you are going to later run into bugs that happen in production but don&rsquo;t happen on test.</p>
 <pre><code class="ini">[tox]
 envlist = py37, lint
 
