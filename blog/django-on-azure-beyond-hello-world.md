@@ -15,11 +15,10 @@ In this tutorial, we will cover:
 * [How to setup Azure Web App for Django](#web-application)
 * [How to use Azure Postgres services for the Django database](#database)
 * [How to use Azure Storage to host your static and media files](#storage)
-* How to test your application locally and on CI/CD
-* (Optionally) Integrating Django Auth with Azure Active Directory
-* How to harden the security of your development and runtime environments
-* How to test the performance of your application and fine tune it
-* How to setup error monitoring and performance metrics in Azure Application Insights
+* [How to test your application locally and on CI/CD](#testing)
+* [How to harden the security of your development and runtime environments](#security)
+* [How to test the performance of your application and fine tune it](#performance)
+* [How to setup error monitoring and performance metrics in Azure Application Insights](#insights)
 
 The code for this tutorial is up on [my GitHub](https://github.com/tonybaloney/django-on-azure-demo).
 
@@ -124,6 +123,19 @@ Once you've created the Web App, there are some defaults that I recommend changi
 
 ### Setting up Environment Variables
 
+In the Django settings, you can have values that are defined at runtime using environment variables.
+
+For example, you might want debug mode on locally, but it should **never** be on in production. So, if you create an environment variable, then you can toggle this easily.
+
+```python
+SECRET_KEY = os.environ.get('SECRET_KEY', 'a^ndivwn2c$tdb+by=c=_p&p(eiua4@v7j(=qfu^8^lyyuolhi')
+DEBUG = os.environ.get('DEBUG', False)
+
+ALLOWED_HOSTS = [os.environ.get('DJANGO_HOST', 'localhost')]
+```
+
+Azure Web Apps have the ability to set environment variables which are set before the application starts. You can use this feature to control the behaviours of your app and set sensitive things like passwords without having to check them in to Git.
+
 There are two ways of changing environment variables, by using the CLI or within the UI.
 
 To change environment variables in the CLI, you can use a command like:
@@ -167,7 +179,7 @@ By default, Azure Web Apps will terminate HTTPS traffic and connect to your Djan
 Azure effectively replaces the job that NGINX would normally do. It comes with a very conservative default configuration, so you will find that even on the more powerful App Plans, HTTP requests will get queued.  
 The more requests you throw at it, the longer the queue will get, even when the CPU is idle.
 
-Instead, you can change the startup script by adding a file to your repository (called `startup.txt`) with the command to run. I recommend using this to increase the number of Gunicorn threads and workers.
+Instead, you can change the startup script by adding a file to your repository with the command(s) to run. I recommend using this to increase the number of Gunicorn threads and workers.
 
 For Django 3, on the P2V2 Service Plan, use ASGI (async WSGI) instead of WSGI. The response time will remain the same, but the application will handle multiple simultaneous requests without blocking workers.
 This is my preferred configuration. Later in the article we will do some benchmarking if you want to adjust the workers and threads:
@@ -178,6 +190,8 @@ gunicorn --workers 8 --threads 4 --timeout 60 --access-logfile \
      --chdir=/home/site/wwwroot django_on_azure.asgi
 ```
 
+Make sure you add `uvicorn` to the `requirements.txt` file.
+
 For Django 2, use the WSGI entry point with Gunicorn
 
 ```
@@ -186,7 +200,7 @@ gunicorn --workers 8 --threads 4 --timeout 60 --access-logfile \
      --chdir=/home/site/wwwroot django_on_azure.wsgi
 ```
 
-To enable this startup command, you need to set the startup command to `startup.txt` in `Settings -> Configuration -> General Settings -> Startup command`. After making these changes, the application will restart.
+To enable this startup command, you need to set the startup command to `startup.sh` in `Settings -> Configuration -> General Settings -> Startup command`. After making these changes, the application will restart.
 
 ### Configuring your IDE
 
@@ -493,19 +507,106 @@ With this enabled, when you do a hard refresh in a browser, it will show the lat
 
 ## Testing
 
-* The environments are reproducable
-* You can run unit tests and integration tests
-* You can test the performance and security
+There are many considerations when thinking about testing. I'm going to cover some of the specifics to Django.
 
-We will come
+If you're new to testing, then read my [article on Python Testing](https://realpython.com/python-testing/) before continuing.
+
+Let's make sure that:
+
+* The environments are reproducable so a test-pass in development should mean a test-pass on staging and production
+* You can run unit tests and integration tests
+* You can test the performance and security of the application
+
+We will come to security and performance later in this article, so lets first start with creating tests.
+
+### Integration Testing with Django and Pytest
+
+Pytest has [an amazing plugin for testing Django](https://pytest-django.readthedocs.io/en/latest/usage.html). In the demo application, I've provided some example fixtures to get you started with integration tests.
+
+I encourage integration tests to be in a separate directory to unit tests, since they often come with different fixtures.
+
+One of the fixtures will load any data from `tests/data/test.json`. This is ideal if you want to load a backup of your database before running the tests.
+To create a JSON backup, run the command `python manage.py dumpdata > tests/data/test.json`.
+
+```python
+import pytest
+from django.core.management import call_command
+
+
+@pytest.fixture(scope='session')
+def django_db_setup(django_db_setup, django_db_blocker):
+    with django_db_blocker.unblock():
+        call_command('loaddata', 'tests/data/test.json')
+
+```
+
+Another example fixture is the `user_client` fixture which extends the `client` fixture but creates a user and authenticates using that user first:
+
+```
+import pytest
+
+@pytest.fixture
+def user_client(client, django_user_model):
+    username = "user1"
+    _pw = "barbarblacksheep"
+    django_user_model.objects.create_user(username=username, password=_pw)
+    client.login(username=username, password=_pw)
+    return client
+```
+
+You can use these fixtures to make requests to the application and check the response data, or the response type.
+
+For example, you might want to check that anonymous users cannot see the `products/` routes:
+
+```python
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
+import pytest
+
+
+ANON_VIEWS_CHECK = [
+    '/products/',
+    '/products/1'
+]
+
+
+@pytest.mark.parametrize('path', ANON_VIEWS_CHECK)
+@pytest.mark.django_db
+def test_anonymous_categories_redirects_to_login(client, path):
+    response = client.get(path)
+    assert isinstance(response, HttpResponseRedirect)
+    assert response.url.startswith("/login")
+```
+
+Then you could test using the `user_client` fixture to see the same routes and verify the results:
+
+```python
+USERS_ALLOWED = [
+    '/products/',
+    '/products/1'
+]
+
+
+@pytest.mark.parametrize('path', USERS_ALLOWED)
+@pytest.mark.django_db
+def test_users_allowed(user_client, path):
+    response = user_client.get(path)
+    assert isinstance(response, HttpResponse)
+    assert response.status_code == 200
+    assert "cheese" in response.content
+```
 
 ### Reproducable Environment Testing
 
 In the test cycle, its going to be really important that the environments are as identical-as-possible. For example, if you develop locally on Python 3.8, and you test on Python 3.8 locally,
 but your production environment is Python 3.7 you are going to later run into bugs that happen in production but don't happen on test.
 
+We have deployed Python 3.7 for staging and production, so your Virtual Environment should also be Python 3.7.
+
+To make sure you can test locally, with a clean environment each time, you can use `tox`. To install tox run `pip install tox` and create a configuration file, `tox.ini` in your project root:
+
 ```ini
 [tox]
+skipsdist=True
 envlist = py37, lint
 
 [testenv]
@@ -520,18 +621,273 @@ commands =
     flake8 demo
 ```
 
-## Security
+This file will run the pinned version of django and the requirements for testing, then run pytest.
 
-### Django Security
+Because Django is updated regularly, and you should update to the latest version if it fixes bugs or security holes, you can use Tox to automatically check that the latest version doesn't break your application by adding a second environment and updating django before it runs:
 
-### Package Security
+```ini
+[tox]
+skipsdist=True
+envlist = py37, py37-latest lint
 
-### Environment Security
+[testenv]
+deps = -rrequirements-test.txt
+commands =
+    python -m pytest
+    latest: pip install --upgrade django
 
-## Performance
+[testenv:lint]
+deps =
+    -rrequirements-dev.txt
 
-* Creating a load test
-* Analysing response times
+commands =
+    flake8 demo
+```
 
-## Monitoring
+### Continuous Testing and Deployment with GitHub actions
 
+To run the tests automatically, I recommend adding a git repository and configuring a CI/CD service like Azure Pipelines or GitHub actions.
+
+To deploy from GitHub, you need to download the Publish Profile (which contains the publish password):
+
+1. In the staging applicationm, go to `Deployment > Deployment Center > Deployment Credentials > Get Publish Profile` and download the `.PublishSettings` file. Open it in a text editor and copy the contents.
+2. In your GitHub repository, select `Settings > Secrets > Add a new secret` named `STAGING_PUBLISH_PROFILE`
+3. Paste in the contents of the downloaded `.PublishSettings` file
+4. Save the secret
+
+Next, create a GitHub actions workflow, this is the simplest to start with, it will run your tests, check the security and then deploy to staging.
+
+By default, GitHub will suggest a workflow that is triggered on pull requests. You **do not** want this, because it would deploy any pull-request to the master branch into your staging environment!
+
+Instead a simple workflow that only happens on push to master:
+
+```yaml
+name: Django CI
+
+on:
+  push:
+    branches: [ master ]
+
+env:
+  AZURE_WEBAPP_NAME: app-staging
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.7]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run Tests
+      run: |
+        python manage.py test
+    - name: Python Security Scanner
+      uses: tonybaloney/pycharm-security@1.15.1
+      with:
+        path: 'demo'
+    - name: 'Deploy to Azure WebApp'
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.STAGING_PUBLISH_PROFILE }}
+```
+
+For production, I would recommend having a `release` branch and then merging changes into it when you are ready to release them. Download the production publish profile and create another secret key in GitHub (`PRODUCTION_PUBLISH_PROFILE`).
+
+You can create a second workflow to release to production from this branch:
+
+```yaml
+on:
+  push:
+    branches: [ release ]
+
+env:
+  AZURE_WEBAPP_NAME: app-production
+  
+  jobs:
+  build:
+
+ runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.7]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run Tests
+      run: |
+        python manage.py test
+    - name: Python Security Scanner
+      uses: tonybaloney/pycharm-security@1.15.1
+      with:
+        path: 'demo'
+    - name: 'Deploy to Azure WebApp'
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.PRODUCTION_PUBLISH_PROFILE }}
+```
+
+## Security {#security}
+
+There are many things you need to consider for the security of your deployed application:
+
+* Check the Django security models are applying in your views
+* Check that you don't have any insecured views that share sensitive data
+* Check that you don't have insecure versions of packages running on the server
+* Check that the environment is secured correctly
+* Check that the SSL certificate is correctly configured
+* Check that your code doesn't contain vulnerabilities that expose data
+
+Not all of this is in scope for this article, but I do strongly recommend using [my Python Security scanner to look for Django-related issues in particular](https://pycharm-security.readthedocs.io/en/latest/django.html).
+
+This plugin allows for detection and warning of the security advice and best-practices for the Django framework, including:
+
+- Scanning and warning of insecure versions of Django
+- Scanning and warning of insecure versions for over 80 Django extensions
+- Lexing and scanning of Django SQL templates to detect for bypassing of Django’s SQL injection protection
+- Scanning of QuerySets and filter methods for potential SQL injection flaws
+- Scanning of RawSql APIs for potential SQL injection flaws
+- Scanning and warning of your settings.py for poor security practices
+- Detection and warning of Cross-Site-Scripting (XSS) bypassing
+- Over 100 other best-practice and general Python security checks
+
+In the GitHub actions workflow I've showed how to statically analyse the project code using the GitHub action, but this won't inspect the package versions.
+
+You can run the package inspection from inside PyCharm, or use an external service like [snyk](https://snyk.io/).
+
+## Performance {#performance}
+
+With the staging environment, you can test the performance of your application and try adjusting your queries, caching and Gunicorn setup.
+
+One of the easiest ways to test the environment is to use [locust](locust.io). You can add `locust` to your virtual environment and create a simple locust script, called `locustfile.py` inside the `tests` directory.
+
+```python
+from locust import HttpLocust, TaskSet, task, between
+
+
+class WebsiteTasks(TaskSet):
+    def on_start(self):
+        pass
+
+    @task
+    def index(self):
+        self.client.get("/")
+
+
+class WebsiteUser(HttpLocust):
+    task_set = WebsiteTasks
+    wait_time = between(5, 15)
+```
+
+This task will make a request to the `/` URL of the target server.
+
+To start locust, run `locust` on the command line from the directory containing the `locustfile.py`.
+
+This will start up a web server at [`http://localhost:8089/`](http://localhost:8089/) with the locust application. Start a new test and set:
+
+- Total number of users to 100
+- The hatch rate as 1
+- The host as `https://your-website.azurewebsites.net`, or your custom domain
+
+Once you have the test running, you can see the results in realtime:
+
+![load-testing](/img/posts/load-testing.png){: .img-responsive .center-block}
+
+I recommend now creating a dashboard in Azure to inspect the CPU, Memory, Response time and Database load to inspect bottlenecks.
+
+## Monitoring {#insights}
+
+Azure comes with a Dashboarding feature, so with your performance tests setup, you can start to add some metrics across your new applicaiton.
+
+I recommend the following:
+
+- App Plan - CPU Utilization
+- App Plan - Memory Utilization
+- Web App - Requests
+- Web App - Response Time
+- Database - Resource Utilization
+
+This will produce a useful dashboard for seeing the responsiveness of your application, whether you need to scale-up or down and how your database is performing:
+
+![Screen Shot 2020-04-13 at 5.18.01 pm](/img/posts/Screen%20Shot%202020-04-13%20at%205.18.01%20pm.png){: .img-responsive .center-block}
+
+### Exception Handling with Insights
+
+Microsoft Azure has a monitoring service called Application Insights that has SDKs for both Python and JavaScript.
+
+Once you have created an Application Insights service inside your Azure tenant, you can configure Django handle exceptions by sending them to Insights.
+
+1. Add `applicationinsights` to your release dependencies
+2. Get the Instrumentation Key from the Insights dashboard
+3. Add the `'applicationinsights.django.ApplicationInsightsMiddleware'` middleware
+4. Add an `APPLICATION_INSIGHTS` area to your settings with the instrumentation key loaded from an environment variable
+5. Set the `LOGGING` properties to send data to application insights when debug mode is disabled
+
+Having this enabled during development would create a lot of noise, so this example only changes the logging properties when debug mode is disabled:
+
+```python
+# If on Django >= 1.10
+MIDDLEWARE = [
+    ...
+    'applicationinsights.django.ApplicationInsightsMiddleware'
+]
+
+APPLICATION_INSIGHTS = {
+    # Your Application Insights instrumentation key
+    'ikey': os.environ.get('INSIGHTS_KEY', "00000000-0000-0000-0000-000000000000"),
+
+    # (optional) By default, request names are logged as the request method
+    # and relative path of the URL.  To log the fully-qualified view names
+    # instead, set this to True.  Defaults to False.
+    'use_view_name': True,
+
+    # (optional) To log arguments passed into the views as custom properties,
+    # set this to True.  Defaults to False.
+    'record_view_arguments': True,
+}
+if not DEBUG:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            # The application insights handler is here
+            'appinsights': {
+                'class': 'applicationinsights.django.LoggingHandler',
+                'level': 'WARNING'
+            }
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['appinsights'],
+                'level': 'WARNING',
+                'propagate': True,
+            }
+        }
+    }
+```
+
+Once this is done, you can configure alerts from the Insights portal to notify you when your application crashes.
+
+I recommend adding Application Insights to your base template, which you can do by generating the embed code from the Insights portal.
