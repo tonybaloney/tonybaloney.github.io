@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Django on Azure - beyond "hello world"</title>
+
+    <!-- Facebook Meta tags -->
+    <meta property="og:title" content="Django on Azure - beyond "hello world"">
+    <meta property="og:description" content="A tutorial on deploying a production-reading Django application on Microsoft Azure">
+    <meta property="og:image" content="https://tonybaloney.github.io/img/home-bg.jpg">
+    <meta property="og:url" content="https://tonybaloney.github.io/posts/django-on-azure-beyond-hello-world.html">
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:title" content="Django on Azure - beyond "hello world"">
+    <meta name="twitter:description" content="A tutorial on deploying a production-reading Django application on Microsoft Azure">
+    <meta name="twitter:image" content="https://tonybaloney.github.io/img/home-bg.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@anthonypjshaw">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="/css/clean-blog.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    Menu <i class="fa fa-bars"></i>
+                </button>
+
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/#">Home</a>
+                    </li>
+                    <li>
+                        <a href="/#projects">Projects</a>
+                    </li>
+                    <li>
+                        <a href="/#contributions">Contributions</a>
+                    </li>
+                    <li>
+                        <a href="/#courses">Courses</a>
+                    </li>
+                    <li>
+                        <a href="/#podcasts">Podcasts</a>
+                    </li>
+                    <li>
+                        <a href="/#talks">Talks</a>
+                    </li>
+                    <li>
+                        <a href="/#blog">Blog</a>
+                    </li>
+                    <li>
+                        <a href="https://twitter.com/anthonypjshaw"><i class='fa fa-2x fa-twitter'></i></a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/tonybaloney"><i class='fa fa-2x fa-github'></i></a>
+                    </li>
+                    <li>
+                        <a href="/rss.xml"><i class='fa fa-2x fa-rss-square'></i></a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="site-heading">
+                        <h1>Django on Azure - beyond "hello world"</h1>
+                        <hr class="small">
+                        <span class="subheading">by Anthony Shaw, April 13, 2020</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <p>In this tutorial I&rsquo;m assuming that you have written, or are writing a Python web application that uses Django and you want to deploy that application onto Microsoft Azure.</p>
+<p>I&rsquo;m not going to cover how to create, or write a Django application, but instead we&rsquo;re going to focus on the <em>last mile</em> of development- getting it into production.</p>
+<p>In this tutorial, we will cover:</p>
+<ul>
+<li><a href="#setting-up-requirements">How to set up your development environment for reproducability</a></li>
+<li>How to test your application locally and on CI/CD</li>
+<li>How to use Azure Postgres services for the Django database</li>
+<li>How to use Azure Storage to host your static and media files</li>
+<li>(Optionally) Integrating Django Auth with Azure Active Directory</li>
+<li>How to harden the security of your development and runtime environments</li>
+<li>How to test the performance of your application and fine tune it</li>
+<li>How to setup error monitoring and performance metrics in Azure Application Insights</li>
+</ul>
+<p>The code for this tutorial is up on <a href="https://github.com/tonybaloney/django-on-azure-demo">my GitHub</a>.</p>
+<h2 id="setting-up-requirements">Setting up your requirements</h2>
+<p>A common developer workflow is to create a local virtual environment, install the dependencies and tools needed for running the application, testing it, and linting it into the same
+virtual environment, then running <code>pip freeze &gt; requirements.txt</code> to save the state of the environment so that it is reproducable.</p>
+<p>Something really important to note is that the Azure deployment script will automatically install your PyPi requirements listed in <code>requirements.txt</code> onto the container <strong>each</strong> time it is deployed.</p>
+<p>For that reason, I recommend that you put additional planning into <strong>separating the requirements of your virtual environments</strong>. I recommend <strong>not</strong> to have a single <code>requirements.txt</code> file, because:</p>
+<ul>
+<li>You are deploying packages into the environment of the production image that are not required</li>
+<li>You are more likely to hit packaging version conflicts</li>
+<li>You are more likely to to have security holes by deploying more packages onto production</li>
+</ul>
+<p>Instead, I recommend either to use an environment manager, or to keep your requirements separate between runtime, development and testing.</p>
+<p>These are the 3 sets of package requirements I would setup instead.</p>
+<ol>
+<li><code>requirements.txt</code> - the runtime requirements for production and staging environments</li>
+<li><code>requirements-dev.txt</code> - the additional requirements for</li>
+<li><code>requirements-test.txt</code> - any testing tools and libraries</li>
+</ol>
+<p>For example, your runtime requirements should be pinned to the specific version of Django and your extensions that you require:</p>
+<p><strong><code>requirements.txt</code></strong></p>
+<pre><code class="default">django==3.0.4
+django-storages[azure]==1.9.1
+psycopg2-binary==2.8.4
+</code></pre>
+
+<p>Your development requirements should include that <strong>and</strong> the linters, etc. that you need:</p>
+<p><strong><code>requirements-dev.txt</code></strong></p>
+<pre><code class="default">-rrequirements.txt
+black
+flake8
+</code></pre>
+
+<p>Your test requirements should include the runtime requirements and the test runner. If you&rsquo;re using Pytest and tox, that would be:</p>
+<p><strong><code>requirements-test.txt</code></strong></p>
+<pre><code class="default">-rrequirements.txt
+pytest
+pytest-django
+pytest-cov
+tox
+</code></pre>
+
+<h2>Database</h2>
+<h2>Static files and media files</h2>
+<h2>Testing</h2>
+<h3>Reproducable Environment Testing</h3>
+<p>In the test cycle, its going to be really important that the environments are as identical-as-possible. For example, if you develop locally on Python 3.8, and you test on Python 3.8 locally,
+but your production environment is Pyth</p>
+<pre><code class="ini">[tox]
+envlist = py37, lint
+
+[testenv]
+deps = -rrequirements-test.txt
+commands = python -m pytest
+
+[testenv:lint]
+deps =
+    -rrequirements-dev.txt
+
+commands =
+    flake8 demo
+</code></pre>
+
+<h2>Security</h2>
+<h3>Django Security</h3>
+<h3>Package Security</h3>
+<h3>Environment Security</h3>
+<h2>Performance</h2>
+<ul>
+<li>Creating a load test</li>
+<li>Analysing response times</li>
+</ul>
+<h2>Monitoring</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-8">
+                <a class="btn-default btn"
+                   href="https://twitter.com/intent/tweet">
+                    <i class="fa fa-twitter"></i>
+                    Share on Twitter</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="https://twitter.com/anthonypjshaw">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://medium.com/@anthonypjshaw">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-medium fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/tonybaloney">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Copyright &copy; Anthony Shaw 2020</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="/js/clean-blog.min.js"></script>
+
+    <!-- Twitter Helper -->
+    <script>window.twttr = (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0],
+            t = window.twttr || {};
+        if (d.getElementById(id)) return t;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://platform.twitter.com/widgets.js";
+        fjs.parentNode.insertBefore(js, fjs);
+
+        t._e = [];
+        t.ready = function(f) {
+            t._e.push(f);
+        };
+        return t;
+    }(document, "script", "twitter-wjs"));</script>
+</body>
+</html>
