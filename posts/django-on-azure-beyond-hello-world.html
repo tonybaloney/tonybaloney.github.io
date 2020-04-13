@@ -116,8 +116,8 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <p>In this tutorial I&rsquo;m assuming that you have written, or are writing a Python web application that uses Django and you want to deploy that application onto Microsoft Azure.</p>
-<p>I&rsquo;m not going to cover how to create, or write a Django application, but instead we&rsquo;re going to focus on the <em>last mile</em> of development- getting it into production.</p>
+                <p>In this tutorial, I&rsquo;m assuming that you have written or are writing a Python web application that uses Django, and you want to deploy that application onto Microsoft Azure.</p>
+<p>I&rsquo;m not going to cover how to create or write a Django application, but instead, we&rsquo;re going to focus on the <em>last mile</em> of development- getting it into production.</p>
 <p>In this tutorial, we will cover:</p>
 <ul>
 <li><a href="#setting-up-requirements">How to set up your development environment for reproducability</a></li>
@@ -138,15 +138,15 @@
 </ul>
 <h2 id="setting-up-requirements">Setting up your requirements</h2>
 <p>A common developer workflow is to create a local virtual environment, install the dependencies and tools needed for running the application, testing it, and linting it into the same
-virtual environment, and then running <code>pip freeze &gt; requirements.txt</code> to save the state of the environment so that it is reproducable.</p>
-<p>Something really important to note, is that the Azure deployment script will automatically install your PyPi requirements listed in <code>requirements.txt</code> onto the container <strong>each</strong> time it is deployed.</p>
+virtual environment, and then running <code>pip freeze &gt; requirements.txt</code> to save the state of the environment so that it is reproducible.</p>
+<p>Something really important to note is that the Azure deployment script will automatically install your PyPi requirements listed in <code>requirements.txt</code> onto the container <strong>each</strong> time it is deployed.</p>
 <p>For that reason, I recommend that you put additional planning into <strong>separating the requirements of your virtual environments</strong>. I recommend <strong>not</strong> to have a single <code>requirements.txt</code> file, because:</p>
 <ul>
 <li>You are deploying packages into the environment of the production image that are not required</li>
 <li>You are more likely to hit packaging version conflicts</li>
-<li>You are more likely to to have security holes by deploying more packages onto production</li>
+<li>You are more likely to have security holes by deploying more packages onto production</li>
 </ul>
-<p>Instead, I recommend either to use an environment manager, or to keep your requirements separate between runtime, development and testing.</p>
+<p>Instead, I recommend either to use an environment manager or to keep your requirements separate between runtime, development, and testing.</p>
 <p>These are the 3 sets of package requirements I would setup instead:</p>
 <ol>
 <li><code>requirements.txt</code> - the runtime requirements for production and staging environments</li>
@@ -183,7 +183,7 @@ tox
 <li>A staging environment running the P1V2 App Service Plan (or above)</li>
 <li>A production environment running one or more P2V2 (or above) App Service Plans</li>
 </ol>
-<p>Most web applications are memory-hungry before they are CPU-hungry, which is why I recommend the P2V2 for production. Running a P1V2 just for staging might be an excessive cost for some, so you can either stop the image outside of testing cycles, or drop this down to a slower app plan.</p>
+<p>Most web applications are memory-hungry before they are CPU-hungry, which is why I recommend the P2V2 for production. Running a P1V2 just for staging might be a high cost for some, so you can either stop the image outside of testing cycles or drop this down to a slower app plan.</p>
 <p>During this tutorial, we will make major optimizations to our application to get the most out of each instance.</p>
 <h3>Deployment by CLI</h3>
 <p>If you want to deploy using the CLI, then first create a deployment user using the Azure CLI:</p>
@@ -246,8 +246,8 @@ DEBUG = os.environ.get('DEBUG', False)
 ALLOWED_HOSTS = [os.environ.get('DJANGO_HOST', 'localhost')]
 </code></pre>
 
-<p>Azure Web Apps have the ability to set environment variables which are set before the application starts. You can use this feature to control the behaviours of your app and set sensitive things like passwords without having to check them in to Git.</p>
-<p>There are two ways of changing environment variables, by using the CLI or within the UI.</p>
+<p>Azure Web Apps have the ability to set environment variables that are set before the application starts. You can use this feature to control the behaviours of your app and set sensitive things like passwords without having to check them into Git.</p>
+<p>There are two ways of changing environment variables by using the CLI or within the UI.</p>
 <p>To change environment variables in the CLI, you can use a command like:</p>
 <pre><code>az webapp config appsettings set --name &lt;app-name&gt; --resource-group &lt;resourcegroup-name&gt; --settings ...
 </code></pre>
@@ -256,12 +256,12 @@ ALLOWED_HOSTS = [os.environ.get('DJANGO_HOST', 'localhost')]
 <p>These secrets are encrypted at rest and in-transit, but if you still want to use Azure Vault, you can use <a href="https://docs.microsoft.com/en-us/azure/app-service/app-service-key-vault-references">Key References</a> instead of the actual passwords.</p>
 <h3>Deployment</h3>
 <p>The easiest ways to deploy to either instance is from Visual Studio Code using the Azure extensions, or using Deploy from Local Git.</p>
-<p>Each instance would have its own Git URL, shown in the UI or on the CLI during creation.</p>
+<p>Each instance would have its own Git URL, shown in the UI or, on the CLI during creation.</p>
 <pre><code class="console">git remote add staging &lt;staging-git-url&gt;
 git remote add production &lt;production-git-url&gt;
 </code></pre>
 
-<p>Then, to deploy you can simply push to either remote and the rest will happen for you.</p>
+<p>Then, to deploy, you can simply push to either remote, and the rest will happen for you:</p>
 <pre><code class="console">git push staging master
 </code></pre>
 
@@ -277,7 +277,7 @@ git remote add production &lt;production-git-url&gt;
 The more requests you throw at it, the longer the queue will get, even when the CPU is idle.</p>
 <p>Instead, you can change the startup script by adding a file to your repository with the command(s) to run. I recommend using this to increase the number of Gunicorn threads and workers.</p>
 <p>For Django 3, on the P2V2 Service Plan, use ASGI (async WSGI) instead of WSGI. The response time will remain the same, but the application will handle multiple simultaneous requests without blocking workers.
-This is my preferred configuration. Later in the article we will do some benchmarking if you want to adjust the workers and threads:</p>
+This is my preferred configuration. Later in the article, we will do some benchmarking if you want to adjust the workers and threads:</p>
 <pre><code>gunicorn --workers 8 --threads 4 --timeout 60 --access-logfile \
     '-' --error-logfile '-' --bind=0.0.0.0:8000  -k uvicorn.workers.UvicornWorker \
      --chdir=/home/site/wwwroot django_on_azure.asgi
@@ -629,7 +629,7 @@ I strongly recommend setting up a CDN endpoint as it will dramatically improve p
 <p>If you&rsquo;re new to testing, then read my <a href="https://realpython.com/python-testing/">article on Python Testing</a> before continuing.</p>
 <p>Let&rsquo;s make sure that:</p>
 <ul>
-<li>The environments are reproducable so a test-pass in development should mean a test-pass on staging and production</li>
+<li>The environments are reproducible so a test-pass in development should mean a test-pass on staging and production</li>
 <li>You can run unit tests and integration tests</li>
 <li>You can test the performance and security of the application</li>
 </ul>
@@ -955,6 +955,8 @@ if not DEBUG:
 
 <p>Once this is done, you can configure alerts from the Insights portal to notify you when your application crashes.</p>
 <p>I recommend adding Application Insights to your base template, which you can do by generating the embed code from the Insights portal.</p>
+<h2>Conclusion</h2>
+<p>Microsoft Azure makes a great platform for hosting Django applications in production. You have databases, monitoring, exception handling and automated-deployments all in one place.</p>
             </div>
         </div>
         <div class="row">

@@ -5,9 +5,9 @@ blog_author: Anthony Shaw
 blog_publish_date: April 13, 2020
 ---------------------------------
 
-In this tutorial I'm assuming that you have written, or are writing a Python web application that uses Django and you want to deploy that application onto Microsoft Azure.
+In this tutorial, I'm assuming that you have written or are writing a Python web application that uses Django, and you want to deploy that application onto Microsoft Azure.
 
-I'm not going to cover how to create, or write a Django application, but instead we're going to focus on the _last mile_ of development- getting it into production.
+I'm not going to cover how to create or write a Django application, but instead, we're going to focus on the _last mile_ of development- getting it into production.
 
 In this tutorial, we will cover:
 
@@ -31,17 +31,17 @@ I'm assuming that you already have:
 ## Setting up your requirements {#setting-up-requirements}
 
 A common developer workflow is to create a local virtual environment, install the dependencies and tools needed for running the application, testing it, and linting it into the same
-virtual environment, and then running `pip freeze > requirements.txt` to save the state of the environment so that it is reproducable.
+virtual environment, and then running `pip freeze > requirements.txt` to save the state of the environment so that it is reproducible.
 
-Something really important to note, is that the Azure deployment script will automatically install your PyPi requirements listed in `requirements.txt` onto the container **each** time it is deployed.
+Something really important to note is that the Azure deployment script will automatically install your PyPi requirements listed in `requirements.txt` onto the container **each** time it is deployed.
 
 For that reason, I recommend that you put additional planning into **separating the requirements of your virtual environments**. I recommend **not** to have a single `requirements.txt` file, because:
 
 * You are deploying packages into the environment of the production image that are not required
 * You are more likely to hit packaging version conflicts
-* You are more likely to to have security holes by deploying more packages onto production
+* You are more likely to have security holes by deploying more packages onto production
 
-Instead, I recommend either to use an environment manager, or to keep your requirements separate between runtime, development and testing.
+Instead, I recommend either to use an environment manager or to keep your requirements separate between runtime, development, and testing.
 
 These are the 3 sets of package requirements I would setup instead:
 
@@ -87,7 +87,7 @@ I recommend having a minimum of two Apps deployed,
 1. A staging environment running the P1V2 App Service Plan (or above)
 2. A production environment running one or more P2V2 (or above) App Service Plans
 
-Most web applications are memory-hungry before they are CPU-hungry, which is why I recommend the P2V2 for production. Running a P1V2 just for staging might be an excessive cost for some, so you can either stop the image outside of testing cycles, or drop this down to a slower app plan.
+Most web applications are memory-hungry before they are CPU-hungry, which is why I recommend the P2V2 for production. Running a P1V2 just for staging might be a high cost for some, so you can either stop the image outside of testing cycles or drop this down to a slower app plan.
 
 During this tutorial, we will make major optimizations to our application to get the most out of each instance.
 
@@ -134,9 +134,9 @@ DEBUG = os.environ.get('DEBUG', False)
 ALLOWED_HOSTS = [os.environ.get('DJANGO_HOST', 'localhost')]
 ```
 
-Azure Web Apps have the ability to set environment variables which are set before the application starts. You can use this feature to control the behaviours of your app and set sensitive things like passwords without having to check them in to Git.
+Azure Web Apps have the ability to set environment variables that are set before the application starts. You can use this feature to control the behaviours of your app and set sensitive things like passwords without having to check them into Git.
 
-There are two ways of changing environment variables, by using the CLI or within the UI.
+There are two ways of changing environment variables by using the CLI or within the UI.
 
 To change environment variables in the CLI, you can use a command like:
 
@@ -152,14 +152,14 @@ These secrets are encrypted at rest and in-transit, but if you still want to use
 
 The easiest ways to deploy to either instance is from Visual Studio Code using the Azure extensions, or using Deploy from Local Git.
 
-Each instance would have its own Git URL, shown in the UI or on the CLI during creation.
+Each instance would have its own Git URL, shown in the UI or, on the CLI during creation.
 
 ```console
 git remote add staging <staging-git-url>
 git remote add production <production-git-url>
 ```
 
-Then, to deploy you can simply push to either remote and the rest will happen for you.
+Then, to deploy, you can simply push to either remote, and the rest will happen for you:
 
 ```console
 git push staging master
@@ -182,7 +182,7 @@ The more requests you throw at it, the longer the queue will get, even when the 
 Instead, you can change the startup script by adding a file to your repository with the command(s) to run. I recommend using this to increase the number of Gunicorn threads and workers.
 
 For Django 3, on the P2V2 Service Plan, use ASGI (async WSGI) instead of WSGI. The response time will remain the same, but the application will handle multiple simultaneous requests without blocking workers.
-This is my preferred configuration. Later in the article we will do some benchmarking if you want to adjust the workers and threads:
+This is my preferred configuration. Later in the article, we will do some benchmarking if you want to adjust the workers and threads:
 
 ```
 gunicorn --workers 8 --threads 4 --timeout 60 --access-logfile \
@@ -513,7 +513,7 @@ If you're new to testing, then read my [article on Python Testing](https://realp
 
 Let's make sure that:
 
-* The environments are reproducable so a test-pass in development should mean a test-pass on staging and production
+* The environments are reproducible so a test-pass in development should mean a test-pass on staging and production
 * You can run unit tests and integration tests
 * You can test the performance and security of the application
 
