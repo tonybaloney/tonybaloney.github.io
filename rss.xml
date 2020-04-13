@@ -7,9 +7,20 @@
             A collection of technology articles
         </description>
         <link>https://tonybaloney.github.io/#blog</link>
-        <lastBuildDate>Fri, 14 Feb 2020 11:19:42 -0000</lastBuildDate>
+        <lastBuildDate>Mon, 13 Apr 2020 02:38:21 -0000</lastBuildDate>
         <pubDate>Sat, 4 Jan 2020 19:15:54 -0500</pubDate>
         <atom:link href="https://tonybaloney.github.io/rss.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Django on Azure - beyond "hello world"</title>
+            <description>
+                A tutorial on deploying a production-reading Django application on Microsoft Azure
+            </description>
+            <link>https://tonybaloney.github.io/posts/django-on-azure-beyond-hello-world.html</link>
+            <pubDate>Mon, 13 Apr 2020 00:00:00 -0000</pubDate>
+            <dc:creator>Anthony Shaw</dc:creator>
+            <guid>https://tonybaloney.github.io/posts/django-on-azure-beyond-hello-world.html</guid>
+        </item>
         
         <item>
             <title>My favourite Python stories of 2019</title>
