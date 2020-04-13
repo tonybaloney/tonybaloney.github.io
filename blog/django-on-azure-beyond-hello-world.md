@@ -1,6 +1,6 @@
 blog_heading: Django on Azure - beyond "hello world"
 blog_subheading: A tutorial on deploying a production-reading Django application on Microsoft Azure
-blog_header_image: home-bg.jpg
+blog_header_image: clouds.jpg
 blog_author: Anthony Shaw
 blog_publish_date: April 13, 2020
 ---------------------------------
@@ -891,3 +891,7 @@ if not DEBUG:
 Once this is done, you can configure alerts from the Insights portal to notify you when your application crashes.
 
 I recommend adding Application Insights to your base template, which you can do by generating the embed code from the Insights portal.
+
+## Conclusion
+
+Microsoft Azure makes a great platform for hosting Django applications in production. You have databases, monitoring, exception handling and automated-deployments all in one place.
