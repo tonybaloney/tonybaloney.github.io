@@ -739,8 +739,9 @@ commands =
     flake8 demo
 </code></pre>
 
-<h3>Continuous Testing and Deployment with GitHub actions</h3>
-<p>To run the tests automatically, I recommend adding a git repository and configuring a CI/CD service like Azure Pipelines or GitHub actions.</p>
+<h3>Continuous Testing and Deployment</h3>
+<p>To run the tests automatically, I recommend adding a git repository and configuring a CI/CD service like <a href="#pipelines">Azure Pipelines</a> or <a href="#github">GitHub actions</a>.</p>
+<h4 id="github">Continuous Testing and Deployment with GitHub actions</h4>
 <p>To deploy from GitHub, you need to download the Publish Profile (which contains the publish password):</p>
 <ol>
 <li>In the staging applicationm, go to <code>Deployment &gt; Deployment Center &gt; Deployment Credentials &gt; Get Publish Profile</code> and download the <code>.PublishSettings</code> file. Open it in a text editor and copy the contents.</li>
@@ -835,6 +836,85 @@ env:
         publish-profile: ${{ secrets.PRODUCTION_PUBLISH_PROFILE }}
 </code></pre>
 
+<h4 id="pipelines">Continuous Testing with Azure Pipelines</h4>
+<p>On the Project Settings page, select <code>Pipelines &gt; Service connections, then select New service connection</code>, and then select Azure Resource Manager from the dropdown.</p>
+<p>In the Add an Azure Resource Manager service connection dialog box:</p>
+<ul>
+<li>Give the connection a name. Make note of the name to use later in the pipeline.</li>
+<li>For Scope level, select Subscription.</li>
+<li>Select the subscription for your App Service from the Subscription drop-down list.</li>
+<li>Under Resource Group, select your resource group from the dropdown.</li>
+<li>Make sure the option Allow all pipelines to use this connection is selected, and then select OK.</li>
+</ul>
+<p>For the pipeline, I recommend the following steps:</p>
+<ul>
+<li>Change the project path to the location of manage.py</li>
+<li>Install the project depedencies and test dependencies</li>
+<li>Compile your languages (optional, if you don&rsquo;t have multilingual support)</li>
+<li>Deploy to your staging environment</li>
+</ul>
+<p>I recommend adding <a href="https://pypi.org/project/pytest-azurepipelines/">pytest-azurepipelines</a> as it will automatically publish the Pytest test results into the Azure Test UI.</p>
+<pre><code class="yaml">trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+strategy:
+  matrix:
+    Python37:
+      PYTHON_VERSION: '3.7'
+  maxParallel: 3
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '$(PYTHON_VERSION)'
+    architecture: 'x64'
+
+- task: PythonScript@0
+  displayName: 'Export project path'
+  inputs:
+    scriptSource: 'inline'
+    script: |
+      &quot;&quot;&quot;Search all subdirectories for `manage.py`.&quot;&quot;&quot;
+      from glob import iglob
+      from os import path
+      # Python &gt;= 3.5
+      manage_py = next(iglob(path.join('**', 'manage.py'), recursive=True), None)
+      if not manage_py:
+          raise SystemExit('Could not find a Django project')
+      project_location = path.dirname(path.abspath(manage_py))
+      print('Found Django project in', project_location)
+      print('##vso[task.setvariable variable=projectRoot]{}'.format(project_location))
+
+- script: |
+    python -m pip install --upgrade pip setuptools wheel
+    pip install -r requirements.txt
+    pip install -r requirements-test.txt
+    sudo apt-get install -y gettext
+  displayName: 'Install prerequisites'
+
+- script: |
+    python manage.py compilemessages --ignore venv
+  displayName: 'Compile languages'
+
+- script: |
+    python -m pytest --cov=streaming --cov-report=xml
+  displayName: 'Run tests'
+
+- task: AzureRmWebAppDeployment@4
+  displayName: 'Deploy to Staging'
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'Your Connection Name'
+    appType: 'webAppLinux'
+    WebAppName: 'app-staging'
+    packageForLinux: '$(System.DefaultWorkingDirectory)/'
+    RuntimeStack: 'PYTHON|3.7'
+    AppSettings: '-SCM_DO_BUILD_DURING_DEPLOYMENT 1'
+</code></pre>
+
+<p>Then, for a release environment you can clone this pipeline and change the trigger branch and the target web app.</p>
 <h2 id="security">Security</h2>
 <p>There are many things you need to consider for the security of your deployed application:</p>
 <ul>
