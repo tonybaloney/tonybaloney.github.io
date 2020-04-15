@@ -899,7 +899,7 @@ steps:
   displayName: 'Compile languages'
 
 - script: |
-    python -m pytest --cov=streaming --cov-report=xml
+    python -m pytest --cov=your_app --cov-report=xml
   displayName: 'Run tests'
 
 - task: AzureRmWebAppDeployment@4
