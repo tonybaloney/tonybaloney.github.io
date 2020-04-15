@@ -644,10 +644,11 @@ commands =
     flake8 demo
 ```
 
-### Continuous Testing and Deployment with GitHub actions
+### Continuous Testing and Deployment
 
-To run the tests automatically, I recommend adding a git repository and configuring a CI/CD service like Azure Pipelines or GitHub actions.
+To run the tests automatically, I recommend adding a git repository and configuring a CI/CD service like [Azure Pipelines](#pipelines) or [GitHub actions](#github).
 
+#### Continuous Testing and Deployment with GitHub actions {#github}
 To deploy from GitHub, you need to download the Publish Profile (which contains the publish password):
 
 1. In the staging applicationm, go to `Deployment > Deployment Center > Deployment Credentials > Get Publish Profile` and download the `.PublishSettings` file. Open it in a text editor and copy the contents.
@@ -748,6 +749,90 @@ env:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         publish-profile: ${{ secrets.PRODUCTION_PUBLISH_PROFILE }}
 ```
+
+#### Continuous Testing with Azure Pipelines {#pipelines}
+
+On the Project Settings page, select `Pipelines > Service connections, then select New service connection`, and then select Azure Resource Manager from the dropdown.
+
+In the Add an Azure Resource Manager service connection dialog box:
+
+* Give the connection a name. Make note of the name to use later in the pipeline.
+* For Scope level, select Subscription.
+* Select the subscription for your App Service from the Subscription drop-down list.
+* Under Resource Group, select your resource group from the dropdown.
+* Make sure the option Allow all pipelines to use this connection is selected, and then select OK.
+
+For the pipeline, I recommend the following steps:
+
+- Change the project path to the location of manage.py
+- Install the project depedencies and test dependencies
+- Compile your languages (optional, if you don't have multilingual support)
+- Deploy to your staging environment
+
+I recommend adding [pytest-azurepipelines](https://pypi.org/project/pytest-azurepipelines/) as it will automatically publish the Pytest test results into the Azure Test UI.
+
+```yaml
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+strategy:
+  matrix:
+    Python37:
+      PYTHON_VERSION: '3.7'
+  maxParallel: 3
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '$(PYTHON_VERSION)'
+    architecture: 'x64'
+
+- task: PythonScript@0
+  displayName: 'Export project path'
+  inputs:
+    scriptSource: 'inline'
+    script: |
+      """Search all subdirectories for `manage.py`."""
+      from glob import iglob
+      from os import path
+      # Python >= 3.5
+      manage_py = next(iglob(path.join('**', 'manage.py'), recursive=True), None)
+      if not manage_py:
+          raise SystemExit('Could not find a Django project')
+      project_location = path.dirname(path.abspath(manage_py))
+      print('Found Django project in', project_location)
+      print('##vso[task.setvariable variable=projectRoot]{}'.format(project_location))
+
+- script: |
+    python -m pip install --upgrade pip setuptools wheel
+    pip install -r requirements.txt
+    pip install -r requirements-test.txt
+    sudo apt-get install -y gettext
+  displayName: 'Install prerequisites'
+
+- script: |
+    python manage.py compilemessages --ignore venv
+  displayName: 'Compile languages'
+
+- script: |
+    python -m pytest --cov=streaming --cov-report=xml
+  displayName: 'Run tests'
+
+- task: AzureRmWebAppDeployment@4
+  displayName: 'Deploy to Staging'
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'Your Connection Name'
+    appType: 'webAppLinux'
+    WebAppName: 'app-staging'
+    packageForLinux: '$(System.DefaultWorkingDirectory)/'
+    RuntimeStack: 'PYTHON|3.7'
+    AppSettings: '-SCM_DO_BUILD_DURING_DEPLOYMENT 1'
+```
+
+Then, for a release environment you can clone this pipeline and change the trigger branch and the target web app.
 
 ## Security {#security}
 
