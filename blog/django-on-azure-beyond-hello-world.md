@@ -644,7 +644,7 @@ commands =
     flake8 demo
 ```
 
-### Continuous Testing and Deployment
+### Continuous Testing and Deployment {#testing}
 
 To run the tests automatically, I recommend adding a git repository and configuring a CI/CD service like [Azure Pipelines](#pipelines) or [GitHub actions](#github).
 
