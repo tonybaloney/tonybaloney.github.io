@@ -66,7 +66,7 @@ else:
 </head>
 <body>
     <div class="row">
-        <div class="col-md-6" style="padding: 30px;">
+        <div class="col-md-4" style="padding: 30px;">
             <h1>Client Side</h1>
 
             <form>
@@ -96,7 +96,7 @@ admin'/*
 admin' AND 1=0 UNION ALL SELECT 'fakepassword'--
             </pre></code>
         </div>
-        <div class="col-md-6" style="background: black; color: white; padding: 30px;">
+        <div class="col-md-8" style="background: black; color: white; padding: 30px;">
             <h1>Server Side</h1>
 
             <label for="demo">Demo code :</label><select id="demo" style="color: black">
@@ -114,6 +114,26 @@ admin' AND 1=0 UNION ALL SELECT 'fakepassword'--
             <pre><code class="language-sql" id="sql">
             </code></pre>
 
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4" style="padding: 30px;">
+            <h1>Client Side (AJAX)</h1>
+            <button type="submit" class="btn btn-default" id="button-thing">Add Product POST</button>
+            <button type="submit" class="btn btn-default" id="button-thing2">Add Product POST/JSON</button>
+        </div>
+        <div class="col-md-8" style="background: black; color: white; padding: 30px;">
+            <h1>Server Side</h1>
+
+            <h2>Python Code</h2>
+            <pre><code class="language-python" >
+import json
+
+def view(self, request):
+    input = json.loads(request.post)
+    result = cur.execute("INSERT INTO products (id, name, price, stock) VALUES(%s, '%s', %s, %s)'" % (input['id'], input['name'], input['price'], input['stock'] ) )
+
+            </code></pre>
         </div>
     </div>
     <script type="text/javascript">
@@ -134,7 +154,36 @@ admin' AND 1=0 UNION ALL SELECT 'fakepassword'--
             document.querySelectorAll('pre code').forEach((block) => {
                 hljs.highlightBlock(block);
               });
-        }
+        };
+        $("#button-thing").click(function(){
+            $.post({
+                url: '/products/create.api',
+                headers: {
+                    'session': 'COOKIESESsioN!23'
+                },
+                data: {
+                    'id': 11234567,
+                    'name': 'New Product',
+                    'price': 29.00,
+                    'stock': 123
+                }
+            });
+        });
+        $("#button-thing2").click(function(){
+            $.post({
+                url: '/products/create.api',
+                headers: {
+                    'session': 'COOKIESESsioN!23'
+                },
+                data: JSON.stringify({
+                    'id': 11234567,
+                    'name': 'New Product',
+                    'price': 29.00,
+                    'stock': 123
+                }),
+                dataType: 'json'
+            });
+        })
     </script>
 </body>
 </html>
