@@ -108,7 +108,7 @@ Note: The instructor is using a mac, but if you're on Windows, follow [these ste
 
 #### Recommendation 3: Python Tutorial for Absolute Beginners (YouTube.com) {#python-for-absolute-beginners}
 
-Similar to Recommendation 2, this is a **free** tutorial course on YouTube for total beginners. This I like about this course:
+Similar to Recommendation 2, this is a **free** tutorial course on YouTube for total beginners. Things I like about this course:
 
 * The instructor gives you challenges to solve.
 * It includes an overview of Jupyter, a popular tool for data science (and where 50% of the Python jobs are!).
@@ -151,7 +151,7 @@ There are two popular options for this- raspberry pi and adafruit circuitpython:
 * [Recommendation 5: Python on the raspberry pi](https://www.raspberrypi.org/documentation/usage/python/)
 * [Recommendation 6: Python on circuitpython](https://learn.adafruit.com/welcome-to-circuitpython/what-is-circuitpython)
 
-![photo of the a pyportal device](/img/posts/pyportal.jpg){.img-responsive .center-block style="width:40%"}
+![photo of the a pyportal device](/img/posts/pyportal.jpeg){.img-responsive .center-block style="width:40%"}
 
 Using either of these you can write small, simple Python scripts to control circuits, motors, 3D printers, lights, robots or even LEGO.
 
