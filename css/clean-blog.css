@@ -3,6 +3,12 @@
  * Copyright 2013-2020 Start Bootstrap
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap/blob/gh-pages/LICENSE)
  */
+.50-percent {
+  width: 50%;
+}
+.40-percent {
+  width: 40%;
+}
 body {
   font-family: 'Lora', 'Times New Roman', serif;
   font-size: 20px;

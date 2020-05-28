@@ -7,9 +7,20 @@
             A collection of technology articles
         </description>
         <link>https://tonybaloney.github.io/#blog</link>
-        <lastBuildDate>Wed, 15 Apr 2020 22:30:21 -0000</lastBuildDate>
+        <lastBuildDate>Thu, 28 May 2020 05:30:29 -0000</lastBuildDate>
         <pubDate>Sat, 4 Jan 2020 19:15:54 -0500</pubDate>
         <atom:link href="https://tonybaloney.github.io/rss.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Learning Python from Scratch</title>
+            <description>
+                If you want to learn Python, where do you start?
+            </description>
+            <link>https://tonybaloney.github.io/posts/learning-python.html</link>
+            <pubDate>Thu, 28 May 2020 00:00:00 -0000</pubDate>
+            <dc:creator>Anthony Shaw</dc:creator>
+            <guid>https://tonybaloney.github.io/posts/learning-python.html</guid>
+        </item>
         
         <item>
             <title>Django on Azure - beyond "hello world"</title>
