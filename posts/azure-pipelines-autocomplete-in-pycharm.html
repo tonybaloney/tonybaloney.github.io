@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Azure Pipelines autocomplete in PyCharm, IntelliJ, WebStorm, CLion, and Rider</title>
+
+    <!-- Facebook Meta tags -->
+    <meta property="og:title" content="Azure Pipelines autocomplete in PyCharm, IntelliJ, WebStorm, CLion, and Rider">
+    <meta property="og:description" content="Learn how to get autocomplete for your Azure Pipelines workflows">
+    <meta property="og:image" content="https://tonybaloney.github.io/img/clouds.jpg">
+    <meta property="og:url" content="https://tonybaloney.github.io/posts/azure-pipelines-autocomplete-in-pycharm.html">
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:title" content="Azure Pipelines autocomplete in PyCharm, IntelliJ, WebStorm, CLion, and Rider">
+    <meta name="twitter:description" content="Learn how to get autocomplete for your Azure Pipelines workflows">
+    <meta name="twitter:image" content="https://tonybaloney.github.io/img/clouds.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@anthonypjshaw">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="/css/clean-blog.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    Menu <i class="fa fa-bars"></i>
+                </button>
+
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/#">Home</a>
+                    </li>
+                    <li>
+                        <a href="/#projects">Projects</a>
+                    </li>
+                    <li>
+                        <a href="/#contributions">Contributions</a>
+                    </li>
+                    <li>
+                        <a href="/#courses">Courses</a>
+                    </li>
+                    <li>
+                        <a href="/#podcasts">Podcasts</a>
+                    </li>
+                    <li>
+                        <a href="/#talks">Talks</a>
+                    </li>
+                    <li>
+                        <a href="/#blog">Blog</a>
+                    </li>
+                    <li>
+                        <a href="https://twitter.com/anthonypjshaw"><i class='fa fa-2x fa-twitter'></i></a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/tonybaloney"><i class='fa fa-2x fa-github'></i></a>
+                    </li>
+                    <li>
+                        <a href="/rss.xml"><i class='fa fa-2x fa-rss-square'></i></a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('/img/clouds.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="site-heading">
+                        <h1>Azure Pipelines autocomplete in PyCharm, IntelliJ, WebStorm, CLion, and Rider</h1>
+                        <hr class="small">
+                        <span class="subheading">by Anthony Shaw, June 11, 2020</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <p>Azure Pipelines YAML files support a complex array of structures and nesting.</p>
+<p>Guessing the options and reading through the documentation is time-consuming, and even worse is having to wait for CI to finish only to realise you made a mistake in the YAML file.</p>
+<p>PyCharm, IntelliJ, WebStorm, CLion and Rider all support custom JSON schemas. These custom schemas can be setup to have auto-complete, syntax highlighting and validation of your Azure
+Pipelines workflows.</p>
+<h2>Downloading your Schema</h2>
+<p>You can use a generic schema, like <a href="https://github.com/microsoft/azure-pipelines-vscode/raw/master/service-schema.json">this one</a>. However, the auto-complete will be more useful if you download your
+organization custom schema.</p>
+<p>This is available from the API:</p>
+<p><code>https://dev.azure.com/&lt;YOUR ORG NAME&gt;/_apis/distributedtask/yamlschema</code></p>
+<p>Visit this URL and you&rsquo;ll see a massive JSON document. Download this file and place inside your Documents folder, or any accesible directory.</p>
+<p><img alt="yaml-schema" class="img-responsive center-block" src="/img/posts/yaml-schema.png" style="width:50%"></p>
+<h2>Telling your IDE to use the schema</h2>
+<p>Inside PyCharm, IntelliJ, etc. open up your Azure Pipelines YAML file. At the bottom toolbar you&rsquo;ll see a notification <strong>&lsquo;No JSON Schema&rsquo;</strong>.
+Click on this notification and at the top of the popup, click <strong>&ldquo;New Schema Mapping&rdquo;</strong>.</p>
+<p><img alt="no-schema" class="img-responsive center-block" src="/img/posts/no-schema.png" style="width:50%"></p>
+<p>This opens a dialog to configure custom schema mappings.</p>
+<ul>
+<li>Set the name as <code>azure-pipelines</code></li>
+<li>Set the file as the schema file you downloaded in the last step</li>
+<li>Change the Schema Version to <code>JSON Schema version 7</code></li>
+</ul>
+<p>Add 2 File Path Patterns:</p>
+<ol>
+<li><code>.azure-pipelines.yml</code></li>
+<li><code>.azure-pipelines/*.yml</code></li>
+</ol>
+<p><img alt="schema-window" class="img-responsive center-block" src="/img/posts/schema-window.png" style="width:50%"></p>
+<p>When you&rsquo;re all done, click OK and your IDE should automatically detect any files and apply the schema.</p>
+<p>You&rsquo;ll know its working correctly when the typeahead works and the bar that said &ldquo;No JSON Schema&rdquo; now says &ldquo;azure-pipelines&rdquo;.</p>
+<p><img alt="autocomplete-working" class="img-responsive center-block" src="/img/posts/azure-pipelines.gif" style="width:50%"></p>
+<p>In future, if you install any new actions from the Azure DevOps marketplace, you&rsquo;ll need to download and update the schema to get the new typeahead.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-8">
+                <a class="btn-default btn"
+                   href="https://twitter.com/intent/tweet">
+                    <i class="fa fa-twitter"></i>
+                    Share on Twitter</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="https://twitter.com/anthonypjshaw">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://medium.com/@anthonypjshaw">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-medium fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/tonybaloney">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Copyright &copy; Anthony Shaw 2020</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="/js/clean-blog.min.js"></script>
+
+    <!-- Twitter Helper -->
+    <script>window.twttr = (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0],
+            t = window.twttr || {};
+        if (d.getElementById(id)) return t;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://platform.twitter.com/widgets.js";
+        fjs.parentNode.insertBefore(js, fjs);
+
+        t._e = [];
+        t.ready = function(f) {
+            t._e.push(f);
+        };
+        return t;
+    }(document, "script", "twitter-wjs"));</script>
+</body>
+</html>
