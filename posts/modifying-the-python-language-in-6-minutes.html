@@ -122,7 +122,7 @@ I’m going to show you how to add a new feature to the Python syntax. That synt
 <h2>Level 1: PEPs</h2>
 <p>Before the Python syntax is changed, a proposal needs to be made with a set of reasons, design and behaviours. All language changes are discussed by the core Python team and approved by the BDFL. Increment operators are not approved (and probably never will be), which gives us a good test.</p>
 <h2>Level 2: Grammar</h2>
-<p>The Grammar file is a simple text file describing all the elements of the Python language. This is used by not just CPython, but other implementations like PyPy to keep consistency and agree on the types of language semantics.
+<p>The Grammar file is simple text file describing all the elements of the Python language. This is used by not just CPython, but other implementations like PyPy to keep consistency and agree on the types of language semantics.
 Internally, these keys form the tokens, which are parsed by the lexer. When you <code>make -j</code> a command converts these into a set of enums and constants in the C headers. This allows us to reference them later on.</p>
 <pre><code class="default">stmt: simple_stmt | compound_stmt
 simple_stmt: small_stmt (';' small_stmt)* [';'] NEWLINE
