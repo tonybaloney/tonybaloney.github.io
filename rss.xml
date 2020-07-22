@@ -7,9 +7,20 @@
             A collection of technology articles
         </description>
         <link>https://tonybaloney.github.io/#blog</link>
-        <lastBuildDate>Thu, 11 Jun 2020 01:14:24 -0000</lastBuildDate>
+        <lastBuildDate>Wed, 22 Jul 2020 04:52:32 -0000</lastBuildDate>
         <pubDate>Sat, 4 Jan 2020 19:15:54 -0500</pubDate>
         <atom:link href="https://tonybaloney.github.io/rss.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>XSS Exploitation in Django Applications</title>
+            <description>
+                A deep-dive on XSS exploitations in Django applications, how to find them and how to fix them
+            </description>
+            <link>https://tonybaloney.github.io/posts/xss-exploitation-in-django.html</link>
+            <pubDate>Wed, 22 Jul 2020 00:00:00 -0000</pubDate>
+            <dc:creator>Anthony Shaw</dc:creator>
+            <guid>https://tonybaloney.github.io/posts/xss-exploitation-in-django.html</guid>
+        </item>
         
         <item>
             <title>Azure Pipelines autocomplete in PyCharm, IntelliJ, WebStorm, CLion, and Rider</title>
