@@ -5,7 +5,7 @@ blog_author: Anthony Shaw
 blog_publish_date: August 15, 2020
 ----------------------------------
 
-On occasion, you need to take something apart and put it back together to fully understand it. I'm sure many of the people reading this article will have been one of those kids. Kids who will take a screwdriver to something, just to see whats inside it.
+On occasion, you need to take something apart and put it back together to fully understand it. I'm sure many of the people reading this article will have been one of those kids. Kids who took a screwdriver to something, just to see whats inside it.
 It's a thrill, but its a whole different skill to put it back together.
 
 ![remote-control-car](/img/posts/remote-control-car.jpg){: style="width:40%"}
@@ -253,6 +253,8 @@ On the right, you can see some attributes like:
 - The CPU architecture this binary was assembled for. In the future, when Apple release an ARM MacBook, this executable won't work as it will inspect this header and see a mismatch in the CPU architecture (before trying to load the instructions)
 - The length, positions and offsets of the data, text and bss sections
 - Any runtime flags, such as Position-Independent-Executable (PIE) (covered later)
+
+Another feature of the ELF, mach-O and PE formats is the ability to build shared libraries (.so files in Linux, .dylib or .so in macOS, and .dll files in Windows)
 
 ### Complex data structures in assembly
 
@@ -603,4 +605,3 @@ PyMult_multiply:
 
 ## GitHub CI/CD workflows
 
-##
