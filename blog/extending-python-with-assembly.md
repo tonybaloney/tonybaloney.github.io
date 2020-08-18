@@ -153,7 +153,7 @@ What this header tells us:
 Assembly function calls don't have the concept of arguments, but instead Operating Systems define a specification (called a calling convention) on which registers
 should be used for which argument.
 
-Luckily, macOS and Linux have the same [calling conventions](https://software.intel.com/sites/default/files/article/402129/mpx-linux64-abi.pdf) for arguments, which states that the following registers should be populated with the values of the arguments when a function is called:
+Luckily, macOS and Linux have the same [calling convention](https://software.intel.com/sites/default/files/article/402129/mpx-linux64-abi.pdf) called System-V for arguments, which states that the following registers should be populated with the values of the arguments when a function is called:
 
 | Argument        | 64-bit Register |
 |-----------------|-----------------|
@@ -164,7 +164,7 @@ Luckily, macOS and Linux have the same [calling conventions](https://software.in
 | Argument 5      | r8              |
 | Argument 6      | r9              |
 
-NB: Windows has a different calling convention, which uses different registers.
+NB: Windows has a [calling convention](https://docs.microsoft.com/en-us/cpp/build/x64-calling-convention?view=vs-2019), which uses different registers to System-V.
 
 Additional arguments are loaded from the value stack, and because its a value stack you push them in reverse order. For example, if the function had 10 arguments, you would push the 10th first:
 
@@ -177,7 +177,7 @@ Additional arguments are loaded from the value stack, and because its a value st
 
 This calling convention means that if you're calling a function written in C, C++, or even Rust, the function will read whatever is in the `rdi` CPU register and use that as the first argument.
 
-If you wanted to call the
+If you wanted to call the `pad_right()` function you would write the equivalent assembly code:
 
 ```x86asm
 extern pad_right
