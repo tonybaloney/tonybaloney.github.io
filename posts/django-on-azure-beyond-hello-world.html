@@ -34,6 +34,12 @@
     <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
 
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js"></script>
+
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/x86asm.min.js"></script>
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/python.min.js"></script>
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -201,7 +207,7 @@ az webapp create --resource-group yourResourceGroup --plan production --name app
 </code></pre>
 
 <p>Once you&rsquo;ve created the Web App, there are some defaults that I recommend changing:</p>
-<table>
+<table class="table">
 <thead>
 <tr>
 <th align="left">Configuration Area</th>
@@ -351,7 +357,7 @@ This is my preferred configuration. Later in the article, we will do some benchm
 </code></pre>
 
 <p>Once this is setup, you will want to go through the security policies. The security policies for Postgres can&rsquo;t (or won&rsquo;t) be exported to ARM at the moment. I don&rsquo;t really understand why, so here are the things I would check before proceeding:</p>
-<table>
+<table class="table">
 <thead>
 <tr>
 <th align="left">Configuration Area</th>
@@ -404,7 +410,7 @@ Having this enabled (which is the default) means any server deployed on Azure, <
 <p>Something important to consider is the testing and CI/CD pipeline, and for that reason I recommend sticking with two environments, Postgres for Staging and Production, and SQLite for development and testing.</p>
 <p>To accomplish this, we&rsquo;re going to use <em>environment variables</em> to configure Django because you should <strong>never put passwords in <code>settings.py</code></strong> files. This has another benefit that environment variables are really simple to setup in Azure Web Apps.</p>
 <p>These are the environment variables our app will use for databases:</p>
-<table>
+<table class="table">
 <thead>
 <tr>
 <th align="left">Category</th>
@@ -550,7 +556,7 @@ class AzureStaticStorage(AzureStorage):
 
 <p>Next, in <code>settings.py</code> configure the default media storage (<code>DEFAULT_FILE_STORAGE</code>) and static files storage to the Azure Storage containers.</p>
 <p>Again, we&rsquo;re going to use environment variables, one for the storage key and another for the container names:</p>
-<table>
+<table class="table">
 <thead>
 <tr>
 <th align="left">Category</th>
@@ -1094,6 +1100,8 @@ if not DEBUG:
 
     <!-- Theme JavaScript -->
     <script src="/js/clean-blog.min.js"></script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
 
     <!-- Twitter Helper -->
     <script>window.twttr = (function(d, s, id) {

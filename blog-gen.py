@@ -4,13 +4,36 @@ import glob
 from datetime import datetime
 from email.utils import formatdate, format_datetime  # for RFC2822 formatting
 
+from markdown.treeprocessors import Treeprocessor
+
 TEMPLATE_FILE = "templates/blog_post_template.html"
 FEED_TEMPLATE_FILE = "templates/rss_feed_template.xml"
 BASE_URL = "https://tonybaloney.github.io/"
 
+
+class BootstrapExtension(markdown.Extension):
+    def extendMarkdown(self, md, md_globals):
+        md.registerExtension(self)
+        self.processor = BootstrapTreeprocessor()
+        self.processor.md = md
+        self.processor.config = self.getConfigs()
+        md.treeprocessors.add('bootstrap', self.processor, '_end')
+
+
+class BootstrapTreeprocessor(Treeprocessor):
+    def run(self, node):
+        for child in node.iter():
+            if child.tag == 'table':
+                child.set("class", "table")
+            elif child.tag == 'img':
+                child.set("class", "img-responsive center-block")
+
+        return node
+
+
 def main():
     posts = glob.glob("blog/*.md")
-    extensions = ['extra', 'smarty', 'meta']
+    extensions = [BootstrapExtension(), 'extra', 'smarty', 'meta', 'tables']
     _md = markdown.Markdown(extensions=extensions, output_format='html5')
 
     loader = jinja2.FileSystemLoader(searchpath="./")

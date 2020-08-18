@@ -1,5 +1,5 @@
-blog_heading: Writing Python Extensions in Assembly (with a bonus tutorial on assembly programming)
-blog_subheading: A deep-dive technical overview of how you can write CPython extensions in assembly
+blog_heading: Writing Python Extensions in Assembly
+blog_subheading: A deep-dive technical overview of how you can write CPython extensions in assembly (with a bonus tutorial on assembly programming)
 blog_header_image: posts/hammer-screw.jpeg
 blog_author: Anthony Shaw
 blog_publish_date: August 15, 2020
@@ -8,7 +8,7 @@ blog_publish_date: August 15, 2020
 On occasion, you need to take something apart and put it back together to fully understand it. I'm sure many of the people reading this article will have been one of those kids. Kids who will take a screwdriver to something, just to see whats inside it.
 It's a thrill, but its a whole different skill to put it back together.
 
-![remote-control-car](/img/posts/remote-control-car.png){: .img-responsive .center-block}
+![remote-control-car](/img/posts/remote-control-car.png){: style="width:40%"}
 
 The seamlessly working machine on the outside obscures a network of patterns, patches, and workarounds in its internals.
 Programmers are used to working on the guts of a system and changing the ugly-inner workings to coax it into doing what its been told.
@@ -34,7 +34,7 @@ a = b
 
 Whereas in assembly, you copy first to a register (we'll use RAX) and then to the destination:
 
-```assembly
+```x86asm
 mov RAX, a
 mov b, RAX
 ```
@@ -101,7 +101,7 @@ Most compilers would make this sort of optimization automatically, because they 
 
 Here is some pseudo-assembly to demonstrate:
 
-```assembly
+```x86asm
  mov rcx, 2  ; Move the decimal value 2 to the RCX CPU register
  add rcx, 3  ; Add 3 to the value in the RCX CPU register, RCX is now equal to 5
  cmp rcx, 5  ; Compare RCX to the value 5, 
@@ -117,7 +117,106 @@ Here is some pseudo-assembly to demonstrate:
 
 ### Calling external functions
 
-Calling conventions.
+Unless you want to entirely reinvent the wheel, your application or library will probably be using functions from other compiled libraries.
+
+In assembly, you can refer to the address of an external function by using the `extern` instruction with the symbol name.
+The linker will replace this with the actual value of the library, if the executable is statically linked, or depend upon a runtime value if the executable is dynamically linked. I don't want to get into linking in this article
+otherwise it will keep going into a mini-book (and I don't really know that much about linkers).
+
+If you were writing an application in C and required to call a function in another library, you would use the Header (H) file.
+
+Header files would tell the compiler:
+
+- The name of the function (symbol)
+- Its return value and the size of the response
+- The arguments and their types
+
+For example, if you defined a function in C:
+
+```c
+char* pad_right(char * message, int width, char padding);
+```
+
+What this header tells us:
+- The function takes 3 arguments
+- The first argument is a `char` pointer, so a 64-bit address to an 8-bit value (`char`)
+- The second argument is an int, which (depending on the OS and some other factors) is probably a 32-bit value
+- The third argument is a `char`, which is 8-bits
+- The response is a `char` pointer, so we need a 64-bit address to store the result
+
+Assembly function calls don't have the concept of arguments, but instead Operating Systems define a specification (called a calling convention) on which registers
+should be used for which argument.
+
+Luckily, macOS and Linux have the same [calling conventions](https://software.intel.com/sites/default/files/article/402129/mpx-linux64-abi.pdf) for arguments, which states that the following registers should be populated with the values of the arguments when a function is called:
+
+| Argument        | 64-bit Register |
+|-----------------|-----------------|
+| Argument 1      | rdi             |
+| Argument 2      | rsi             |
+| Argument 3      | rdx             |
+| Argument 4      | rcx             |
+| Argument 5      | r8              |
+| Argument 6      | r9              |
+
+NB: Windows has a different calling convention, which uses different registers.
+
+Additional arguments are loaded from the value stack, and because its a value stack you push them in reverse order. For example, if the function had 10 arguments, you would push the 10th first:
+
+```x86asm
+ push arg10
+ push arg9
+ push arg8
+ push arg7
+```
+
+This calling convention means that if you're calling a function written in C, C++, or even Rust, the function will read whatever is in the `rdi` CPU register and use that as the first argument.
+
+If you wanted to call the
+
+```x86asm
+extern pad_right
+section .data
+    message db "Hello", 0 ; null-terminated string
+section .bss
+    result  resb 11
+section .text
+    mov rdi, db  ; argument 1 
+    mov rsi, 10  ; argument 2
+    mov rdx, '-' ; argument 3
+    call pad_right
+    mov [result], rax ; result
+```
+
+The calling convention states that the register `rax` will be populated with the result. Because this function returns a `char *`, we expect the result to be a pointer (64-bit memory address value).
+We reserved 11 bytes (10 letters + null terminator) in the `bss` section and then write the result `rax` to that address.
+
+Something else important to remember is that assembly doesn't have scope. So if you were using a register for something, like storing a value, then called an external function, that register could have changed values.
+Registers are effectively global.
+
+The correct way to preserve the state of your registers before calling functions is to push them onto the value stack, then pop them back off when the function call has completed:
+
+```x86asm
+... do stuff with r9
+push r9
+call externalFunction
+pop r9
+```
+
+When you are building your own functions, its expected that you preserve the call frame during your instructions. The call frame uses the stack pointer (`rsp`) and `rbp` registers.
+To accomplish this, assembly functions should include some extra instructions at the beginning and end (called the prolog and epilog):
+
+```x86asm
+push rbp
+mov rbp, rsp
+
+... your code
+
+mov rsp, rbp
+pop rbp
+```
+
+Windows defines [another calling convention](https://docs.microsoft.com/en-us/cpp/build/x64-calling-convention?view=vs-2019), using different registers for the arguments.
+It also requires a different prolog and epilog, which calculates address limits. This is a bit more complex than the original Intel spec.
 
 ### Turning assembly into an executable
 
@@ -126,8 +225,8 @@ You can't execute an assembly source file directly. It may seem like you're codi
 The assembler will take an assembly source file and assemble it into a machine-code format. The formats are Operating System specific. Some common formats for executable code are:
 
 - [Mach-O](https://en.wikipedia.org/wiki/Mach-O) for macOS
-- [ELF](https://en.wikipedia.org/wiki/Executable_and_Linkable_Format) for Linux
-- [PE] for Windows
+- [ELF](https://refspecs.linuxfoundation.org/elf/elf.pdf) for Linux
+- [PE](https://docs.microsoft.com/en-us/windows/win32/debug/pe-format) for Windows
 
 Executable file formats include a few components, not just instructions:
 
@@ -141,7 +240,7 @@ EFF headers also contain some other useful information that the Operating System
 The Mach-O format contains a detailed header before any data or instructions. I like a program called [SynalizeIT!](https://www.synalysis.net), a HEX Editor that can apply binary grammars to visualize and decode binary file formats.
 The Mach-O format is a supported grammar, and if you open up the CPython executable (`/usr/bin/python3` or whereever you've installed it), you can see and explore those headers.
 
-![synalize-screenshot-1](/img/posts/synalize-screenshot-1.png){: .img-responsive .center-block}
+![synalize-screenshot-1](/img/posts/synalize-screenshot-1.png)
 
 On the right, you can see some attributes like:
 
@@ -149,7 +248,210 @@ On the right, you can see some attributes like:
 - The length, positions and offsets of the data, text and bss sections
 - Any runtime flags, such as Position-Independent-Executable (PIE) (covered later)
 
-## Compilation, assembly and linking
+### Complex data structures in assembly
+
+If you were calling a function that had a more complex data type for its argument (like a pointer to a `struct`), you need to be aware of the storage size
+of the C data types:
+
+| Scalar Type             | C Data Type                     | Storage Size (in bytes) | Recommended Alignment |
+|-------------------------|---------------------------------|-------------------------|-----------------------|
+| INT8                    | `char`                          | 1                       | Byte                  |
+| UINT8                   | `unsigned char`                 | 1                       | Byte                  |
+| INT16                   | `short`                         | 2                       | Word                  |
+| UINT16                  | `unsigned short`                | 2                       | Word                  |
+| INT32                   | `int`, `long`                   | 4                       | Doubleword            |
+| UINT32                  | `unsigned int`, `unsigned long` | 4                       | Doubleword            |
+| INT64                   | `__int64`                       | 8                       | Quadword              |
+| UINT64                  | `unsigned __int64`              | 8                       | Quadword              |
+| FP32 (single precision) | `float`                         | 4                       | Doubleword            |
+| FP64 (double precision) | `double`                        | 8                       | Quadword              |
+| POINTER                 | `*`                             | 8                       | Quadword              |
+
+Take this example of a struct in C with 3 integer fields (`x`, `y`, and `z`):
+
+```c
+typedef struct { 
+    int x; 
+    int y;
+    int z;
+} position
+```
+
+Each of those 3 fields would use 4 bytes (32-bits), so if you were to define in C:
+
+```c
+position myself = { 3, 9, 0} ;
+```
+
+That would equate the variable `myself` to the hexadecimal value:
+
+```
+0000 0003 0000 0009 0000 0000
+```
+
+You can recreate this structure in NASM assembly using the `struc` and `istruc` macros:
+
+```x86asm
+section .data:
+    struc position
+        x: resd 1
+        y: resd 1
+        z: resd 1
+    endstruc
+    
+    myself:
+        istruc position
+            at x, dd 3
+            at y, dd 9
+            at z, dd 0
+        iend
+```
+
+The `struc` macro is equivalent to the `struct` construct in C, for defining memory structures. The `istruc` allocates a constant value with the values defined.
+The instruction `resd` means to reserve a double word (4 bytes), the `dd` means to define a double word to the value.
+
+This would create the identical memory sequence:
+
+```
+0000 0003 0000 0009 0000 0000
+```
+
+Because this doesn't fit into 64-bits, you would send a pointer to the address of the allocated memory.
+
+If, in C you had a function that used the typedef:
+
+```c
+void calculatePosition(position* p);
+```
+
+You could call that function from assembly by setting the `rdi` register to the address of your allocated memory:
+
+```x86asm
+mov rdi, myself
+call calculatePosition
+```
+
+The function, `calculatePosition` is ignorant to whether it's being called by code written in C, Assembly, C++, etc.
+
+Its this principal that I'll explore next to see if we can write a dynamically loaded CPython Extension in Assembly.
+
+## Registering the Python Extension module
+
+
+
+
+```x86asm
+default rel
+bits 64
+%ifdef NOPIE
+    %define PYMODULE_CREATE2 PyModule_Create2
+%else
+    %define PYMODULE_CREATE2 PyModule_Create2 wrt ..plt
+%endif
+```
+
+```x86asm
+section .data
+    modulename db "pymult", 0
+    docstring db "Simple Multiplication function", 0
+
+    struc   moduledef
+        ;pyobject header
+        m_object_head_size: resq 1
+        m_object_head_type: resq 1
+        ;pymoduledef_base
+        m_init: resq 1
+        m_index: resq 1
+        m_copy: resq 1
+        ;moduledef
+        m_name:	resq	1
+        m_doc:	resq	1
+        m_size:	resq	1
+        m_methods:	resq	1
+        m_slots: resq	1
+        m_traverse: resq	1
+        m_clear: resq	1
+        m_free: resq	1
+    endstruc
+
+section .bss
+section .text
+```
+
+```x86asm
+global PyInit_pymult
+```
+
+```x86asm
+PyInit_pymult:
+    extern PyModule_Create2
+    section .data
+
+        _moduledef:
+            istruc moduledef
+                at m_object_head_size, dq  1
+                at m_object_head_type, dq 0x0  ; null
+                at m_init, dq 0x0       ; null
+                at m_index, dq 0        ; zero
+                at m_copy, dq 0x0       ; null
+                at m_name, dq modulename
+                at m_doc, dq   docstring
+                at m_size, dq 2
+                at m_methods, dq 0 ; null - no functions
+                at m_slots, dq 0    ; null- no slots
+                at m_traverse, dq 0 ; null
+                at m_clear, dq 0    ; null - no custom clear
+                at m_free, dq 0     ; null - no custom free()
+            iend
+```
+
+The C code we're trying to recreate is a function called `PyInit_pymult()` that returns a `PyObject*`, which is created by calling `PyModule_Create2()`.
+
+
+```c
+PyObject* PyInit_pymult() {
+    return PyModule_Create2(&_moduledef, METH_VARARGS); 
+}
+```
+
+```x86asm
+    section .text
+        push rbp                    ; preserve stack pointer
+        mov rbp, rsp
+
+        lea rdi, [_moduledef]  ; load module def
+        mov esi, 0x3f5              ; 1033 - module_api_version
+        call PYMODULE_CREATE2       ; create module, leave return value in register as return result
+
+        mov rsp, rbp ; reinit stack pointer
+        pop rbp
+        ret
+```
+
+## Adding a function to the module
+```x86asm
+    struc methoddef
+        ml_name:  resq 1
+        ml_meth: resq 1
+        ml_flags: resd 1
+        ml_doc: resq 1
+        ml_term: resq 1
+        ml_term2: resq 1
+    endstruc
+
+    method1name db "multiply", 0
+    method1doc db "Multiply two values", 0
+
+    _method1def:
+        istruc methoddef
+            at ml_name, dq method1name
+            at ml_meth, dq PyMult_multiply
+            at ml_flags, dd 0x0001 ; METH_VARARGS
+            at ml_doc, dq 0x0
+            at ml_term, dq 0x0 ; Method defs are terminated by two NULL values,
+            at ml_term2, dq 0x0 ; equivalent to qword[0x0], qword[0x0]
+        iend
+```
 
 ## Extending setuptools/distutils
 
