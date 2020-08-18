@@ -413,7 +413,6 @@ PyInit_pymult:
 
 The C code we're trying to recreate is a function called `PyInit_pymult()` that returns a `PyObject*`, which is created by calling `PyModule_Create2()`.
 
-
 ```c
 PyObject* PyInit_pymult() {
     return PyModule_Create2(&_moduledef, METH_VARARGS); 
@@ -432,6 +431,92 @@ PyObject* PyInit_pymult() {
         mov rsp, rbp ; reinit stack pointer
         pop rbp
         ret
+```
+
+Next, to compile the source, we have to assemble the `pymult.asm` file, then link it to the `libpythonXX` library.
+This is done in two steps. The first step is to create the object file, using `nasm`. The second step is to link the object file with the Python 3.X (in my case 3.9) library:
+
+```console
+nasm -g -f macho64 -DMACOS --prefix=_ pymult.asm -o pymult.obj
+cc -shared -g pymult.obj -L/Library/Frameworks/Python.framework/Versions/3.9/lib -lpython3.9 -o pymult.cpython-39-darwin.so
+```
+
+This will produce the artifact `pymult.cpython-39-darwin.so` which can be loaded into
+Because we build with the debug symbols (the `-g` flag), the lldb or gdb debugger can be used to set a breakpoint in the assembly code.
+
+```console
+ $ lldb python3.9
+(lldb) target create "python3.9"
+Current executable set to 'python3.9' (x86_64).
+(lldb) b pymult.asm:128
+Breakpoint 2: where = pymult.cpython-39-darwin.so`PyInit_pymult + 16, address = 0x00000001059c7f6c
+```
+
+When the module is loaded, lldb will hit the breakpoint. You can start the process with the arguments `-c 'import pymult'` to just import the new module and quit:
+
+```console
+(lldb) process launch -- -c "import pymult"
+Process 30590 launched: '/Library/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python' (x86_64)
+1 location added to breakpoint 1
+Process 30590 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
+    frame #0: 0x00000001007f6f6c pymult.cpython-39-darwin.so`PyInit_pymult at pymult.asm:128
+   125
+   126 	        lea rdi, [_moduledef]  ; load module def
+   127 	        mov esi, 0x3f5              ; 1033 - module_api_version
+-> 128 	        call PyModule_Create2       ; create module, leave return value in register as return result
+   129
+   130 	        mov rsp, rbp ; reinit stack pointer
+   131 	        pop rbp
+Target 0: (Python) stopped.
+```
+
+Hooray! The module is being initialized. At this point you can manipulate any of the registers or visualize the data.
+
+```
+(lldb) reg r
+General Purpose Registers:
+       rax = 0x00000001007d3d20
+       rbx = 0x0000000000000000
+       rcx = 0x000000000000000f
+       rdx = 0x0000000101874930
+       rdi = 0x00000001007f709a  pymult.cpython-39-darwin.so`..@31.strucstart
+       rsi = 0x00000000000003f5
+       rbp = 0x00007ffeefbfdbf0
+       rsp = 0x00007ffeefbfdbf0
+        r8 = 0x0000000000000000
+        r9 = 0x0000000000000000
+       r10 = 0x0000000000000000
+       r11 = 0x0000000000000000
+       r12 = 0x00000001007d3cf0
+       r13 = 0x000000010187c670
+       r14 = 0x00000001007f6f5c  pymult.cpython-39-darwin.so`PyInit_pymult
+       r15 = 0x00000001003a1520  Python`_Py_PackageContext
+       rip = 0x00000001007f6f6c  pymult.cpython-39-darwin.so`PyInit_pymult + 16
+    rflags = 0x0000000000000202
+        cs = 0x000000000000002b
+        fs = 0x0000000000000000
+        gs = 0x0000000000000000
+```
+
+You can also inspect the frame and see the frame stack:
+
+```
+(lldb) fr info
+frame #0: 0x0000000101adbf6c pymult.cpython-39-darwin.so`PyInit_pymult at pymult.asm:128
+(lldb) bt
+* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
+  * frame #0: 0x0000000101adbf6c pymult.cpython-39-darwin.so`PyInit_pymult at pymult.asm:128
+    frame #1: 0x000000010023326a Python`_PyImport_LoadDynamicModuleWithSpec + 714
+    frame #2: 0x0000000100232a2a Python`_imp_create_dynamic + 298
+    frame #3: 0x0000000100166699 Python`cfunction_vectorcall_FASTCALL + 217
+    frame #4: 0x000000010020131c Python`_PyEval_EvalFrameDefault + 28636
+    frame #5: 0x0000000100204373 Python`_PyEval_EvalCode + 2611
+    frame #6: 0x00000001001295b1 Python`_PyFunction_Vectorcall + 289
+    frame #7: 0x0000000100203567 Python`call_function + 471
+    frame #8: 0x0000000100200c1e Python`_PyEval_EvalFrameDefault + 26846
+    frame #9: 0x0000000100129625 Python`function_code_fastcall + 101
+    ...
 ```
 
 ## Adding a function to the module
