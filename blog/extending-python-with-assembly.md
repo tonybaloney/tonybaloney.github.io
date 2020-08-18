@@ -8,7 +8,7 @@ blog_publish_date: August 15, 2020
 On occasion, you need to take something apart and put it back together to fully understand it. I'm sure many of the people reading this article will have been one of those kids. Kids who will take a screwdriver to something, just to see whats inside it.
 It's a thrill, but its a whole different skill to put it back together.
 
-![remote-control-car](/img/posts/remote-control-car.png){: style="width:40%"}
+![remote-control-car](/img/posts/remote-control-car.jpg){: style="width:40%"}
 
 The seamlessly working machine on the outside obscures a network of patterns, patches, and workarounds in its internals.
 Programmers are used to working on the guts of a system and changing the ugly-inner workings to coax it into doing what its been told.

@@ -11,11 +11,13 @@
   "devDependencies": {
     "bootstrap": "^3.3.7",
     "browser-sync": "^2.13.0",
+    "compress-images": "^1.9.3",
     "csso": "^4.0.3",
     "font-awesome": "^4.6.3",
     "gulp": "^3.9.1",
     "gulp-clean-css": "^4.2.0",
     "gulp-header": "^1.8.7",
+    "gulp-imagemin": "^7.1.0",
     "gulp-less": "^3.1.0",
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^1.5.4",
