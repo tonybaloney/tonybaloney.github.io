@@ -18,6 +18,12 @@ This experiment was no different. I wanted to see if I could write a CPython Ext
 Why? Well, because after finishing the [CPython Internals book](https://realpython.com/cpython-book), the assembly code was still something of a mystery. I started learning x86-64 assembly from Jo Van Hooey's book and understood some of the basic concepts but struggled to relate
 them to the high-level languages that I'm familiar with.
 
+There are some questions I wanted answers to, like:
+
+- Why do extensions in CPython need to be written in Python or C?
+- If Python C extensions compile to shared libraries, whats the magic inside them that makes them loadable by Python?
+- What ABI does CPython have between C that could make it more extensible by other languages
+
 ## Assembly quick summary
 
 Assembly code is a sequence of instructions, using an instruction set. Different CPU architectures have different instruction sets. With the most common being x86, ARM, and x86-64.
@@ -429,6 +435,7 @@ PyObject* PyInit_pymult() {
 ```
 
 ## Adding a function to the module
+
 ```x86asm
     struc methoddef
         ml_name:  resq 1
@@ -451,6 +458,60 @@ PyObject* PyInit_pymult() {
             at ml_term, dq 0x0 ; Method defs are terminated by two NULL values,
             at ml_term2, dq 0x0 ; equivalent to qword[0x0], qword[0x0]
         iend
+```
+
+```x86asm
+global PyMult_multiply
+
+PyMult_multiply:
+    ;
+    ; pymult.multiply (a, b)
+    ; Multiplies a and b
+    ; Returns value as PyLong(PyObject*)
+    extern PyLong_FromLong
+    extern PyLong_AsLong
+    extern PyArg_ParseTuple
+    section .data
+        parseStr db "LL", 0 ; convert arguments to Long, Long
+    section .bss
+        result resq 1 ; long result
+        x resq 1      ; long input
+        y resq 1      ; long input
+    section .text
+        push rbp ; preserve stack pointer
+        mov rbp, rsp
+        push rbx
+        sub rsp, 0x18
+
+        mov rdi, rsi                ; args
+        lea rsi, [parseStr]    ; Parse args to LL
+        xor ebx, ebx                ; clear the ebx
+        lea rdx, [x]           ; set the address of x as the 3rd arg
+        lea rcx, [y]           ; set the address of y as the 4th arg
+
+        xor eax, eax                ; clear eax
+        call PYARG_PARSETUPLE       ; Parse Args via C-API
+
+        test eax, eax               ; if PyArg_ParseTuple is NULL, exit with error
+        je badinput
+
+        mov rax, [x]                ; multiply x and y
+        imul qword[y]
+        mov [result], rax
+
+        mov edi, [result]           ; convert result to PyLong
+        call PYLONG_FROMLONG
+
+        mov rsp, rbp ; reinit stack pointer
+        pop rbp
+        ret
+
+        badinput:
+            mov rax, rbx
+            add rsp, 0x18
+            pop rbx
+            pop rbp
+            ret
 ```
 
 ## Extending setuptools/distutils

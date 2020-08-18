@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Writing Python Extensions in Assembly</title>
+
+    <!-- Facebook Meta tags -->
+    <meta property="og:title" content="Writing Python Extensions in Assembly">
+    <meta property="og:description" content="A deep-dive technical overview of how you can write CPython extensions in assembly (with a bonus tutorial on assembly programming)">
+    <meta property="og:image" content="https://tonybaloney.github.io/img/posts/hammer-screw.jpeg">
+    <meta property="og:url" content="https://tonybaloney.github.io/posts/extending-python-with-assembly.html">
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:title" content="Writing Python Extensions in Assembly">
+    <meta name="twitter:description" content="A deep-dive technical overview of how you can write CPython extensions in assembly (with a bonus tutorial on assembly programming)">
+    <meta name="twitter:image" content="https://tonybaloney.github.io/img/posts/hammer-screw.jpeg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@anthonypjshaw">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="/css/clean-blog.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js"></script>
+
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/x86asm.min.js"></script>
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/python.min.js"></script>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    Menu <i class="fa fa-bars"></i>
+                </button>
+
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/#">Home</a>
+                    </li>
+                    <li>
+                        <a href="/#projects">Projects</a>
+                    </li>
+                    <li>
+                        <a href="/#contributions">Contributions</a>
+                    </li>
+                    <li>
+                        <a href="/#courses">Courses</a>
+                    </li>
+                    <li>
+                        <a href="/#podcasts">Podcasts</a>
+                    </li>
+                    <li>
+                        <a href="/#talks">Talks</a>
+                    </li>
+                    <li>
+                        <a href="/#blog">Blog</a>
+                    </li>
+                    <li>
+                        <a href="https://twitter.com/anthonypjshaw"><i class='fa fa-2x fa-twitter'></i></a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/tonybaloney"><i class='fa fa-2x fa-github'></i></a>
+                    </li>
+                    <li>
+                        <a href="/rss.xml"><i class='fa fa-2x fa-rss-square'></i></a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('/img/posts/hammer-screw.jpeg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="site-heading">
+                        <h1>Writing Python Extensions in Assembly</h1>
+                        <hr class="small">
+                        <span class="subheading">by Anthony Shaw, August 15, 2020</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <p>On occasion, you need to take something apart and put it back together to fully understand it. I&rsquo;m sure many of the people reading this article will have been one of those kids. Kids who will take a screwdriver to something, just to see whats inside it.
+It&rsquo;s a thrill, but its a whole different skill to put it back together.</p>
+<p><img alt="remote-control-car" class="img-responsive center-block" src="/img/posts/remote-control-car.png" style="width:40%"></p>
+<p>The seamlessly working machine on the outside obscures a network of patterns, patches, and workarounds in its internals.
+Programmers are used to working on the guts of a system and changing the ugly-inner workings to coax it into doing what its been told.</p>
+<p>This experiment was no different. I wanted to see if I could write a CPython Extension in 100% assembly.</p>
+<p>Why? Well, because after finishing the <a href="https://realpython.com/cpython-book">CPython Internals book</a>, the assembly code was still something of a mystery. I started learning x86-64 assembly from Jo Van Hooey&rsquo;s book and understood some of the basic concepts but struggled to relate
+them to the high-level languages that I&rsquo;m familiar with.</p>
+<p>There are some questions I wanted answers to, like:</p>
+<ul>
+<li>Why do extensions in CPython need to be written in Python or C?</li>
+<li>If Python C extensions compile to shared libraries, whats the magic inside them that makes them loadable by Python?</li>
+<li>What ABI does CPython have between C that could make it more extensible by other languages</li>
+</ul>
+<h2>Assembly quick summary</h2>
+<p>Assembly code is a sequence of instructions, using an instruction set. Different CPU architectures have different instruction sets. With the most common being x86, ARM, and x86-64.
+There are also extension instructions on those CPU architectures. Over releases of a CPU architecture the manufacturers add new instructions to the set. Often to improve performance.</p>
+<p>The CPU has many registers and it loads data from registers to execute the instructions. You can also copy data from memory (RAM), but you can&rsquo;t copy from RAM to RAM, it must go via a register.
+This means that when writing assembly instructions, you need to need to run many steps to accomplish something which would otherwise be done in 1 line in a higher-level language.</p>
+<p>For example, to assign a variable <code>a</code> to the reference of variable <code>b</code> in Python:</p>
+<pre><code class="python">a = b
+</code></pre>
+
+<p>Whereas in assembly, you copy first to a register (we&rsquo;ll use RAX) and then to the destination:</p>
+<pre><code class="x86asm">mov RAX, a
+mov b, RAX
+</code></pre>
+
+<p>The instruction <code>mov RAX, a</code> will copy the <strong>address</strong> of the variable <code>a</code> to the register. The register RAX is a <strong>64-bit register</strong>, so it can contain any value which fits into 64 bits (8 bytes).
+On a 64-bit Operating System, memory addresses are 64-bit addresses, so the address value will be 64 bits.</p>
+<p>You can also copy the <strong>value</strong> of the variable to the register by using <code>[]</code> around the name:</p>
+<pre><code>mov a, 1
+mov RAX, [a]
+</code></pre>
+
+<p>Now the value of the <code>RAX</code> register will be the decimal value 1 (<code>0000 0000 0000 0001</code> in hexadecimal).</p>
+<p>I picked RAX because it&rsquo;s the first register, but you can arbitrary pick any register if you&rsquo;re writing a standalone application.</p>
+<p>64-bit registers start with <code>r</code>, the first 8 registers can also be used with 32, 16 or 8-bit values by referencing the lower bits of the register. Addressing 32-bits of a register is faster, so most compilers will use a smaller register address if the
+value is within 32-bits:</p>
+<table class="table">
+<thead>
+<tr>
+<th>64-bit register</th>
+<th>Lower 32 bits</th>
+<th>Lower 16 bits</th>
+<th>Lower 8 bits</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rax</td>
+<td>eax</td>
+<td>ax</td>
+<td>al</td>
+</tr>
+<tr>
+<td>rbx</td>
+<td>ebx</td>
+<td>bx</td>
+<td>bl</td>
+</tr>
+<tr>
+<td>rcx</td>
+<td>ecx</td>
+<td>cx</td>
+<td>cl</td>
+</tr>
+<tr>
+<td>rdx</td>
+<td>edx</td>
+<td>dx</td>
+<td>dl</td>
+</tr>
+<tr>
+<td>rsi</td>
+<td>esi</td>
+<td>si</td>
+<td>sil</td>
+</tr>
+<tr>
+<td>rdi</td>
+<td>edi</td>
+<td>di</td>
+<td>dil</td>
+</tr>
+<tr>
+<td>rbp</td>
+<td>ebp</td>
+<td>bp</td>
+<td>bpl</td>
+</tr>
+<tr>
+<td>rsp</td>
+<td>esp</td>
+<td>sp</td>
+<td>spl</td>
+</tr>
+<tr>
+<td>r8</td>
+<td>r8d</td>
+<td>r8w</td>
+<td>r8b</td>
+</tr>
+<tr>
+<td>r9</td>
+<td>r9d</td>
+<td>r9w</td>
+<td>r9b</td>
+</tr>
+<tr>
+<td>r10</td>
+<td>r10d</td>
+<td>r10w</td>
+<td>r10b</td>
+</tr>
+<tr>
+<td>r11</td>
+<td>r11d</td>
+<td>r11w</td>
+<td>r11b</td>
+</tr>
+<tr>
+<td>r12</td>
+<td>r12d</td>
+<td>r12w</td>
+<td>r12b</td>
+</tr>
+<tr>
+<td>r13</td>
+<td>r13d</td>
+<td>r13w</td>
+<td>r13b</td>
+</tr>
+<tr>
+<td>r14</td>
+<td>r14d</td>
+<td>r14w</td>
+<td>r14b</td>
+</tr>
+<tr>
+<td>r15</td>
+<td>r15d</td>
+<td>r15w</td>
+<td>r15b</td>
+</tr>
+</tbody>
+</table>
+<p>As assembly is a sequence of instructions, branching can be tricky. The way to implement branching is to use conditional and unconditional jump statements to move the instruction pointer (<code>rip</code>) to the instruction address.
+Instruction addresses can be labeled in the assembly source code and the assembly will replace these names with a actual memory address. This address is either relative or absolute (will be explained later).</p>
+<pre><code>jmp leapfrog ; jump to leapfrog label
+mov rax, rcx ; this never gets executed
+leapfrog:
+mov rcx, rax
+</code></pre>
+
+<p>This simple Python code, contains a branch when comparing <code>a</code> with the decimal value <code>5</code>:</p>
+<pre><code class="python">a = 2
+a += 3
+if a == 5:
+  print(&quot;YES&quot;)
+else:
+  print(&quot;NO&quot;)
+</code></pre>
+
+<p>You could do this in assembly by simplifying the assignment of (<code>a</code> and increment by <code>3</code>) into a simple comparison.
+Most compilers would make this sort of optimization automatically, because they would determine that you&rsquo;re comparing constant values.</p>
+<p>Here is some pseudo-assembly to demonstrate:</p>
+<pre><code class="x86asm"> mov rcx, 2  ; Move the decimal value 2 to the RCX CPU register
+ add rcx, 3  ; Add 3 to the value in the RCX CPU register, RCX is now equal to 5
+ cmp rcx, 5  ; Compare RCX to the value 5, 
+ je YES      ; If the comparison was equal, jump to the instruction offset YES
+ jmp NO      ; Jump to the instruction offset NO
+ YES:  ; RCX == 5
+   ... 
+   jmp END
+ NO:   ; RCX != 5
+   ...
+   jmp END
+</code></pre>
+
+<h3>Calling external functions</h3>
+<p>Unless you want to entirely reinvent the wheel, your application or library will probably be using functions from other compiled libraries.</p>
+<p>In assembly, you can refer to the address of an external function by using the <code>extern</code> instruction with the symbol name.
+The linker will replace this with the actual value of the library, if the executable is statically linked, or depend upon a runtime value if the executable is dynamically linked. I don&rsquo;t want to get into linking in this article
+otherwise it will keep going into a mini-book (and I don&rsquo;t really know that much about linkers).</p>
+<p>If you were writing an application in C and required to call a function in another library, you would use the Header (H) file.</p>
+<p>Header files would tell the compiler:</p>
+<ul>
+<li>The name of the function (symbol)</li>
+<li>Its return value and the size of the response</li>
+<li>The arguments and their types</li>
+</ul>
+<p>For example, if you defined a function in C:</p>
+<pre><code class="c">char* pad_right(char * message, int width, char padding);
+</code></pre>
+
+<p>What this header tells us:
+- The function takes 3 arguments
+- The first argument is a <code>char</code> pointer, so a 64-bit address to an 8-bit value (<code>char</code>)
+- The second argument is an int, which (depending on the OS and some other factors) is probably a 32-bit value
+- The third argument is a <code>char</code>, which is 8-bits
+- The response is a <code>char</code> pointer, so we need a 64-bit address to store the result</p>
+<p>Assembly function calls don&rsquo;t have the concept of arguments, but instead Operating Systems define a specification (called a calling convention) on which registers
+should be used for which argument.</p>
+<p>Luckily, macOS and Linux have the same <a href="https://software.intel.com/sites/default/files/article/402129/mpx-linux64-abi.pdf">calling conventions</a> for arguments, which states that the following registers should be populated with the values of the arguments when a function is called:</p>
+<table class="table">
+<thead>
+<tr>
+<th>Argument</th>
+<th>64-bit Register</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argument 1</td>
+<td>rdi</td>
+</tr>
+<tr>
+<td>Argument 2</td>
+<td>rsi</td>
+</tr>
+<tr>
+<td>Argument 3</td>
+<td>rdx</td>
+</tr>
+<tr>
+<td>Argument 4</td>
+<td>rcx</td>
+</tr>
+<tr>
+<td>Argument 5</td>
+<td>r8</td>
+</tr>
+<tr>
+<td>Argument 6</td>
+<td>r9</td>
+</tr>
+</tbody>
+</table>
+<p>NB: Windows has a different calling convention, which uses different registers.</p>
+<p>Additional arguments are loaded from the value stack, and because its a value stack you push them in reverse order. For example, if the function had 10 arguments, you would push the 10th first:</p>
+<pre><code class="x86asm"> push arg10
+ push arg9
+ push arg8
+ push arg7
+</code></pre>
+
+<p>This calling convention means that if you&rsquo;re calling a function written in C, C++, or even Rust, the function will read whatever is in the <code>rdi</code> CPU register and use that as the first argument.</p>
+<p>If you wanted to call the</p>
+<pre><code class="x86asm">extern pad_right
+section .data
+    message db &quot;Hello&quot;, 0 ; null-terminated string
+section .bss
+    result  resb 11
+section .text
+    mov rdi, db  ; argument 1 
+    mov rsi, 10  ; argument 2
+    mov rdx, '-' ; argument 3
+    call pad_right
+    mov [result], rax ; result
+</code></pre>
+
+<p>The calling convention states that the register <code>rax</code> will be populated with the result. Because this function returns a <code>char *</code>, we expect the result to be a pointer (64-bit memory address value).
+We reserved 11 bytes (10 letters + null terminator) in the <code>bss</code> section and then write the result <code>rax</code> to that address.</p>
+<p>Something else important to remember is that assembly doesn&rsquo;t have scope. So if you were using a register for something, like storing a value, then called an external function, that register could have changed values.
+Registers are effectively global.</p>
+<p>The correct way to preserve the state of your registers before calling functions is to push them onto the value stack, then pop them back off when the function call has completed:</p>
+<pre><code class="x86asm">... do stuff with r9
+push r9
+call externalFunction
+pop r9
+</code></pre>
+
+<p>When you are building your own functions, its expected that you preserve the call frame during your instructions. The call frame uses the stack pointer (<code>rsp</code>) and <code>rbp</code> registers.
+To accomplish this, assembly functions should include some extra instructions at the beginning and end (called the prolog and epilog):</p>
+<pre><code class="x86asm">push rbp
+mov rbp, rsp
+
+... your code
+
+mov rsp, rbp
+pop rbp
+</code></pre>
+
+<p>Windows defines <a href="https://docs.microsoft.com/en-us/cpp/build/x64-calling-convention?view=vs-2019">another calling convention</a>, using different registers for the arguments.
+It also requires a different prolog and epilog, which calculates address limits. This is a bit more complex than the original Intel spec.</p>
+<h3>Turning assembly into an executable</h3>
+<p>You can&rsquo;t execute an assembly source file directly. It may seem like you&rsquo;re coding machine-code, but there is a wrapper around the assembly instructions required to make the OS run the instructions (an Executable File Format).</p>
+<p>The assembler will take an assembly source file and assemble it into a machine-code format. The formats are Operating System specific. Some common formats for executable code are:</p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Mach-O">Mach-O</a> for macOS</li>
+<li><a href="https://refspecs.linuxfoundation.org/elf/elf.pdf">ELF</a> for Linux</li>
+<li><a href="https://docs.microsoft.com/en-us/windows/win32/debug/pe-format">PE</a> for Windows</li>
+</ul>
+<p>Executable file formats include a few components, not just instructions:</p>
+<ul>
+<li>The machine-code instructions (in a section called <code>text</code>)</li>
+<li>A list of external symbols (external references)</li>
+<li>A list of memory requirements (Bytes Started by Sequence, <code>bss</code> section)</li>
+<li>Constant values, like strings (in a section called <code>data</code>)</li>
+</ul>
+<p>EFF headers also contain some other useful information that the Operating System needs.</p>
+<p>The Mach-O format contains a detailed header before any data or instructions. I like a program called <a href="https://www.synalysis.net">SynalizeIT!</a>, a HEX Editor that can apply binary grammars to visualize and decode binary file formats.
+The Mach-O format is a supported grammar, and if you open up the CPython executable (<code>/usr/bin/python3</code> or whereever you&rsquo;ve installed it), you can see and explore those headers.</p>
+<p><img alt="synalize-screenshot-1" class="img-responsive center-block" src="/img/posts/synalize-screenshot-1.png"></p>
+<p>On the right, you can see some attributes like:</p>
+<ul>
+<li>The CPU architecture this binary was assembled for. In the future, when Apple release an ARM MacBook, this executable won&rsquo;t work as it will inspect this header and see a mismatch in the CPU architecture (before trying to load the instructions)</li>
+<li>The length, positions and offsets of the data, text and bss sections</li>
+<li>Any runtime flags, such as Position-Independent-Executable (PIE) (covered later)</li>
+</ul>
+<h3>Complex data structures in assembly</h3>
+<p>If you were calling a function that had a more complex data type for its argument (like a pointer to a <code>struct</code>), you need to be aware of the storage size
+of the C data types:</p>
+<table class="table">
+<thead>
+<tr>
+<th>Scalar Type</th>
+<th>C Data Type</th>
+<th>Storage Size (in bytes)</th>
+<th>Recommended Alignment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>INT8</td>
+<td><code>char</code></td>
+<td>1</td>
+<td>Byte</td>
+</tr>
+<tr>
+<td>UINT8</td>
+<td><code>unsigned char</code></td>
+<td>1</td>
+<td>Byte</td>
+</tr>
+<tr>
+<td>INT16</td>
+<td><code>short</code></td>
+<td>2</td>
+<td>Word</td>
+</tr>
+<tr>
+<td>UINT16</td>
+<td><code>unsigned short</code></td>
+<td>2</td>
+<td>Word</td>
+</tr>
+<tr>
+<td>INT32</td>
+<td><code>int</code>, <code>long</code></td>
+<td>4</td>
+<td>Doubleword</td>
+</tr>
+<tr>
+<td>UINT32</td>
+<td><code>unsigned int</code>, <code>unsigned long</code></td>
+<td>4</td>
+<td>Doubleword</td>
+</tr>
+<tr>
+<td>INT64</td>
+<td><code>__int64</code></td>
+<td>8</td>
+<td>Quadword</td>
+</tr>
+<tr>
+<td>UINT64</td>
+<td><code>unsigned __int64</code></td>
+<td>8</td>
+<td>Quadword</td>
+</tr>
+<tr>
+<td>FP32 (single precision)</td>
+<td><code>float</code></td>
+<td>4</td>
+<td>Doubleword</td>
+</tr>
+<tr>
+<td>FP64 (double precision)</td>
+<td><code>double</code></td>
+<td>8</td>
+<td>Quadword</td>
+</tr>
+<tr>
+<td>POINTER</td>
+<td><code>*</code></td>
+<td>8</td>
+<td>Quadword</td>
+</tr>
+</tbody>
+</table>
+<p>Take this example of a struct in C with 3 integer fields (<code>x</code>, <code>y</code>, and <code>z</code>):</p>
+<pre><code class="c">typedef struct { 
+    int x; 
+    int y;
+    int z;
+} position
+</code></pre>
+
+<p>Each of those 3 fields would use 4 bytes (32-bits), so if you were to define in C:</p>
+<pre><code class="c">position myself = { 3, 9, 0} ;
+</code></pre>
+
+<p>That would equate the variable <code>myself</code> to the hexadecimal value:</p>
+<pre><code>0000 0003 0000 0009 0000 0000
+</code></pre>
+
+<p>You can recreate this structure in NASM assembly using the <code>struc</code> and <code>istruc</code> macros:</p>
+<pre><code class="x86asm">section .data:
+    struc position
+        x: resd 1
+        y: resd 1
+        z: resd 1
+    endstruc
+
+    myself:
+        istruc position
+            at x, dd 3
+            at y, dd 9
+            at z, dd 0
+        iend
+</code></pre>
+
+<p>The <code>struc</code> macro is equivalent to the <code>struct</code> construct in C, for defining memory structures. The <code>istruc</code> allocates a constant value with the values defined.
+The instruction <code>resd</code> means to reserve a double word (4 bytes), the <code>dd</code> means to define a double word to the value.</p>
+<p>This would create the identical memory sequence:</p>
+<pre><code>0000 0003 0000 0009 0000 0000
+</code></pre>
+
+<p>Because this doesn&rsquo;t fit into 64-bits, you would send a pointer to the address of the allocated memory.</p>
+<p>If, in C you had a function that used the typedef:</p>
+<pre><code class="c">void calculatePosition(position* p);
+</code></pre>
+
+<p>You could call that function from assembly by setting the <code>rdi</code> register to the address of your allocated memory:</p>
+<pre><code class="x86asm">mov rdi, myself
+call calculatePosition
+</code></pre>
+
+<p>The function, <code>calculatePosition</code> is ignorant to whether it&rsquo;s being called by code written in C, Assembly, C++, etc.</p>
+<p>Its this principal that I&rsquo;ll explore next to see if we can write a dynamically loaded CPython Extension in Assembly.</p>
+<h2>Registering the Python Extension module</h2>
+<pre><code class="x86asm">default rel
+bits 64
+%ifdef NOPIE
+    %define PYMODULE_CREATE2 PyModule_Create2
+%else
+    %define PYMODULE_CREATE2 PyModule_Create2 wrt ..plt
+%endif
+</code></pre>
+
+<pre><code class="x86asm">section .data
+    modulename db &quot;pymult&quot;, 0
+    docstring db &quot;Simple Multiplication function&quot;, 0
+
+    struc   moduledef
+        ;pyobject header
+        m_object_head_size: resq 1
+        m_object_head_type: resq 1
+        ;pymoduledef_base
+        m_init: resq 1
+        m_index: resq 1
+        m_copy: resq 1
+        ;moduledef
+        m_name: resq    1
+        m_doc:  resq    1
+        m_size: resq    1
+        m_methods:  resq    1
+        m_slots: resq   1
+        m_traverse: resq    1
+        m_clear: resq   1
+        m_free: resq    1
+    endstruc
+
+section .bss
+section .text
+</code></pre>
+
+<pre><code class="x86asm">global PyInit_pymult
+</code></pre>
+
+<pre><code class="x86asm">PyInit_pymult:
+    extern PyModule_Create2
+    section .data
+
+        _moduledef:
+            istruc moduledef
+                at m_object_head_size, dq  1
+                at m_object_head_type, dq 0x0  ; null
+                at m_init, dq 0x0       ; null
+                at m_index, dq 0        ; zero
+                at m_copy, dq 0x0       ; null
+                at m_name, dq modulename
+                at m_doc, dq   docstring
+                at m_size, dq 2
+                at m_methods, dq 0 ; null - no functions
+                at m_slots, dq 0    ; null- no slots
+                at m_traverse, dq 0 ; null
+                at m_clear, dq 0    ; null - no custom clear
+                at m_free, dq 0     ; null - no custom free()
+            iend
+</code></pre>
+
+<p>The C code we&rsquo;re trying to recreate is a function called <code>PyInit_pymult()</code> that returns a <code>PyObject*</code>, which is created by calling <code>PyModule_Create2()</code>.</p>
+<pre><code class="c">PyObject* PyInit_pymult() {
+    return PyModule_Create2(&amp;_moduledef, METH_VARARGS); 
+}
+</code></pre>
+
+<pre><code class="x86asm">    section .text
+        push rbp                    ; preserve stack pointer
+        mov rbp, rsp
+
+        lea rdi, [_moduledef]  ; load module def
+        mov esi, 0x3f5              ; 1033 - module_api_version
+        call PYMODULE_CREATE2       ; create module, leave return value in register as return result
+
+        mov rsp, rbp ; reinit stack pointer
+        pop rbp
+        ret
+</code></pre>
+
+<h2>Adding a function to the module</h2>
+<pre><code class="x86asm">    struc methoddef
+        ml_name:  resq 1
+        ml_meth: resq 1
+        ml_flags: resd 1
+        ml_doc: resq 1
+        ml_term: resq 1
+        ml_term2: resq 1
+    endstruc
+
+    method1name db &quot;multiply&quot;, 0
+    method1doc db &quot;Multiply two values&quot;, 0
+
+    _method1def:
+        istruc methoddef
+            at ml_name, dq method1name
+            at ml_meth, dq PyMult_multiply
+            at ml_flags, dd 0x0001 ; METH_VARARGS
+            at ml_doc, dq 0x0
+            at ml_term, dq 0x0 ; Method defs are terminated by two NULL values,
+            at ml_term2, dq 0x0 ; equivalent to qword[0x0], qword[0x0]
+        iend
+</code></pre>
+
+<pre><code class="x86asm">global PyMult_multiply
+
+PyMult_multiply:
+    ;
+    ; pymult.multiply (a, b)
+    ; Multiplies a and b
+    ; Returns value as PyLong(PyObject*)
+    extern PyLong_FromLong
+    extern PyLong_AsLong
+    extern PyArg_ParseTuple
+    section .data
+        parseStr db &quot;LL&quot;, 0 ; convert arguments to Long, Long
+    section .bss
+        result resq 1 ; long result
+        x resq 1      ; long input
+        y resq 1      ; long input
+    section .text
+        push rbp ; preserve stack pointer
+        mov rbp, rsp
+        push rbx
+        sub rsp, 0x18
+
+        mov rdi, rsi                ; args
+        lea rsi, [parseStr]    ; Parse args to LL
+        xor ebx, ebx                ; clear the ebx
+        lea rdx, [x]           ; set the address of x as the 3rd arg
+        lea rcx, [y]           ; set the address of y as the 4th arg
+
+        xor eax, eax                ; clear eax
+        call PYARG_PARSETUPLE       ; Parse Args via C-API
+
+        test eax, eax               ; if PyArg_ParseTuple is NULL, exit with error
+        je badinput
+
+        mov rax, [x]                ; multiply x and y
+        imul qword[y]
+        mov [result], rax
+
+        mov edi, [result]           ; convert result to PyLong
+        call PYLONG_FROMLONG
+
+        mov rsp, rbp ; reinit stack pointer
+        pop rbp
+        ret
+
+        badinput:
+            mov rax, rbx
+            add rsp, 0x18
+            pop rbx
+            pop rbp
+            ret
+</code></pre>
+
+<h2>Extending setuptools/distutils</h2>
+<h2>GitHub CI/CD workflows</h2>
+<h2></h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-8">
+                <a class="btn-default btn"
+                   href="https://twitter.com/intent/tweet">
+                    <i class="fa fa-twitter"></i>
+                    Share on Twitter</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="https://twitter.com/anthonypjshaw">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://medium.com/@anthonypjshaw">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-medium fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/tonybaloney">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Copyright &copy; Anthony Shaw 2020</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="/js/clean-blog.min.js"></script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Twitter Helper -->
+    <script>window.twttr = (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0],
+            t = window.twttr || {};
+        if (d.getElementById(id)) return t;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://platform.twitter.com/widgets.js";
+        fjs.parentNode.insertBefore(js, fjs);
+
+        t._e = [];
+        t.ready = function(f) {
+            t._e.push(f);
+        };
+        return t;
+    }(document, "script", "twitter-wjs"));</script>
+</body>
+</html>
