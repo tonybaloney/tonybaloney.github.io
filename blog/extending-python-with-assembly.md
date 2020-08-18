@@ -1,4 +1,4 @@
-blog_heading: Writing Python Extensions in Assembly
+blog_heading: Writing Python Extensions in Assembly (with a bonus tutorial on assembly programming)
 blog_subheading: A deep-dive technical overview of how you can write CPython extensions in assembly
 blog_header_image: posts/hammer-screw.jpeg
 blog_author: Anthony Shaw
@@ -20,13 +20,69 @@ them to the high-level languages that I'm familiar with.
 
 ## Assembly quick summary
 
-Assembly code is a sequence of instructions, using an instruction set. Different CPU architectures have instruction sets, the most common being x86, ARM, and x86-64.
+Assembly code is a sequence of instructions, using an instruction set. Different CPU architectures have different instruction sets. With the most common being x86, ARM, and x86-64.
 There are also extension instructions on those CPU architectures. Over releases of a CPU architecture the manufacturers add new instructions to the set. Often to improve performance.
 
-Assembly is a sequence of instructions and you can only copy from memory to a CPU register. The CPU has many registers,
+The CPU has many registers and it loads data from registers to execute the instructions. You can also copy data from memory (RAM), but you can't copy from RAM to RAM, it must go via a register.
+This means that when writing assembly instructions, you need to need to run many steps to accomplish something which would otherwise be done in 1 line in a higher-level language.
+
+For example, to assign a variable `a` to the reference of variable `b` in Python:
+
+```python
+a = b
+```
+
+Whereas in assembly, you copy first to a register (we'll use RAX) and then to the destination:
+
+```assembly
+mov RAX, a
+mov b, RAX
+```
+
+The instruction `mov RAX, a` will copy the __address__ of the variable `a` to the register. The register RAX is a **64-bit register**, so it can contain any value which fits into 64 bits (8 bytes).
+On a 64-bit Operating System, memory addresses are 64-bit addresses, so the address value will be 64 bits.
+
+You can also copy the __value__ of the variable to the register by using `[]` around the name:
 
 ```
-mov DESTINATION, SOUCE
+mov a, 1
+mov RAX, [a]
+```
+
+Now the value of the `RAX` register will be the decimal value 1 (`0000 0000 0000 0001` in hexadecimal).
+
+I picked RAX because it's the first register, but you can arbitrary pick any register if you're writing a standalone application.
+
+64-bit registers start with `r`, the first 8 registers can also be used with 32, 16 or 8-bit values by referencing the lower bits of the register. Addressing 32-bits of a register is faster, so most compilers will use a smaller register address if the
+value is within 32-bits:
+
+| 64-bit register | Lower 32 bits | Lower 16 bits | Lower 8 bits |
+|-----------------|---------------|---------------|--------------|
+| rax             | eax           | ax            | al           |
+| rbx             | ebx           | bx            | bl           |
+| rcx             | ecx           | cx            | cl           |
+| rdx             | edx           | dx            | dl           |
+| rsi             | esi           | si            | sil          |
+| rdi             | edi           | di            | dil          |
+| rbp             | ebp           | bp            | bpl          |
+| rsp             | esp           | sp            | spl          |
+| r8              | r8d           | r8w           | r8b          |
+| r9              | r9d           | r9w           | r9b          |
+| r10             | r10d          | r10w          | r10b         |
+| r11             | r11d          | r11w          | r11b         |
+| r12             | r12d          | r12w          | r12b         |
+| r13             | r13d          | r13w          | r13b         |
+| r14             | r14d          | r14w          | r14b         |
+| r15             | r15d          | r15w          | r15b         |
+
+As assembly is a sequence of instructions, branching can be tricky. The way to implement branching is to use conditional and unconditional jump statements to move the instruction pointer (`rip`) to the instruction address.
+Instruction addresses can be labeled in the assembly source code and the assembly will replace these names with a actual memory address. This address is either relative or absolute (will be explained later).
+
+```
+jmp leapfrog ; jump to leapfrog label
+mov rax, rcx ; this never gets executed
+leapfrog:
+mov rcx, rax
 ```
 
 This simple Python code, contains a branch when comparing `a` with the decimal value `5`:
@@ -58,6 +114,10 @@ Here is some pseudo-assembly to demonstrate:
    ...
    jmp END
 ```
+
+### Calling external functions
+
+Calling conventions.
 
 ### Turning assembly into an executable
 
