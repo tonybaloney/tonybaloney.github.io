@@ -10,12 +10,12 @@ It's a thrill, but its a whole different skill to put it back together.
 
 ![remote-control-car](/img/posts/remote-control-car.jpg){: style="width:40%"}
 
-The seamlessly working machine on the outside obscures a network of patterns, patches, and workarounds in its internals.
-Programmers are used to working on the guts of a system and changing the ugly-inner workings to coax it into doing what its been told.
+The working machine on the outside obscures a network of patterns, patches, and workarounds in its internals.
+Programmers are used to working on the guts of a system and manipulating the ugly-inner workings to get it to follow some simple instructions.
 
 This experiment was no different. I wanted to see if I could write a CPython Extension in 100% assembly.
 
-Why? Well, because after finishing the [CPython Internals book](https://realpython.com/cpython-book), the assembly code was still something of a mystery. I started learning x86-64 assembly from [Jo Van Hooey's book](https://www.apress.com/gp/book/9781484250754) and understood some of the basic concepts but struggled to relate
+**Why**? Well, because after finishing the [CPython Internals book](https://realpython.com/cpython-book), the assembly code was still something of a mystery. I started learning x86-64 assembly from [Jo Van Hooey's book](https://www.apress.com/gp/book/9781484250754) and understood some of the basic concepts but struggled to relate
 them to the high-level languages that I'm familiar with.
 
 There are some questions I wanted answers to, like:
@@ -999,3 +999,6 @@ Some ways I could think to apply this knowledge:
 - Creating shellcode exploits to demonstrate stackoverflow errors and other things that shouldn't be happening
 
 In particular, I think I could find security exploits in compiled Python C extensions. Not in the standard library, because hopefully they've been tested, but in 3rd party libraries.
+
+
+Footnote: Kudos to p403n1x87 (Gabriele N. Tornetta) for [cracking this nut](https://p403n1x87.github.io/python/assembly/2018/03/23/asm_python.html) in 2018
