@@ -93,7 +93,7 @@
                         <a href="https://github.com/tonybaloney"><i class='fa fa-2x fa-github'></i></a>
                     </li>
                     <li>
-                        <a href="https://www.youtube.com/c/AnthonyShaw"><i class='fa fa-2x fa-youtube'></i></a>
+                        <a href="https://www.youtube.com/c/AnthonyShaw"><i class='fa fa-2x fa-youtube-play'></i></a>
                     </li>
                     <li>
                         <a href="/rss.xml"><i class='fa fa-2x fa-rss-square'></i></a>
@@ -131,7 +131,7 @@ It&rsquo;s a thrill, but its a whole different skill to put it back together.</p
 <p>The seamlessly working machine on the outside obscures a network of patterns, patches, and workarounds in its internals.
 Programmers are used to working on the guts of a system and changing the ugly-inner workings to coax it into doing what its been told.</p>
 <p>This experiment was no different. I wanted to see if I could write a CPython Extension in 100% assembly.</p>
-<p>Why? Well, because after finishing the <a href="https://realpython.com/cpython-book">CPython Internals book</a>, the assembly code was still something of a mystery. I started learning x86-64 assembly from Jo Van Hooey&rsquo;s book and understood some of the basic concepts but struggled to relate
+<p>Why? Well, because after finishing the <a href="https://realpython.com/cpython-book">CPython Internals book</a>, the assembly code was still something of a mystery. I started learning x86-64 assembly from <a href="https://www.apress.com/gp/book/9781484250754">Jo Van Hooey&rsquo;s book</a> and understood some of the basic concepts but struggled to relate
 them to the high-level languages that I&rsquo;m familiar with.</p>
 <p>There are some questions I wanted answers to, like:</p>
 <ul>
@@ -436,7 +436,10 @@ The Mach-O format is a supported grammar, and if you open up the CPython executa
 <li>The length, positions and offsets of the data, text and bss sections</li>
 <li>Any runtime flags, such as Position-Independent-Executable (PIE) (covered later)</li>
 </ul>
-<p>Another feature of the ELF, mach-O and PE formats is the ability to build shared libraries (.so files in Linux, .dylib or .so in macOS, and .dll files in Windows)</p>
+<p>Another feature of the ELF, mach-O and PE formats is the ability to build shared libraries (.so files in Linux, .dylib or .so in macOS, and .dll files in Windows).</p>
+<p>A shared library can be imported dynamically (like a plugin) or linked during the build stage as a dependency to your application.
+When building CPython C extensions, you need to link the extension with the Python shared library.
+Your C extension is also in itself a shared library, and is dynamically loaded by CPython (when you <code>import mylibrary</code>) by the</p>
 <h3>Complex data structures in assembly</h3>
 <p>If you were calling a function that had a more complex data type for its argument (like a pointer to a <code>struct</code>), you need to be aware of the storage size
 of the C data types:</p>
@@ -566,19 +569,65 @@ The instruction <code>resd</code> means to reserve a double word (4 bytes), the 
 call calculatePosition
 </code></pre>
 
-<p>The function, <code>calculatePosition</code> is ignorant to whether it&rsquo;s being called by code written in C, Assembly, C++, etc.</p>
+<p>The function, <code>calculatePosition()</code>, is ignorant to whether it&rsquo;s being called by code written in C, Assembly, C++, etc.</p>
 <p>Its this principal that I&rsquo;ll explore next to see if we can write a dynamically loaded CPython Extension in Assembly.</p>
 <h2>Registering the Python Extension module</h2>
-<pre><code class="x86asm">default rel
-bits 64
-%ifdef NOPIE
-    %define PYMODULE_CREATE2 PyModule_Create2
-%else
-    %define PYMODULE_CREATE2 PyModule_Create2 wrt ..plt
-%endif
+<p>When you load a module in Python, the import library will look in the <code>PYTHONPATH</code> for a matching module for the name you provided.</p>
+<p>Modules can be in either C (as compiled extensions) or Python. Many of the CPython standard library modules are written in C because they either require interfaces to lower-level Operating System APIs (disk IO, networking, etc.). The remainder of the standard library modules are written in Python. Some are a combination of both, a Python module with C extension functions. This is normally implemented as a hidden-module written in C with the public module written in Python. The Python module will import the hidden C module and wrap its functions.</p>
+<p>To write a C extension module, you need:</p>
+<ul>
+<li>A C compiler</li>
+<li>A linker</li>
+<li>The Python libraries</li>
+<li>Setuptools</li>
+</ul>
+<p>The C code we&rsquo;re trying to recreate is a function called <code>PyInit_pymult()</code> that returns a <code>PyObject*</code>, which is created by calling <code>PyModule_Create2()</code>.</p>
+<pre><code class="c">PyObject* PyInit_pymult() {
+    return PyModule_Create2(&amp;_moduledef, 1033); 
+}
 </code></pre>
 
-<pre><code class="x86asm">section .data
+<p>There are many options for registering your module, but I&rsquo;m just going to go into this approach, called a single-phase registration.</p>
+<p>When you type <code>import XYZ</code> in Python, it looks for,</p>
+<ol>
+<li>A file called <code>XYZ-cpython-{version}-{os.name}.so</code> in the Python Path</li>
+<li>A file called <code>XYZ.so</code> in the Python Path</li>
+</ol>
+<p>The first option is a compiled library for that version of Python. You could have multiple compiled libraries in a binary-distribution (wheel) of a package. e.g.,</p>
+<ul>
+<li><code>XYZ-cpython-39-darwin.so</code> Python 3.9</li>
+<li><code>XYZ-cpython-38-darwin.so</code> Python 3.8</li>
+<li><code>XYZ-cpython-37-darwin.so</code> Python 3.7</li>
+</ul>
+<p>If you&rsquo;re wondering what &ldquo;darwin&rdquo; is, its the old name for the macOS kernel. It&rsquo;s still referred to that today in CPython.</p>
+<p><code>PyModule_Create2()</code> is a function that takes a <code>PyModule_Def *</code> and an <code>int</code> with the version of CPython this module is for.</p>
+<p>The type structures, defined in CPython <code>Include/moduleobject.h</code>:</p>
+<pre><code class="c">typedef struct PyModuleDef_Base {
+  PyObject_HEAD // PyObject header 
+  PyObject* (*m_init)(void); // Pointer to the init function
+  Py_ssize_t m_index; // index
+  PyObject* m_copy; // Optional pointer to a copy() function
+} PyModuleDef_Base;
+... 
+typedef struct PyModuleDef{
+  PyModuleDef_Base m_base; // The base data 
+  const char* m_name;      // The module name
+  const char* m_doc;       // The module docstring
+  Py_ssize_t m_size;       // The module size
+  PyMethodDef *m_methods;  // A list of methods, terminated by NULL, NULL, NULL, NULL
+  struct PyModuleDef_Slot* m_slots; // Defined slots for Python protocols (e.g., __eq__, __contains__)
+  traverseproc m_traverse; // Optional custom traverse method
+  inquiry m_clear;         // Optional custom clear method
+  freefunc m_free;         // Optional custom free method (called when module is destroyed by GC)
+} PyModuleDef;
+...
+</code></pre>
+
+<p>We can recreate those structures in assembly with a knowledge of the storage requirements of the basic C types:</p>
+<pre><code class="x86asm">default rel
+bits 64
+
+section .data
     modulename db &quot;pymult&quot;, 0
     docstring db &quot;Simple Multiplication function&quot;, 0
 
@@ -600,14 +649,15 @@ bits 64
         m_clear: resq   1
         m_free: resq    1
     endstruc
-
 section .bss
 section .text
 </code></pre>
 
+<p>Then we can define a global function to be exported as a symbol when this shared library is compiled:</p>
 <pre><code class="x86asm">global PyInit_pymult
 </code></pre>
 
+<p>The <code>__init__</code> function can load the correct values into the moduledef structure:</p>
 <pre><code class="x86asm">PyInit_pymult:
     extern PyModule_Create2
     section .data
@@ -630,12 +680,7 @@ section .text
             iend
 </code></pre>
 
-<p>The C code we&rsquo;re trying to recreate is a function called <code>PyInit_pymult()</code> that returns a <code>PyObject*</code>, which is created by calling <code>PyModule_Create2()</code>.</p>
-<pre><code class="c">PyObject* PyInit_pymult() {
-    return PyModule_Create2(&amp;_moduledef, METH_VARARGS); 
-}
-</code></pre>
-
+<p>The instructions for the <code>__init__</code> function will follow the System-V calling convention and call <code>PyModule_Create2(&amp;_moduledef, 1033)</code>:</p>
 <pre><code class="x86asm">    section .text
         push rbp                    ; preserve stack pointer
         mov rbp, rsp
@@ -649,13 +694,15 @@ section .text
         ret
 </code></pre>
 
+<p>The constant <code>0x3f5</code> is <code>1033</code>, the integer value for the CPython API we&rsquo;re using.</p>
 <p>Next, to compile the source, we have to assemble the <code>pymult.asm</code> file, then link it to the <code>libpythonXX</code> library.
 This is done in two steps. The first step is to create the object file, using <code>nasm</code>. The second step is to link the object file with the Python 3.X (in my case 3.9) library:</p>
+<p>For macOS, we use the <code>macho64</code> object format, include debug symbols with <code>-g</code>, and tell the NASM compiler that all symbols will have the prefix <code>_</code>. When the external module is linked, <code>PyModule_Create2</code> will be called <code>_PyModule_Create2</code> in macOS. But later on, we&rsquo;re going to try Linux and it won&rsquo;t have that prefix.</p>
 <pre><code class="console">nasm -g -f macho64 -DMACOS --prefix=_ pymult.asm -o pymult.obj
 cc -shared -g pymult.obj -L/Library/Frameworks/Python.framework/Versions/3.9/lib -lpython3.9 -o pymult.cpython-39-darwin.so
 </code></pre>
 
-<p>This will produce the artifact <code>pymult.cpython-39-darwin.so</code> which can be loaded into
+<p>This will produce the artifact <code>pymult.cpython-39-darwin.so</code> which can be loaded into CPython.
 Because we build with the debug symbols (the <code>-g</code> flag), the lldb or gdb debugger can be used to set a breakpoint in the assembly code.</p>
 <pre><code class="console"> $ lldb python3.9
 (lldb) target create &quot;python3.9&quot;
@@ -682,7 +729,7 @@ Target 0: (Python) stopped.
 </code></pre>
 
 <p>Hooray! The module is being initialized. At this point you can manipulate any of the registers or visualize the data.</p>
-<pre><code>(lldb) reg r
+<pre><code>(lldb) reg read
 General Purpose Registers:
        rax = 0x00000001007d3d20
        rbx = 0x0000000000000000
@@ -723,6 +770,15 @@ frame #0: 0x0000000101adbf6c pymult.cpython-39-darwin.so`PyInit_pymult at pymult
     frame #8: 0x0000000100200c1e Python`_PyEval_EvalFrameDefault + 26846
     frame #9: 0x0000000100129625 Python`function_code_fastcall + 101
     ...
+</code></pre>
+
+<p>To compile for Linux, we need to add Position-Independent-Executable (PIE or PIC) support. This is normally done by the GCC compiler, but since we&rsquo;re writing straight assembly we have to do this ourselves. Position-independent code can be executed at any memory address without modification, the only components we need to care about the positions are the external references to the Python C API.
+Instead of defining</p>
+<pre><code class="x86asm">extern PyModule_Create2
+</code></pre>
+
+<pre><code class="console">nasm -g -f macho64 -DMACOS --prefix=_ pymult.asm -o pymult.obj
+cc -shared -g pymult.obj -L/Library/Frameworks/Python.framework/Versions/3.9/lib -lpython3.9 -o pymult.cpython-39-darwin.so
 </code></pre>
 
 <h2>Adding a function to the module</h2>

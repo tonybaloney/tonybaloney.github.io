@@ -15,7 +15,7 @@ Programmers are used to working on the guts of a system and changing the ugly-in
 
 This experiment was no different. I wanted to see if I could write a CPython Extension in 100% assembly.
 
-Why? Well, because after finishing the [CPython Internals book](https://realpython.com/cpython-book), the assembly code was still something of a mystery. I started learning x86-64 assembly from Jo Van Hooey's book and understood some of the basic concepts but struggled to relate
+Why? Well, because after finishing the [CPython Internals book](https://realpython.com/cpython-book), the assembly code was still something of a mystery. I started learning x86-64 assembly from [Jo Van Hooey's book](https://www.apress.com/gp/book/9781484250754) and understood some of the basic concepts but struggled to relate
 them to the high-level languages that I'm familiar with.
 
 There are some questions I wanted answers to, like:
@@ -254,7 +254,11 @@ On the right, you can see some attributes like:
 - The length, positions and offsets of the data, text and bss sections
 - Any runtime flags, such as Position-Independent-Executable (PIE) (covered later)
 
-Another feature of the ELF, mach-O and PE formats is the ability to build shared libraries (.so files in Linux, .dylib or .so in macOS, and .dll files in Windows)
+Another feature of the ELF, mach-O and PE formats is the ability to build shared libraries (.so files in Linux, .dylib or .so in macOS, and .dll files in Windows).
+
+A shared library can be imported dynamically (like a plugin) or linked during the build stage as a dependency to your application.
+When building CPython C extensions, you need to link the extension with the Python shared library.
+Your C extension is also in itself a shared library, and is dynamically loaded by CPython (when you `import mylibrary`) by the
 
 ### Complex data structures in assembly
 
@@ -339,26 +343,78 @@ mov rdi, myself
 call calculatePosition
 ```
 
-The function, `calculatePosition` is ignorant to whether it's being called by code written in C, Assembly, C++, etc.
+The function, `calculatePosition()`, is ignorant to whether it's being called by code written in C, Assembly, C++, etc.
 
 Its this principal that I'll explore next to see if we can write a dynamically loaded CPython Extension in Assembly.
 
 ## Registering the Python Extension module
 
+When you load a module in Python, the import library will look in the `PYTHONPATH` for a matching module for the name you provided.
 
+Modules can be in either C (as compiled extensions) or Python. Many of the CPython standard library modules are written in C because they either require interfaces to lower-level Operating System APIs (disk IO, networking, etc.). The remainder of the standard library modules are written in Python. Some are a combination of both, a Python module with C extension functions. This is normally implemented as a hidden-module written in C with the public module written in Python. The Python module will import the hidden C module and wrap its functions.
 
+To write a C extension module, you need:
+
+- A C compiler
+- A linker
+- The Python libraries
+- Setuptools
+
+The C code we're trying to recreate is a function called `PyInit_pymult()` that returns a `PyObject*`, which is created by calling `PyModule_Create2()`.
+
+```c
+PyObject* PyInit_pymult() {
+    return PyModule_Create2(&_moduledef, 1033); 
+}
+```
+
+There are many options for registering your module, but I'm just going to go into this approach, called a single-phase registration.
+
+When you type `import XYZ` in Python, it looks for,
+
+1. A file called `XYZ-cpython-{version}-{os.name}.so` in the Python Path
+2. A file called `XYZ.so` in the Python Path
+
+The first option is a compiled library for that version of Python. You could have multiple compiled libraries in a binary-distribution (wheel) of a package. e.g.,
+
+- `XYZ-cpython-39-darwin.so` Python 3.9
+- `XYZ-cpython-38-darwin.so` Python 3.8
+- `XYZ-cpython-37-darwin.so` Python 3.7
+
+If you're wondering what "darwin" is, its the old name for the macOS kernel. It's still referred to that today in CPython.
+
+`PyModule_Create2()` is a function that takes a `PyModule_Def *` and an `int` with the version of CPython this module is for.
+
+The type structures, defined in CPython `Include/moduleobject.h`:
+
+```c
+typedef struct PyModuleDef_Base {
+  PyObject_HEAD // PyObject header 
+  PyObject* (*m_init)(void); // Pointer to the init function
+  Py_ssize_t m_index; // index
+  PyObject* m_copy; // Optional pointer to a copy() function
+} PyModuleDef_Base;
+... 
+typedef struct PyModuleDef{
+  PyModuleDef_Base m_base; // The base data 
+  const char* m_name;      // The module name
+  const char* m_doc;       // The module docstring
+  Py_ssize_t m_size;       // The module size
+  PyMethodDef *m_methods;  // A list of methods, terminated by NULL, NULL, NULL, NULL
+  struct PyModuleDef_Slot* m_slots; // Defined slots for Python protocols (e.g., __eq__, __contains__)
+  traverseproc m_traverse; // Optional custom traverse method
+  inquiry m_clear;         // Optional custom clear method
+  freefunc m_free;         // Optional custom free method (called when module is destroyed by GC)
+} PyModuleDef;
+...
+```
+
+We can recreate those structures in assembly with a knowledge of the storage requirements of the basic C types:
 
 ```x86asm
 default rel
 bits 64
-%ifdef NOPIE
-    %define PYMODULE_CREATE2 PyModule_Create2
-%else
-    %define PYMODULE_CREATE2 PyModule_Create2 wrt ..plt
-%endif
-```
 
-```x86asm
 section .data
     modulename db "pymult", 0
     docstring db "Simple Multiplication function", 0
@@ -381,14 +437,17 @@ section .data
         m_clear: resq	1
         m_free: resq	1
     endstruc
-
 section .bss
 section .text
 ```
 
+Then we can define a global function to be exported as a symbol when this shared library is compiled:
+
 ```x86asm
 global PyInit_pymult
 ```
+
+The `__init__` function can load the correct values into the moduledef structure:
 
 ```x86asm
 PyInit_pymult:
@@ -413,13 +472,7 @@ PyInit_pymult:
             iend
 ```
 
-The C code we're trying to recreate is a function called `PyInit_pymult()` that returns a `PyObject*`, which is created by calling `PyModule_Create2()`.
-
-```c
-PyObject* PyInit_pymult() {
-    return PyModule_Create2(&_moduledef, METH_VARARGS); 
-}
-```
+The instructions for the `__init__` function will follow the System-V calling convention and call `PyModule_Create2(&_moduledef, 1033)`:
 
 ```x86asm
     section .text
@@ -435,15 +488,19 @@ PyObject* PyInit_pymult() {
         ret
 ```
 
+The constant `0x3f5` is `1033`, the integer value for the CPython API we're using.
+
 Next, to compile the source, we have to assemble the `pymult.asm` file, then link it to the `libpythonXX` library.
 This is done in two steps. The first step is to create the object file, using `nasm`. The second step is to link the object file with the Python 3.X (in my case 3.9) library:
+
+For macOS, we use the `macho64` object format, include debug symbols with `-g`, and tell the NASM compiler that all symbols will have the prefix `_`. When the external module is linked, `PyModule_Create2` will be called `_PyModule_Create2` in macOS. But later on, we're going to try Linux and it won't have that prefix.
 
 ```console
 nasm -g -f macho64 -DMACOS --prefix=_ pymult.asm -o pymult.obj
 cc -shared -g pymult.obj -L/Library/Frameworks/Python.framework/Versions/3.9/lib -lpython3.9 -o pymult.cpython-39-darwin.so
 ```
 
-This will produce the artifact `pymult.cpython-39-darwin.so` which can be loaded into
+This will produce the artifact `pymult.cpython-39-darwin.so` which can be loaded into CPython.
 Because we build with the debug symbols (the `-g` flag), the lldb or gdb debugger can be used to set a breakpoint in the assembly code.
 
 ```console
@@ -476,7 +533,7 @@ Target 0: (Python) stopped.
 Hooray! The module is being initialized. At this point you can manipulate any of the registers or visualize the data.
 
 ```
-(lldb) reg r
+(lldb) reg read
 General Purpose Registers:
        rax = 0x00000001007d3d20
        rbx = 0x0000000000000000
@@ -521,7 +578,59 @@ frame #0: 0x0000000101adbf6c pymult.cpython-39-darwin.so`PyInit_pymult at pymult
     ...
 ```
 
+To compile for Linux, we need to add Position-Independent-Executable (PIE or PIC) support. This is normally done by the GCC compiler, but since we're writing straight assembly we have to do this ourselves. Position-independent code can be executed at any memory address without modification, the only components we need to care about the positions are the external references to the Python C API.
+
+Instead of defining the external symbol as being at a static location like we did for macOS:
+
+```x86asm
+call PyModule_Create2
+```
+
+We need to call the position of the symbol with respect to the [Global Offset Table](https://eli.thegreenplace.net/2011/11/03/position-independent-code-pic-in-shared-libraries/). NASM has a shorthand for defining it as an offset of the PLT/GOT:
+
+```x86asm
+call PyModule_Create2 wrt ..plt
+```
+
+Instead of maintaining two source files for PIE and non-PIE, we can use a NASM macro to replace the instruction if `NOPIE` is defined.
+
+```x86asm
+%ifdef PIE
+    %define PYARG_PARSETUPLE PyArg_ParseTuple wrt ..plt
+    %define PYLONG_FROMLONG PyLong_FromLong wrt ..plt
+    %define PYMODULE_CREATE2 PyModule_Create2 wrt ..plt
+%else
+    %define PYARG_PARSETUPLE PyArg_ParseTuple
+    %define PYLONG_FROMLONG PyLong_FromLong
+    %define PYMODULE_CREATE2 PyModule_Create2
+%endif
+```
+
+Then replace `call PyModule_Create2` with the macro value `call PYMODULE_CREATE2`. When assembled, NASM will replace this with the correct instruction.
+
+Linux uses the ELF format instead of macho, so specify the output format in NASM:
+
+```console
+nasm -g -f elf64 -DPIE pymult.asm -o pymult.obj
+cc -shared -g pymult.obj -L/usr/shared/lib -lpython3.9 -o pymult.cpython-39-linux.so
+```
+
 ## Adding a function to the module
+
+When we initialized the module, we provided the value `0` (`NULL`) as the list of functions.
+Using the same pattern as before, the `PyMethodDef` struct is:
+
+```c
+struct PyMethodDef {
+    const char  *ml_name;   /* The name of the built-in function/method */
+    PyCFunction ml_meth;    /* The C function that implements it */
+    int         ml_flags;   /* Combination of METH_xxx flags, which mostly
+                               describe the args expected by the C func */
+    const char  *ml_doc;    /* The __doc__ attribute, or NULL */
+};
+```
+
+In assembly, you can represent those fields as:
 
 ```x86asm
     struc methoddef
@@ -529,8 +638,9 @@ frame #0: 0x0000000101adbf6c pymult.cpython-39-darwin.so`PyInit_pymult at pymult
         ml_meth: resq 1
         ml_flags: resd 1
         ml_doc: resq 1
-        ml_term: resq 1
-        ml_term2: resq 1
+    
+        ml_term: resq 1  // NULL terminator
+        ml_term2: resq 1 // NULL terminator
     endstruc
 
     method1name db "multiply", 0
@@ -547,6 +657,39 @@ frame #0: 0x0000000101adbf6c pymult.cpython-39-darwin.so`PyInit_pymult at pymult
         iend
 ```
 
+Then define the function, equivalent to the C code:
+
+```c
+static PyObject* PyMult_multiply(PyObject *self, PyObject *args) {
+    long x, y, result;
+    if (!PyArg_ParseTuple(args, "LL", &x, &y))
+        return NULL;
+    result = x * y;
+    return PyLong_FromLong(result);
+}
+```
+
+Writing extension modules in C (or assembly) requires knowledge of the CPython C API. For example, if you're working with Python integers, they don't map to a simple low-level memory structure like a C long. To convert a C long to a Python long, you have to call `PyLong_FromLong`. To convert a Python long to a C long, you call `PyLong_AsLong`. Because Python long's can be longer than the maximum value of a C long, there is a chance of an overflow, so you can use `PyLong_AsLongAndOverFlow()`. Alternatively, if the value will fit into a `long long`, you can use ``PyLong_AsLongLong()`.
+
+These decisions are abstracted for arguments to a method by calling the `PyArg_ParseTuple()` function will will convert a tuple of method arguments into native C types.
+You provide this method a special format string and a list of pointers to the desination addresses.
+
+The example we used, to turn the arguments into two C long ("LL") values and the addresses for the output:
+
+```c
+PyArg_ParseTuple(args, "LL", &x, &y)
+```
+
+Accomplishing this in assembly, you send the PyArg_ParseTuple the args (in `rsi`), the string as a constant and the addresses of two reserved quad-word memory spaces.
+
+In assembly, this is using the load-effective-address instruction:
+
+```x86asm
+lea rdx, [x]
+```
+
+In assembly would be using the System-V calling conventions again as:
+
 ```x86asm
 global PyMult_multiply
 
@@ -556,7 +699,6 @@ PyMult_multiply:
     ; Multiplies a and b
     ; Returns value as PyLong(PyObject*)
     extern PyLong_FromLong
-    extern PyLong_AsLong
     extern PyArg_ParseTuple
     section .data
         parseStr db "LL", 0 ; convert arguments to Long, Long
@@ -600,6 +742,10 @@ PyMult_multiply:
             pop rbp
             ret
 ```
+
+Change the module definition to include the new method definition `at m_methods, dq _methoddef`.
+
+Once you recompile and reimport the module, you'll see the function on `dir(pymult)` and it will take the two arguments.
 
 ## Extending setuptools/distutils
 
