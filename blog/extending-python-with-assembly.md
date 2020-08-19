@@ -745,6 +745,11 @@ PyMult_multiply:
 
 Next, change the module definition to include the new method definition `at m_methods, dq _methoddef`.
 
+If you're a mac user, I recommend the [Hopper Disassembler](https://www.hopperapp.com) as it comes with a nice "pseudo-code" view. If you open up the newly compiled `.so` file in Hopper and
+look at the function you just wrote, you can verify it looks loosely like you'd expect in C:
+
+![hopper-screenshot](/img/posts-original/hopper-screenshot.png)
+
 Once you recompile and reimport the module, you'll see the function on `dir(pymult)` and it will take the two arguments.
 
 Set a breakpoint on line 77
@@ -777,18 +782,220 @@ You can check the decimal value in the `rax` register with:
 
 ```console
 (lldb) p/d $rax
-(unsigned long) $6 = 4
+(unsigned long) $6 = 6
 ```
 
 Hooray! It works!
 
-For the record. It took about 25-30 recompilations and changes to get this work succesfully. In hindsight, its not __too__ complicated, but it was very frustrating to get this working.
+_For the record..._ It took about 25-30 recompilations and changes to get this work succesfully. In hindsight, its not __too__ complicated, but it was very frustrating to get this working.
 
 One of the issues with assembly is that it seems to either work, or it just fails spectacularly! There is no exception, it just crashes the process or corrupts the host process if you make a mistake. It's very unforgiving.
 
 ## Extending setuptools/distutils
 
+Next, its not much good pushing a bunch of assembly source files up to PyPi, because if you `pip install` it wouldn't work out of the box. The end user would have to know how to compile the libraries.
+
+The `setuptools` package adds the `build_ext` command to `setup.py`, so if you had this in `setup.py`:
+
+```python
+...
+setup(
+    name='pymult',
+    version='0.0.1',
+    ...
+    ext_modules=[
+        Extension(
+            splitext(relpath(path, 'src').replace(os.sep, '.'))[0],
+            sources=[path],
+        )
+        for root, _, _ in os.walk('src')
+        for path in glob(join(root, '*.c'))
+    ],
+)
+```
+
+Then ran:
+
+```console
+$ python setup.py build_ext --force -v
+```
+
+It run the GCC compiler against the source code, link it to the Python library of the Python executable you're using to run `setup.py` and put a compiled module in the `build` directory.
+
+We want to use GCC to link the object, but NASM to compile the assembly source.
+
+There are some other things we need which are specific to NASM:
+
+- Use `-DNOPIE` when the platform doesn't require PIE
+- Use `-f macho64` on macOS, or `-f elf64` on linux
+- Use `-g` to add debug symbols if `setup.py` was run with the debug flag
+- Add the `_` prefix on macOS
+
+I've added all this to a custom `setuptools` build command, called `NasmBuildCommand`. You can update the `setup()` method to include this class and then specify the `.asm` source files:
+
+```console
+    cmdclass={'build_ext': NasmBuildCommand},
+    ext_modules=[
+        Extension(
+            splitext(relpath(path, 'src').replace(os.sep, '.'))[0],
+            sources=[path],
+            extra_compile_args=[],
+            extra_link_args=[],
+            include_dirs=[dirname(path)]
+        )
+        for root, _, _ in os.walk('src')
+        for path in glob(join(root, '*.asm'))
+    ],
+)
+```
+
+Now if you run `setup.py build` with verbose (`-v`) and debug (`--debug`) it will compile the library for you:
+
+```console
+$ python setup.py build --force -v --debug
+running build
+running build_ext
+building 'pymult' extension
+nasm -g -Isrc -I/Users/anthonyshaw/CLionProjects/mucking-around/venv/include -I/Library/Frameworks/Python.framework/Versions/3.8/include/python3.8 -f macho64 -DNOPIE --prefix=_ src/pymult.asm -o build/temp.macosx-10.9-x86_64-3.8/src/pymult.obj
+cc -shared -g build/temp.macosx-10.9-x86_64-3.8/src/pymult.obj -L/Library/Frameworks/Python.framework/Versions/3.8/lib -lpython3.8 -o build/lib.macosx-10.9-x86_64-3.8/pymult.cpython-38-darwin.so
+```
+
+Once this is all done, the wheel with the compiled binaries can be created along with the source distribution:
+
+```console
+$ python setup.py bdist_wheel sdist
+```
+
+And then the wheel can be uploaded to PyPi:
+
+```console
+$ twine upload dist/*
+```
+
+If someone downloads this on a platform that the wheel includes (only macOS in this example), it will install the compiled library.
+If someone is on another platform, the `pip install` command will try and compile from source using the custom `build` command.
+
+You can force this behaviour by running `pip install --no-binary :all: <package> -v --force` to see the whole download and compile process in verbose mode:
+
+![custom-build-from-source](/img/posts-original/custom-build-from-source.png)
+
 ## GitHub CI/CD workflows
+
+Lastly, I wanted to add some unit tests and continuous testing to the GitHub repository, which meant compiling on GitHub actions.
+
+This wasn't too hard now that `setuptools` had been extended to build in a single command.
+
+There is only 1 unit test, which cautiously avoid negative numbers (!):
+
+```python
+from pymult import multiply
+
+
+def test_basic_multiplication():
+    assert multiply(2, 4) == 8
+```
+
+For testing on Linux, I just installed NASM from apt, then run `python setup.py install` on the source directory (which runs `python setup.py build_ext` implicitly):
+
+```yaml
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+    steps:
+    - name: Install NASM
+      run: |
+        sudo apt-get install -y nasm
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip pytest
+        python setup.py install
+    - name: Test with pytest
+      run: |
+        python -X dev -m pytest test.py
+```
+
+The extra `-X dev` flag gives more verbose output when CPython crashes (not if).
+
+For macOS, the build steps are the same, except NASM comes from brew:
+
+```yaml
+    - name: Install NASM
+      run: |
+        brew install nasm
+```
+
+And then, to live dangerously, give it a go on Windows using the Chocolatey NASM package:
+
+```yaml
+  build-windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+    steps:
+      - name: Install NASM
+        run: |
+          choco install nasm
+      - name: Add NASM to path
+        run: echo '::add-path::c:\\Program Files\\NASM'
+      - name: Add VC to path
+        run: echo '::add-path::C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\bin'
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip pytest
+          python setup.py install
+      - name: Test with pytest
+        run: |
+          python -X dev -m pytest test.py
+```
 
 ## Windows Support
 
+I did end up extending `setuptools` to support NASM + the Microsoft Linker as a customer compiler implemenetation, [WinAsmCompiler](https://github.com/tonybaloney/python-assembly-poc/blob/master/winnasmcompiler.py).
+
+The biggest changes were:
+
+- Use `-f win64` (64-bit PE) as the object format
+- Use `-DNOPIE`
+
+However, the existing code wouldn't work because it assumed the System-V calling conventions.
+
+You could write a second assembly function, or abstract the calling conventions to allow both standards and swap them out via macros. At this point, I decided to call it a day!
+(it does compile though, but crashes on import).
+
+## Conclusion
+
+The full source code for this project is [up on Github](https://github.com/tonybaloney/python-assembly-poc).
+
+Some things I learned:
+
+- How to explore registers in lldb, (which is really useful)
+- How to use hopper properly
+- How to set breakpoints in assembled libraries to see why they might be crashing from segmentation faults
+- How setuptools/distutils compiles C extensions, and how it _really_ needs to be updated with the current compiler toolchain
+- How to compile from assembly in GitHub Actions
+- How the object formats work and the differences between mach-o and ELF
+
+Places I'm thinking of applying this knowledge are firstly in the security space. I'm still reading the Shellcoders' Handbook after finishing Black Hat Python (which, was great btw).
+
+Some ways I could think to apply this knowledge:
+
+- Reverse engineering compiled libraries to look for security exploits
+- Completing more challenges on [Hack The Box](hackthebox.eu)
+- Adapting security exploits to mimic complex C data structures
+- Creating shellcode exploits to demonstrate stackoverflow errors and other things that shouldn't be happening
+
+In particular, I think I could find security exploits in compiled Python C extensions. Not in the standard library, because hopefully they've been tested, but in 3rd party libraries.
