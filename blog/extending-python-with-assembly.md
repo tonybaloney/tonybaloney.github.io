@@ -877,7 +877,7 @@ If someone is on another platform, the `pip install` command will try and compil
 
 You can force this behaviour by running `pip install --no-binary :all: <package> -v --force` to see the whole download and compile process in verbose mode:
 
-![custom-build-from-source](/img/posts-original/custom-build-from-source.png)
+![custom-build-from-source](/img/posts/custom-build-from-source.png)
 
 ## GitHub CI/CD workflows
 
