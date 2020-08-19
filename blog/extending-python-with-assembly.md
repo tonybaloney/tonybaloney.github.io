@@ -688,7 +688,7 @@ In assembly, this is using the load-effective-address instruction:
 lea rdx, [x]
 ```
 
-In assembly would be using the System-V calling conventions again as:
+Using the System-V calling conventions we can convert the C function into an assembly function:
 
 ```x86asm
 global PyMult_multiply
@@ -743,11 +743,52 @@ PyMult_multiply:
             ret
 ```
 
-Change the module definition to include the new method definition `at m_methods, dq _methoddef`.
+Next, change the module definition to include the new method definition `at m_methods, dq _methoddef`.
 
 Once you recompile and reimport the module, you'll see the function on `dir(pymult)` and it will take the two arguments.
+
+Set a breakpoint on line 77
+
+```console
+(lldb) b pymult.asm:77
+Breakpoint 4: where = pymult.cpython-39-darwin.so`PyMult_multiply + 67, address = 0x00000001019dbf42
+```
+
+Now launch a process and run the function after import, lldb should stop at the breakpoint:
+
+```console
+(lldb) process launch -- -c "import pymult; pymult.multiply(2, 3)"
+Process 39626 launched: '/Library/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python' (x86_64)
+Process 39626 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 4.1
+    frame #0: 0x00000001007f6f42 pymult.cpython-39-darwin.so`PyMult_multiply at pymult.asm:77
+   74  	        imul qword[y]
+   75  	        mov [result], rax
+   76
+-> 77  	        mov edi, [result]           ; convert result to PyLong
+   78  	        call PyLong_FromLong
+   79
+   80  	        mov rsp, rbp ; reinit stack pointer
+Target 0: (Python) stopped.
+(lldb)
+```
+
+You can check the decimal value in the `rax` register with:
+
+```console
+(lldb) p/d $rax
+(unsigned long) $6 = 4
+```
+
+Hooray! It works!
+
+For the record. It took about 25-30 recompilations and changes to get this work succesfully. In hindsight, its not __too__ complicated, but it was very frustrating to get this working.
+
+One of the issues with assembly is that it seems to either work, or it just fails spectacularly! There is no exception, it just crashes the process or corrupts the host process if you make a mistake. It's very unforgiving.
 
 ## Extending setuptools/distutils
 
 ## GitHub CI/CD workflows
+
+## Windows Support
 

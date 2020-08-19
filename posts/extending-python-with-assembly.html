@@ -772,23 +772,54 @@ frame #0: 0x0000000101adbf6c pymult.cpython-39-darwin.so`PyInit_pymult at pymult
     ...
 </code></pre>
 
-<p>To compile for Linux, we need to add Position-Independent-Executable (PIE or PIC) support. This is normally done by the GCC compiler, but since we&rsquo;re writing straight assembly we have to do this ourselves. Position-independent code can be executed at any memory address without modification, the only components we need to care about the positions are the external references to the Python C API.
-Instead of defining</p>
-<pre><code class="x86asm">extern PyModule_Create2
+<p>To compile for Linux, we need to add Position-Independent-Executable (PIE or PIC) support. This is normally done by the GCC compiler, but since we&rsquo;re writing straight assembly we have to do this ourselves. Position-independent code can be executed at any memory address without modification, the only components we need to care about the positions are the external references to the Python C API.</p>
+<p>Instead of defining the external symbol as being at a static location like we did for macOS:</p>
+<pre><code class="x86asm">call PyModule_Create2
 </code></pre>
 
-<pre><code class="console">nasm -g -f macho64 -DMACOS --prefix=_ pymult.asm -o pymult.obj
-cc -shared -g pymult.obj -L/Library/Frameworks/Python.framework/Versions/3.9/lib -lpython3.9 -o pymult.cpython-39-darwin.so
+<p>We need to call the position of the symbol with respect to the <a href="https://eli.thegreenplace.net/2011/11/03/position-independent-code-pic-in-shared-libraries/">Global Offset Table</a>. NASM has a shorthand for defining it as an offset of the PLT/GOT:</p>
+<pre><code class="x86asm">call PyModule_Create2 wrt ..plt
+</code></pre>
+
+<p>Instead of maintaining two source files for PIE and non-PIE, we can use a NASM macro to replace the instruction if <code>NOPIE</code> is defined.</p>
+<pre><code class="x86asm">%ifdef PIE
+    %define PYARG_PARSETUPLE PyArg_ParseTuple wrt ..plt
+    %define PYLONG_FROMLONG PyLong_FromLong wrt ..plt
+    %define PYMODULE_CREATE2 PyModule_Create2 wrt ..plt
+%else
+    %define PYARG_PARSETUPLE PyArg_ParseTuple
+    %define PYLONG_FROMLONG PyLong_FromLong
+    %define PYMODULE_CREATE2 PyModule_Create2
+%endif
+</code></pre>
+
+<p>Then replace <code>call PyModule_Create2</code> with the macro value <code>call PYMODULE_CREATE2</code>. When assembled, NASM will replace this with the correct instruction.</p>
+<p>Linux uses the ELF format instead of macho, so specify the output format in NASM:</p>
+<pre><code class="console">nasm -g -f elf64 -DPIE pymult.asm -o pymult.obj
+cc -shared -g pymult.obj -L/usr/shared/lib -lpython3.9 -o pymult.cpython-39-linux.so
 </code></pre>
 
 <h2>Adding a function to the module</h2>
+<p>When we initialized the module, we provided the value <code>0</code> (<code>NULL</code>) as the list of functions.
+Using the same pattern as before, the <code>PyMethodDef</code> struct is:</p>
+<pre><code class="c">struct PyMethodDef {
+    const char  *ml_name;   /* The name of the built-in function/method */
+    PyCFunction ml_meth;    /* The C function that implements it */
+    int         ml_flags;   /* Combination of METH_xxx flags, which mostly
+                               describe the args expected by the C func */
+    const char  *ml_doc;    /* The __doc__ attribute, or NULL */
+};
+</code></pre>
+
+<p>In assembly, you can represent those fields as:</p>
 <pre><code class="x86asm">    struc methoddef
         ml_name:  resq 1
         ml_meth: resq 1
         ml_flags: resd 1
         ml_doc: resq 1
-        ml_term: resq 1
-        ml_term2: resq 1
+
+        ml_term: resq 1  // NULL terminator
+        ml_term2: resq 1 // NULL terminator
     endstruc
 
     method1name db &quot;multiply&quot;, 0
@@ -805,6 +836,29 @@ cc -shared -g pymult.obj -L/Library/Frameworks/Python.framework/Versions/3.9/lib
         iend
 </code></pre>
 
+<p>Then define the function, equivalent to the C code:</p>
+<pre><code class="c">static PyObject* PyMult_multiply(PyObject *self, PyObject *args) {
+    long x, y, result;
+    if (!PyArg_ParseTuple(args, &quot;LL&quot;, &amp;x, &amp;y))
+        return NULL;
+    result = x * y;
+    return PyLong_FromLong(result);
+}
+</code></pre>
+
+<p>Writing extension modules in C (or assembly) requires knowledge of the CPython C API. For example, if you&rsquo;re working with Python integers, they don&rsquo;t map to a simple low-level memory structure like a C long. To convert a C long to a Python long, you have to call <code>PyLong_FromLong</code>. To convert a Python long to a C long, you call <code>PyLong_AsLong</code>. Because Python long&rsquo;s can be longer than the maximum value of a C long, there is a chance of an overflow, so you can use <code>PyLong_AsLongAndOverFlow()</code>. Alternatively, if the value will fit into a <code>long long</code>, you can use <code>`PyLong_AsLongLong()</code>.</p>
+<p>These decisions are abstracted for arguments to a method by calling the <code>PyArg_ParseTuple()</code> function will will convert a tuple of method arguments into native C types.
+You provide this method a special format string and a list of pointers to the desination addresses.</p>
+<p>The example we used, to turn the arguments into two C long (&ldquo;LL&rdquo;) values and the addresses for the output:</p>
+<pre><code class="c">PyArg_ParseTuple(args, &quot;LL&quot;, &amp;x, &amp;y)
+</code></pre>
+
+<p>Accomplishing this in assembly, you send the PyArg_ParseTuple the args (in <code>rsi</code>), the string as a constant and the addresses of two reserved quad-word memory spaces.</p>
+<p>In assembly, this is using the load-effective-address instruction:</p>
+<pre><code class="x86asm">lea rdx, [x]
+</code></pre>
+
+<p>Using the System-V calling conventions we can convert the C function into an assembly function:</p>
 <pre><code class="x86asm">global PyMult_multiply
 
 PyMult_multiply:
@@ -813,7 +867,6 @@ PyMult_multiply:
     ; Multiplies a and b
     ; Returns value as PyLong(PyObject*)
     extern PyLong_FromLong
-    extern PyLong_AsLong
     extern PyArg_ParseTuple
     section .data
         parseStr db &quot;LL&quot;, 0 ; convert arguments to Long, Long
@@ -858,8 +911,41 @@ PyMult_multiply:
             ret
 </code></pre>
 
+<p>Next, change the module definition to include the new method definition <code>at m_methods, dq _methoddef</code>.</p>
+<p>Once you recompile and reimport the module, you&rsquo;ll see the function on <code>dir(pymult)</code> and it will take the two arguments.</p>
+<p>Set a breakpoint on line 77</p>
+<pre><code class="console">(lldb) b pymult.asm:77
+Breakpoint 4: where = pymult.cpython-39-darwin.so`PyMult_multiply + 67, address = 0x00000001019dbf42
+</code></pre>
+
+<p>Now launch a process and run the function after import, lldb should stop at the breakpoint:</p>
+<pre><code class="console">(lldb) process launch -- -c &quot;import pymult; pymult.multiply(2, 3)&quot;
+Process 39626 launched: '/Library/Frameworks/Python.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python' (x86_64)
+Process 39626 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 4.1
+    frame #0: 0x00000001007f6f42 pymult.cpython-39-darwin.so`PyMult_multiply at pymult.asm:77
+   74           imul qword[y]
+   75           mov [result], rax
+   76
+-&gt; 77           mov edi, [result]           ; convert result to PyLong
+   78           call PyLong_FromLong
+   79
+   80           mov rsp, rbp ; reinit stack pointer
+Target 0: (Python) stopped.
+(lldb)
+</code></pre>
+
+<p>You can check the decimal value in the <code>rax</code> register with:</p>
+<pre><code class="console">(lldb) p/d $rax
+(unsigned long) $6 = 4
+</code></pre>
+
+<p>Hooray! It works!</p>
+<p>For the record. It took about 25-30 recompilations and changes to get this work succesfully. In hindsight, its not <strong>too</strong> complicated, but it was very frustrating to get this working.</p>
+<p>One of the issues with assembly is that it seems to either work, or it just fails spectacularly! There is no exception, it just crashes the process or corrupts the host process if you make a mistake. It&rsquo;s very unforgiving.</p>
 <h2>Extending setuptools/distutils</h2>
 <h2>GitHub CI/CD workflows</h2>
+<h2>Windows Support</h2>
             </div>
         </div>
         <div class="row">
