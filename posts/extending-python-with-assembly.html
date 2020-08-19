@@ -439,7 +439,7 @@ The Mach-O format is a supported grammar, and if you open up the CPython executa
 <p>Another feature of the ELF, mach-O and PE formats is the ability to build shared libraries (.so files in Linux, .dylib or .so in macOS, and .dll files in Windows).</p>
 <p>A shared library can be imported dynamically (like a plugin) or linked during the build stage as a dependency to your application.
 When building CPython C extensions, you need to link the extension with the Python shared library.
-Your C extension is also in itself a shared library, and is dynamically loaded by CPython (when you <code>import mylibrary</code>) by the</p>
+Your C extension is also in itself a shared library, and is dynamically loaded by CPython (when you <code>import mylibrary</code>).</p>
 <h3>Complex data structures in assembly</h3>
 <p>If you were calling a function that had a more complex data type for its argument (like a pointer to a <code>struct</code>), you need to be aware of the storage size
 of the C data types:</p>

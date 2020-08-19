@@ -258,7 +258,7 @@ Another feature of the ELF, mach-O and PE formats is the ability to build shared
 
 A shared library can be imported dynamically (like a plugin) or linked during the build stage as a dependency to your application.
 When building CPython C extensions, you need to link the extension with the Python shared library.
-Your C extension is also in itself a shared library, and is dynamically loaded by CPython (when you `import mylibrary`) by the
+Your C extension is also in itself a shared library, and is dynamically loaded by CPython (when you `import mylibrary`).
 
 ### Complex data structures in assembly
 
