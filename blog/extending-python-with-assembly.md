@@ -15,7 +15,7 @@ Programmers are used to working on the guts of a system and manipulating the ugl
 
 This experiment was no different. I wanted to see if I could write a CPython Extension in 100% assembly.
 
-**Why**? Well, because after finishing the [CPython Internals book](https://realpython.com/cpython-book), the assembly code was still something of a mystery. I started learning x86-64 assembly from [Jo Van Hooey's book](https://www.apress.com/gp/book/9781484250754) and understood some of the basic concepts but struggled to relate
+**Why**? Well, because after finishing the [CPython Internals book](https://realpython.com/products/cpython-internals-book/), the assembly code was still something of a mystery. I started learning x86-64 assembly from [Jo Van Hooey's book](https://www.apress.com/gp/book/9781484250754) and understood some of the basic concepts but struggled to relate
 them to the high-level languages that I'm familiar with.
 
 There are some questions I wanted answers to, like:
