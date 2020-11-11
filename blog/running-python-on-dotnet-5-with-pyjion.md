@@ -5,6 +5,8 @@ blog_author: Anthony Shaw
 blog_publish_date: November 11, 2020
 ------------------------------------
 
+_This post is an update on the Pyjion project to plug the .NET 5 CLR JIT compiler into Python 3.9._
+
 .NET 5 was released on November 10, 2020. It is the cross-platform and open-source replacement of the [**.NET Core**](https://github.com/dotnet/core) project and the **.NET** project that ran exclusively on Windows since the late 90's.
 
 .NET is formed of many components:
