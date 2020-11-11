@@ -1,5 +1,5 @@
 blog_heading: Running Python on .NET 5
-blog_subheading: An update on the Pyjion project to plug a JIT into CPython
+blog_subheading: An update on the Pyjion project to plug a JIT into CPython using the .NET 5 CLR JIT compiler
 blog_header_image: posts/turtle-pileup.jpg
 blog_author: Anthony Shaw
 blog_publish_date: November 11, 2020
