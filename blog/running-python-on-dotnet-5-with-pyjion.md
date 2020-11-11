@@ -210,6 +210,8 @@ There will now come seperate patches to try writing optimization phases.
 
 The .NET JIT does have some optimizations for CIL->machine-code, but it has absolutely no knowledge of Python, types or structure. This needs to be written in Pyjion.
 
+I think these optimizations will be game-changing in terms of performance gains for Python.
+
 Here are some basic ideas I've been thinking about and it would be great to test:
 
 - An optimizer for string parsing and dictionary lookups that would make template compiling in Jinja2 or Django faster
@@ -246,3 +248,9 @@ After [the biggest-pull-request-I've-ever-submitted is merged](https://github.co
 For now, you can follow the instructions on my branch to try it out. It is very-much beta. Don't deploy to production*
 
 * unless its Friday.
+
+## Credits
+
+- Thank you to Andy Ayers at Microsoft for helping me figure out the Windows [pointer offset issue](https://github.com/dotnet/runtime/issues/44397) and the [helper function API](https://github.com/dotnet/runtime/issues/42925).
+- Thank you to Steve Dower at Microsoft for helping me figure out the dynamic library loader.
+- Thank you Dino and Brett for doing the heavy lifting to get the original POC together.

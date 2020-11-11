@@ -276,6 +276,7 @@ There were some limitations to the original proof-of-concept:</p>
 <p>However, Pyjion doesn&rsquo;t do that. Yet. The goal with <a href="https://github.com/microsoft/Pyjion/pull/237">this patch</a> was to build a solid foundation on which optimizations could be written and tested.</p>
 <p>There will now come seperate patches to try writing optimization phases.</p>
 <p>The .NET JIT does have some optimizations for CIL-&gt;machine-code, but it has absolutely no knowledge of Python, types or structure. This needs to be written in Pyjion.</p>
+<p>I think these optimizations will be game-changing in terms of performance gains for Python.</p>
 <p>Here are some basic ideas I&rsquo;ve been thinking about and it would be great to test:</p>
 <ul>
 <li>An optimizer for string parsing and dictionary lookups that would make template compiling in Jinja2 or Django faster</li>
@@ -304,6 +305,12 @@ Therefore it would be a huge undertaking to implement object-model interfaces fo
 For now, you can follow the instructions on my branch to try it out. It is very-much beta. Don&rsquo;t deploy to production*</p>
 <ul>
 <li>unless its Friday.</li>
+</ul>
+<h2>Credits</h2>
+<ul>
+<li>Thank you to Andy Ayers at Microsoft for helping me figure out the Windows <a href="https://github.com/dotnet/runtime/issues/44397">pointer offset issue</a> and the <a href="https://github.com/dotnet/runtime/issues/42925">helper function API</a>.</li>
+<li>Thank you to Steve Dower at Microsoft for helping me figure out the dynamic library loader.</li>
+<li>Thank you Dino and Brett for doing the heavy lifting to get the original POC together.</li>
 </ul>
             </div>
         </div>
