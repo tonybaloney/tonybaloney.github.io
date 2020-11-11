@@ -125,10 +125,57 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <p>.NET 5 was released on November 10, 2020. It is the cross-platform and open-source replacement of the <a href="https://github.com/dotnet/core"><strong>.NET Core</strong></a> project and the <strong>.NET</strong> project that ran exclusively on Windows since the late 90&rsquo;s. .NET 5 comes bundled with a performant JIT compiler (codenamed RyuJIT) that will compile .NETs intermediary language, ECMA335 CIL into native machine instructions on Intel x86, x86-64, and ARM CPU architectures.</p>
+                <p>.NET 5 was released on November 10, 2020. It is the cross-platform and open-source replacement of the <a href="https://github.com/dotnet/core"><strong>.NET Core</strong></a> project and the <strong>.NET</strong> project that ran exclusively on Windows since the late 90&rsquo;s.</p>
+<p>.NET is formed of many components:
+ - 3 builtin languages, C#, F# and VB.NET, each with its own compiler
+ - A standard library
+ - A common intermediate language to abstract the high level languages from the core runtime. This is a standard known as <a href="https://github.com/tonybaloney/ecma-335/tree/master/docs">ECMA 335 CIL</a>.
+ - A common language runtime (CLR) that compiles CIL into native machine code so that it can be executed and packages executables into .exe formats.</p>
+<p><img alt=".NET architecture" class="img-responsive center-block" src="/img/posts/Common_Language_Infrastructure.png" style="width:40%"></p>
+<p>.NET 5 CLR comes bundled with a performant JIT compiler (codenamed RyuJIT) that will compile .NETs CIL into native machine instructions on Intel x86, x86-64, and ARM CPU architectures.</p>
 <p>You can write code in a number of languages, like C++, C#, F# and compile those into CIL and then into native machine code (as a binary executable) on macOS, Linux, and Windows. Pretty neat.</p>
 <p>But this is a blog about Python. So what does this have to do with Python?</p>
-<p>Pyjion is a project to replace the core execution loop of CPython with JIT compiled functions.</p>
+<p>Pyjion is a project to replace the core execution loop of CPython by transpiling CPython bytecode to ECMA CIL and then using the .NET 5 CLR to compile that into machine code. It then executes the machine-code compiled JIT frames at runtime instead of using the native execution loop of CPython.</p>
+<h2>Very-quick overview of Python&rsquo;s compiler</h2>
+<p>When CPython compiles Python code, it compiles it into an intermediate format, similar to .NET, called Python bytecode. This bytecode is cached on disk so that when you import a module that hasn&rsquo;t changed, it doesn&rsquo;t compile it every time. You can see the bytecode by disassembling any Python function:</p>
+<pre><code>&gt;&gt;&gt; import dis
+&gt;&gt;&gt; def half(x):
+...    return x/2
+... 
+&gt;&gt;&gt; dis.dis(half)
+  2           0 LOAD_FAST                0 (x)
+              2 LOAD_CONST               1 (2)
+              4 BINARY_TRUE_DIVIDE
+              6 RETURN_VALUE
+</code></pre>
+
+<p>To execute anything on a CPU, you have to provide the OS with machine-code instructions. This can be accomplished by compiling them up-front using a compiled like the C or C++ compilers. They compile code into executable formats as either shared libraries or standalone executables. <a href="https://tonybaloney.github.io/posts/extending-python-with-assembly.html"><em>See my post on Python/assembly for a bit more info on this topic</em></a>.</p>
+<p>CPython converts the bytecode into machine code instructions like looping over them in a precompiled function, called the evaluation loop. This is essentially a big for loop with a switch statement. The compiled version of CPython that you&rsquo;re running already has the instructions required. This is why CPython&rsquo;s evaluation loop is an &ldquo;AOT&rdquo;, or &ldquo;Ahead of Time&rdquo; compiled library:</p>
+<p><img alt="diagram 1" class="img-responsive center-block" src="/img/posts/Slide1.png"></p>
+<p><strong>Note: There is a lot more to CPython&rsquo;s compiler. I&rsquo;ve written a <a href="https://realpython.com/products/cpython-internals-book/">whole book on the CPython compiler and the internals of CPython</a> if you want to learn more.</strong></p>
+<p>There are a few issues with this approach. The biggest is speed. A series of inline machine-code instructions is very performant. CPython has to make judgements at runtime for which code branch to follow every time your function is run. This leads to CPython being 100x slower in &ldquo;tight-loop&rdquo; problems where its executing the same thing again and again. The machine-code is compiled ahead of time and it has to loop around to get to the right instructions. Checkout my PyCon talk for a more in-depth explanation:</p>
+<iframe width="560" height="315" class="embed-responsive" src="https://www.youtube.com/embed/I4nkgJdVZFA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<p>The most common way around this performance barrier is to compile Python extensions from C. This produces a custom binary with inline machine-code instructions for the task at hand. This is how most machine-learning and data science libraries like numpy, pandas, SKL are put together. This approach is still AOT compiling the code. It also requires a lot of knowledge of C. This approach has worked really well for the data science community, where algorithms can be performant and leverage low-level platforms <a href="https://numba.pydata.org/numba-doc/latest/cuda/index.html">like GPUs or specialised AI chipsets</a>.</p>
+<p>There are a few issues with the AOT extension module approach. One is that it still uses the evaluation loop. C extension modules are a set of functions. Once you call the C-compiled function, its in the performant code, but your Python code that&rsquo;s calling it still lives inside Python&rsquo;s loop. If you want to leverage a compiled library and your Python code is doing some heavy number crunching, you end up having to use an API of functions, like numpy, instead of a more fluent Python API:</p>
+<pre><code class="python">&gt;&gt;&gt; import numpy as np
+&gt;&gt;&gt; a = np.ones([9, 5, 7, 4])
+&gt;&gt;&gt; c = np.ones([9, 5, 4, 3])
+&gt;&gt;&gt; np.dot(a, c).shape
+(9, 5, 7, 9, 5, 3)
+&gt;&gt;&gt; np.matmul(a, c).shape
+(9, 5, 7, 3)
+</code></pre>
+
+<h2>What Pyjion does to solve this issue</h2>
+<p>A few releases of Python ago (CPython specifically, the most commonly used version of Python) in 3.7 a new API was added to be able to swap out &ldquo;frame execution&rdquo; with a replacement implementation. This is otherwise known as <a href="https://www.python.org/dev/peps/pep-0523/">PEP 523</a>. PEP 523 also added the capability to store additional attributes in <em>code objects</em> (compiled Python code.</p>
+<p>Pyjion does not compile Python code. It compiles Python frames (code objects, like blocks, functions, methods, classes) into machine-code at runtime using a performant JIT:</p>
+<p><img alt="diagram 2" class="img-responsive center-block" src="/img/posts/Slide2.png"></p>
+<p>CPython compiles the Python code, so whatever language features and behaviours there are in CPython 3.9, like the walrus operator, <a href="https://www.python.org/dev/peps/pep-0584">the dictionary union operator</a>, will all work exactly the same with this extension enabled. This also means that this extension uses the same standard library as Python 3.9.</p>
+<p>Pyjion is a &ldquo;pip installable&rdquo; package for standard CPython that JIT compiles all Python code at runtime using the .NET 5 JIT compiler. You can use off-the-shelf CPython 3.9 on macOS, Linux or Windows. After installing this package you just import the module and enable the JIT.</p>
+<p>Once a frame has been compiled, the binary code is cached in memory and reused every time the function is called:</p>
+<p><img alt="diagram 3" class="img-responsive center-block" src="/img/posts/Slide3.png"></p>
+<h2>Using Pyjion</h2>
 <p>To get started, you need to have .NET 5 installed, with Python 3.9 and the Pyjion package (I also recommend using a virtual environment).</p>
 <p>After importing pyjion, enable it by calling <code>pyjion.enable()</code> which sets a compilation threshold to 0 (the code only needs to be run once to be compiled by the JIT):</p>
 <pre><code>&gt;&gt;&gt; import pyjion
@@ -149,7 +196,8 @@ You can see some basic stats by running <code>pyjion.info(f)</code>, where <code
 </code></pre>
 
 <p>You can see the machine code for the compiled function by disassembling it in the Python REPL.
-Pyjion has essentially compiled your small Python function into a small, standalone application:</p>
+Pyjion has essentially compiled your small Python function into a small, standalone application.
+Install <code>distorm3</code> first to disassemble x86-64 assembly and run <code>pyjion.dis.dis_native(f)</code>:</p>
 <pre><code>&gt;&gt;&gt; import pyjion.dis
 &gt;&gt;&gt; pyjion.dis.dis_native(half)
 00000000: PUSH RBP
@@ -171,12 +219,7 @@ Pyjion has essentially compiled your small Python function into a small, standal
 ...
 </code></pre>
 
-<p>The complex logic of converting a portable instruction set into low-level machine instructions is done by .NET&rsquo;s compiler.</p>
-<h2>What is this? A fork of Python? Another Python runtime?</h2>
-<p>A few releases of Python ago (CPython specifically, the most commonly used version of Python) in 3.7 a new API was added to be able to swap out &ldquo;frame execution&rdquo; with a replacement implementation. This is otherwise known as <a href="https://www.python.org/dev/peps/pep-0523/">PEP 523</a>. PEP 523 also added the capability to store additional attributes in <em>code objects</em> (compiled Python code.</p>
-<p>Pyjion does not compile Python code.</p>
-<p>CPython compiles the Python code, so whatever language features and behaviours there are in CPython 3.9, like the walrus operator, <a href="https://www.python.org/dev/peps/pep-0584">the dictionary union operator</a>, will all work exactly the same with this extension enabled. This also means that this extension uses the same standard library as Python 3.9.</p>
-<p>Pyjion is a &ldquo;pip installable&rdquo; package for standard CPython that JIT compiles all Python code at runtime using the .NET 5 JIT compiler. You can use off-the-shelf CPython 3.9 on macOS, Linux or Windows. After installing this package you just import the module and enable the JIT.</p>
+<p>The complex logic of converting a portable instruction set into low-level machine instructions is done by .NET&rsquo;s CLR JIT compiler.</p>
 <p>All Python code executed after the JIT is enabled will be compiled into native machine code at runtime and cached on disk. For example, to enable the JIT on a simple <code>app.py</code> for a Flask web app:</p>
 <pre><code class="python">import pyjion
 pyjion.enable()
@@ -196,10 +239,9 @@ app.run()
 <p>The short answer is- if your existing Python code runs on CPython 3.9 &ndash; <strong>yes</strong> it will be compatible. To make sure, Pyjion has been tested against the full CPython &ldquo;test suite&rdquo; on all platforms. In fact, it was the first JIT ever to pass the test suite.</p>
 <p>Thats because this isn&rsquo;t a Python runtime, it uses the existing Python compiler to compile your code into Python bytecode (low level instructions).</p>
 <p>Pyjion uses the same dynamic module loader as CPython, so if you import a Python extension from your virtual environment, it will work just the same in Pyjion.</p>
-<p>The way that the Python compiler works</p>
-<p>There is a lot more to this. I&rsquo;ve written a <a href="https://realpython.com/products/cpython-internals-book/">whole book on the CPython compiler and the internals of CPython</a> if you want to learn more.</p>
 <h2>Project History</h2>
-<p>There were some limitations to the original project</p>
+<p>Pyjion isn&rsquo;t new. Brett Cannon and Dino Viehland started the Pyjion project 4 years ago. This was the first JIT to pass the full CPython test suite.
+There were some limitations to the original proof-of-concept:</p>
 <ul>
 <li>Written against an old version of .NET Core</li>
 <li>Required custom patches of .NET and compiling from source</li>
@@ -215,15 +257,54 @@ app.run()
 <li>Dictionary, list and set comprehensions</li>
 <li>Generators and coroutines</li>
 </ul>
-<p>Actually, a <strong>lot</strong> has changed in the last few releases of CPython. The patch that I&rsquo;m talking about to get Pyjion working with the latest version of everything was a big undertaking</p>
+<p>Actually, a <strong>lot</strong> has changed in the last few releases of CPython. The <a href="https://github.com/microsoft/Pyjion/pull/237">patch that I&rsquo;m talking about</a> to get Pyjion working with the latest version of everything was a big undertaking&hellip;</p>
 <p><img alt="not-much-has-changed" class="img-responsive center-block" src="/img/posts-original/not-much-has-changed.png"></p>
-<h2>What is a JIT?</h2>
-<h2>Overview of the .NET JIT</h2>
-<p><img alt="" class="img-responsive center-block" src=""></p>
-<h2>Pyjion architecture</h2>
-<h2>Potential gains and benefits</h2>
+<p>The goal with the latest patch was to get the project up to the condition of:</p>
+<ul>
+<li>Using the release binaries of .NET 5 and CPython 3.9</li>
+<li>Making it work across all platforms</li>
+<li>Implement the PEP523 interface</li>
+<li>Implement all the new features of Python 3.9</li>
+<li>Making the package &ldquo;pip installable&rdquo; from PyPi</li>
+<li>Improving the test coverage</li>
+<li>Adding a disassembler (both machine-code and CIL) to aid development</li>
+</ul>
+<h2>Is this faster?</h2>
+<p>The short answer a little, but not by much (yet).</p>
+<p>JIT compiling something doesn&rsquo;t make it faster. Actually, the overhead of compiling functions the first time they are called often makes it slower.</p>
+<p>JIT compilers are faster because of optimizations at runtime. A good JIT compiler will make assertions about the function that its compiling and how it behaves to optimize out code paths, shortcut calls and inline instructions. This can make drastic differences.</p>
+<p>However, Pyjion doesn&rsquo;t do that. Yet. The goal with <a href="https://github.com/microsoft/Pyjion/pull/237">this patch</a> was to build a solid foundation on which optimizations could be written and tested.</p>
+<p>There will now come seperate patches to try writing optimization phases.</p>
+<p>The .NET JIT does have some optimizations for CIL-&gt;machine-code, but it has absolutely no knowledge of Python, types or structure. This needs to be written in Pyjion.</p>
+<p>Here are some basic ideas I&rsquo;ve been thinking about and it would be great to test:</p>
+<ul>
+<li>An optimizer for string parsing and dictionary lookups that would make template compiling in Jinja2 or Django faster</li>
+<li>An optimizer for unrolling small comprehensions or loops that would make general code faster</li>
+<li>An optimizer for integers and floats to use machine-code instructions for binary arithmetic instead of the Python C-API</li>
+<li>An optimizer for Unicode string encoding</li>
+</ul>
+<h2>Does this help my use my .NET libraries from Python?</h2>
+<p>Short answer is no.</p>
+<p>Long answer is that CIL has two types of instructions, <strong>primitive</strong> and <strong>object-model</strong>. The CIL specification has an entire standard for object declaration, types, equivalence etc. Pyjion converts Python bytecode into primitive CIL instructions.
+Python bytecode itself is mostly primitive. There are some exceptions, like specialised bytecodes for declaring lists, dictionaries and tuples. But most of the work to convert classes, functions and fields into primitive types happens further up the chain.
+Therefore it would be a huge undertaking to implement object-model interfaces for Python.</p>
+<p>If you want to do this, I recommend checking out Python.NET.</p>
 <h2>Comparison with other projects</h2>
-<h2>Debugging and disassembling</h2>
+<p>Checkout Brett&rsquo;s <a href="https://github.com/microsoft/Pyjion#how-do-this-compare-to-">comprehensive answer to this question</a>.</p>
+<h2>Future potential</h2>
+<p>Firstly, this is still Microsoft&rsquo;s project. So this is just my opinion.</p>
+<ol>
+<li>A general purpose JIT could build optimizations in areas that are unloved, especially web applications</li>
+<li>Having a pip-installable JIT that is compatible with all CPython code is a huge benefit to making everyday applications faster</li>
+<li>It doesn&rsquo;t require a bespoke build toolchain to use it</li>
+<li>Packaging compiling frames into a portable executable format like .EXE PE files</li>
+</ol>
+<h2>Awesome, how do I install it?</h2>
+<p>After <a href="https://github.com/microsoft/Pyjion/pull/237">the biggest-pull-request-I&rsquo;ve-ever-submitted is merged</a>. This should be available on PyPi.
+For now, you can follow the instructions on my branch to try it out. It is very-much beta. Don&rsquo;t deploy to production*</p>
+<ul>
+<li>unless its Friday.</li>
+</ul>
             </div>
         </div>
         <div class="row">
