@@ -10,6 +10,7 @@ _This post is an update on the Pyjion project to plug the .NET 5 CLR JIT compile
 .NET 5 was released on November 10, 2020. It is the cross-platform and open-source replacement of the [**.NET Core**](https://github.com/dotnet/core) project and the **.NET** project that ran exclusively on Windows since the late 90's.
 
 .NET is formed of many components:
+
  - 3 builtin languages, C#, F# and VB.NET, each with its own compiler
  - A standard library
  - A common intermediate language to abstract the high level languages from the core runtime. This is a standard known as [ECMA 335 CIL](https://github.com/tonybaloney/ecma-335/tree/master/docs).
@@ -51,7 +52,7 @@ __Note: There is a lot more to CPython's compiler. I've written a [whole book on
 
 There are a few issues with this approach. The biggest is speed. A series of inline machine-code instructions is very performant. CPython has to make judgements at runtime for which code branch to follow every time your function is run. This leads to CPython being 100x slower in "tight-loop" problems where its executing the same thing again and again. The machine-code is compiled ahead of time and it has to loop around to get to the right instructions. Checkout my PyCon talk for a more in-depth explanation:
 
-<iframe width="560" height="315" class="embed-responsive" src="https://www.youtube.com/embed/I4nkgJdVZFA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" class="center-block" src="https://www.youtube.com/embed/I4nkgJdVZFA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 The most common way around this performance barrier is to compile Python extensions from C. This produces a custom binary with inline machine-code instructions for the task at hand. This is how most machine-learning and data science libraries like numpy, pandas, SKL are put together. This approach is still AOT compiling the code. It also requires a lot of knowledge of C. This approach has worked really well for the data science community, where algorithms can be performant and leverage low-level platforms [like GPUs or specialised AI chipsets](https://numba.pydata.org/numba-doc/latest/cuda/index.html).
 
@@ -221,7 +222,7 @@ Here are some basic ideas I've been thinking about and it would be great to test
 - An optimizer for integers and floats to use machine-code instructions for binary arithmetic instead of the Python C-API
 - An optimizer for Unicode string encoding
 
-## Does this help my use my .NET libraries from Python?
+## Does this help me use my .NET libraries from Python?
 
 Short answer is no.
 
