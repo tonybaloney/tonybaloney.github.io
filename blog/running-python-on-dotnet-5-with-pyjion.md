@@ -185,7 +185,7 @@ Has much changed since Python 3.6? To the average user, not really. But under th
 - Dictionary, list and set comprehensions
 - Generators and coroutines
 
-Actually, a **lot** has changed in the last few releases of CPython. The [patch that I'm talking about](https://github.com/microsoft/Pyjion/pull/237) to get Pyjion working with the latest version of everything was a big undertaking...
+Actually, a **lot** has changed in the last few releases of CPython. The new fork to get Pyjion working with the latest version of everything was a big undertaking...
 
 ![not-much-has-changed](/img/posts-original/not-much-has-changed.png){: .img-responsive .center-block }
 
@@ -234,11 +234,11 @@ If you want to do this, I recommend checking out Python.NET.
 
 ## Comparison with other projects
 
-Checkout Brett's [comprehensive answer to this question](https://github.com/microsoft/Pyjion#how-do-this-compare-to-).
+Checkout Brett's [comprehensive answer to this question](https://github.com/tonybaloney/Pyjion#how-do-this-compare-to-).
 
 ## Future potential
 
-Firstly, this is still Microsoft's project. So this is just my opinion.
+There are some potential benefits to this project:
 
 1. A general purpose JIT could build optimizations in areas that are unloved, especially web applications
 2. Having a pip-installable JIT that is compatible with all CPython code is a huge benefit to making everyday applications faster
@@ -247,10 +247,11 @@ Firstly, this is still Microsoft's project. So this is just my opinion.
 
 ## Awesome, how do I install it?
 
-After [the biggest-pull-request-I've-ever-submitted is merged](https://github.com/microsoft/Pyjion/pull/237). This should be available on PyPi.
-For now, you can follow the instructions on my branch to try it out. It is very-much beta. Don't deploy to production*
+Checkout [github.com/tonybaloney/pyjion](https://github.com/tonybaloney/pyjion). For now, compile from source. I am also publishing from precompiled wheels [onto PyPi](https://pypi.org/project/pyjion/).
 
-* unless its Friday.
+It is very-much alpha. Don't deploy to production*
+
+`*` unless its Friday.
 
 ## Credits
 

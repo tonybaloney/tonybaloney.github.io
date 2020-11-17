@@ -260,7 +260,7 @@ There were some limitations to the original proof-of-concept:</p>
 <li>Dictionary, list and set comprehensions</li>
 <li>Generators and coroutines</li>
 </ul>
-<p>Actually, a <strong>lot</strong> has changed in the last few releases of CPython. The <a href="https://github.com/microsoft/Pyjion/pull/237">patch that I&rsquo;m talking about</a> to get Pyjion working with the latest version of everything was a big undertaking&hellip;</p>
+<p>Actually, a <strong>lot</strong> has changed in the last few releases of CPython. The new fork to get Pyjion working with the latest version of everything was a big undertaking&hellip;</p>
 <p><img alt="not-much-has-changed" class="img-responsive center-block" src="/img/posts-original/not-much-has-changed.png"></p>
 <p>The goal with the latest patch was to get the project up to the condition of:</p>
 <ul>
@@ -294,9 +294,9 @@ Python bytecode itself is mostly primitive. There are some exceptions, like spec
 Therefore it would be a huge undertaking to implement object-model interfaces for Python.</p>
 <p>If you want to do this, I recommend checking out Python.NET.</p>
 <h2>Comparison with other projects</h2>
-<p>Checkout Brett&rsquo;s <a href="https://github.com/microsoft/Pyjion#how-do-this-compare-to-">comprehensive answer to this question</a>.</p>
+<p>Checkout Brett&rsquo;s <a href="https://github.com/tonybaloney/Pyjion#how-do-this-compare-to-">comprehensive answer to this question</a>.</p>
 <h2>Future potential</h2>
-<p>Firstly, this is still Microsoft&rsquo;s project. So this is just my opinion.</p>
+<p>There are some potential benefits to this project:</p>
 <ol>
 <li>A general purpose JIT could build optimizations in areas that are unloved, especially web applications</li>
 <li>Having a pip-installable JIT that is compatible with all CPython code is a huge benefit to making everyday applications faster</li>
@@ -304,11 +304,9 @@ Therefore it would be a huge undertaking to implement object-model interfaces fo
 <li>Packaging compiling frames into a portable executable format like .EXE PE files</li>
 </ol>
 <h2>Awesome, how do I install it?</h2>
-<p>After <a href="https://github.com/microsoft/Pyjion/pull/237">the biggest-pull-request-I&rsquo;ve-ever-submitted is merged</a>. This should be available on PyPi.
-For now, you can follow the instructions on my branch to try it out. It is very-much beta. Don&rsquo;t deploy to production*</p>
-<ul>
-<li>unless its Friday.</li>
-</ul>
+<p>Checkout <a href="https://github.com/tonybaloney/pyjion">github.com/tonybaloney/pyjion</a>. For now, compile from source. I am also publishing from precompiled wheels <a href="https://pypi.org/project/pyjion/">onto PyPi</a>.</p>
+<p>It is very-much alpha. Don&rsquo;t deploy to production*</p>
+<p><code>*</code> unless its Friday.</p>
 <h2>Credits</h2>
 <ul>
 <li>Thank you to Andy Ayers at Microsoft for helping me figure out the Windows <a href="https://github.com/dotnet/runtime/issues/44397">pointer offset issue</a> and the <a href="https://github.com/dotnet/runtime/issues/42925">helper function API</a>.</li>
