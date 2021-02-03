@@ -138,7 +138,7 @@
 </ul>
 <p>In these examples, I’ve focused on testing. Because Python is an interpreted language, the build stage is typically replaced with dynamic and static checkers, known as ‘linters’.</p>
 <p>Having automated tests for any Python project can give you fast notifications when a change to the code has broken an existing feature in your application.</p>
-<p>Your azure pipelines build will consist of jobs, these jobs consist of a number of steps. Some steps are pre-defined and called “Tasks”, you can find the full list on <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/?view=vsts">the Microsoft Azure Pipelines website</a>.</p>
+<p>Your azure pipelines build will consist of jobs, these jobs consist of a number of steps. Some steps are pre-defined and called “Tasks”, you can find the full list on <a href="https://cda.ms/1VQ">the Microsoft Azure Pipelines website</a>.</p>
 <p>You can also define your own tasks consisting of scripts in either Bash (Linux and MacOS) or PowerShell (Windows).</p>
 <p>Some of the pre-defined tasks you’ll need for Python are:</p>
 <p><code>UsePythonVersion@0</code> — Use a specific Python version (like a virtual environment)</p>
@@ -417,7 +417,7 @@ Azure Pipelines comes with an artifact publishing, hosting and indexing API that
      artifactName: Library_Basic_Wheel
 </code></pre>
 
-<p>Azure Pipelines has support for publishing the packages to PyPi, but I haven’t added that to my examples. It’s <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pypi?view=vsts&amp;tabs=yaml">well documented on the website</a>.</p>
+<p>Azure Pipelines has support for publishing the packages to PyPi, but I haven’t added that to my examples. It’s <a href="https://cda.ms/1VR">well documented on the website</a>.</p>
 <pre><code class="yaml">trigger:
 - master
 name: $(Date:yyyyMMdd)$(Rev:.r)

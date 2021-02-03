@@ -164,7 +164,7 @@ Luckily, macOS and Linux have the same [calling convention](https://software.int
 | Argument 5      | r8              |
 | Argument 6      | r9              |
 
-NB: Windows has a [calling convention](https://docs.microsoft.com/en-us/cpp/build/x64-calling-convention?view=vs-2019), which uses different registers to System-V.
+NB: Windows has a [calling convention](https://cda.ms/1VT), which uses different registers to System-V.
 
 Additional arguments are loaded from the value stack, and because its a value stack you push them in reverse order. For example, if the function had 10 arguments, you would push the 10th first:
 
@@ -221,7 +221,7 @@ mov rsp, rbp
 pop rbp
 ```
 
-Windows defines [another calling convention](https://docs.microsoft.com/en-us/cpp/build/x64-calling-convention?view=vs-2019), using different registers for the arguments.
+Windows defines [another calling convention](https://cda.ms/1VV), using different registers for the arguments.
 It also requires a different prolog and epilog, which calculates address limits. This is a bit more complex than the original Intel spec.
 
 ### Turning assembly into an executable
@@ -232,7 +232,7 @@ The assembler will take an assembly source file and assemble it into a machine-c
 
 - [Mach-O](https://en.wikipedia.org/wiki/Mach-O) for macOS
 - [ELF](https://refspecs.linuxfoundation.org/elf/elf.pdf) for Linux
-- [PE](https://docs.microsoft.com/en-us/windows/win32/debug/pe-format) for Windows
+- [PE](https://cda.ms/1VW) for Windows
 
 Executable file formats include a few components, not just instructions:
 

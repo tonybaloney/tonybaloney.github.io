@@ -364,7 +364,7 @@ should be used for which argument.</p>
 </tr>
 </tbody>
 </table>
-<p>NB: Windows has a <a href="https://docs.microsoft.com/en-us/cpp/build/x64-calling-convention?view=vs-2019">calling convention</a>, which uses different registers to System-V.</p>
+<p>NB: Windows has a <a href="https://cda.ms/1VT">calling convention</a>, which uses different registers to System-V.</p>
 <p>Additional arguments are loaded from the value stack, and because its a value stack you push them in reverse order. For example, if the function had 10 arguments, you would push the 10th first:</p>
 <pre><code class="x86asm"> push arg10
  push arg9
@@ -409,7 +409,7 @@ mov rsp, rbp
 pop rbp
 </code></pre>
 
-<p>Windows defines <a href="https://docs.microsoft.com/en-us/cpp/build/x64-calling-convention?view=vs-2019">another calling convention</a>, using different registers for the arguments.
+<p>Windows defines <a href="https://cda.ms/1VV">another calling convention</a>, using different registers for the arguments.
 It also requires a different prolog and epilog, which calculates address limits. This is a bit more complex than the original Intel spec.</p>
 <h3>Turning assembly into an executable</h3>
 <p>You can&rsquo;t execute an assembly source file directly. It may seem like you&rsquo;re coding machine-code, but there is a wrapper around the assembly instructions required to make the OS run the instructions (an Executable File Format).</p>
@@ -417,7 +417,7 @@ It also requires a different prolog and epilog, which calculates address limits.
 <ul>
 <li><a href="https://en.wikipedia.org/wiki/Mach-O">Mach-O</a> for macOS</li>
 <li><a href="https://refspecs.linuxfoundation.org/elf/elf.pdf">ELF</a> for Linux</li>
-<li><a href="https://docs.microsoft.com/en-us/windows/win32/debug/pe-format">PE</a> for Windows</li>
+<li><a href="https://cda.ms/1VW">PE</a> for Windows</li>
 </ul>
 <p>Executable file formats include a few components, not just instructions:</p>
 <ul>

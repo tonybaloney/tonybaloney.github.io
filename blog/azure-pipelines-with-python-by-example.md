@@ -25,7 +25,7 @@ In these examples, I’ve focused on testing. Because Python is an interpreted l
 
 Having automated tests for any Python project can give you fast notifications when a change to the code has broken an existing feature in your application.
 
-Your azure pipelines build will consist of jobs, these jobs consist of a number of steps. Some steps are pre-defined and called “Tasks”, you can find the full list on [the Microsoft Azure Pipelines website](https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/?view=vsts).
+Your azure pipelines build will consist of jobs, these jobs consist of a number of steps. Some steps are pre-defined and called “Tasks”, you can find the full list on [the Microsoft Azure Pipelines website](https://cda.ms/1VQ).
 
 You can also define your own tasks consisting of scripts in either Bash (Linux and MacOS) or PowerShell (Windows).
 
@@ -361,7 +361,7 @@ Then, after the test results have been published, the sdist (source distribution
      artifactName: Library_Basic_Wheel
 ```
 
-Azure Pipelines has support for publishing the packages to PyPi, but I haven’t added that to my examples. It’s [well documented on the website](https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pypi?view=vsts&tabs=yaml).
+Azure Pipelines has support for publishing the packages to PyPi, but I haven’t added that to my examples. It’s [well documented on the website](https://cda.ms/1VR).
 
 ```yaml
 trigger:

@@ -262,7 +262,7 @@ ALLOWED_HOSTS = [os.environ.get('DJANGO_HOST', 'localhost')]
 </code></pre>
 
 <p>To change them inside the UI, they are within <code>Settings -&gt; Configuration -&gt; Application Settings</code>. The <code>Advanced Edit</code> button shows all of the environment variables in JSON format.</p>
-<p>These secrets are encrypted at rest and in-transit, but if you still want to use Azure Vault, you can use <a href="https://docs.microsoft.com/en-us/azure/app-service/app-service-key-vault-references">Key References</a> instead of the actual passwords.</p>
+<p>These secrets are encrypted at rest and in-transit, but if you still want to use Azure Vault, you can use <a href="https://cda.ms/1VS">Key References</a> instead of the actual passwords.</p>
 <h3>Deployment</h3>
 <p>The easiest ways to deploy to either instance is from Visual Studio Code using the Azure extensions, or using Deploy from Local Git.</p>
 <p>Each instance would have its own Git URL, shown in the UI or, on the CLI during creation.</p>

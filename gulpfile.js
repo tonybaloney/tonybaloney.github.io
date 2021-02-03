@@ -78,7 +78,7 @@ gulp.task('image-min', function() {
 });
 
 // Run everything
-gulp.task('default', ['less', 'minify-css', 'minify-js', 'copy']);
+gulp.task('default', ['less', 'minify-css', 'minify-js', 'copy', 'image-min']);
 
 // Configure the browserSync task
 gulp.task('browserSync', function() {

@@ -146,7 +146,7 @@ az webapp config appsettings set --name <app-name> --resource-group <resourcegro
 
 To change them inside the UI, they are within `Settings -> Configuration -> Application Settings`. The `Advanced Edit` button shows all of the environment variables in JSON format.
 
-These secrets are encrypted at rest and in-transit, but if you still want to use Azure Vault, you can use [Key References](https://docs.microsoft.com/en-us/azure/app-service/app-service-key-vault-references) instead of the actual passwords.
+These secrets are encrypted at rest and in-transit, but if you still want to use Azure Vault, you can use [Key References](https://cda.ms/1VS) instead of the actual passwords.
 
 ### Deployment
 
