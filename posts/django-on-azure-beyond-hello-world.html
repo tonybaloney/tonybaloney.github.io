@@ -531,7 +531,7 @@ onto a dedicated endpoint.</p>
 <p>Then you can configure your application to use the new storage containers. I&rsquo;ve been using the <code>django-storages</code> extension because it has support for Azure Storage and can also upload the files for you.
 Because Azure Web Apps will run <code>manage.py collectstatic</code> on deployment, you will notice deployments take significantly longer after configuring this step.</p>
 <ol>
-<li>Install <code>django-storage[azure]</code> into your virtual environment and add it to your <code>requirements.txt</code> file</li>
+<li>Install <code>django-storages[azure]</code> into your virtual environment and add it to your <code>requirements.txt</code> file</li>
 <li>Add <code>'storages'</code> to the list of <code>INSTALLED_APPS</code></li>
 <li>Create a <code>backend</code> module inside your application and define two (or more) classes for static and media files</li>
 </ol>
