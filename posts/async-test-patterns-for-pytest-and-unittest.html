@@ -140,7 +140,7 @@ async def test_an_async_function():
     assert result == 'banana'
 </code></pre>
 
-<p><strong>Caution ::</strong> If you just add <code>async</code> before your test methods, Pytest won&rsquo;t await them and they&rsquo;ll pass regardless!!</p>
+<p><strong>Caution ::</strong> If you just add <code>async</code> before your test methods without the marker, Pytest won&rsquo;t await them and they&rsquo;ll pass regardless!!</p>
 <p>The marker also applies to test class groups, awaiting any async methods and working normally on any sync test methods:</p>
 <pre><code class="python">@pytest.mark.asyncio
 class TestGroup:
@@ -158,21 +158,20 @@ class TestGroup:
 </code></pre>
 
 <h2>Async fixtures</h2>
-<p>The <code>pytest-asyncio</code> extension also enables async fixtures, for example I recently had to create an async fixture for a HTTP async client for FastAPI. The challenge with this is that Httpx (and other HTTP/TCP async classes) require usage in a context-manager to that sockets are closed, otherwise you&rsquo;ll get a stack of warnings about unclosed HTTP sessions.</p>
+<p>The <code>pytest-asyncio</code> extension also enables async fixtures, for example I recently had to create an async fixture for a HTTP async client for FastAPI. The challenge with Httpx (and other HTTP/TCP async classes) is they require usage in a context-manager, so that sockets are closed. If you don&rsquo;t close them, you&rsquo;ll get a stack of warnings about unclosed HTTP sessions.</p>
 <p>The solution was to create an async fixture, yielded within an async context-manager, so that once the test is completed, it will close the AsyncClient:</p>
 <pre><code class="python">from httpx import AsyncClient
 import pytest
-
+from my_app import app
 
 @pytest.fixture
 async def async_app_client():
-    settings.db_url = &quot;sqlite://:memory:&quot;
     async with AsyncClient(app=app, base_url='http://test') as client:
         yield client
 
 </code></pre>
 
-<p>This example uses httpx, which comes with an async HTTP client. To use this fixture, you can await its methods:</p>
+<p>This example uses <a href="https://github.com/encode/httpx">httpx</a>, which comes with an async HTTP client. To use this fixture, you can await its methods:</p>
 <pre><code class="python">@pytest.mark.asyncio
 async def test_create_user(async_app_client):
     response = await async_app_client.post(

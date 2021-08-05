@@ -28,7 +28,7 @@ async def test_an_async_function():
     assert result == 'banana'
 ```
 
-**Caution ::** If you just add `async` before your test methods, Pytest won't await them and they'll pass regardless!!
+**Caution ::** If you just add `async` before your test methods without the marker, Pytest won't await them and they'll pass regardless!!
 
 The marker also applies to test class groups, awaiting any async methods and working normally on any sync test methods:
 
@@ -50,24 +50,23 @@ class TestGroup:
 
 ## Async fixtures
 
-The `pytest-asyncio` extension also enables async fixtures, for example I recently had to create an async fixture for a HTTP async client for FastAPI. The challenge with this is that Httpx (and other HTTP/TCP async classes) require usage in a context-manager to that sockets are closed, otherwise you'll get a stack of warnings about unclosed HTTP sessions.
+The `pytest-asyncio` extension also enables async fixtures, for example I recently had to create an async fixture for a HTTP async client for FastAPI. The challenge with Httpx (and other HTTP/TCP async classes) is they require usage in a context-manager, so that sockets are closed. If you don't close them, you'll get a stack of warnings about unclosed HTTP sessions.
 
 The solution was to create an async fixture, yielded within an async context-manager, so that once the test is completed, it will close the AsyncClient:
 
 ```python
 from httpx import AsyncClient
 import pytest
-
+from my_app import app
 
 @pytest.fixture
 async def async_app_client():
-    settings.db_url = "sqlite://:memory:"
     async with AsyncClient(app=app, base_url='http://test') as client:
         yield client
 
 ```
 
-This example uses httpx, which comes with an async HTTP client. To use this fixture, you can await its methods:
+This example uses [httpx](https://github.com/encode/httpx), which comes with an async HTTP client. To use this fixture, you can await its methods:
 
 ```python
 @pytest.mark.asyncio
