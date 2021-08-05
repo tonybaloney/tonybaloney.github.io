@@ -187,8 +187,8 @@ async def test_create_user(async_app_client):
 
 <h2>Unittest classes from Pytest</h2>
 <p>Pytest has support for running unittest <code>TestCase</code> classes, but there are lots of caveats to the support.</p>
-<p>Once such caveat is that you can&rsquo;t annotate <code>@pytest.mark.asyncio</code> on a test method that&rsquo;s part of a <code>unittest.TestCase</code>. 
-Instead, you have to create a class-level fixture for the event loop, then auto-use it on your test cases. </p>
+<p>Once such caveat is that you can&rsquo;t annotate <code>@pytest.mark.asyncio</code> on a test method that&rsquo;s part of a <code>unittest.TestCase</code>.
+Instead, you have to create a class-level fixture for the event loop, then auto-use it on your test cases.</p>
 <p>The challenge is that you can&rsquo;t await a coroutine from a non-async method and unittest doesn&rsquo;t easily support awaiting on test methods. Instead, you need to get the eventloop and then create a task. Newer versions of Python have a convenience method on the event loop (<code>run_until_complete(Coroutine)</code>).</p>
 <p>This example sets an instance on test case so that you can write sync test methods will call coroutines.</p>
 <p>Here is a <code>get_async_result()</code> method for convenience:</p>
