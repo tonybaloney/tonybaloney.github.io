@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>PyPy in Production</title>
+
+    <!-- Facebook Meta tags -->
+    <meta property="og:title" content="PyPy in Production">
+    <meta property="og:description" content="Deploying a real-world Python application with PyPy">
+    <meta property="og:image" content="https://tonybaloney.github.io/img/posts/platform_level.jpg">
+    <meta property="og:url" content="https://tonybaloney.github.io/posts/pypy-in-production.html">
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:title" content="PyPy in Production">
+    <meta name="twitter:description" content="Deploying a real-world Python application with PyPy">
+    <meta name="twitter:image" content="https://tonybaloney.github.io/img/posts/platform_level.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@anthonypjshaw">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="/css/clean-blog.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js"></script>
+
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/x86asm.min.js"></script>
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/python.min.js"></script>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    Menu <i class="fa fa-bars"></i>
+                </button>
+
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/#">Home</a>
+                    </li>
+                    <li>
+                        <a href="/#projects">Projects</a>
+                    </li>
+                    <li>
+                        <a href="/#contributions">Contributions</a>
+                    </li>
+                    <li>
+                        <a href="/#courses">Courses</a>
+                    </li>
+                    <li>
+                        <a href="/#podcasts">Podcasts</a>
+                    </li>
+                    <li>
+                        <a href="/#talks">Talks</a>
+                    </li>
+                    <li>
+                        <a href="/#blog">Blog</a>
+                    </li>
+                    <li>
+                        <a href="https://twitter.com/anthonypjshaw"><i class='fa fa-2x fa-twitter'></i></a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/tonybaloney"><i class='fa fa-2x fa-github'></i></a>
+                    </li>
+                    <li>
+                        <a href="https://www.youtube.com/c/AnthonyShaw"><i class='fa fa-2x fa-youtube-play'></i></a>
+                    </li>
+                    <li>
+                        <a href="/rss.xml"><i class='fa fa-2x fa-rss-square'></i></a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('/img/posts/platform_level.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="site-heading">
+                        <h1>PyPy in Production</h1>
+                        <hr class="small">
+                        <span class="subheading">by Anthony Shaw, March 10, 2022</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <p><em>In this tutorial, I&rsquo;ll talk about the PyPy interpreter and how you can deploy a FastAPI Python application into production swapping out PyPy for CPython as the Python interpreter.</em></p>
+<p>All of the code for this tutorial is on <a href="https://github.com/tonybaloney/ants-azure-demos/tree/master/pypy-fastapi-container-instance">GitHub</a>.</p>
+<h2>What is PyPy</h2>
+<p>PyPy is an alternative Python interpreter. The Python interpreter you get bundled with Linux distributions, macOS, from the Windows Store or from <a href="python.org/downloads">python.org/downloads</a> is CPython. CPython is the most-popular Python interpreter (by a long way). But it is not the fastest. CPython is a general-purpose interpreter.</p>
+<h2>Why use PyPy over CPython?</h2>
+<p>PyPy is a performant alternative to CPython. PyPy can run <em>most</em> code that runs in CPython. You can run popular frameworks like requests, Django, Flask, FastAPI. You can run tests in frameworks like Pytest.</p>
+<p>PyPy is available for Python versions 2.7, 3.7, 3.8 and 3.9. It supports Linux, macOS and Windows.</p>
+<p>You&rsquo;d consider choosing PyPy over CPython because for many workloads it is faster. Much faster.</p>
+<p>The speed difference depends greatly on the type of task being performed. The average of all benchmarks is <strong>4.5 times faster than CPython</strong>.</p>
+<p>Some things that PyPy is great at:</p>
+<ul>
+<li>Instantiating classes</li>
+<li>Numerical calculations</li>
+<li>Function and method calls in deep stacks</li>
+</ul>
+<p>On the flip side, it&rsquo;s not so great at:</p>
+<ul>
+<li>Short, small scripts (because it has a high startup time)</li>
+<li>Work with lots of dictionaries</li>
+<li>Integration with C extensions</li>
+</ul>
+<p>Benchmark your application and see if it makes sense. In many production environments, CPython is not the bottleneck. The bottlenecks are external services like databases, network latency, storage and logging.</p>
+<h2>Example: Deploying a FastAPI application on PyPy</h2>
+<p>First, you&rsquo;ll need a copy of PyPy. My strong recommendation is to use a Docker image, such as the official <code>pypy:3.9-slim-buster</code> image.</p>
+<p>If you want to install locally outside of Docker, you can use <a href="https://www.pypy.org/download.html#linux-binaries-and-common-distributions">one of the downloadable binaries</a>.</p>
+<p>Once PyPy is installed, or if you&rsquo;re inside a Docker image, you follow the same workflow as with CPython.</p>
+<p>First, create a virtual environment, using the same <code>venv</code> module that CPython uses:</p>
+<pre><code class="console">pypy3.9 -m venv .venv
+source .venv/bin/activate
+</code></pre>
+
+<p>Next, setup your editor to use this virtual environment. I&rsquo;m using VS Code, so I select the interpreter by using the <code>Python: Select Interpreter</code> command in the command pallette:</p>
+<p><img alt="Select interpreter in VS Code" class="img-responsive center-block" src="/img/posts/select-interpreter.jpg"></p>
+<p>Next, setup a Docker image so the app is testable locally and runnable in the cloud.</p>
+<h3>Setting up a Docker image</h3>
+<p>To keep the installation of PyPy simple both in the production environment and in development, we&rsquo;ll use Docker from now on.</p>
+<p>The Docker image I&rsquo;m using is the <code>3.9-slim-buster</code> image from the <code>pypy</code> org on Docker hub. There are <code>slim-bullseye</code>, <code>bullseye</code> and <code>buster</code> images too in the <a href="https://www.pypy.org/download.html#linux-binaries-and-common-distributions">tags</a>.</p>
+<p>My Dockerfile is a copy+paste of my usual Python dockerfiles. The only thing I&rsquo;m changing is to run <code>pypy</code> instead of <code>python</code> to execute both the pip installation and to run the web application.</p>
+<p>My <a href="https://github.com/tonybaloney/ants-azure-demos/tree/master/pypy-fastapi-container-instance">demo application</a> is normally run with <code>python -m uvicorn api.main:app</code>, so the equivalent Dockerfile is:</p>
+<pre><code class="dockerfile">FROM pypy:3.9-slim-buster
+COPY . /api
+WORKDIR /api
+ENV TZ=Europe/London
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime &amp;&amp; echo $TZ &gt; /etc/timezone
+RUN apt-get -y update &amp;&amp; apt-get clean -y &amp;&amp; rm -rf /var/lib/apt/lists/*
+COPY ./api/requirements.txt /code/requirements.txt
+RUN pypy -m pip install -U pip &amp;&amp; pypy -m pip install --no-cache-dir --upgrade -r /code/requirements.txt
+COPY ./api /code/app
+CMD [&quot;pypy&quot;, &quot;-m&quot;, &quot;uvicorn&quot;, &quot;--host&quot;, &quot;0.0.0.0&quot;, &quot;--port&quot;, &quot;80&quot;, &quot;--proxy-headers&quot;, &quot;api.main:app&quot;]
+</code></pre>
+
+<p>If you want to develop inside this Docker image, you can create a dev container. I&rsquo;ve written a todo on how to <a href="https://realpython.com/advanced-visual-studio-code-python/#remote-development-with-containers">configure this over at RealPython.com</a>.</p>
+<h3>Deploying to Azure</h3>
+<p>Azure&rsquo;s PaaS options for Python like Azure Functions and Azure Web Apps are built on CPython. PyPy is not an option out-of-the-box. <em>However</em> you can deploy custom Docker images both to Azure Web Apps and to the shiny-new <a href="https://docs.microsoft.com/azure/container-instances/container-instances-overview?WT.mc_id=python-60075-anthonyshaw">Azure Container Instances (ACI) platform</a>.</p>
+<p>I&rsquo;m going to use <a href="https://docs.microsoft.com/azure/container-instances/container-instances-overview?WT.mc_id=python-60075-anthonyshaw">ACI</a> because it&rsquo;s the simplest way to throw a container at the cloud and watch it fly.
+I&rsquo;ll assume you have the <a href="https://docs.microsoft.com/cli/azure/install-azure-cli?WT.mc_id=python-60075-anthonyshaw">Azure CLI</a> installed and that you have an Azure Subscription.</p>
+<p>There are 3 components required to run this app:</p>
+<ul>
+<li>A resource group (not billable in Azure)</li>
+<li>A Container Instance</li>
+</ul>
+<p>Also, you&rsquo;ll need somewhere to put the Docker images. I&rsquo;ll show you how to deploy with an Azure Container Registry. You can instead use Docker hub or any other hosting platform.</p>
+<p>First, setup some variables in Bash</p>
+<pre><code class="bash">RG=my-web-app          # Resource group name
+ACR=myregistry1        # Azure Container Registry name
+IMAGE=my-web-app       # Docker image name
+NAME=my-web-app        # Application name, also used as the DNS record
+LOCATION=australiaeast # DC location
+</code></pre>
+
+<p>Now create the Azure resource group and Azure Container Registry:</p>
+<pre><code class="bash">az group create --location $LOCATION --name $RG
+az acr create --name $ACR --resource-group $RG --sku Basic --admin-enabled true
+az acr credential show --name $ACR
+</code></pre>
+
+<p>Sign in to the container registry with those credentials. Build and upload the Docker image:</p>
+<pre><code class="bash">docker login ${ACR}.azurecr.io
+docker build -t ${IMAGE}:1.0.0 .
+docker tag ${IMAGE}:1.0.0 ${ACR}.azurecr.io/${IMAGE}:1.0.0
+docker push ${ACR}.azurecr.io/${IMAGE} -a
+</code></pre>
+
+<p>Create an Azure Container Instance and deploy from the Docker image:</p>
+<pre><code class="bash">az container create --resource-group $RG --name $NAME --image ${ACR}.azurecr.io/${IMAGE}:1.0.0 --dns-name-label $NAME --ports 80
+az container attach --resource-group $RG --name $NAME
+open http://${NAME}.${LOCATION}.azurecontainer.io/
+</code></pre>
+
+<p>Optionally you can add a CNAME record to an Azure DNS managed zone.</p>
+<pre><code class="bash">az network dns record-set cname set-record -g $RG -z api.mysite.com  -n MyRecordSet -c ${NAME}.${LOCATION}.azurecontainer.io
+</code></pre>
+
+<p>If you want to automate those steps by setting up a CI/CD workflow, checkout the
+<a href="https://docs.microsoft.com/azure/container-instances/container-instances-github-action?WT.mc_id=python-60075-anthonyshaw#create-workflow-file">official docs with a Github actions example</a>.</p>
+<h2>So, is it faster?</h2>
+<p>To test this, we can run a simple benchmark. Using [Apache Bench] we can make 10 requests to the <code>/locations</code> endpoint. I&rsquo;ve seeded the database with 10,000 records and used the in-process SQLite API with aiosqlite, an async API. The data-reflection is being done using Tortoise ORM, an ORM written in Python.</p>
+<p>This is an exaggerated API call as it&rsquo;s handling a lot of data. I&rsquo;ve done this so it&rsquo;ll be clearer whether it made a difference. So first, lets try PyPy 3.9</p>
+<pre><code class="default">$ ab -n 10 -c 10 http://localhost:8080/locations
+Concurrency Level:      10
+Time taken for tests:   1.809 seconds
+Complete requests:      10
+Failed requests:        0
+Total transferred:      5696340 bytes
+HTML transferred:       5694860 bytes
+Requests per second:    5.53 [#/sec] (mean)
+Time per request:       1808.936 [ms] (mean)
+Time per request:       180.894 [ms] (mean, across all concurrent requests)
+Transfer rate:          3075.20 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.1      0       0
+Processing:   198  836 512.0    905    1625
+Waiting:      183  822 512.0    890    1615
+Total:        198  836 512.0    905    1625
+
+Percentage of the requests served within a certain time (ms)
+  50%    905
+  66%   1097
+  75%   1263
+  80%   1441
+  90%   1625
+  95%   1625
+  98%   1625
+  99%   1625
+ 100%   1625 (longest request)
+</code></pre>
+
+<p>Next, change the Dockerfile to use the <code>python:3.9-slim-buster</code> image and use <code>python</code> instead of <code>pypy</code> to run all the commands. Deploy the image again and I ran the same benchmark against the CPython version:</p>
+<pre><code class="default">Concurrency Level:      10
+Time taken for tests:   6.108 seconds
+Complete requests:      10
+Failed requests:        0
+Total transferred:      5696340 bytes
+HTML transferred:       5694860 bytes
+Requests per second:    1.64 [#/sec] (mean)
+Time per request:       6107.645 [ms] (mean)
+Time per request:       610.764 [ms] (mean, across all concurrent requests)
+Transfer rate:          910.80 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.1      0       0
+Processing:   636 2851 1741.2   3127    5486
+Waiting:      621 2839 1741.7   3115    5474
+Total:        636 2852 1741.1   3127    5486
+
+Percentage of the requests served within a certain time (ms)
+  50%   3127
+  66%   3720
+  75%   4307
+  80%   4893
+  90%   5486
+  95%   5486
+  98%   5486
+  99%   5486
+ 100%   5486 (longest request)
+</code></pre>
+
+<p>So, the results are that the response times are 3-4x faster from the 50th to the 90th percentiles!</p>
+<p><img alt="benchmark data" class="img-responsive center-block" src="/img/posts/benchmark-pypy.png"></p>
+<p>In conclusion. Swapping CPython for PyPy could be a simple way to get instant performance gains on your Python application.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-8">
+                <a class="btn-default btn"
+                   href="https://twitter.com/intent/tweet">
+                    <i class="fa fa-twitter"></i>
+                    Share on Twitter</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="https://twitter.com/anthonypjshaw">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://youtube.com/c/AnthonyShaw">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-youtube fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/tonybaloney">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Copyright &copy; Anthony Shaw 2020</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="/js/clean-blog.min.js"></script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Twitter Helper -->
+    <script>window.twttr = (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0],
+            t = window.twttr || {};
+        if (d.getElementById(id)) return t;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://platform.twitter.com/widgets.js";
+        fjs.parentNode.insertBefore(js, fjs);
+
+        t._e = [];
+        t.ready = function(f) {
+            t._e.push(f);
+        };
+        return t;
+    }(document, "script", "twitter-wjs"));</script>
+</body>
+</html>
