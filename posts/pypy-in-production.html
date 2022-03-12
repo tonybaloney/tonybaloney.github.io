@@ -286,8 +286,28 @@ Percentage of the requests served within a certain time (ms)
 </code></pre>
 
 <p>So, the results are that the response times are 3-4x faster from the 50th to the 90th percentiles!</p>
-<p><img alt="benchmark data" class="img-responsive center-block" src="/img/posts/benchmark-pypy.png"></p>
-<p>In conclusion. Swapping CPython for PyPy could be a simple way to get instant performance gains on your Python application.</p>
+<p><img alt="benchmark data" class="img-responsive center-block" src="/img/posts-original/benchmark-pypy.png"></p>
+<p>But, is it <em>really</em> that simple? After posting this on Twitter, I got a number of requests for more data. The example above benefits from PyPy&rsquo;s optimizations because it is a slow API call which needs to query, process and serialize 10,000 records.
+What about memory?</p>
+<p>I spawned the container again and ran a small bash script in another terminal to poll the memory usage of the container:</p>
+<pre><code class="bash">while true; do docker stats --no-stream --format '{{.MemUsage}}' thirsty_swanson | cut -d '/' -f 1 &gt;&gt;docker-stats; sleep 1; done` in 
+</code></pre>
+
+<p>When graphed it showed that the baseline memory usage of the web app is higher in PyPy.</p>
+<p><img alt="benchmark data" class="img-responsive center-block" src="/img/posts-original/pypy-memory-usage.png"></p>
+<p><em>However</em>, we&rsquo;re talking about 45 vs 95 MiB of RAM, which is miniscule. The memory usage of PyPy doesn&rsquo;t ramp up with the requests so it appears to be pre-allocated against the process. It would make sense to run a continued benchmark against different API calls using a suite like <a href="https://tonybaloney.github.io/posts/django-on-azure-beyond-hello-world.html#performance">locust, as I&rsquo;ve shown in another blog post</a>.</p>
+<p>The first benchmark was against a response for a very-slow API function. What about a faster one?</p>
+<p>A call to <code>GET /locations/1</code> on the example app will do a single record lookup and return a single record from the <code>Locations</code> table.</p>
+<p>Since Uvicorn should be able to handle a bit more of a hammer, I&rsquo;ve kicked up the concurrency to 100 and the requests to 10,000. The results are totally different to the first benchmark.</p>
+<p>I&rsquo;ve also added (thanks to a Twitter comment) <strong>uvloop</strong> to the Uvicorn configuration to improve the CPython benchmark. I wasn&rsquo;t able to install uvloop with PyPy, so I&rsquo;m showing it with and without for fairness.</p>
+<p><img alt="benchmark data" class="img-responsive center-block" src="/img/posts-original/pypy-fast-response-times.png"></p>
+<ul>
+<li>Uvloop adds a 10-20% performance gain to response times</li>
+<li>Response times are 20% slower at the 50th Percentile for PyPy and 100% slower for the 100th Percentile</li>
+</ul>
+<p>My assumption for the poor performance is that PyPy doesn&rsquo;t have much opportunity to optimize the core HTTP process, the FastAPI pipeline and the API route. Compared with the &ldquo;slow&rdquo; call, which does a lot more pure Python, with lots of loops, dictionaries and class instantiation. </p>
+<p>In conclusion. Swapping CPython for PyPy could be a simple way to get instant performance gains on your Python application. Or it might not. Either way, it&rsquo;s simple to try it out and benchmark.</p>
+<p>I recommend writing a <a href="https://tonybaloney.github.io/posts/django-on-azure-beyond-hello-world.html#performance">full benchmark suite on Locust</a> to decide for yourself.</p>
             </div>
         </div>
         <div class="row">
