@@ -16,6 +16,7 @@
         </pre>
 
         <h2>Cipher Table</h2>
+
         <table id="keys">
         <tr>
             <td>A</td>
@@ -90,6 +91,7 @@
             <td> </td>
         </tr>
     </table>
+    <a href="javascript:clue()">Give me a clue</a>
     <script>
         var quotes = [
             `“But I don’t want to go among mad people,” Alice remarked.
@@ -132,6 +134,7 @@ to them to be otherwise.'”
         }
         var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         var cipher = alphabet.shuffle();
+        var cluesLeft = 5;
         
         var encodeMap = new Map();
         for (var i = 0; i < alphabet.length; i++) {
@@ -182,5 +185,22 @@ to them to be otherwise.'”
 
         document.getElementById('message').innerHTML = encode(randomQuote, encodeMap);
         update();
+
+        function clue() {
+            if (cluesLeft <= 0){
+                alert("No more clues!");
+                return;
+            }
+            while (true) {
+                var letter = alphabet[Math.floor(Math.random() * alphabet.length)];
+                var sub = document.getElementById(letter).value;
+                if (sub === "") {
+                    document.getElementById(letter).value = decodeMap.get(letter);
+                    cluesLeft--;
+                    break; 
+                }
+            }
+            update();
+        }
     </script>
 </html>
