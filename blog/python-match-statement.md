@@ -17,7 +17,7 @@ The Python match statement is a pattern matching statement with a syntax of sub-
 - Matching keys and values in a dictionary
 - Matching literal values
 
-You can combine one or many of these into a single statement to filter data based on the input. This is called "structual pattern matching" and it's a feature of many functional programming languages.
+You can combine one or many of these into a single statement to filter data based on the input. This is called "structural pattern matching" and it's a feature of many functional programming languages.
 
 ## Sequence pattern matching
 
@@ -175,7 +175,6 @@ Say you have an API that takes semi-structured JSON data as the input:
 The JSON data is then deserialized using `json.load()`, but you need to cater for a few scenarios:
 
 - The user did not include the `team` field, so we need to look this up
-- The user did include the `team` field, but it may have changed, so it needs verifying
 - The user did include the `height` field, so we need to look this up
 - The user did not submit the required fields
 
@@ -184,7 +183,6 @@ You can express mapping matches by using the `{}` curly braces and then one or m
 ```python
 def add_driver(driver):
     match driver:
-        case {"team": team}: verify_team(team)  # Returns error on incorrect team.
         case {"name": name, "team": team, "height": height}: insert_driver_record(name, team, height)
         case {"name": name, "height": height}: insert_driver_record(name, lookup_team(name), height)
         case {"name": name}: insert_driver_record(name, lookup_team(name), lookup_height(height))

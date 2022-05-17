@@ -135,7 +135,7 @@ You can use it as a switch statement, but there is little to be gained versus a 
 <li>Matching keys and values in a dictionary</li>
 <li>Matching literal values</li>
 </ul>
-<p>You can combine one or many of these into a single statement to filter data based on the input. This is called &ldquo;structual pattern matching&rdquo; and it&rsquo;s a feature of many functional programming languages.</p>
+<p>You can combine one or many of these into a single statement to filter data based on the input. This is called &ldquo;structural pattern matching&rdquo; and it&rsquo;s a feature of many functional programming languages.</p>
 <h2>Sequence pattern matching</h2>
 <p>The match statement has a special syntax for matching sequences. The syntax uses <code>[]</code> square brackets, but it will match against <strong>any</strong> <code>Sequence</code> type (tuple, list, bytearray).</p>
 <p>Starting with something simple. This function will return true if the input is a sequence that starts with a string literal of a unicode frog.</p>
@@ -265,14 +265,12 @@ print(describe([&quot;🐸&quot;, &quot;👸&quot;, &quot;😘&quot;, &quot;🤴
 <p>The JSON data is then deserialized using <code>json.load()</code>, but you need to cater for a few scenarios:</p>
 <ul>
 <li>The user did not include the <code>team</code> field, so we need to look this up</li>
-<li>The user did include the <code>team</code> field, but it may have changed, so it needs verifying</li>
 <li>The user did include the <code>height</code> field, so we need to look this up</li>
 <li>The user did not submit the required fields</li>
 </ul>
 <p>You can express mapping matches by using the <code>{}</code> curly braces and then one or many keys you want to match using literals. You can then use named expressions, or the <code>_</code> throwaway name to capture that data for the case block:</p>
 <pre><code class="python">def add_driver(driver):
     match driver:
-        case {&quot;team&quot;: team}: verify_team(team)  # Returns error on incorrect team.
         case {&quot;name&quot;: name, &quot;team&quot;: team, &quot;height&quot;: height}: insert_driver_record(name, team, height)
         case {&quot;name&quot;: name, &quot;height&quot;: height}: insert_driver_record(name, lookup_team(name), height)
         case {&quot;name&quot;: name}: insert_driver_record(name, lookup_team(name), lookup_height(height))
