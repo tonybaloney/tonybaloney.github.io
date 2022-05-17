@@ -1,5 +1,5 @@
 blog_heading: My VS Code Setup
-blog_subheading: A breakdown of how increases work (at most companies), how to navigate them and how to convince your boss to pay you more
+blog_subheading: Links to my VS Code theme, fonts and terminal config
 blog_header_image: home-bg0.jpg
 blog_author: Anthony Shaw
 blog_publish_date: May 17, 2022

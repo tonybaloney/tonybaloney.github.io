@@ -7,7 +7,7 @@
             A collection of technology articles
         </description>
         <link>https://tonybaloney.github.io/#blog</link>
-        <lastBuildDate>Tue, 17 May 2022 22:20:44 -0000</lastBuildDate>
+        <lastBuildDate>Tue, 17 May 2022 23:09:40 -0000</lastBuildDate>
         <pubDate>Sat, 4 Jan 2020 19:15:54 -0500</pubDate>
         <atom:link href="https://tonybaloney.github.io/rss.xml" rel="self" type="application/rss+xml" />
         
@@ -25,7 +25,7 @@
         <item>
             <title>My VS Code Setup</title>
             <description>
-                A breakdown of how increases work (at most companies), how to navigate them and how to convince your boss to pay you more
+                Links to my VS Code theme, fonts and terminal config
             </description>
             <link>https://tonybaloney.github.io/posts/vscode-setup.html</link>
             <pubDate>Tue, 17 May 2022 00:00:00 -0000</pubDate>
