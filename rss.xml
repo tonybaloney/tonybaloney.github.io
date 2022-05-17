@@ -7,9 +7,20 @@
             A collection of technology articles
         </description>
         <link>https://tonybaloney.github.io/#blog</link>
-        <lastBuildDate>Mon, 16 May 2022 23:08:53 -0000</lastBuildDate>
+        <lastBuildDate>Tue, 17 May 2022 01:14:33 -0000</lastBuildDate>
         <pubDate>Sat, 4 Jan 2020 19:15:54 -0500</pubDate>
         <atom:link href="https://tonybaloney.github.io/rss.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Using the Python match statement</title>
+            <description>
+                What is the match statement in Python and why should you use it
+            </description>
+            <link>https://tonybaloney.github.io/posts/python-match-statement.html</link>
+            <pubDate>Tue, 17 May 2022 00:00:00 -0000</pubDate>
+            <dc:creator>Anthony Shaw</dc:creator>
+            <guid>https://tonybaloney.github.io/posts/python-match-statement.html</guid>
+        </item>
         
         <item>
             <title>My VS Code Setup</title>

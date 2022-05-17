@@ -17,7 +17,7 @@ The theme is [Noctis Minimus](https://vscodethemes.com/e/liviuschera.noctis/noct
 
 I'm using two fonts in VS Code. My editor font is [Comic Mono](https://dtinth.github.io/comic-mono-font/).
 
-My Terminal font is Meslo with NerdFont Ligatures for PowerLine.
+My Terminal font is [Meslo with NerdFont Ligatures for PowerLine](https://github.com/kgraefe/meslo-lgsn-patched/raw/main/MesloLGS%20NF%20Regular.ttf).
 
 Check out [programmingfonts.org](https://programmingfonts.org) for a nice collection of alternatives.
 
