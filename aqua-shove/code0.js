@@ -16,9 +16,22 @@ gdjs.Menu_32SceneCode.eventsList0 = function(runtimeScene) {
 
 gdjs.Menu_32SceneCode.condition0IsTrue_0.val = false;
 {
-gdjs.Menu_32SceneCode.condition0IsTrue_0.val = gdjs.evtTools.input.anyKeyPressed(runtimeScene);
+gdjs.Menu_32SceneCode.condition0IsTrue_0.val = gdjs.evtTools.input.isKeyPressed(runtimeScene, "1");
 }if (gdjs.Menu_32SceneCode.condition0IsTrue_0.val) {
 {gdjs.evtTools.runtimeScene.replaceScene(runtimeScene, "Battle Scene", true);
+}}
+
+}
+
+
+{
+
+
+gdjs.Menu_32SceneCode.condition0IsTrue_0.val = false;
+{
+gdjs.Menu_32SceneCode.condition0IsTrue_0.val = gdjs.evtTools.input.isKeyPressed(runtimeScene, "2");
+}if (gdjs.Menu_32SceneCode.condition0IsTrue_0.val) {
+{gdjs.evtTools.runtimeScene.replaceScene(runtimeScene, "Battle Scene2", false);
 }}
 
 }
