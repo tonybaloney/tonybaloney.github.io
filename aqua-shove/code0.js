@@ -3,6 +3,8 @@ gdjs.Menu_32SceneCode.GDPlayButtonTextObjects1= [];
 gdjs.Menu_32SceneCode.GDPlayButtonTextObjects2= [];
 gdjs.Menu_32SceneCode.GDNewSpriteObjects1= [];
 gdjs.Menu_32SceneCode.GDNewSpriteObjects2= [];
+gdjs.Menu_32SceneCode.GDStartButtonObjects1= [];
+gdjs.Menu_32SceneCode.GDStartButtonObjects2= [];
 
 gdjs.Menu_32SceneCode.conditionTrue_0 = {val:false};
 gdjs.Menu_32SceneCode.condition0IsTrue_0 = {val:false};
@@ -16,7 +18,7 @@ gdjs.Menu_32SceneCode.eventsList0 = function(runtimeScene) {
 
 gdjs.Menu_32SceneCode.condition0IsTrue_0.val = false;
 {
-gdjs.Menu_32SceneCode.condition0IsTrue_0.val = gdjs.evtTools.input.isKeyPressed(runtimeScene, "1");
+gdjs.Menu_32SceneCode.condition0IsTrue_0.val = gdjs.evtTools.input.isKeyPressed(runtimeScene, "o");
 }if (gdjs.Menu_32SceneCode.condition0IsTrue_0.val) {
 {gdjs.evtTools.runtimeScene.replaceScene(runtimeScene, "Battle Scene", true);
 }}
@@ -29,10 +31,19 @@ gdjs.Menu_32SceneCode.condition0IsTrue_0.val = gdjs.evtTools.input.isKeyPressed(
 
 gdjs.Menu_32SceneCode.condition0IsTrue_0.val = false;
 {
-gdjs.Menu_32SceneCode.condition0IsTrue_0.val = gdjs.evtTools.input.isKeyPressed(runtimeScene, "2");
+gdjs.Menu_32SceneCode.condition0IsTrue_0.val = gdjs.evtTools.input.isKeyPressed(runtimeScene, "t");
 }if (gdjs.Menu_32SceneCode.condition0IsTrue_0.val) {
 {gdjs.evtTools.runtimeScene.replaceScene(runtimeScene, "Battle Scene2", false);
 }}
+
+}
+
+
+{
+
+
+{
+}
 
 }
 
@@ -46,6 +57,8 @@ gdjs.Menu_32SceneCode.GDPlayButtonTextObjects1.length = 0;
 gdjs.Menu_32SceneCode.GDPlayButtonTextObjects2.length = 0;
 gdjs.Menu_32SceneCode.GDNewSpriteObjects1.length = 0;
 gdjs.Menu_32SceneCode.GDNewSpriteObjects2.length = 0;
+gdjs.Menu_32SceneCode.GDStartButtonObjects1.length = 0;
+gdjs.Menu_32SceneCode.GDStartButtonObjects2.length = 0;
 
 gdjs.Menu_32SceneCode.eventsList0(runtimeScene);
 return;
