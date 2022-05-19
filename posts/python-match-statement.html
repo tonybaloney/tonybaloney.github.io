@@ -265,7 +265,7 @@ print(describe([&quot;🐸&quot;, &quot;👸&quot;, &quot;😘&quot;, &quot;🤴
 <p>The JSON data is then deserialized using <code>json.load()</code>, but you need to cater for a few scenarios:</p>
 <ul>
 <li>The user did not include the <code>team</code> field, so we need to look this up</li>
-<li>The user did include the <code>height</code> field, so we need to look this up</li>
+<li>The user did not include the <code>height</code> field, so we need to look this up</li>
 <li>The user did not submit the required fields</li>
 </ul>
 <p>You can express mapping matches by using the <code>{}</code> curly braces and then one or many keys you want to match using literals. You can then use named expressions, or the <code>_</code> throwaway name to capture that data for the case block:</p>
