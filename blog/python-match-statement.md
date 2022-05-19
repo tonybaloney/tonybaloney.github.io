@@ -175,7 +175,7 @@ Say you have an API that takes semi-structured JSON data as the input:
 The JSON data is then deserialized using `json.load()`, but you need to cater for a few scenarios:
 
 - The user did not include the `team` field, so we need to look this up
-- The user did include the `height` field, so we need to look this up
+- The user did not include the `height` field, so we need to look this up
 - The user did not submit the required fields
 
 You can express mapping matches by using the `{}` curly braces and then one or many keys you want to match using literals. You can then use named expressions, or the `_` throwaway name to capture that data for the case block:
