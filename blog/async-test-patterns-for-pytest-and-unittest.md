@@ -59,7 +59,7 @@ from httpx import AsyncClient
 import pytest
 from my_app import app
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def async_app_client():
     async with AsyncClient(app=app, base_url='http://test') as client:
         yield client
