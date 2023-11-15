@@ -9,7 +9,7 @@
     <meta content="" name="description">
     <meta content="" name="author">
 
-    <title>{%block title %}Congratulations - Render Engine{% endblock %}</title>
+    <title>Anthony Shaw's Home Page</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -116,23 +116,20 @@
             <p>Download my <a href="CV-AnthonyShaw.pdf">Resume</a> for more information on my professional history.</p>
         </div>
     </div>
-    <h1><a id="projects"></a>Projects I author</h1>
+    <h1><a id="projects"></a>Projects I'm working on at the moment</h1>
     <div class="row">
         <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
             {% for project in projects %}
             <div class="post-preview">
                 <a href="{{project.url}}">
-                    <h2 class="post-title">
-                        <img src="https://cdn4.iconfinder.com/data/icons/scripting-and-programming-languages/512/Python_logo-256.png" width=50/> {{project.name}}
-                    </h2>
+                    <h2 class="post-title">{{project.name}}</h2>
                     <h3 class="post-subtitle">
                         {{project.description}}
                     </h3>
                 </a>
                 <p class="post-meta">
-                    <!-- <img src="https://img.shields.io/pypi/v/pyjion.svg" />
-                    <img src="https://img.shields.io/pypi/l/pyjion.svg">
-                    <img src="https://img.shields.io/pypi/pyversions/pyjion.svg"> -->
+                    <!-- Place this tag where you want the button to render. -->
+                    <a class="github-button" href="{{project.url}}" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a>
                 </p>
             </div>
             <hr>
@@ -968,7 +965,8 @@ In this tutorial, you’ll learn how to create a basic test, execute it, and fin
         instrumentationKey: "d0222e7b-7c27-4322-8d0f-36fa2df51f86"
     }});
 </script>
-
+<!-- Place this tag in your head or just before your close body tag. -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
 </body>
 
 </html>
