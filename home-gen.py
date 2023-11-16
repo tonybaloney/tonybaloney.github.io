@@ -1,5 +1,6 @@
 from render_engine import Site, Page
 import csv
+import json
 from github import Github
 
 # Authentication is defined via github.Auth
@@ -40,6 +41,13 @@ class Index(Page):
       reader = csv.DictReader(podcasts_file)
       for row in iter(reader):
         self.template_vars['podcasts'].append(row)
+
+    with open('pages/publications.json') as publications_file:
+      self.template_vars['publications'] = json.load(publications_file)['publications']
+
+    with open('pages/talks.json') as talks_file:
+      self.template_vars['talks'] = json.load(talks_file)['talks']
+
 
     super().__init__(*args, **kwargs)
 

@@ -1,0 +1,18 @@
+{
+  "publications": [
+    {
+      "title": "Measuring Potential Performance Gains of Python Web Applications with pyUpgradeSim",
+      "url": "https://dl.acm.org/doi/10.1145/3543873.3587338",
+      "date": "30 April 2023",
+      "publication": "WWW '23 Companion: Companion Proceedings of the ACM Web Conference 2023",
+      "abstract": "Python is a popular programming language for web development. However, optimizing the performance of Python web applications is a challenging task for developers. This paper presents a new approach to measuring the potential performance gains of upgraded Python web applications. Our approach is based on the provision of an interactive service that assists developers in optimizing their Python code through changes to the underlying system. The service uses profiling and visualization techniques to identify performance bottlenecks. We demonstrate and evaluate the effectiveness of our approach through a series of experiments on real-world Python web applications, measuring performance differences in between versions and the benefits of migrating at a reduced cost. The results show promising improvement in performance without any required code changes."
+    },
+    {
+        "title": "Towards evaluating Python as a suitable data science programming language for modern computing architecture",
+        "url": "https://doi.org/10.25949/23974764.v1",
+        "date":"11 October 2023",
+        "publication": "Masters Thesis",
+        "abstract": "The two most popular Computer Programming languages for Data Science are Python, and R. Both are dynamically typed, interpreted languages. Python first appeared in 1991, and R in 1993. Thirty years later, computing architecture has moved toward parallel computation to compensate for decreased annual performance improvement for CPUs. The performance improvement rates for the period 1986-2003 were 52% per year then declining to 22% from 2003-2015. Modern CPU architecture features multiple cores that can parallelize execution even further with technologies such as Hyper-Threading. Despite this trend, Python and R are tied to their 1990s architectural design and are written with a single-threaded Global Interpreter Lock (Python) or a single-threaded interpreter (R). Furthermore, advancing massively parallel AI and Machine Learning algorithms requires support for implementations in code to leverage hardware with over 100 cores using GPU programming APIs. This research will explore the limitations of dynamically typed, interpreted languages on Data Science engineering. This research will demonstrate what factors are limiting the scalability of Python and what alternatives are being developed. This research will propose where investments in the industry should be placed to ensure long-term support for data mining, processing, and engineering applications. "
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{"talks": [
+    {
+        "title": "Parallel code with Python 3.12 sub interpreters",
+        "conference": "PyCon APAC 2023, Tokyo Japan",
+        "date": "October 2023",
+        "video": "https://youtu.be/mqOQtC9Dt84?t=6850",
+        "thumbnail": "img/thumbnails/pyconapac2023.jpg",
+        "description": "Python 3.12 comes with an exciting new feature -- sub-interpreters. Sub-interpreters are a new programming model for Python that enable parallel execution of your code, without needing separate processes. In this talk, you will learn about sub-interpreters, how and where to use them."
+    },{
+        "title": "What's new in Python 3.11 and Beyond",
+        "conference": "PyCon JP 2022, Tokyo Japan",
+        "date": "October 2022",
+        "thumbnail": "img/thumbnails/pyconjp2022.jpg",
+        "video": "https://www.youtube.com/watch?v=wtBTWFAuE0s&pp=ygUTQW50aG9ueSBTaGF3IFB5dGhvbg%3D%3D",
+        "description": "3.11 is the latest release of CPython. Scheduled for October 2022, Python 3.11 comes with new language features like exception groups and asyncio task groups. The biggest change in 3.11 compared with 3.10 and below is speed. 3.11 is the fastest version of CPython yet. In this talk, we will showcase benchmarks on Python 3.11’s speed gains and where to expect improvement in your code."
+    },{
+        "title": "What's new in Python 3.11",
+        "conference": "NIX Multiconf, Ukraine (Online)",
+        "date": "June 2022",
+        "thumbnail": "img/thumbnails/nixconf2021.jpg",
+        "video": "https://www.youtube.com/watch?v=kJMyomV0S50",
+        "description": "Anthony sheds the light on all the new features and powers of Python 3.11, inspects major changes, exceptions, and error handling nuances, and shares invaluable pro tips on the ultimate performance improvement."
+    },
+    {
+        "title": "Write faster Python! Common performance anti-patterns",
+        "conference": "PyCon US 2022, Salt Lake City, UT",
+        "date": "May 2022",
+        "thumbnail": "img/thumbnails/pyconus2022.jpg",
+        "video": "https://www.youtube.com/watch?v=YY7yJHo0M5I",
+        "description": "This talk will show small, specific examples of Python code that can be refactored to be faster without compromising on readability. At the start of the talk, I'll explain how to set up a profiler to measure application performance and how to track improvements and regressions."
+    },{
+        "title": "Visual Studio Code for Python Developers",
+        "conference": "PyCon APAC 2021, (online)",
+        "date": "November 2021",
+        "thumbnail": "img/thumbnails/pyconth2021.jpg",
+        "video": "https://www.youtube.com/watch?v=MFS-nFjr5NU&pp=ygUTQW50aG9ueSBTaGF3IFB5dGhvbg%3D%3D",
+        "description": "In this talk you will learn how VS Code can be configured, extended, and optimized for a more effective and productive Python development environment. Once finishing this talk, you will be more productive using VS Code."
+    },
+    {
+        "title": "Deploying your Django Application for Scale with Microsoft Azure",
+        "conference": "PyCon US 2021, (online)",
+        "date": "May 2021",
+        "thumbnail": "img/thumbnails/pyconusworkshop2021.jpg",
+        "video": "https://www.youtube.com/watch?v=wJNO6ZqlXkw",
+        "description": "In this workshop, we will talk through scalable Django architecture and how Azure services like load balancing, sharded databases, and functions can be used to scale a Django application from a few to lots of users."
+    },{
+        "title": "Restarting Pyjion, a general purpose JIT for Python- is it worth it?",
+        "conference": "PyCon US 2021, (online)",
+        "date": "May 2021",
+        "thumbnail": "img/thumbnails/pyconus2021.jpg",
+        "video": "https://www.youtube.com/watch?v=YFeUUdKBrJ8",
+        "description": "In this talk you'll see an update to the Pyjion project, a JIT compiler for CPython byte-code. This project was started 5 years ago but stopped after making no gains in performance. Recent changes to CPython have made optimisations more viable, so now it has been restarted and is showing big performance gains vs. standard CPython with 100% compatibility. Many attempts have been made to build a general purpose JIT for Python and few have succeeded. Is it worth it and what are the gains to be made? This talk will cover the design ideas of a JIT for CPython, optimisations, and future potential."
+    },{
+        "title": "Why is Python slow?",
+        "conference": "PyCon US 2020, (online)",
+        "date": "May 2020",
+        "thumbnail": "img/thumbnails/pyconus2020.jpg",
+        "video": "https://www.youtube.com/watch?v=I4nkgJdVZFA",
+        "description": "When Python completes a comparable application 2–10x slower than another language, why is it slow, and can’t we make it faster? In this talk, we’re going to explore different theories to understand what makes Python slow, what tasks it’s fast at executing, and how you can make it faster. Then, finally, we’ll explore what is coming in future versions of Python that might speed it up once and for all.."
+    },
+    {
+        "title": "Standing out in a world of 20 million developers.",
+        "conference": "PyCon Africa, Accra, Ghana",
+        "date": "August 2019",
+        "thumbnail": "img/thumbnails/pyconafrica2019.jpg",
+        "video": "https://youtube.com/watch?v=I5rL9LrIp0c",
+        "description": "In this talk, be inspired to take action to accelerate your career in software development.  Anthony Shaw would discuss how to be unique, why you need to stand out from the crowd, and what it takes to be a globally recognized name in software."
+    },
+    {
+        "title": "Wily Python: Writing simpler and more maintainable Python",
+        "conference": "PyCon US 2019, Cleveland, Ohio",
+        "date": "May 2019",
+        "thumbnail": "img/thumbnails/pyconus2019.jpg",
+        "video": "https://www.youtube.com/watch?v=dqdsNoApJ80",
+        "description": "Everyone starts with the best intentions with their Python projects, \"this time it's going to be clean, simple and maintainable\". But code evolves over time, requirements change and codebases can get messy and complicated quickly. In this talk, you will learn how to use wily to measure and graph how complicated your Python code is and a series of practical techniques to simplify it. wily will show you which parts of your projects are becoming or have become hard to maintain and need a refactor. Once you know where the skeletons are, you will learn practical techniques for refactoring \"complex\" code and some resources to use to take your refactoring to the next level."
+    }, {
+        "title": "How to write a container daemon in Python",
+        "conference": "PyCon AU 2017, Melbourne",
+        "date": "August 2017",
+        "thumbnail": "img/thumbnails/pyconau2017.jpg",
+        "video": "https://www.youtube.com/watch?v=I326bpbdvJo",
+        "description": "When the authors of Docker first started, they wrote the Docker daemon in Python. This was later switching for Go, but why? This talk will cover mocker, a container runtime Anthony wrote to understand Docker by rewriting its basic functions in 100% Python. Anthony will walk through how to write a Docker daemon in Python whilst applying it to real problems. Whilst the tool might not be production ready, it demonstrates some patterns, libraries and ideas for working with Docker containers from Python."
+    }
+]}

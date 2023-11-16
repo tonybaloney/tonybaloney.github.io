@@ -44,10 +44,13 @@
                     <a href="#projects">Projects</a>
                 </li>
                 <li>
-                    <a href="#contributions">Contributions</a>
+                    <a href="#research">Research</a>
                 </li>
                 <li>
                     <a href="#courses">Courses</a>
+                </li>
+                <li>
+                    <a href="#books">Books</a>
                 </li>
                 <li>
                     <a href="#podcasts">Podcasts</a>
@@ -109,11 +112,11 @@
                 <b>active, engaged and responsible</b> member of both my local community and the broader open-source tech community.
             </p>
             <p>
-                I work for Microsoft, focused on Python and Open-Sources technologies.
+                I work for Microsoft, focused on Python and Open-Sources technologies. I'm also studying a PhD in Computer Science at Macquarie University.
             </p>
             <p>
-                I <a href="https://twitter.com/anthonypjshaw">Tweet</a> often, <a href="#blog">blog frequently</a>
-                and <a href='#talks'>speak seldomly</a>. All of my research and tinkering is Open-Source, I'm an active member of some <a href='#contributions'>large
+                I <a href="https://twitter.com/anthonypjshaw">Tweet</a> often, <a href="#blog">blog sometimes</a>
+                and <a href='#talks'>speak seldomly</a>. All of my research and tinkering is Open-Source, I'm an active member of some large
                 open-source projects</a> as well as <a href='#projects'>maintaining my own</a>.
             </p>
             <p>Download my <a href="CV-AnthonyShaw.pdf">Resume</a> for more information on my professional history.</p>
@@ -122,8 +125,10 @@
     <h1><a id="projects"></a>Projects I'm working on at the moment</h1>
     <div class="row">
         <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="row">
             {% for project in projects %}
-            <div class="post-preview">
+
+            <div class="post-preview col-lg-6 col-md-6">
                 <a href="{{project.url}}">
                     <h2 class="post-title">{{project.name}}</h2>
                     <h3 class="post-subtitle">
@@ -135,62 +140,60 @@
                     <a class="github-button" href="{{project.url}}" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a>
                 </p>
             </div>
-            <hr>
+            {% if loop.index is divisibleby 2 %}
+            </div>
+            <div class="row">
+            {% endif %}
+            {% endfor %}
+            </div>
+        </div>
+
+    </div>
+    <h1><a id="research"></a>Research</h1>
+    <p>I'm an Adjunct Fellow and PhD Candidate at <a href="https://researchers.mq.edu.au/en/persons/anthony-shaw">Macquarie University</a> in Sydney Australia. Here is a list of my recent publications.</p>
+    <div class="row">
+        <div class="col-lg-12 col-md-10 col-md-offset-1">
+            
+            {% for publication in publications %}
+            <div class="row">
+                <div class="post-preview col-lg-12 col-md-12">
+                    <a href="{{publication.url}}">
+                        <h2 class="post-title">{{publication.title}}, ({{publication.publication}}) {{publication.date}}</h2>
+                        <h3 class="post-subtitle">
+                            {{publication.abstract}}
+                        </h3>
+                    </a>
+                </div>
+            </div>
             {% endfor %}
         </div>
 
     </div>
 
-    <h1><a id="courses"></a>Courses</h1>
+    <h1><a id="books"></a>Books</h1>
     <div class="row">
         <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
             <div class="post-preview">
-                <a href="https://www.pluralsight.com/courses/python-whats-new">
+                <a href="https://realpython.com/products/cpython-internals-book/">
                     <h2 class="post-title">
-                        <img src="https://pluralsight.imgix.net/course-images/python-whats-new-v1.png?w=1078" width=150/> Whats new in Python 3.7 (Pluralsight)
+                        <img src="https://files.realpython.com/media/cpython-book-3d-no-shadow-trimmed.ff54fb267b79.png" width=150/> CPython Internals
                     </h2>
                     <div class="post-subtitle">
-                        <p>At the core of Python programming is a thorough knowledge of Python 3 versions.
-                            In What's New in Python 3.7, you will learn how to use all of Python 3.7's new features.
-                            First, you will learn data classes. Next, you will explore the new breakpoint functionality.
-                            Finally, you will discover how to test the performance of your applications and benefit from Python 3.7's
-                            speed improvements.
-                            When you are finished with this course, you will have a foundational knowledge of Python 3.7
-                            that will help you as you move forward to develop Python 3 applications.</p>
+                        <p>Get your guided tour through the Python 3.9 interpreter: Unlock the inner workings of the Python language, compile the Python interpreter from source code, and participate in the development of CPython.
+                            <br/>
+                            Are there certain parts of Python that just seem like magic?
+                            <br/>
+                            This book explains the concepts, ideas, and technicalities of the Python interpreter in an approachable and hands-on fashion.
+                            <br/>
+                            Once you see how Python works at the interpreter level, you can optimize your applications and fully leverage the power of Python.</p>
                     </div>
                 </a>
                 <p class="post-meta">
-                    <i>Published June 1, 2018</i>
+                    <p><a href="https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=301383556&partner=redmist&start=api">This book is also published in Korean as "CPython 파헤치기"</a></p>
+                    <i>Published May 5, 2021</i>
                 </p>
             </div>
             <hr>
-            <div class="post-preview">
-                <a href="https://www.pluralsight.com/courses/python-2-to-python-3">
-                    <h2 class="post-title">
-                        <img src="https://i.ytimg.com/vi/pp0pTRUO0pQ/maxresdefault.jpg" width=150/> Migrating from Python 2 to Python 3 (Pluralsight)
-                    </h2>
-                    <div class="post-subtitle">
-                        <p>Python 3 has been out for over a decade now and still the majority of production applications are running on Python 2! Python 3 is faster, has some amazing new features like asynchronous programming and type hinting.</p>
-
-                        <p>In this course, we are going to migrate a Python 2 application to Python 3, the right way.</p>
-
-                        <p>Some of the major topics that we will cover include:</p>
-
-                        <ul>
-                            <li>Strategies for porting</li>
-                            <li>Changes to the core types in Python 3</li>
-                            <li>Automated tools and where to use them</li>
-                            <li>Leveraging Python 3 features</li>
-                        </ul>
-
-                        <p>By the end of this course, you’ll know how to migrate any application, big or small, to Python 3.</p>
-                        <iframe allow="autoplay; encrypted-media" allowfullscreen frameborder="0" height="315" src="https://www.youtube-nocookies.com/embed/pp0pTRUO0pQ" width="560"></iframe>
-                    </div>
-                </a>
-                <p class="post-meta">
-                    <i>Published March 8, 2018</i>
-                </p>
-            </div>
         </div>
     </div>
 
@@ -220,124 +223,27 @@
         </div>
     </div>
     <h1><a id="talks"></a>Conference Talks</h1>
-    <div class="row">
-        <div class="col-lg-4 col-md-4  talk-preview" >
-            <div class="embed-responsive embed-responsive-16by9">
-                <iframe class="embed-responsive-item" src="https://www.youtube-nocookies.com/embed/I5rL9LrIp0c"></iframe>
-            </div>
-        </div>
-        <div class="col-lg-8 col-md-8">
-            <div class="post-preview">
-                <h2 class="post-title">
-                    PyCon Africa, Accra, Ghana
-                </h2>
-                <p>
-                    Standing out in a world of 20 million developers.
-                </p>
-                <p class="post-meta">
-                    <i>Recorded August 2019</i>
-                </p>
-            </div>
-        </div>
-    </div>
-    <hr/>
-    <div class="row">
-        <div class="col-lg-4 col-md-4  talk-preview" >
-            <div class="embed-responsive embed-responsive-16by9">
-                <iframe class="embed-responsive-item" src="https://www.youtube-nocookies.com/embed/dqdsNoApJ80"></iframe>
-            </div>
-        </div>
-        <div class="col-lg-8 col-md-8">
-            <div class="post-preview">
-                <h2 class="post-title">
-                    PyCon US, Cleveland, USA
-                </h2>
-                <p>
-                    Everyone starts with the best intentions with their Python projects, ""this time it's going to be clean, simple and maintainable"". But code evolves over time, requirements change and codebases can get messy and complicated quickly.
-
-                    In this talk, you will learn how to use `wily` to measure and graph how complicated your Python code is and a series of practical techniques to simplify it. `wily` will show you which parts of your projects are becoming or have become hard to maintain and need a refactor. Once you know where the skeletons are, you will learn practical techniques for refactoring ""complex"" code and some resources to use to take your refactoring to the next level.
-                </p>
-                <p class="post-meta">
-                    <i>Recorded May 2019</i>
-                </p>
-            </div>
-        </div>
-    </div>
-    <hr/>
-    <div class="row">
-        <div class="col-lg-4 col-md-4  talk-preview" >
-            <div class="embed-responsive embed-responsive-16by9">
-                <iframe class="embed-responsive-item" src="https://www.youtube-nocookies.com/embed/I326bpbdvJo"></iframe>
-            </div>
-        </div>
-        <div class="col-lg-8 col-md-8">
-            <div class="post-preview">
-                <h2 class="post-title">
-                    PyCon, Melbourne, Australia
-                </h2>
-                <p>
-                    When the authors of Docker first started, they wrote the Docker daemon in Python.
-                    This was later switching for Go, but why?
-                    This talk will cover mocker, a container runtime Anthony
-                    wrote to understand Docker by rewriting its basic functions
-                    in 100% Python. Anthony will walk through how to write a Docker
-                    daemon in Python whilst applying it to real problems. Whilst
-                    the tool might not be production ready, it demonstrates some
-                    patterns, libraries and ideas for working with Docker containers
-                    from Python.
-                </p>
-                <p class="post-meta">
-                    <i>Recorded August 5th 2017</i>
-                </p>
-            </div>
-        </div>
-    </div>
-    <hr/>
-    <div class="row">
-        <div class="col-lg-4 col-md-4  talk-preview" >
-            <div class="embed-responsive embed-responsive-16by9">
-                <iframe class="embed-responsive-item" src="https://www.youtube-nocookies.com/embed/YBTPyIsXyHs"></iframe>
-            </div>
-        </div>
-        <div class="col-lg-8 col-md-8">
-            <div class="post-preview">
-                <h2 class="post-title">
-                    SaltConf, Salt Lake City, UT
-                </h2>
-                <p>
-                    A SaltConf16 use case talk by Anthony Shaw of Dimension Data. Enterprise IT organizations are used to having a catalogue of their software, configurations and infrastructure an IT service management
-                    (ITSM) system of record. All that changed when continuous deployment, self-service cloud portals and APIs came along. IT organizations that rely on people and process, instead of automation,
-                    struggle to record servers and services that exist in a fluid, fast-moving cloud. Learn how SaltStack Enterprise integrated with ServiceNow can help enterprise IT leverage more cloud services
-                    and keep track without losing the automation that DevOps teams have grown to depend upon.
-                </p>
-                <p class="post-meta">
-                    <i>Recorded April 26th 2016</i>
-                </p>
-            </div>
-        </div>
-    </div>
-    <hr/>
+    {% for talk in talks %}
     <div class="row">
         <div class="col-lg-4 col-md-4 talk-preview" >
-            <div class="embed-responsive embed-responsive-16by9">
-                <iframe class="embed-responsive-item" src="https://www.youtube-nocookies.com/embed/t8F2SBGOQx4"></iframe>
-            </div>
+            <a href="{{talk.video}}"><img src="{{talk.thumbnail}}" class="img-thumbnail" /></a>
         </div>
         <div class="col-lg-8 col-md-8">
             <div class="post-preview">
                 <h2 class="post-title">
-                    Autoremediation Meetup, Santa Clara, CA
+                    <a href="{{talk.video}}"> {{talk.title}}</a>
                 </h2>
                 <p>
-                    Anthony Shaw from Dimension Data talks at Auto Remediation and Event Driven Automation meetup about the DevOps journey, challenges of automating large heterogeneous
-                    infrastructure, and use of event-driven automation with StackStorm to solve some of these challenges.
+                    {{talk.description}}
                 </p>
                 <p class="post-meta">
-                    <i>Recorded December 8th, 2016</i>
+                    <i>Recorded {{talk.date}} at {{talk.conference}}</i>
                 </p>
             </div>
         </div>
     </div>
+    <hr/>
+    {% endfor %}
 
     <h1 class="section-heading"><a id="blog"></a>Blog Posts</h1>
     <div class="row">
@@ -909,6 +815,58 @@ In this tutorial, you’ll learn how to create a basic test, execute it, and fin
             </div>
         </a>
     </div>
+    <h1><a id="courses"></a>Courses</h1>
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-preview">
+                <a href="https://www.pluralsight.com/courses/python-whats-new">
+                    <h2 class="post-title">
+                        <img src="https://pluralsight.imgix.net/course-images/python-whats-new-v1.png?w=1078" width=150/> Whats new in Python 3.7 (Pluralsight)
+                    </h2>
+                    <div class="post-subtitle">
+                        <p>At the core of Python programming is a thorough knowledge of Python 3 versions.
+                            In What's New in Python 3.7, you will learn how to use all of Python 3.7's new features.
+                            First, you will learn data classes. Next, you will explore the new breakpoint functionality.
+                            Finally, you will discover how to test the performance of your applications and benefit from Python 3.7's
+                            speed improvements.
+                            When you are finished with this course, you will have a foundational knowledge of Python 3.7
+                            that will help you as you move forward to develop Python 3 applications.</p>
+                    </div>
+                </a>
+                <p class="post-meta">
+                    <i>Published June 1, 2018</i>
+                </p>
+            </div>
+            <hr>
+            <div class="post-preview">
+                <a href="https://www.pluralsight.com/courses/python-2-to-python-3">
+                    <h2 class="post-title">
+                        <img src="https://i.ytimg.com/vi/pp0pTRUO0pQ/maxresdefault.jpg" width=150/> Migrating from Python 2 to Python 3 (Pluralsight)
+                    </h2>
+                    <div class="post-subtitle">
+                        <p>Python 3 has been out for over a decade now and still the majority of production applications are running on Python 2! Python 3 is faster, has some amazing new features like asynchronous programming and type hinting.</p>
+
+                        <p>In this course, we are going to migrate a Python 2 application to Python 3, the right way.</p>
+
+                        <p>Some of the major topics that we will cover include:</p>
+
+                        <ul>
+                            <li>Strategies for porting</li>
+                            <li>Changes to the core types in Python 3</li>
+                            <li>Automated tools and where to use them</li>
+                            <li>Leveraging Python 3 features</li>
+                        </ul>
+
+                        <p>By the end of this course, you’ll know how to migrate any application, big or small, to Python 3.</p>
+                        <iframe allow="autoplay; encrypted-media" allowfullscreen frameborder="0" height="315" src="https://www.youtube-nocookies.com/embed/pp0pTRUO0pQ" width="560"></iframe>
+                    </div>
+                </a>
+                <p class="post-meta">
+                    <i>Published March 8, 2018</i>
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- Footer -->
 <footer>
@@ -941,7 +899,7 @@ In this tutorial, you’ll learn how to create a basic test, execute it, and fin
                         </a>
                     </li>
                 </ul>
-                <p class="copyright text-muted">Copyright &copy; Anthony Shaw 2020. Built using Python and Render Engine</p>
+                <p class="copyright text-muted">Copyright &copy; Anthony Shaw 2023. Built using Python and Render Engine</p>
             </div>
         </div>
     </div>
