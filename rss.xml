@@ -7,9 +7,20 @@
             A collection of technology articles
         </description>
         <link>https://tonybaloney.github.io/#blog</link>
-        <lastBuildDate>Tue, 17 May 2022 23:09:40 -0000</lastBuildDate>
+        <lastBuildDate>Fri, 17 Nov 2023 20:48:36 -0000</lastBuildDate>
         <pubDate>Sat, 4 Jan 2020 19:15:54 -0500</pubDate>
         <atom:link href="https://tonybaloney.github.io/rss.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Running Python Parallel Applications with Sub Interpreters</title>
+            <description>
+                An exploration into the possibility of running a parallel application using sub interpreters
+            </description>
+            <link>https://tonybaloney.github.io/posts/sub-interpreter-web-workers.html</link>
+            <pubDate>Fri, 17 Nov 2023 00:00:00 -0000</pubDate>
+            <dc:creator>Anthony Shaw</dc:creator>
+            <guid>https://tonybaloney.github.io/posts/sub-interpreter-web-workers.html</guid>
+        </item>
         
         <item>
             <title>Using the Python match statement</title>

@@ -267,11 +267,132 @@ channels.send('hello!')
 print(channels.recv(channel_id))
 ```
 
-## What is wrong with the current approach?
+## Parallel workers in the world of web applications
 
-## Does it even make any sense to have more workers than CPU cores?
+Applying the `multiprocessing` and `threading` models to web applications. The Python web servers that sit in front of your framework like Django, Flask, FastAPI or Quart use an interface called WSGI for traditional web frameworks and ASGI for async ones.
+The web servers listen on a HTTP port for requests, then divvy up the requests to a pool of workers. If you only had 1 worker, then when a user made a HTTP request, everyone else would have to sit and wait until it finished responding to the first request (this is also why you should never ship `python manage.py runserver` as the web server because it only has 1 worker).
 
-## How would this work?
+![](/img/posts/snakes-waiting.jpeg){: .img-responsive .center-block style="width:40%"}
 
-## Is it faster?
+The recommended best practice for Gunicorn is to run multiple Python processes, coordinated by a main process and for each process to have a pool of threads:
 
+- A number of workers are started using multiprocessing (typically 1 worker for each CPU core)
+- A web request is given to a thread pool
+
+This design (sometimes called multi-worker-multi-thread) means that using multiprocessing you have 1 GIL for each CPU Core and you have a pool of threads to handle incoming requests concurrently. Uvicorn, the async implementation builds on that by using coroutines to handle concurrency with frameworks that support async.
+
+There are some downsides to this approach. As we explored earlier, threads are not parallel so if you had 2 threads inside a single worker being very busy, Python can't "move" or schedule that task on a different CPU core.
+
+## Applying sub interpreters to web applications
+
+So, my goal is to replace `multiprocessing` as the mechanism for the workers with an interpreter. This would have the benefit of using the high-performance shared memory channels API for inter-worker communication **and** the workers would be lighter weight taking up less memory on the host (leaving more memory and resources to process requests).
+
+The second, rather wild goal is to compile CPython 3.13 (main branch) with the PEP703 GIL-less thread implementation to see if we can run GIL-free threads inside this model. I also want to identify issues early and report them upstream (there were a few).
+
+For this experiment, I tried to fork Gunicorn and replace multiprocessing with sub interpreters. What I found was that this would be a huge effort because Gunicorn does have a concept of "workers" and abstracts those in an interface called worker classes. However, it makes some assumptions about the worker class capabilities which sub interpreters don't fulfill.
+
+Someone on Mastodon suggested I check out Hypercorn, which turned out to be ideal for this test. Hypercorn has an async worker module with a callable that could be imported from inside the interpreter. All I need to work out is:
+
+- How can the workers share the sockets?
+- How can I signal a worker to shutdown cleanly (async events won't work between interpreters)
+
+So, I roughly followed this design:
+
+1. Create an interpreter
+1. Create a signal channel to signal shutdown requests
+1. Subclass the `threading.Thread` class and implement a custom `.stop()` method that sends the signal to the sub interpreter
+1. Run each sub interpreter in a thread
+1. Convert the list of sockets into a tuple of tuples
+
+The worker class looks like this:
+
+```python
+class SubinterpreterWorker(threading.Thread):
+
+    def __init__(self, number: int, config: Config, sockets: Sockets):
+        self.worker_number = number
+        self.interp = interpreters.create()
+        self.channel = channels.create()
+        self.config = config # TODO copy other parameters from config
+        self.sockets = sockets
+        super().__init__(target=self.run, daemon=True)
+
+    def run(self):
+        # Convert insecure sockets to a tuple of tuples because the Sockets type cannot be shared
+        insecure_sockets = []
+        for s in self.sockets.insecure_sockets:
+            insecure_sockets.append((int(s.family), int(s.type), s.proto, s.fileno()))
+
+        interpreters.run_string(
+            self.interp,
+            interpreter_worker,
+            shared={
+                'worker_number': self.worker_number,
+                'insecure_sockets': tuple(insecure_sockets),
+                'application_path': self.config.application_path,
+                'workers': self.config.workers,
+                'channel_id': self.channel,
+            }
+        )
+
+    def stop(self):
+        print("Sending stop signal to worker {}".format(self.worker_number))
+        channels.send(self.channel, "stop")
+
+```
+
+The sub interpreter daemon code (`interpreter_worker`) is:
+
+```python
+import sys
+sys.path.append('experiments')
+from hypercorn.asyncio.run import asyncio_worker
+from hypercorn.config import Config, Sockets
+import asyncio
+import threading
+import _xxinterpchannels as channels
+from socket import socket
+import time
+shutdown_event = asyncio.Event()
+
+def wait_for_signal():
+    while True:
+        msg = channels.recv(channel_id, default=None)
+        if msg == "stop":
+            print("Received stop signal, shutting down {} ".format(worker_number))
+            shutdown_event.set()
+        else:
+            time.sleep(1)
+
+print("Starting hypercorn worker in subinterpreter {} ".format({worker_number}))
+_insecure_sockets = []
+# Rehydrate the sockets list from the tuple
+for s in insecure_sockets:
+    _insecure_sockets.append(socket(*s))
+hypercorn_sockets = Sockets([], _insecure_sockets, [])
+
+config = Config()
+config.application_path = application_path
+config.workers = workers
+thread = threading.Thread(target=wait_for_signal)
+thread.start()
+asyncio_worker(config, hypercorn_sockets, shutdown_event=shutdown_event)
+```
+
+The complete code is [available on GitHub](https://github.com/tonybaloney/subinterpreter-web/blob/master/microweb.py).
+
+## Findings
+
+My first cut of this approach still doesn't have multiple threads inside the sub interpreter (other than the signal thread). I'm building and testing an unstable build of CPython in debug mode. It's not ready for a comparison performance test - yet. 
+
+PEP703 isn't finished yet. The [100+ todo-list issue](https://github.com/python/cpython/issues/108219) in GitHub is about 50% complete. Only at the end of this list can the GIL be disabled.
+
+I also discovered a few issues. Firstly, Django won't run *at all*. Remember earlier in this post I mentioned that some Python C extensions use a global shared state? Well, `datetime` is one of those modules. There is an issue to update it, but it hasn't been merged yet. The consequence is that if you import `zoneinfo` from a sub interpreter, it will fail. Django uses `zoneinfo`, so it doesn't even start.
+
+I did have more luck with a very crude FastAPI and Flask application. I was able to launch a 2, 4 and 10 worker setup with those applications. I did run a few benchmarks on the FastAPI and Flask applications to see that it handled 10,000 requests with a concurrency of 20. Both performed admirably with all my CPU cores beavering away.
+
+I was pleasantly suprised since I wasn't expecting it to work at all because sub interpreters are so new and the Python ecosystem hasn't been testing them. The next step is to test some more complex web applications, continue to report crashes and issues then get this web worker into a state where it's stable enough to benchmark.
+
+Then I might just submit a PR to Hypercorn for Python 3.13's release next year.
+
+![](/img/posts/four-snakes-cartoon.jpeg){: .img-responsive .center-block style="width:40%"}
