@@ -131,7 +131,7 @@ To visually explain the idea of there being a "cut-off" point when parallelism i
 ![](/img/posts/graph-sub-interpreters.png){: .img-responsive .center-block style="width:80%"}
 
 Another important point is that `multiprocessing` is often used in a model where the processes are long-running and handed lots of tasks instead of being spawned and destroyed for a single workload. One great example is Gunicorn, the popular Python web server. Gunicorn will spawn "workers" using `multiprocessing` and those workers will live for the lifetime of the main process. The time to start a process or a sub interpreter then becomes irrelevant (at 89 ms or 1 second) when the web worker can be running for weeks, months or years.
-The ideal way to use these parallel workers for small tasks (like handle a single web request) is to keep them running and use a main process to coorindate and distribute the workload:
+The ideal way to use these parallel workers for small tasks (like handle a single web request) is to keep them running and use a main process to coordinate and distribute the workload:
 
 ![](/img/posts/interpreter-spooling.png){: .img-responsive .center-block style="width:80%"}
 
@@ -165,7 +165,7 @@ Whether using sub interpreters or multiprocessing you cannot simply send existin
 
 Multiprocessing uses `pickle` by default. When you start a process or use a [process pool](https://docs.python.org/3/library/concurrent.futures.html#concurrent.futures.ProcessPoolExecutor), you can use pipes, queues and shared memory as mechanisms to sending data to/from the workers and the main process. These mechanisms revolve around pickling. Pickling is the builtin serialization library for Python that can convert _most_ Python objects into a byte string and back into a Python object.
 
-Pickle is very flexible. You can serialize a lot of different types of Python objects (but not all) and Python objects can even define their. It also handles nested objects and properties. However, with that flexibility comes a performance hit. Pickle is slow. So if you have a worker model that relies upon continuous inter-worker communication of complex pickled data you'll likely see a bottleneck.
+Pickle is very flexible. You can serialize a lot of different types of Python objects (but not all) and Python objects can even [define a method for how they can be serialized](https://docs.python.org/3/library/pickle.html#pickling-class-instances). It also handles nested objects and properties. However, with that flexibility comes a performance hit. Pickle is slow. So if you have a worker model that relies upon continuous inter-worker communication of complex pickled data you'll likely see a bottleneck.
 
 Sub interpreters can accept pickled data. They also have a second mechanism called shared data. Shared data is a high-speed shared memory space that interpreters can write to and share data with other interpreters. It supports only immutable types, those are:
 
