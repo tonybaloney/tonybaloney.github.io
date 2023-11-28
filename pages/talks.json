@@ -6,7 +6,16 @@
         "video": "https://youtu.be/mqOQtC9Dt84?t=6850",
         "thumbnail": "img/thumbnails/pyconapac2023.jpg",
         "description": "Python 3.12 comes with an exciting new feature -- sub-interpreters. Sub-interpreters are a new programming model for Python that enable parallel execution of your code, without needing separate processes. In this talk, you will learn about sub-interpreters, how and where to use them."
-    },{
+    },
+    {
+        "title": "Beat the rush! Designing effective load tests for your web application",
+        "conference": "PyCon Australia 2023, Adelaide Australia",
+        "date": "August 2023",
+        "video": "https://www.youtube.com/watch?v=or3PbMGMz4o&list=PLs4CJRBY5F1KwxIxbTmhN9jX4hBtE-OKJ&index=16",
+        "thumbnail": "img/thumbnails/pyconau2023.jpg",
+        "description": "“The website is slow”. These four words can strike fear and dread in the heart of any developer. Load Testing is a tool for preparing your website for high demand, but designing a good load test is a fine-art. In this talk, we'll explore how design effective load tests for web apps in Python"
+    },
+    {
         "title": "What's new in Python 3.11 and Beyond",
         "conference": "PyCon JP 2022, Tokyo Japan",
         "date": "October 2022",
