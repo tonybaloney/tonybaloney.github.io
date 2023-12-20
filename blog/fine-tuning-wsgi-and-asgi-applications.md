@@ -20,7 +20,7 @@ Firstly covering the simpler of the two options, the ASGI/WSGI web server that g
 
 ![](/img/posts/http_arch_1.png){: .img-responsive .center-block style="height:400px"}
 
-ASGI/WSGI servers are specifically designed for handling HTTP traffic destined for Python code. Most HTML pages have lots of static assets like pictures, CSS files and JavaScript. It is inefficient to send all those requests through ASGI/WSGI web servers and have Python handle them so a better solution is to put _another_ HTTP server in front of the ASGI/WSGI server that specifically handles static content:
+ASGI/WSGI servers are specifically designed for handling HTTP traffic destined for Python code. Most HTML pages have lots of static assets like pictures, CSS files and JavaScript. It is inefficient to send all those requests through ASGI/WSGI web servers and have Python handle them. A better solution is to put _another_ HTTP server in front of the ASGI/WSGI server that specifically handles static content:
 
 ![](/img/posts/http_arch_2.png){: .img-responsive .center-block style="height:400px"}
 
