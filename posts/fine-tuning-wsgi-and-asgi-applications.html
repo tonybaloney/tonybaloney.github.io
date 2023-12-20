@@ -198,7 +198,7 @@ Those bits of software are:</p>
 </ul>
 <h3>FastAPI and async</h3>
 <p>FastAPI was designed as a fully-async web framework. It supports ASGI as standard and everything is async. You&rsquo;re good to go.</p>
-<h3>Conclusion WSGI or ASGI - which one is faster?</h3>
+<h3>WSGI or ASGI - which one is faster?</h3>
 <p>The answer to that question is interlinked with the rest of this blog post. It really comes down to how Python handles concurrent and parallel code. You may have heard of the <a href="/posts/sub-interpreter-web-workers.html">GIL (Global Interpreter Lock)</a> in Python which means that even with multi-threading, Python will only execute on 1 CPU core at any time. Well, this is important for web applications that want to service multiple users at once (you have more than 1 user right?). There is a very important consideration when optimizing Python web applications&ndash;</p>
 <p><strong>Most of a web page execution time is spent doing IO</strong></p>
 <p>Those IO tasks include:</p>

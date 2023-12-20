@@ -80,7 +80,7 @@ Like Django, Flask was written for WSGI and predates async support in Python. De
 
 FastAPI was designed as a fully-async web framework. It supports ASGI as standard and everything is async. You're good to go.
 
-### Conclusion WSGI or ASGI - which one is faster?
+### WSGI or ASGI - which one is faster?
 
 The answer to that question is interlinked with the rest of this blog post. It really comes down to how Python handles concurrent and parallel code. You may have heard of the [GIL (Global Interpreter Lock)](/posts/sub-interpreter-web-workers.html) in Python which means that even with multi-threading, Python will only execute on 1 CPU core at any time. Well, this is important for web applications that want to service multiple users at once (you have more than 1 user right?). There is a very important consideration when optimizing Python web applications--
 
