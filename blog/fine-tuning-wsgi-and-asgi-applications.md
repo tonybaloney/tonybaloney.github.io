@@ -3,6 +3,7 @@ blog_subheading: Exploring strategies for optimal Gunicorn, Uvicorn and Hypercor
 blog_header_image: posts/python-burger-truck.jpeg
 blog_author: Anthony Shaw
 blog_publish_date: December 20, 2023
+blog_card_image: posts/little-python-lemonade-stand.jpeg
 ---
 
 In this blog post, I'm going to review some best practices for configuring Python web servers like Gunicorn, Uvicorn, and Hypercorn. We'll recap the architecture of all the bits of software that sit between your Python code and your users. We'll also touch on verification methods like load testing to check that your configuration stands up against some user traffic.

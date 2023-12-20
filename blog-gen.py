@@ -45,6 +45,7 @@ def main():
         url = post.replace(".md", ".html").replace("blog/", "posts/")
         with open(post) as post_f:
             html = _md.convert(post_f.read())
+            _md.Meta['card_image'] = _md.Meta.get('blog_card_image', _md.Meta['blog_header_image'])[0]
             doc = env.get_template(TEMPLATE_FILE).render(content=html, baseurl=BASE_URL, url=url, **_md.Meta)
 
         post_html = url
