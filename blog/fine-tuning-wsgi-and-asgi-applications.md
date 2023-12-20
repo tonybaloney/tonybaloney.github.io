@@ -99,6 +99,8 @@ The GIL largely **doesn't apply to IO tasks**, the lock is released by Python fo
 
 Coming back to the original question - is WSGI or ASGI faster? Well, if you assume that WSGI is deployed using a thread pool for requests compared with ASGI which uses coroutines to handle requests, then ASGI is faster because coroutines are much, much faster to start. But, when I say much, much faster that's in the scale of milliseconds vs nanoseconds and if your web page takes 200ms to respond, shaving off 0.05ms from that response time by using coroutines is going to be negligible.
 
+More important than the start time is that coroutines scale horizontally much better than threads because they have a smaller overhead. Uvicorn will happily run 100 requests concurrently on a single worker. Compare that to the thread recommendation we go into later is around 2 threads per worker. 
+
 ## Gunicorn, Uvicorn or Hypercorn?
 
 So now that you know if you want ASGI or WSGI, you need to pick a web server. Gunicorn, Uvicorn, and Hypercorn are the three most popular options so we'll explore those.
