@@ -7,9 +7,20 @@
             A collection of technology articles
         </description>
         <link>https://tonybaloney.github.io/#blog</link>
-        <lastBuildDate>Sat, 18 Nov 2023 23:53:12 -0000</lastBuildDate>
+        <lastBuildDate>Wed, 20 Dec 2023 04:34:00 -0000</lastBuildDate>
         <pubDate>Sat, 4 Jan 2020 19:15:54 -0500</pubDate>
         <atom:link href="https://tonybaloney.github.io/rss.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Fine Tuning WSGI and ASGI applications in Python</title>
+            <description>
+                Exploring strategies for optimal Gunicorn, Uvicorn and Hypercorn configurations for Flask, Django, and FastAPI
+            </description>
+            <link>https://tonybaloney.github.io/posts/fine-tuning-wsgi-and-asgi-applications.html</link>
+            <pubDate>Wed, 20 Dec 2023 00:00:00 -0000</pubDate>
+            <dc:creator>Anthony Shaw</dc:creator>
+            <guid>https://tonybaloney.github.io/posts/fine-tuning-wsgi-and-asgi-applications.html</guid>
+        </item>
         
         <item>
             <title>Running Python Parallel Applications with Sub Interpreters</title>
