@@ -7,12 +7,12 @@
             A collection of technology articles
         </description>
         <link>https://tonybaloney.github.io/#blog</link>
-        <lastBuildDate>Wed, 20 Dec 2023 04:34:00 -0000</lastBuildDate>
+        <lastBuildDate>Wed, 20 Dec 2023 04:42:52 -0000</lastBuildDate>
         <pubDate>Sat, 4 Jan 2020 19:15:54 -0500</pubDate>
         <atom:link href="https://tonybaloney.github.io/rss.xml" rel="self" type="application/rss+xml" />
         
         <item>
-            <title>Fine Tuning WSGI and ASGI applications in Python</title>
+            <title>Fine Tuning Python WSGI and ASGI applications for Flask, Django, and FastAPI</title>
             <description>
                 Exploring strategies for optimal Gunicorn, Uvicorn and Hypercorn configurations for Flask, Django, and FastAPI
             </description>

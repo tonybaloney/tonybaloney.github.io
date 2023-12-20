@@ -1,4 +1,4 @@
-blog_heading: Fine Tuning WSGI and ASGI applications in Python
+blog_heading: Fine Tuning Python WSGI and ASGI applications for Flask, Django, and FastAPI
 blog_subheading: Exploring strategies for optimal Gunicorn, Uvicorn and Hypercorn configurations for Flask, Django, and FastAPI
 blog_header_image: posts/python-burger-truck.jpeg
 blog_author: Anthony Shaw
