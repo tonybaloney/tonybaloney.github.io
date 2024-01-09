@@ -37,7 +37,7 @@ It compiles to 5 bytecode instructions, which you can see by running `dis.dis`:
 
 ```python
 >>> import dis
->>> dis.dis(f)
+>>> dis.dis(func)
  34           0 RESUME                   0
 
  35           2 LOAD_CONST               1 (1)
