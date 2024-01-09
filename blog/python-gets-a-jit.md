@@ -211,9 +211,9 @@ The new JIT compiler, will when activated copy the machine-code instructions for
 
 You can see the JITted code if you compile [my branch](https://github.com/brandtbucher/cpython/pull/32) and try it on this [test script](https://gist.github.com/tonybaloney/7e12e416ad69968e297547498f7bcde1) then give it to a disassembler like Ada Pro or Hopper. At the moment,  the JIT is only used if the function contains the `JUMP_BACKWARD` opcode which is used in the `while` statement but that will change in the future.
 
-## Is it faster? 
+## Is it faster?
 
-The initial benchmarks show something of a 5-9% performance improvement. You might be disappointed by this number, especially since this blog post has been talking about assembly and machine code and nothing is faster than that right? Well, remember that CPython is already written in C and that was already compiled to machine-code by the C compiler. In most cases, this JIT will be executing almost the same machine-code instructions as it was before.
+The initial benchmarks show something of [a 2-9% performance improvement](https://github.com/python/cpython/pull/113465#issuecomment-1876225775). You might be disappointed by this number, especially since this blog post has been talking about assembly and machine code and nothing is faster than that right? Well, remember that CPython is already written in C and that was already compiled to machine-code by the C compiler. In most cases, this JIT will be executing almost the same machine-code instructions as it was before.
 
 **However**, think of this JIT as being the cornerstone of a series of much larger optimizations. None of which are possible without it. For this change to be accepted, understood and maintained in an open-source project it needs to start simple.
 
