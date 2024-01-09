@@ -87,7 +87,7 @@ For our interpreter, everytime you want to run the function, `func` it has to lo
 
 This is what a JIT does. There are many types of JIT compiler. Numba is a JIT. PyPy has a JIT. Java has lots of JITs. Pyston and Pyjion are JITs.
 
-The JIT that is proposed for Python 3.13 is a copy-any-patch JIT.
+The JIT that is proposed for Python 3.13 is a copy-and-patch JIT.
 
 ## What is a copy-and-patch JIT?
 
@@ -123,7 +123,7 @@ def f():
   variables = {}
   stack.append(1)
   variables["a"] = stack.pop()
-  stack.append(None)
+  stack.append(variables["a"])
   return stack.pop()
 f()
 ```
@@ -168,7 +168,7 @@ stack_pointer += 1;
 DISPATCH();
 ```
 
-The instructions for this bytecode are first compiled by the C compiled into a little shared library and then stored as machine code. Because there are some variables normally determined at runtime, like `oparg`, the C code is compiled with those parameters left as `0`. There is then a list of the 0 values that need to be filled in, called holes. For `LOAD_CONST`, there are 2 holes to be filled , the oparg and the next instruction:
+The instructions for this bytecode are first compiled by the C compiler into a little shared library and then stored as machine code. Because there are some variables normally determined at runtime, like `oparg`, the C code is compiled with those parameters left as `0`. There is then a list of the 0 values that need to be filled in, called holes. For `LOAD_CONST`, there are 2 holes to be filled , the oparg and the next instruction:
 
 ```c
 static const Hole _LOAD_CONST_code_holes[3] = {
