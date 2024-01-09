@@ -138,7 +138,7 @@ print(exec(compiled_function))
 print(exec(compiled_function))
 ```
 
-What was the point in that? Well the resulting code does the same thing, but it should run faster. I gave the two implementations to [rich bench](https://pypi.org/project/richbench/) and the copy-and-patch method runs 22x faster.
+What was the point in that? Well the resulting code does the same thing, but it should run faster. I gave the two implementations to [rich bench](https://pypi.org/project/richbench/) and the copy-and-patch method runs faster _(Keep in mind though that loops in Python are very slow compared to C.)_
 
 ## Why a copy-and-patch JIT?
 
