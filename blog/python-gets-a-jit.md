@@ -28,54 +28,57 @@ When you run Python code, it is first compiled into bytecodes. There are plenty 
 For a very simple Python function `f()` that defines a variable `a` and assigns the value `1`:
 
 ```python
-def f():
-   a = 1
+def func():
+    a = 1
+    return a
 ```
 
-It compiles to 4 bytecode instructions, which you can see by running `dis.dis`:
+It compiles to 5 bytecode instructions, which you can see by running `dis.dis`:
 
 ```python
 >>> import dis
 >>> dis.dis(f)
-  2           0 LOAD_CONST               1 (1)
-              2 STORE_FAST               0 (a)
-              4 LOAD_CONST               0 (None)
-              6 RETURN_VALUE
+ 34           0 RESUME                   0
+
+ 35           2 LOAD_CONST               1 (1)
+              4 STORE_FAST               0 (a)
+
+ 36           6 LOAD_FAST                0 (a)
+              8 RETURN_VALUE
 ```
 
 I have a more interactive disassembler called [dissy](https://github.com/tonybaloney/dissy) as well if you want to try something more complicated.
 
-For this function, Python compiled into the instructions `LOAD_CONST`, `STORE_FAST`, `LOAD_CONST`, and `RETURN_VALUE`. These instructions are interpreted when the function is run by a massive loop written in C.
+For this function, Python 3.11 compiled into the instructions `LOAD_CONST`, `STORE_FAST`, `LOAD_CONST`, and `RETURN_VALUE`. These instructions are interpreted when the function is run by a massive loop written in C.
 
 If you were to write a very crude Python evaluation loop in Python equivalent to the one in C, it would look something like this:
 
 ```python
-def interpret(bytecodes):
+import dis
+
+def interpret(func):
     stack = []
     variables = {}
-    for bytecode, arg in bytecodes:
-        if bytecode == "LOAD_CONST":
-            stack.append(arg)
-        elif bytecode == "LOAD_FAST":
-            stack.append(variables[arg])
-        elif bytecode == "STORE_FAST":
-            variables[arg] = stack.pop()
-        elif bytecode == "RETURN_VALUE":
+    for instruction in dis.get_instructions(func):
+        if instruction.opname == "LOAD_CONST":
+            stack.append(instruction.argval)
+        elif instruction.opname == "LOAD_FAST":
+            stack.append(variables[instruction.argval])
+        elif instruction.opname == "STORE_FAST":
+            variables[instruction.argval] = stack.pop()
+        elif instruction.opname == "RETURN_VALUE":
             return stack.pop()
 
 
-func = (
-    ("LOAD_CONST", 1),
-    ("STORE_FAST", 'a'),
-    ("LOAD_CONST", None),
-    ("RETURN_VALUE", None)
-)
+def func():
+    a = 1
+    return a
 ```
 
-If you gave this interpreter the bytecodes for our test function, it would execute them and print the results:
+If you gave this interpreter our test function, it would execute them and print the results:
 
 ```python
-print(interpret(function))
+print(interpret(func))
 ```
 
 This loop with a big switch/if-else statement is an equivalent, albeit simplified version of how CPython's interpreter loop works. CPython is written in C and compiled by a C compiler. For the sake of simplicity I'll build out this example in Python.
@@ -95,18 +98,18 @@ I'll try and explain what a copy-and-patch JIT is by expanding our interpreter l
 A **copy-and-patch** JIT is the idea that you **copy** the instructions for each command and fill-in-the-blanks for that bytecode arguments (or **patch**). Here's a rewritten example, I keep the loop very similar but each time I append a code string with the Python code to execute:
 
 ```python
-def copy_and_patch_interpret(bytecodes):
+def copy_and_patch_interpret(func):
     code = 'def f():\n'
     code += '  stack = []\n'
     code += '  variables = {}\n'
-    for bytecode, arg in bytecodes:
-        if bytecode == "LOAD_CONST":
-            code += f'  stack.append({arg})\n'
-        elif bytecode == "LOAD_FAST":
-            code += f'  stack.append(variables["{arg}"])\n'
-        elif bytecode == "STORE_FAST":
-            code += f'  variables["{arg}"] = stack.pop()\n'
-        elif bytecode == "RETURN_VALUE":
+    for instruction in dis.get_instructions(func):
+        if instruction.opname == "LOAD_CONST":
+            code += f'  stack.append({instruction.argval})\n'
+        elif instruction.opname == "LOAD_FAST":
+            code += f'  stack.append(variables["{instruction.argval}"])\n'
+        elif instruction.opname == "STORE_FAST":
+            code += f'  variables["{instruction.argval}"] = stack.pop()\n'
+        elif instruction.opname == "RETURN_VALUE":
             code += '  return stack.pop()\n'
     code += 'f()'
     return code
@@ -135,7 +138,7 @@ print(exec(compiled_function))
 print(exec(compiled_function))
 ```
 
-What was the point in that? Well the resulting code does the same thing, but it should run faster (it doesn't actually run faster because Python's `exec` function is really slow, but that's another story and contradicts my otherwise flawless analogy).
+What was the point in that? Well the resulting code does the same thing, but it should run faster. I gave the two implementations to [rich bench](https://pypi.org/project/richbench/) and the copy-and-patch method runs 22x faster.
 
 ## Why a copy-and-patch JIT?
 

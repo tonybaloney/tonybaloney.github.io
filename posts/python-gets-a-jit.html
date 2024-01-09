@@ -139,46 +139,49 @@
 <li>They are cross-platform</li>
 </ol>
 <p>For a very simple Python function <code>f()</code> that defines a variable <code>a</code> and assigns the value <code>1</code>:</p>
-<pre><code class="python">def f():
-   a = 1
+<pre><code class="python">def func():
+    a = 1
+    return a
 </code></pre>
 
-<p>It compiles to 4 bytecode instructions, which you can see by running <code>dis.dis</code>:</p>
+<p>It compiles to 5 bytecode instructions, which you can see by running <code>dis.dis</code>:</p>
 <pre><code class="python">&gt;&gt;&gt; import dis
 &gt;&gt;&gt; dis.dis(f)
-  2           0 LOAD_CONST               1 (1)
-              2 STORE_FAST               0 (a)
-              4 LOAD_CONST               0 (None)
-              6 RETURN_VALUE
+ 34           0 RESUME                   0
+
+ 35           2 LOAD_CONST               1 (1)
+              4 STORE_FAST               0 (a)
+
+ 36           6 LOAD_FAST                0 (a)
+              8 RETURN_VALUE
 </code></pre>
 
 <p>I have a more interactive disassembler called <a href="https://github.com/tonybaloney/dissy">dissy</a> as well if you want to try something more complicated.</p>
-<p>For this function, Python compiled into the instructions <code>LOAD_CONST</code>, <code>STORE_FAST</code>, <code>LOAD_CONST</code>, and <code>RETURN_VALUE</code>. These instructions are interpreted when the function is run by a massive loop written in C.</p>
+<p>For this function, Python 3.11 compiled into the instructions <code>LOAD_CONST</code>, <code>STORE_FAST</code>, <code>LOAD_CONST</code>, and <code>RETURN_VALUE</code>. These instructions are interpreted when the function is run by a massive loop written in C.</p>
 <p>If you were to write a very crude Python evaluation loop in Python equivalent to the one in C, it would look something like this:</p>
-<pre><code class="python">def interpret(bytecodes):
+<pre><code class="python">import dis
+
+def interpret(func):
     stack = []
     variables = {}
-    for bytecode, arg in bytecodes:
-        if bytecode == &quot;LOAD_CONST&quot;:
-            stack.append(arg)
-        elif bytecode == &quot;LOAD_FAST&quot;:
-            stack.append(variables[arg])
-        elif bytecode == &quot;STORE_FAST&quot;:
-            variables[arg] = stack.pop()
-        elif bytecode == &quot;RETURN_VALUE&quot;:
+    for instruction in dis.get_instructions(func):
+        if instruction.opname == &quot;LOAD_CONST&quot;:
+            stack.append(instruction.argval)
+        elif instruction.opname == &quot;LOAD_FAST&quot;:
+            stack.append(variables[instruction.argval])
+        elif instruction.opname == &quot;STORE_FAST&quot;:
+            variables[instruction.argval] = stack.pop()
+        elif instruction.opname == &quot;RETURN_VALUE&quot;:
             return stack.pop()
 
 
-func = (
-    (&quot;LOAD_CONST&quot;, 1),
-    (&quot;STORE_FAST&quot;, 'a'),
-    (&quot;LOAD_CONST&quot;, None),
-    (&quot;RETURN_VALUE&quot;, None)
-)
+def func():
+    a = 1
+    return a
 </code></pre>
 
-<p>If you gave this interpreter the bytecodes for our test function, it would execute them and print the results:</p>
-<pre><code class="python">print(interpret(function))
+<p>If you gave this interpreter our test function, it would execute them and print the results:</p>
+<pre><code class="python">print(interpret(func))
 </code></pre>
 
 <p>This loop with a big switch/if-else statement is an equivalent, albeit simplified version of how CPython&rsquo;s interpreter loop works. CPython is written in C and compiled by a C compiler. For the sake of simplicity I&rsquo;ll build out this example in Python.</p>
@@ -189,18 +192,18 @@ func = (
 <p>Never heard of a copy-and-patch JIT? Don&rsquo;t worry, nor had I and nor have most people. It&rsquo;s an idea <a href="https://dl.acm.org/doi/10.1145/3485513">only proposed recently in 2021</a> and designed as a fast algorithm for dynamic language runtimes.</p>
 <p>I&rsquo;ll try and explain what a copy-and-patch JIT is by expanding our interpreter loop and rewriting it as a JIT. Before, the interpreter loop did two things, first it interpreted (looked at the bytecode) then it executed (ran the instruction). What we can do instead is to seperate those tasks and have the interpreter output the instructions and not execute them.</p>
 <p>A <strong>copy-and-patch</strong> JIT is the idea that you <strong>copy</strong> the instructions for each command and fill-in-the-blanks for that bytecode arguments (or <strong>patch</strong>). Here&rsquo;s a rewritten example, I keep the loop very similar but each time I append a code string with the Python code to execute:</p>
-<pre><code class="python">def copy_and_patch_interpret(bytecodes):
+<pre><code class="python">def copy_and_patch_interpret(func):
     code = 'def f():\n'
     code += '  stack = []\n'
     code += '  variables = {}\n'
-    for bytecode, arg in bytecodes:
-        if bytecode == &quot;LOAD_CONST&quot;:
-            code += f'  stack.append({arg})\n'
-        elif bytecode == &quot;LOAD_FAST&quot;:
-            code += f'  stack.append(variables[&quot;{arg}&quot;])\n'
-        elif bytecode == &quot;STORE_FAST&quot;:
-            code += f'  variables[&quot;{arg}&quot;] = stack.pop()\n'
-        elif bytecode == &quot;RETURN_VALUE&quot;:
+    for instruction in dis.get_instructions(func):
+        if instruction.opname == &quot;LOAD_CONST&quot;:
+            code += f'  stack.append({instruction.argval})\n'
+        elif instruction.opname == &quot;LOAD_FAST&quot;:
+            code += f'  stack.append(variables[&quot;{instruction.argval}&quot;])\n'
+        elif instruction.opname == &quot;STORE_FAST&quot;:
+            code += f'  variables[&quot;{instruction.argval}&quot;] = stack.pop()\n'
+        elif instruction.opname == &quot;RETURN_VALUE&quot;:
             code += '  return stack.pop()\n'
     code += 'f()'
     return code
@@ -225,7 +228,7 @@ print(exec(compiled_function))
 print(exec(compiled_function))
 </code></pre>
 
-<p>What was the point in that? Well the resulting code does the same thing, but it should run faster (it doesn&rsquo;t actually run faster because Python&rsquo;s <code>exec</code> function is really slow, but that&rsquo;s another story and contradicts my otherwise flawless analogy).</p>
+<p>What was the point in that? Well the resulting code does the same thing, but it should run faster. I gave the two implementations to <a href="https://pypi.org/project/richbench/">rich bench</a> and the copy-and-patch method runs 22x faster.</p>
 <h2>Why a copy-and-patch JIT?</h2>
 <p>This technique of writing out the instructions for each bytecode and patching the values has upsides and downsides compared to a &ldquo;full&rdquo; JIT compiler. A full JIT compiler would normally compile high-level bytecodes like <code>LOAD_FAST</code> into lower level instructions in an IL (Intermediate Language). Because every CPU architecture has different instructions and features, it would be monumentally-complicated to write a compiler that converts high-level code directly to machine code and supports 32-bit and 64-bit CPUs, as well as Apple&rsquo;s ARM architecture as well as all the other flavours of ARM. Instead most JIT&rsquo;s compile first to an IL that is a generic machine-code-like instruction set. Those instructions are things like &ldquo;PUSH A 64-bit integer&rdquo;, &ldquo;POP a 64-bit float&rdquo;, &ldquo;MULTIPLY the values on the stack&rdquo;. The JIT can then compile IL into machine-code at runtime by emitting CPU-specific instructions and storing them in memory to be later executed (similar to how we did in our example).</p>
 <p>Once you have IL, you can run all sorts of fun optimizations on the code like <a href="https://en.wikipedia.org/wiki/Constant_folding">constant propagation</a> and loop hoisting. You can see an example of this in <a href="https://live.trypyjion.com">Pyjion&rsquo;s live compiler UI</a>.</p>
