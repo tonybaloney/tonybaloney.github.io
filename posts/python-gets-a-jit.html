@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Python 3.13 gets a JIT</title>
+
+    <!-- Facebook Meta tags -->
+    <meta property="og:title" content="Python 3.13 gets a JIT">
+    <meta property="og:description" content="Reviewing the JIT in Python 3.13">
+    <meta property="og:image" content="https://tonybaloney.github.io/img/posts/snake_cookie_cutter.jpeg">
+    <meta property="og:url" content="https://tonybaloney.github.io/posts/python-gets-a-jit.html">
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:title" content="Python 3.13 gets a JIT">
+    <meta name="twitter:description" content="Reviewing the JIT in Python 3.13">
+    <meta name="twitter:image" content="https://tonybaloney.github.io/img/posts/snake_cookie_cutter.jpeg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@anthonypjshaw">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="/css/clean-blog.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js"></script>
+
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/x86asm.min.js"></script>
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/python.min.js"></script>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    Menu <i class="fa fa-bars"></i>
+                </button>
+
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/#">Home</a>
+                    </li>
+                    <li>
+                        <a href="/#projects">Projects</a>
+                    </li>
+                    <li>
+                        <a href="/#contributions">Contributions</a>
+                    </li>
+                    <li>
+                        <a href="/#courses">Courses</a>
+                    </li>
+                    <li>
+                        <a href="/#podcasts">Podcasts</a>
+                    </li>
+                    <li>
+                        <a href="/#talks">Talks</a>
+                    </li>
+                    <li>
+                        <a href="/#blog">Blog</a>
+                    </li>
+                    <li>
+                        <a href="https://twitter.com/anthonypjshaw"><i class='fa fa-2x fa-twitter'></i></a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/tonybaloney"><i class='fa fa-2x fa-github'></i></a>
+                    </li>
+                    <li>
+                        <a href="https://www.youtube.com/c/AnthonyShaw"><i class='fa fa-2x fa-youtube-play'></i></a>
+                    </li>
+                    <li>
+                        <a href="/rss.xml"><i class='fa fa-2x fa-rss-square'></i></a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('/img/posts/snake_cookie_cutter.jpeg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="site-heading">
+                        <h1>Python 3.13 gets a JIT</h1>
+                        <hr class="small">
+                        <span class="subheading">by Anthony Shaw, January 9, 2023</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <p>Happy New Year everyone! In late December 2023 (Christmas Day to be precise), CPython core developer <a href="https://github.com/brandtbucher">Brandt Bucher</a> submitted a <a href="https://github.com/python/cpython/pull/113465">little pull-request to the Python 3.13</a> branch adding a JIT compiler.</p>
+<p>This change, once accepted would be one of the biggest changes to the CPython Interpreter since the Specializing Adaptive Interpreter added in Python 3.11 (which was also from Brandt).</p>
+<p>In this blog post, we&rsquo;re going to have a look at this JIT, what it is, how it works and what the benefits are.</p>
+<h2>What is a JIT?</h2>
+<p>JIT, or &ldquo;Just in Time&rdquo; is a compilation design that implies that compilation happens on demand when the code is run the first time. It&rsquo;s a very broad term that could mean many things. I guess, technically the Python compiler is already a JIT because it compiles from Python code into Bytecode.</p>
+<p>What people <em>tend</em> to mean when they say a JIT compiler, is a compiler that emits <strong>machine code</strong>. This is in contrast to an AOT (Ahead of Time) compiler, like the GNU C compiler, GCC or the Rust compiler rustc which generates the machine code once and distributes as a binary executable.</p>
+<p>When you run Python code, it is first compiled into bytecodes. There are plenty of talks and videos about this process online so I don&rsquo;t want to rehash this too much, but what is important to note about Python bytecodes is:</p>
+<ol>
+<li>They mean nothing to the CPU and require a special bytecode interpreter loop to execute</li>
+<li>They are high level and can equate to 1000&rsquo;s of machine instructions</li>
+<li>They are type agnostic</li>
+<li>They are cross-platform</li>
+</ol>
+<p>For a very simple Python function <code>f()</code> that defines a variable <code>a</code> and assigns the value <code>1</code>:</p>
+<pre><code class="python">def f():
+   a = 1
+</code></pre>
+
+<p>It compiles to 4 bytecode instructions, which you can see by running <code>dis.dis</code>:</p>
+<pre><code class="python">&gt;&gt;&gt; import dis
+&gt;&gt;&gt; dis.dis(f)
+  2           0 LOAD_CONST               1 (1)
+              2 STORE_FAST               0 (a)
+              4 LOAD_CONST               0 (None)
+              6 RETURN_VALUE
+</code></pre>
+
+<p>I have a more interactive disassembler called <a href="https://github.com/tonybaloney/dissy">dissy</a> as well if you want to try something more complicated.</p>
+<p>For this function, Python compiled into the instructions <code>LOAD_CONST</code>, <code>STORE_FAST</code>, <code>LOAD_CONST</code>, and <code>RETURN_VALUE</code>. These instructions are interpreted when the function is run by a massive loop written in C.</p>
+<p>If you were to write a very crude Python evaluation loop in Python equivalent to the one in C, it would look something like this:</p>
+<pre><code class="python">def interpret(bytecodes):
+    stack = []
+    variables = {}
+    for bytecode, arg in bytecodes:
+        if bytecode == &quot;LOAD_CONST&quot;:
+            stack.append(arg)
+        elif bytecode == &quot;LOAD_FAST&quot;:
+            stack.append(variables[arg])
+        elif bytecode == &quot;STORE_FAST&quot;:
+            variables[arg] = stack.pop()
+        elif bytecode == &quot;RETURN_VALUE&quot;:
+            return stack.pop()
+
+
+func = (
+    (&quot;LOAD_CONST&quot;, 1),
+    (&quot;STORE_FAST&quot;, 'a'),
+    (&quot;LOAD_CONST&quot;, None),
+    (&quot;RETURN_VALUE&quot;, None)
+)
+</code></pre>
+
+<p>If you gave this interpreter the bytecodes for our test function, it would execute them and print the results:</p>
+<pre><code class="python">print(interpret(function))
+</code></pre>
+
+<p>This loop with a big switch/if-else statement is an equivalent, albeit simplified version of how CPython&rsquo;s interpreter loop works. CPython is written in C and compiled by a C compiler. For the sake of simplicity I&rsquo;ll build out this example in Python.</p>
+<p>For our interpreter, everytime you want to run the function, <code>func</code> it has to loop through each instruction and compare the bytecode name (called the opcode) with each if-statement. Both this comparison and the loop itself add an overhead to the execution. That overhead seems redundant if you run the function 10,000 times and the bytecodes never change (because they are immutable). It would be more efficient to instead generate the code in a sequence instead of a evaluating this loop every time you call the function.</p>
+<p>This is what a JIT does. There are many types of JIT compiler. Numba is a JIT. PyPy has a JIT. Java has lots of JITs. Pyston and Pyjion are JITs.</p>
+<p>The JIT that is proposed for Python 3.13 is a copy-any-patch JIT.</p>
+<h2>What is a copy-and-patch JIT?</h2>
+<p>Never heard of a copy-and-patch JIT? Don&rsquo;t worry, nor had I and nor have most people. It&rsquo;s an idea <a href="https://dl.acm.org/doi/10.1145/3485513">only proposed recently in 2021</a> and designed as a fast algorithm for dynamic language runtimes.</p>
+<p>I&rsquo;ll try and explain what a copy-and-patch JIT is by expanding our interpreter loop and rewriting it as a JIT. Before, the interpreter loop did two things, first it interpreted (looked at the bytecode) then it executed (ran the instruction). What we can do instead is to seperate those tasks and have the interpreter output the instructions and not execute them.</p>
+<p>A <strong>copy-and-patch</strong> JIT is the idea that you <strong>copy</strong> the instructions for each command and fill-in-the-blanks for that bytecode arguments (or <strong>patch</strong>). Here&rsquo;s a rewritten example, I keep the loop very similar but each time I append a code string with the Python code to execute:</p>
+<pre><code class="python">def copy_and_patch_interpret(bytecodes):
+    code = 'def f():\n'
+    code += '  stack = []\n'
+    code += '  variables = {}\n'
+    for bytecode, arg in bytecodes:
+        if bytecode == &quot;LOAD_CONST&quot;:
+            code += f'  stack.append({arg})\n'
+        elif bytecode == &quot;LOAD_FAST&quot;:
+            code += f'  stack.append(variables[&quot;{arg}&quot;])\n'
+        elif bytecode == &quot;STORE_FAST&quot;:
+            code += f'  variables[&quot;{arg}&quot;] = stack.pop()\n'
+        elif bytecode == &quot;RETURN_VALUE&quot;:
+            code += '  return stack.pop()\n'
+    code += 'f()'
+    return code
+</code></pre>
+
+<p>This result for the original function is:</p>
+<pre><code class="python">def f():
+  stack = []
+  variables = {}
+  stack.append(1)
+  variables[&quot;a&quot;] = stack.pop()
+  stack.append(None)
+  return stack.pop()
+f()
+</code></pre>
+
+<p>This time, the code is <strong>sequential</strong> and doesn&rsquo;t require the loop to execute. We can store the resulting string and run it as many times as we like:</p>
+<pre><code class="python">compiled_function = compile(copy_and_patch_interpret(func), filename=&quot;&lt;string&gt;&quot;, mode=&quot;exec&quot;)
+
+print(exec(compiled_function))
+print(exec(compiled_function))
+print(exec(compiled_function))
+</code></pre>
+
+<p>What was the point in that? Well the resulting code does the same thing, but it should run faster (it doesn&rsquo;t actually run faster because Python&rsquo;s <code>exec</code> function is really slow, but that&rsquo;s another story and contradicts my otherwise flawless analogy).</p>
+<h2>Why a copy-and-patch JIT?</h2>
+<p>This technique of writing out the instructions for each bytecode and patching the values has upsides and downsides compared to a &ldquo;full&rdquo; JIT compiler. A full JIT compiler would normally compile high-level bytecodes like <code>LOAD_FAST</code> into lower level instructions in an IL (Intermediate Language). Because every CPU architecture has different instructions and features, it would be monumentally-complicated to write a compiler that converts high-level code directly to machine code and supports 32-bit and 64-bit CPUs, as well as Apple&rsquo;s ARM architecture as well as all the other flavours of ARM. Instead most JIT&rsquo;s compile first to an IL that is a generic machine-code-like instruction set. Those instructions are things like &ldquo;PUSH A 64-bit integer&rdquo;, &ldquo;POP a 64-bit float&rdquo;, &ldquo;MULTIPLY the values on the stack&rdquo;. The JIT can then compile IL into machine-code at runtime by emitting CPU-specific instructions and storing them in memory to be later executed (similar to how we did in our example).</p>
+<p>Once you have IL, you can run all sorts of fun optimizations on the code like <a href="https://en.wikipedia.org/wiki/Constant_folding">constant propagation</a> and loop hoisting. You can see an example of this in <a href="https://live.trypyjion.com">Pyjion&rsquo;s live compiler UI</a>.</p>
+<p>The big downside with a &ldquo;full&rdquo; JIT is that the process of compiling once into IL and then again into machine code is <strong>slow</strong>. Not only is it slow, but it is memory intensive. To illustrate this, data from recent research <a href="https://doi.org/10.1002/spe.3267">&ldquo;Python meets JIT compilers: A simple implementation and a comparative evaluation&rdquo;</a> showed that Java-based JITs for Python like GraalPy, and Jython can take up to 100 times longer to start than normal CPython and consume up to an additional Gigabyte of RAM to compile. There are already full JIT implementations for Python.</p>
+<p>Copy-and-patch was selected because the compilation from bytecodes to machine code is done as a set of &ldquo;templates&rdquo; that are then stitched together and patched at runtime with the correct values. This means that your average Python user isn&rsquo;t running this complex JIT compiler architecture inside their Python runtime. Python writing it&rsquo;s own IL and JIT would also be unreasonable since so many are available off-the-shelf like LLVMs and ryuJIT. But a full-JIT would require those being bundled with Python and all the added overheads. A copy-and-patch JIT only requires the LLVM JIT tools be installed on the machine where CPython is compiled from source, and for most people that means the machines of the CI that builds and packages CPython for python.org.</p>
+<h2>So how does this JIT work?</h2>
+<p>The copy-and-patch compiler for Python works by extending some new (and honestly not widely known about) APIs to Python 3.13&rsquo;s API. These changes enable pluggable optimizers to be discoverable at runtime in CPython and control how code is executed. This new JIT is an optional optimizer for this new architecture. I assume that it will be the default in future versions once the major bugs have been squashed. </p>
+<p>When you compile CPython from source, you can provide a flag <code>--enable-experimental-jit</code> to the configure script. This will generate machine-code templates for the Python bytecodes. This happens by first copying the C code for each bytecode, for example for LOAD_CONST, the simplest:</p>
+<pre><code class="c">frame-&gt;instr_ptr = next_instr;
+next_instr += 1;
+INSTRUCTION_STATS(LOAD_CONST); // Not used unless compiled with instrumentation
+PyObject *value;
+value = GETITEM(FRAME_CO_CONSTS, oparg);
+Py_INCREF(value);
+stack_pointer[0] = value;
+stack_pointer += 1;
+DISPATCH();
+</code></pre>
+
+<p>The instructions for this bytecode are first compiled by the C compiled into a little shared library and then stored as machine code. Because there are some variables normally determined at runtime, like <code>oparg</code>, the C code is compiled with those parameters left as <code>0</code>. There is then a list of the 0 values that need to be filled in, called holes. For <code>LOAD_CONST</code>, there are 2 holes to be filled , the oparg and the next instruction:</p>
+<pre><code class="c">static const Hole _LOAD_CONST_code_holes[3] = {
+    {0xd, HoleKind_X86_64_RELOC_UNSIGNED, HoleValue_OPARG, NULL, 0x0},
+    {0x46, HoleKind_X86_64_RELOC_UNSIGNED, HoleValue_CONTINUE, NULL, 0x0},
+};
+</code></pre>
+
+<p>All of the machine code is then stored as a sequence of bytes in the file <code>jit_stencil.h</code> which is automatically generated by a new build stage. The disassembled code is stored as a comment above each bytecode template, where <code>JIT_OPARG</code> and <code>JIT_CONTINUE</code> are the holes to be filled:</p>
+<pre><code class="asm">0000000000000000 &lt;__JIT_ENTRY&gt;:
+pushq   %rbp
+movq    %rsp, %rbp
+movq    (%rdi), %rax
+movq    0x28(%rax), %rax
+movabsq $0x0, %rcx
+000000000000000d:  X86_64_RELOC_UNSIGNED        __JIT_OPARG
+movzwl  %cx, %ecx
+movq    0x28(%rax,%rcx,8), %rax
+movl    0xc(%rax), %ecx
+incl    %ecx
+je      0x3d &lt;__JIT_ENTRY+0x3d&gt;
+movq    %gs:0x0, %r8
+cmpq    (%rax), %r8
+jne     0x37 &lt;__JIT_ENTRY+0x37&gt;
+movl    %ecx, 0xc(%rax)
+jmp     0x3d &lt;__JIT_ENTRY+0x3d&gt;
+lock
+addq    $0x4, 0x10(%rax)
+movq    %rax, (%rsi)
+addq    $0x8, %rsi
+movabsq $0x0, %rax
+0000000000000046:  X86_64_RELOC_UNSIGNED        __JIT_CONTINUE
+popq    %rbp
+jmpq    *%rax
+</code></pre>
+
+<p>The new JIT compiler, will when activated copy the machine-code instructions for each bytecode into a sequence and replace the values for each template with the arguments for that bytecode in the code object. The resulting machine code is stored in memory and then each time the Python function is run, that machine-code is executed directly.</p>
+<p>You can see the JITted code if you compile <a href="https://github.com/brandtbucher/cpython/pull/32">my branch</a> and try it on this <a href="https://gist.github.com/tonybaloney/7e12e416ad69968e297547498f7bcde1">test script</a> then give it to a disassembler like Ada Pro or Hopper. At the moment,  the JIT is only used if the function contains the <code>JUMP_BACKWARD</code> opcode which is used in the <code>while</code> statement but that will change in the future.</p>
+<h2>Is it faster?</h2>
+<p>The initial benchmarks show something of a 5-9% performance improvement. You might be disappointed by this number, especially since this blog post has been talking about assembly and machine code and nothing is faster than that right? Well, remember that CPython is already written in C and that was already compiled to machine-code by the C compiler. In most cases, this JIT will be executing almost the same machine-code instructions as it was before.</p>
+<p><strong>However</strong>, think of this JIT as being the cornerstone of a series of much larger optimizations. None of which are possible without it. For this change to be accepted, understood and maintained in an open-source project it needs to start simple.</p>
+<h2>The future is bright, the future is JIT compiled</h2>
+<p>The challenges with the existing interpreter being compiled ahead-of-time are that there are fewer opportunities for serious optimizations. Python 3.11&rsquo;s adaptive interpreter was a step in the right direction, but it needs to go a lot further for Python to see a step-change in performance. </p>
+<p>I think that whilst the first version of this JIT isn&rsquo;t going to seriously dent any benchmarks (yet), it opens the door to some huge optimizations and not just ones that benefit the toy benchmark programs in the standard benchmark suite. </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-8">
+                <a class="btn-default btn"
+                   href="https://twitter.com/intent/tweet">
+                    <i class="fa fa-twitter"></i>
+                    Share on Twitter</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="https://twitter.com/anthonypjshaw">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://youtube.com/c/AnthonyShaw">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-youtube fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/tonybaloney">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Copyright &copy; Anthony Shaw 2020</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="/js/clean-blog.min.js"></script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Twitter Helper -->
+    <script>window.twttr = (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0],
+            t = window.twttr || {};
+        if (d.getElementById(id)) return t;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://platform.twitter.com/widgets.js";
+        fjs.parentNode.insertBefore(js, fjs);
+
+        t._e = [];
+        t.ready = function(f) {
+            t._e.push(f);
+        };
+        return t;
+    }(document, "script", "twitter-wjs"));</script>
+
+    <script type="text/javascript">
+        !function(T,l,y){var S=T.location,k="script",D="instrumentationKey",C="ingestionendpoint",I="disableExceptionTracking",E="ai.device.",b="toLowerCase",w="crossOrigin",N="POST",e="appInsightsSDK",t=y.name||"appInsights";(y.name||T[e])&&(T[e]=t);var n=T[t]||function(d){var g=!1,f=!1,m={initialize:!0,queue:[],sv:"5",version:2,config:d};function v(e,t){var n={},a="Browser";return n[E+"id"]=a[b](),n[E+"type"]=a,n["ai.operation.name"]=S&&S.pathname||"_unknown_",n["ai.internal.sdkVersion"]="javascript:snippet_"+(m.sv||m.version),{time:function(){var e=new Date;function t(e){var t=""+e;return 1===t.length&&(t="0"+t),t}return e.getUTCFullYear()+"-"+t(1+e.getUTCMonth())+"-"+t(e.getUTCDate())+"T"+t(e.getUTCHours())+":"+t(e.getUTCMinutes())+":"+t(e.getUTCSeconds())+"."+((e.getUTCMilliseconds()/1e3).toFixed(3)+"").slice(2,5)+"Z"}(),iKey:e,name:"Microsoft.ApplicationInsights."+e.replace(/-/g,"")+"."+t,sampleRate:100,tags:n,data:{baseData:{ver:2}}}}var h=d.url||y.src;if(h){function a(e){var t,n,a,i,r,o,s,c,u,p,l;g=!0,m.queue=[],f||(f=!0,t=h,s=function(){var e={},t=d.connectionString;if(t)for(var n=t.split(";"),a=0;a<n.length;a++){var i=n[a].split("=");2===i.length&&(e[i[0][b]()]=i[1])}if(!e[C]){var r=e.endpointsuffix,o=r?e.location:null;e[C]="https://"+(o?o+".":"")+"dc."+(r||"services.visualstudio.com")}return e}(),c=s[D]||d[D]||"",u=s[C],p=u?u+"/v2/track":d.endpointUrl,(l=[]).push((n="SDK LOAD Failure: Failed to load Application Insights SDK script (See stack for details)",a=t,i=p,(o=(r=v(c,"Exception")).data).baseType="ExceptionData",o.baseData.exceptions=[{typeName:"SDKLoadFailed",message:n.replace(/\./g,"-"),hasFullStack:!1,stack:n+"\nSnippet failed to load ["+a+"] -- Telemetry is disabled\nHelp Link: https://go.microsoft.com/fwlink/?linkid=2128109\nHost: "+(S&&S.pathname||"_unknown_")+"\nEndpoint: "+i,parsedStack:[]}],r)),l.push(function(e,t,n,a){var i=v(c,"Message"),r=i.data;r.baseType="MessageData";var o=r.baseData;return o.message='AI (Internal): 99 message:"'+("SDK LOAD Failure: Failed to load Application Insights SDK script (See stack for details) ("+n+")").replace(/\"/g,"")+'"',o.properties={endpoint:a},i}(0,0,t,p)),function(e,t){if(JSON){var n=T.fetch;if(n&&!y.useXhr)n(t,{method:N,body:JSON.stringify(e),mode:"cors"});else if(XMLHttpRequest){var a=new XMLHttpRequest;a.open(N,t),a.setRequestHeader("Content-type","application/json"),a.send(JSON.stringify(e))}}}(l,p))}function i(e,t){f||setTimeout(function(){!t&&m.core||a()},500)}var e=function(){var n=l.createElement(k);n.src=h;var e=y[w];return!e&&""!==e||"undefined"==n[w]||(n[w]=e),n.onload=i,n.onerror=a,n.onreadystatechange=function(e,t){"loaded"!==n.readyState&&"complete"!==n.readyState||i(0,t)},n}();y.ld<0?l.getElementsByTagName("head")[0].appendChild(e):setTimeout(function(){l.getElementsByTagName(k)[0].parentNode.appendChild(e)},y.ld||0)}try{m.cookie=l.cookie}catch(p){}function t(e){for(;e.length;)!function(t){m[t]=function(){var e=arguments;g||m.queue.push(function(){m[t].apply(m,e)})}}(e.pop())}var n="track",r="TrackPage",o="TrackEvent";t([n+"Event",n+"PageView",n+"Exception",n+"Trace",n+"DependencyData",n+"Metric",n+"PageViewPerformance","start"+r,"stop"+r,"start"+o,"stop"+o,"addTelemetryInitializer","setAuthenticatedUserContext","clearAuthenticatedUserContext","flush"]),m.SeverityLevel={Verbose:0,Information:1,Warning:2,Error:3,Critical:4};var s=(d.extensionConfig||{}).ApplicationInsightsAnalytics||{};if(!0!==d[I]&&!0!==s[I]){var c="onerror";t(["_"+c]);var u=T[c];T[c]=function(e,t,n,a,i){var r=u&&u(e,t,n,a,i);return!0!==r&&m["_"+c]({message:e,url:t,lineNumber:n,columnNumber:a,error:i}),r},d.autoExceptionInstrumented=!0}return m}(y.cfg);function a(){y.onInit&&y.onInit(n)}(T[t]=n).queue&&0===n.queue.length?(n.queue.push(a),n.trackPageView({})):a()}(window,document,{
+        src: "https://js.monitor.azure.com/scripts/b/ai.2.min.js", // The SDK URL Source
+        // name: "appInsights", // Global SDK Instance name defaults to "appInsights" when not supplied
+        // ld: 0, // Defines the load delay (in ms) before attempting to load the sdk. -1 = block page load and add to head. (default) = 0ms load after timeout,
+        // useXhr: 1, // Use XHR instead of fetch to report failures (if available),
+        crossOrigin: "anonymous", // When supplied this will add the provided value as the cross origin attribute on the script tag
+        // onInit: null, // Once the application insights instance has loaded and initialized this callback function will be called with 1 argument -- the sdk instance (DO NOT ADD anything to the sdk.queue -- As they won't get called)
+        cfg: { // Application Insights Configuration
+            instrumentationKey: "d0222e7b-7c27-4322-8d0f-36fa2df51f86"
+        }});
+    </script>
+</body>
+</html>
