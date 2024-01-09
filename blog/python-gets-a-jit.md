@@ -93,7 +93,7 @@ The JIT that is proposed for Python 3.13 is a copy-and-patch JIT.
 
 Never heard of a copy-and-patch JIT? Don't worry, nor had I and nor have most people. It's an idea [only proposed recently in 2021](https://dl.acm.org/doi/10.1145/3485513) and designed as a fast algorithm for dynamic language runtimes.
 
-I'll try and explain what a copy-and-patch JIT is by expanding our interpreter loop and rewriting it as a JIT. Before, the interpreter loop did two things, first it interpreted (looked at the bytecode) then it executed (ran the instruction). What we can do instead is to seperate those tasks and have the interpreter output the instructions and not execute them.
+I'll try and explain what a copy-and-patch JIT is by expanding our interpreter loop and rewriting it as a JIT. Before, the interpreter loop did two things, first it interpreted (looked at the bytecode) then it executed (ran the instruction). What we can do instead is to separate those tasks and have the interpreter output the instructions and not execute them.
 
 A **copy-and-patch** JIT is the idea that you **copy** the instructions for each command and fill-in-the-blanks for that bytecode arguments (or **patch**). Here's a rewritten example, I keep the loop very similar but each time I append a code string with the Python code to execute:
 
