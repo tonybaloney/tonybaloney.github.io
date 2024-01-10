@@ -2,7 +2,7 @@ blog_heading: Python 3.13 gets a JIT
 blog_subheading: Reviewing the JIT in Python 3.13
 blog_header_image: posts/snake_cookie_cutter.jpeg
 blog_author: Anthony Shaw
-blog_publish_date: January 9, 2023
+blog_publish_date: January 9, 2024
 blog_card_image: posts/snake_cookie_cutter.jpeg
 ---
 
