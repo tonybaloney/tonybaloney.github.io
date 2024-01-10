@@ -185,7 +185,7 @@ def func():
 </code></pre>
 
 <p>This loop with a big switch/if-else statement is an equivalent, albeit simplified version of how CPython&rsquo;s interpreter loop works. CPython is written in C and compiled by a C compiler. For the sake of simplicity I&rsquo;ll build out this example in Python.</p>
-<p>For our interpreter, everytime you want to run the function, <code>func</code> it has to loop through each instruction and compare the bytecode name (called the opcode) with each if-statement. Both this comparison and the loop itself add an overhead to the execution. That overhead seems redundant if you run the function 10,000 times and the bytecodes never change (because they are immutable). It would be more efficient to instead generate the code in a sequence instead of a evaluating this loop every time you call the function.</p>
+<p>For our interpreter, everytime you want to run the function <code>func</code>, it has to loop through each instruction and compare the bytecode name (called the opcode) with each if-statement. Both this comparison and the loop itself add an overhead to the execution. That overhead seems redundant if you run the function 10,000 times and the bytecodes never change (because they are immutable). It would be more efficient to instead generate the code in a sequence instead of a evaluating this loop every time you call the function.</p>
 <p>This is what a JIT does. There are many types of JIT compiler. Numba is a JIT. PyPy has a JIT. Java has lots of JITs. Pyston and Pyjion are JITs.</p>
 <p>The JIT that is proposed for Python 3.13 is a copy-and-patch JIT.</p>
 <h2>What is a copy-and-patch JIT?</h2>
