@@ -8,7 +8,7 @@ blog_card_image: posts/snake_cookie_cutter.jpeg
 
 Happy New Year everyone! In late December 2023 (Christmas Day to be precise), CPython core developer [Brandt Bucher](https://github.com/brandtbucher) submitted a [little pull-request to the Python 3.13](https://github.com/python/cpython/pull/113465) branch adding a JIT compiler.
 
-This change, once accepted would be one of the biggest changes to the CPython Interpreter since the Specializing Adaptive Interpreter added in Python 3.11 (which was also from Brandt).
+This change, once accepted would be one of the biggest changes to the CPython Interpreter since the Specializing Adaptive Interpreter added in Python 3.11 (which was also from Brandt along with Mark Shannon).
 
 In this blog post, we're going to have a look at this JIT, what it is, how it works and what the benefits are.
 
