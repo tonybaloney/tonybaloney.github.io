@@ -68,7 +68,7 @@ There are occasions where sentences in CJK languages will be fewer tokens than t
 
 ### Korean Hangul and Tokenization
 
-So far we've focused mostly on Japanese Kanji and Chinese. In the Korean writing system, the 14 basic consonants and 10 vowels are combined into a single syllabic symbol. In Unicode, over 11,000 precomposed syllabic symbols are defined in the [Unicode Standard AC00 block](https://unicode.org/charts/PDF/UAC00.pdf). This Unicode block has over precomposed syllables so that text processors to not need to combine Hangul vowels and consonants into a single symbol. Because BPE works with Unicode code points, not with the Hangul letters the frequency of that syllable is more important to the component letters. For example, the first syllable in my name in Korean, "An" (앤) is two tokens for 앤 and seven tokens for its component letters, "ㅇㅐㄴ":
+So far we've focused mostly on Japanese Kanji and Chinese. In the Korean writing system, the 14 basic consonants and 10 vowels are combined into a single syllabic symbol. In Unicode, over 11,000 precomposed syllabic symbols are defined in the [Unicode Standard AC00 block](https://unicode.org/charts/PDF/UAC00.pdf). This Unicode block has over precomposed syllables so that text processors do not need to combine Hangul vowels and consonants into a single symbol. Because BPE works with Unicode code points, not with the Hangul letters the frequency of that syllable is more important to the component letters. For example, the first syllable in my name in Korean, "An" (앤) is two tokens for 앤 and seven tokens for its component letters, "ㅇㅐㄴ":
 
 ```python
 >>> enc.encode("앤")
