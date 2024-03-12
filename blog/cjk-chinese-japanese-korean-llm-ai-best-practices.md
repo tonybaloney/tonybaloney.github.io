@@ -132,7 +132,7 @@ SEPARATORS = [
     "。", "．",     # Logographic and full width full stop
     "!", "！",    # ASCII and full width exclamation mark
     "?", "？",     # ASCII and full width question mark
-    ",", "、", "，" # ASCII, logographic, and full width comma
+    ",", "、", "，", # ASCII, logographic, and full width comma
 ]
 text_splitter = RecursiveCharacterTextSplitter(
     separators=SEPARATORS,
@@ -167,7 +167,7 @@ A benefit of this approach is that chunks will be at exactly the number of speci
 
 ### Hybrid Splitters
 
-As shown, neither character-based recursive splitters nor token-based splitters are ideal for CJK languages. Instead, I recommend combining the two approaches into a hybrid splitter uses the token length of the chunk as the mechanism for further splitting instead of the character length. For Langchain, the `RecursiveCharacterTextSplitter` uses the token encoding to measure the length and split until an optimal chunk size is found:
+As shown, neither character-based recursive splitters nor token-based splitters are ideal for CJK languages. Instead, I recommend combining the two approaches into a hybrid splitter uses the token length of the chunk as the mechanism for further splitting instead of the character length. For Langchain, you can override the `RecursiveCharacterTextSplitter` to use the token encoding to measure the length and split until an optimal chunk size is found:
 
 ```python
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -181,6 +181,8 @@ text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
 ```
 
 This method benefits over character encoding because the chunk size is closer to the target token count, and it is beneficial to token-based splitters because it can't yield invalid strings.
+
+A quirk to note of Langchain's splitter is that the separator will appear at **the beginning** of the chunk, not the end. You can remove the punctuation using the `keep_separator=False` argument.
 
 At Microsoft, we have also developed a custom recursive splitter for our RAG applications designed for CJK text that uses token-length as the function to further split. This splitter implements the full list of separators in the W3C [Requirements for Japanese Text Layout](https://www.w3.org/TR/jlreq/). Text split using this method will break at a meaningful boundary like a sentence ending, if possible and always yield chunks within the token length specified, no matter the language. This splitter is part of the prepdocs tool for our [Semantic Search RAG Sample Application on GitHub](https://github.com/azure-Samples/azure-search-openai-demo) and includes PDF parsing and GPT-Vision support with PDF images.
 

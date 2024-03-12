@@ -212,7 +212,7 @@ text_splitter = CharacterTextSplitter(
     &quot;。&quot;, &quot;．&quot;,     # Logographic and full width full stop
     &quot;!&quot;, &quot;！&quot;,    # ASCII and full width exclamation mark
     &quot;?&quot;, &quot;？&quot;,     # ASCII and full width question mark
-    &quot;,&quot;, &quot;、&quot;, &quot;，&quot; # ASCII, logographic, and full width comma
+    &quot;,&quot;, &quot;、&quot;, &quot;，&quot;, # ASCII, logographic, and full width comma
 ]
 text_splitter = RecursiveCharacterTextSplitter(
     separators=SEPARATORS,
@@ -241,7 +241,7 @@ for text in texts:
 
 <p>A benefit of this approach is that chunks will be at exactly the number of specified tokens. However, a <strong>major</strong> downside with this approach when used with CJK text is that chunks can be split in the middle of a character because characters can be multiple tokens. Using token based splitters directly will yield unexpected results as the beginning and end of some chunks will be illegible fragments of Unicode characters.</p>
 <h3>Hybrid Splitters</h3>
-<p>As shown, neither character-based recursive splitters nor token-based splitters are ideal for CJK languages. Instead, I recommend combining the two approaches into a hybrid splitter uses the token length of the chunk as the mechanism for further splitting instead of the character length. For Langchain, the <code>RecursiveCharacterTextSplitter</code> uses the token encoding to measure the length and split until an optimal chunk size is found:</p>
+<p>As shown, neither character-based recursive splitters nor token-based splitters are ideal for CJK languages. Instead, I recommend combining the two approaches into a hybrid splitter uses the token length of the chunk as the mechanism for further splitting instead of the character length. For Langchain, you can override the <code>RecursiveCharacterTextSplitter</code> to use the token encoding to measure the length and split until an optimal chunk size is found:</p>
 <pre><code class="python">from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
@@ -253,6 +253,7 @@ text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
 </code></pre>
 
 <p>This method benefits over character encoding because the chunk size is closer to the target token count, and it is beneficial to token-based splitters because it can&rsquo;t yield invalid strings.</p>
+<p>A quirk to note of Langchain&rsquo;s splitter is that the separator will appear at <strong>the beginning</strong> of the chunk, not the end. You can remove the punctuation using the <code>keep_separator=False</code> argument.</p>
 <p>At Microsoft, we have also developed a custom recursive splitter for our RAG applications designed for CJK text that uses token-length as the function to further split. This splitter implements the full list of separators in the W3C <a href="https://www.w3.org/TR/jlreq/">Requirements for Japanese Text Layout</a>. Text split using this method will break at a meaningful boundary like a sentence ending, if possible and always yield chunks within the token length specified, no matter the language. This splitter is part of the prepdocs tool for our <a href="https://github.com/azure-Samples/azure-search-openai-demo">Semantic Search RAG Sample Application on GitHub</a> and includes PDF parsing and GPT-Vision support with PDF images.</p>
 <h4>Overlapping Guidelines</h4>
 <p>When using chunking for search indexes in a vector store, you want to keep related information in the same chunks wherever possible. With large chunk sizes, the page, paragraph, or chapter of a document is a reliable marker of meaning but with smaller chunk sizes you may find yourself needing to split paragraphs between chunks. If important information is split between chunks it can be lost entirely to a similarity search algorithm. As a workaround, you can increase the overlap between chunks to an optimal size of 10-25%. This won&rsquo;t catch all cases if the chunk size is particularly small, but it does improve recall rates.</p>
