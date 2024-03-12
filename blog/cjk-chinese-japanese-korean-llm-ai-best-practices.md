@@ -1,6 +1,6 @@
 blog_heading: Working with Chinese, Japanese, and Korean text in Generative AI pipelines
 blog_subheading: Best practices for working with CJK text in Large Language Models
-blog_header_image: home-bg0.jpg
+blog_header_image: posts-original/old_books.jpg
 blog_author: Anthony Shaw
 blog_publish_date: March 12, 2024
 ---
