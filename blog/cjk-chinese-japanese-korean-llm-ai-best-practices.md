@@ -1,8 +1,8 @@
 blog_heading: Working with Chinese, Japanese, and Korean text in Generative AI pipelines
-blog_subheading: Best practices for 
+blog_subheading: Best practices for working with CJK text in Large Language Models
 blog_header_image: home-bg0.jpg
 blog_author: Anthony Shaw
-blog_publish_date: May 7, 2018
+blog_publish_date: March 12, 2024
 ---
 
 Large Language Models (LLMs) have been trained to predict the next part of a word, or "token", based on a training model of huge volumes of written text mostly from public Internet sources. Because English is the most widely spoken [language on the Internet](https://www.statista.com/statistics/262946/most-common-languages-on-the-internet/), most LLMs are optimized to perform well in challenges with English.

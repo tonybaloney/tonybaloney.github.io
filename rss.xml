@@ -7,9 +7,20 @@
             A collection of technology articles
         </description>
         <link>https://tonybaloney.github.io/#blog</link>
-        <lastBuildDate>Tue, 12 Mar 2024 04:02:34 -0000</lastBuildDate>
+        <lastBuildDate>Tue, 12 Mar 2024 04:04:27 -0000</lastBuildDate>
         <pubDate>Sat, 4 Jan 2020 19:15:54 -0500</pubDate>
         <atom:link href="https://tonybaloney.github.io/rss.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Working with Chinese, Japanese, and Korean text in Generative AI pipelines</title>
+            <description>
+                Best practices for working with CJK text in Large Language Models
+            </description>
+            <link>https://tonybaloney.github.io/posts/cjk-chinese-japanese-korean-llm-ai-best-practices.html</link>
+            <pubDate>Tue, 12 Mar 2024 00:00:00 -0000</pubDate>
+            <dc:creator>Anthony Shaw</dc:creator>
+            <guid>https://tonybaloney.github.io/posts/cjk-chinese-japanese-korean-llm-ai-best-practices.html</guid>
+        </item>
         
         <item>
             <title>Python 3.13 gets a JIT</title>
@@ -240,17 +251,6 @@
             <pubDate>Mon, 07 May 2018 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
             <guid>https://tonybaloney.github.io/posts/tips-for-getting-a-raise.html</guid>
-        </item>
-        
-        <item>
-            <title>Working with Chinese, Japanese, and Korean text in Generative AI pipelines</title>
-            <description>
-                Best practices for
-            </description>
-            <link>https://tonybaloney.github.io/posts/cjk-chinese-japanese-korean-llm-ai-best-practices.html</link>
-            <pubDate>Mon, 07 May 2018 00:00:00 -0000</pubDate>
-            <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/posts/cjk-chinese-japanese-korean-llm-ai-best-practices.html</guid>
         </item>
         
         <item>
