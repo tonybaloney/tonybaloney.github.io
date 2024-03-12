@@ -136,24 +136,24 @@ Here are the top theories:
 2. “It’s because its interpreted and not compiled”
 3. “It’s because its a dynamically typed language”</p>
 <p>Which one of these reasons has the biggest impact on performance? &mdash;</p>
-<h2>“It’s the GIL”</h2>
+<h2 id="its-the-gil">“It’s the GIL”<a class="headerlink" href="#its-the-gil" title="Permanent link">&para;</a></h2>
 <p>Modern computers come with CPU’s that have multiple cores, and sometimes multiple processors. In order to utilise all this extra processing power, the Operating System defines a low-level structure called a thread, where a process (e.g. Chrome Browser) can spawn multiple threads and have instructions for the system inside. That way if one process is particularly CPU-intensive, that load can be shared across the cores and this effectively makes most applications complete tasks faster.</p>
 <p>My Chrome Browser, as I’m writing this article, has 44 threads open. Keep in mind that the structure and API of threading are different between POSIX-based (e.g. Mac OS and Linux) and Windows OS. The operating system also handles the scheduling of threads.</p>
 <p>IF you haven’t done multi-threaded programming before, a concept you’ll need to quickly become familiar with locks. Unlike a single-threaded process, you need to ensure that when changing variables in memory, multiple threads don’t try and access/change the same memory address at the same time.</p>
 <p>When CPython creates variables, it allocates the memory and then counts how many references to that variable exist, this is a concept known as reference counting. If the number of references is 0, then it frees that piece of memory from the system. This is why creating a “temporary” variable within say, the scope of a for loop, doesn’t blow up the memory consumption of your application.</p>
 <p>The challenge then becomes when variables are shared within multiple threads, how CPython locks the reference count. There is a “global interpreter lock” that carefully controls thread execution. The interpreter can only execute one operation at a time, regardless of how many threads it has.</p>
-<h3>What does this mean to the performance of Python application?</h3>
+<h3 id="what-does-this-mean-to-the-performance-of-python-application">What does this mean to the performance of Python application?<a class="headerlink" href="#what-does-this-mean-to-the-performance-of-python-application" title="Permanent link">&para;</a></h3>
 <p>If you have a single-threaded, single interpreter application. <strong>It will make no difference to the speed</strong>. Removing the GIL would have no impact on the performance of your code.</p>
 <p>If you wanted to implement concurrency within a single interpreter (Python process) by using threading, and your threads were IO intensive (e.g. Network IO or Disk IO), you would see the consequences of GIL-contention.</p>
 <p><img alt="" class="img-responsive center-block" src="/img/posts/beazley-graph.png"></p>
 <p>If you have a web-application (e.g. Django) and you’re using WSGI, then each request to your web-app is a <strong>separate</strong> Python interpreter, so there is only 1 lock per request. Because the Python interpreter is slow to start, some WSGI implementations have a “Daemon Mode” which <a href="https://www.slideshare.net/GrahamDumpleton/secrets-of-a-wsgi-master">keep Python process(es) on the go for you</a>.</p>
-<h3>What about other Python runtimes?</h3>
+<h3 id="what-about-other-python-runtimes">What about other Python runtimes?<a class="headerlink" href="#what-about-other-python-runtimes" title="Permanent link">&para;</a></h3>
 <p><a href="http://doc.pypy.org/en/latest/faq.html#does-pypy-have-a-gil-why">PyPy has a GIL</a> and it is typically &gt;3x faster than CPython.
 <a href="http://www.jython.org/jythonbook/en/1.0/Concurrency.html#no-global-interpreter-lock">Jython does not have a GIL</a> because a Python thread in Jython is represented by a Java thread and benefits from the JVM memory-management system.</p>
-<h3>How does JavaScript do this?</h3>
+<h3 id="how-does-javascript-do-this">How does JavaScript do this?<a class="headerlink" href="#how-does-javascript-do-this" title="Permanent link">&para;</a></h3>
 <p>Well, firstly all Javascript engines <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Memory_Management">use mark-and-sweep Garbage Collection</a>. As stated, the primary need for the GIL is CPython’s memory-management algorithm.
 JavaScript does not have a GIL, but it’s also single-threaded so it doesn’t require one. JavaScript’s event-loop and Promise/Callback pattern are how asynchronous-programming is achieved in place of concurrency. Python has a similar thing with the asyncio event-loop.</p>
-<h2>“It’s because its an interpreted language”</h2>
+<h2 id="its-because-its-an-interpreted-language">“It’s because its an interpreted language”<a class="headerlink" href="#its-because-its-an-interpreted-language" title="Permanent link">&para;</a></h2>
 <p>I hear this a lot and I find it a gross-simplification of the way CPython actually works. If at a terminal you wrote python myscript.py then CPython would start a long sequence of reading, lexing, parsing, compiling, interpreting and executing that code.</p>
 <p>If you’re interested in how that process works, <a href="/posts/modifying-the-python-language-in-6-minutes.html">I’ve written about it before</a>.</p>
 <p>An important point in that process is the creation of a <code>.pyc</code> file, at the compiler stage, the bytecode sequence is written to a file inside <code>__pycache__/</code> on Python 3 or in the same directory in Python 2. This doesn’t just apply to your script, but all of the code you imported, including 3rd party modules.</p>
@@ -164,13 +164,13 @@ JavaScript does not have a GIL, but it’s also single-threaded so it doesn’t 
 <p>The JIT itself does not make the execution any faster, because it is still executing the same bytecode sequences. However, JIT enables optimizations to be made at runtime. A good JIT optimizer will see which parts of the application are being executed a lot, call these “hot spots”. It will then make optimizations to those bits of code, by replacing them with more efficient versions.</p>
 <p>This means that when your application does the same thing again and again, it can be significantly faster. Also, keep in mind that Java and C# are strongly-typed languages so the optimiser can make many more assumptions about the code.</p>
 <p><strong>PyPy has a JIT</strong> and as mentioned in the previous section, is significantly faster than CPython. <a href="/posts/which-is-the-fastest-version-of-python.html">This performance benchmark article goes into more detail</a>.</p>
-<h3>So why doesn’t CPython use a JIT?</h3>
+<h3 id="so-why-doesnt-cpython-use-a-jit">So why doesn’t CPython use a JIT?<a class="headerlink" href="#so-why-doesnt-cpython-use-a-jit" title="Permanent link">&para;</a></h3>
 <p>There are downsides to JITs: one of those is startup time. CPython startup time is already comparatively slow, PyPy is 2–3x slower to start than CPython. The Java Virtual Machine is notoriously slow to boot. The .NET CLR gets around this by starting at system-startup, but the developers of the CLR also develop the Operating System on which the CLR runs.</p>
 <p>If you have a single Python process running for a long time, with code that can be optimized because it contains “hot spots”, then a JIT makes a lot of sense.</p>
 <p>However, CPython is a <strong>general-purpose</strong> implementation. So if you were developing command-line applications using Python, having to wait for a JIT to start every time the CLI was called would be horribly slow.</p>
 <p>CPython has to try and serve as many use cases as possible. There was the <a href="https://www.slideshare.net/AnthonyShaw5/pyjion-a-jit-extension-system-for-cpython">possibility of plugging a JIT</a> into CPython but this project has largely stalled.</p>
 <p>&ndash;If you want the benefits of a JIT and you have a workload that suits it, use PyPy.&ndash;</p>
-<h2>“It’s because its a dynamically typed language”</h2>
+<h2 id="its-because-its-a-dynamically-typed-language">“It’s because its a dynamically typed language”<a class="headerlink" href="#its-because-its-a-dynamically-typed-language" title="Permanent link">&para;</a></h2>
 <p>In a “Statically-Typed” language, you have to specify the type of a variable when it is declared. Those would include C, C++, Java, C#, Go.</p>
 <p>In a dynamically-typed language, there are still the concept of types, but the type of a variable is dynamic.</p>
 <pre><code class="python">a = 1
@@ -200,12 +200,12 @@ make
 <li>It is hard to optimise a language that is so dynamic. The reason many alternatives to Python are so much faster is that they make compromises to flexibility in the name of performance</li>
 <li>Looking at Cython, which combines C-Static Types and Python to optimise code where the types are known can provide an 84x performance improvement.</li>
 </ul>
-<h2>Conclusion</h2>
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
 <p>Python is primarily slow because of its dynamic nature and versatility. It can be used as a tool for all sorts of problems, where more optimised and faster alternatives are probably available.</p>
 <p>There are, however, ways of optimising your Python applications by leveraging async, understanding the profiling tools, and consider using multiple-interpreters.</p>
 <p>For applications where startup time is unimportant and the code would benefit a JIT, consider PyPy.</p>
 <p>For parts of your code where performance is critical and you have more statically-typed variables, consider using Cython.</p>
-<h3>Further reading</h3>
+<h3 id="further-reading">Further reading<a class="headerlink" href="#further-reading" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Jake VDP’s <a href="https://jakevdp.github.io/blog/2014/05/09/why-python-is-slow/">excellent article (although slightly dated)</a></li>
 <li>Dave Beazley’s <a href="http://www.dabeaz.com/python/GIL.pdf">talk on the GIL</a></li>

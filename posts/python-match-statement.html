@@ -125,7 +125,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h2>Match is not a <code>switch</code> statement!</h2>
+                <h2 id="match-is-not-a-switch-statement">Match is not a <code>switch</code> statement!<a class="headerlink" href="#match-is-not-a-switch-statement" title="Permanent link">&para;</a></h2>
 <p>Let&rsquo;s get this out the way. The <code>match</code> statement <strong>is not</strong> a <code>switch</code> statement like you may be familiar with in C, C++, C# and many other languages.
 You can use it as a switch statement, but there is little to be gained versus a series of <code>if..elif</code> statements.</p>
 <p>The Python match statement is a pattern matching statement with a syntax of sub-expressions for:</p>
@@ -136,7 +136,7 @@ You can use it as a switch statement, but there is little to be gained versus a 
 <li>Matching literal values</li>
 </ul>
 <p>You can combine one or many of these into a single statement to filter data based on the input. This is called &ldquo;structural pattern matching&rdquo; and it&rsquo;s a feature of many functional programming languages.</p>
-<h2>Sequence pattern matching</h2>
+<h2 id="sequence-pattern-matching">Sequence pattern matching<a class="headerlink" href="#sequence-pattern-matching" title="Permanent link">&para;</a></h2>
 <p>The match statement has a special syntax for matching sequences. The syntax uses <code>[]</code> square brackets, but it will match against <strong>any</strong> <code>Sequence</code> type (tuple, list, bytearray).</p>
 <p>Starting with something simple. This function will return true if the input is a sequence that starts with a string literal of a unicode frog.</p>
 <pre><code class="python">from typing import Sequence
@@ -208,7 +208,7 @@ def describe(seq: Sequence[str]) -&gt; str:
         case _: return &quot;Not sure&quot;
 </code></pre>
 
-<h2>Literal matching</h2>
+<h2 id="literal-matching">Literal matching<a class="headerlink" href="#literal-matching" title="Permanent link">&para;</a></h2>
 <p>Case statements can include any literal, like a string literal, a number, a boolean, <code>None</code>.</p>
 <p>Update the example to match against a single string literal with the frog:</p>
 <pre><code class="python">from typing import Any
@@ -252,7 +252,7 @@ print(describe(&quot;🐸&quot;)) # A frog or a prince?
 print(describe([&quot;🐸&quot;, &quot;👸&quot;, &quot;😘&quot;, &quot;🤴&quot;])) # A frog or a prince?, A princess, A kiss, A frog or a prince?
 </code></pre>
 
-<h2>Matching mappings</h2>
+<h2 id="matching-mappings">Matching mappings<a class="headerlink" href="#matching-mappings" title="Permanent link">&para;</a></h2>
 <p>The match statement has a syntax for matching keys and values in mapping types (dictionaries and subclasses of dictionaries).</p>
 <p>Say you have an API that takes semi-structured JSON data as the input:</p>
 <pre><code class="json">{
@@ -284,7 +284,7 @@ print(describe([&quot;🐸&quot;, &quot;👸&quot;, &quot;😘&quot;, &quot;🤴
         case {&quot;name&quot;: name, &quot;team&quot;: team, &quot;height&quot;: height, **extra}: insert_driver_record(name, team, height, extra)
 </code></pre>
 
-<h2>Matching objects</h2>
+<h2 id="matching-objects">Matching objects<a class="headerlink" href="#matching-objects" title="Permanent link">&para;</a></h2>
 <p>Finally, and perhaps the most powerful feature of the match statement is object matching.</p>
 <p>Take this basic class structure based on the API we just described with the attributes <code>name</code>, <code>team</code> and <code>extra</code>:</p>
 <pre><code class="python">class Driver:
@@ -321,7 +321,7 @@ Lewis Hamilton, a Mercedes driver.
 &quot;&quot;&quot;
 </code></pre>
 
-<h2>Conclusion</h2>
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
 <p>I hope this has been insightful and you can see where you can replace messy, nested if-statements with fast and clean <code>match</code> statements.</p>
 <p>Please Share this article.</p>
             </div>

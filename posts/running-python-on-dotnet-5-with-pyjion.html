@@ -139,7 +139,7 @@
 <p>You can write code in a number of languages, like C++, C#, F# and compile those into CIL and then into native machine code (as a binary executable) on macOS, Linux, and Windows. Pretty neat.</p>
 <p>But this is a blog about Python. So what does this have to do with Python?</p>
 <p>Pyjion is a project to replace the core execution loop of CPython by transpiling CPython bytecode to ECMA CIL and then using the .NET 5 CLR to compile that into machine code. It then executes the machine-code compiled JIT frames at runtime instead of using the native execution loop of CPython.</p>
-<h2>Very-quick overview of Python&rsquo;s compiler</h2>
+<h2 id="very-quick-overview-of-pythons-compiler">Very-quick overview of Python&rsquo;s compiler<a class="headerlink" href="#very-quick-overview-of-pythons-compiler" title="Permanent link">&para;</a></h2>
 <p>When CPython compiles Python code, it compiles it into an intermediate format, similar to .NET, called Python bytecode. This bytecode is cached on disk so that when you import a module that hasn&rsquo;t changed, it doesn&rsquo;t compile it every time. You can see the bytecode by disassembling any Python function:</p>
 <pre><code>&gt;&gt;&gt; import dis
 &gt;&gt;&gt; def half(x):
@@ -170,7 +170,7 @@
 (9, 5, 7, 3)
 </code></pre>
 
-<h2>What Pyjion does to solve this issue</h2>
+<h2 id="what-pyjion-does-to-solve-this-issue">What Pyjion does to solve this issue<a class="headerlink" href="#what-pyjion-does-to-solve-this-issue" title="Permanent link">&para;</a></h2>
 <p>A few releases of Python ago (CPython specifically, the most commonly used version of Python) in 3.7 a new API was added to be able to swap out &ldquo;frame execution&rdquo; with a replacement implementation. This is otherwise known as <a href="https://www.python.org/dev/peps/pep-0523/">PEP 523</a>. PEP 523 also added the capability to store additional attributes in <em>code objects</em> (compiled Python code.</p>
 <p>Pyjion does not compile Python code. It compiles Python frames (code objects, like blocks, functions, methods, classes) into machine-code at runtime using a performant JIT:</p>
 <p><img alt="diagram 2" class="img-responsive center-block" src="/img/posts/Slide2.png"></p>
@@ -178,7 +178,7 @@
 <p>Pyjion is a &ldquo;pip installable&rdquo; package for standard CPython that JIT compiles all Python code at runtime using the .NET 5 JIT compiler. You can use off-the-shelf CPython 3.9 on macOS, Linux or Windows. After installing this package you just import the module and enable the JIT.</p>
 <p>Once a frame has been compiled, the binary code is cached in memory and reused every time the function is called:</p>
 <p><img alt="diagram 3" class="img-responsive center-block" src="/img/posts/Slide3.png"></p>
-<h2>Using Pyjion</h2>
+<h2 id="using-pyjion">Using Pyjion<a class="headerlink" href="#using-pyjion" title="Permanent link">&para;</a></h2>
 <p>To get started, you need to have .NET 5 installed, with Python 3.9 and the Pyjion package (I also recommend using a virtual environment).</p>
 <p>After importing pyjion, enable it by calling <code>pyjion.enable()</code> which sets a compilation threshold to 0 (the code only needs to be run once to be compiled by the JIT):</p>
 <pre><code>&gt;&gt;&gt; import pyjion
@@ -238,11 +238,11 @@ app.run()
 </code></pre>
 
 <p>That&rsquo;s it.</p>
-<h2>Will this be compatible with my existing Python code? What about C Extensions?</h2>
+<h2 id="will-this-be-compatible-with-my-existing-python-code-what-about-c-extensions">Will this be compatible with my existing Python code? What about C Extensions?<a class="headerlink" href="#will-this-be-compatible-with-my-existing-python-code-what-about-c-extensions" title="Permanent link">&para;</a></h2>
 <p>The short answer is- if your existing Python code runs on CPython 3.9 &ndash; <strong>yes</strong> it will be compatible. To make sure, Pyjion has been tested against the full CPython &ldquo;test suite&rdquo; on all platforms. In fact, it was the first JIT ever to pass the test suite.</p>
 <p>Thats because this isn&rsquo;t a Python runtime, it uses the existing Python compiler to compile your code into Python bytecode (low level instructions).</p>
 <p>Pyjion uses the same dynamic module loader as CPython, so if you import a Python extension from your virtual environment, it will work just the same in Pyjion.</p>
-<h2>Project History</h2>
+<h2 id="project-history">Project History<a class="headerlink" href="#project-history" title="Permanent link">&para;</a></h2>
 <p>Pyjion isn&rsquo;t new. Brett Cannon and Dino Viehland started the Pyjion project 4 years ago. This was the first JIT to pass the full CPython test suite.
 There were some limitations to the original proof-of-concept:</p>
 <ul>
@@ -272,7 +272,7 @@ There were some limitations to the original proof-of-concept:</p>
 <li>Improving the test coverage</li>
 <li>Adding a disassembler (both machine-code and CIL) to aid development</li>
 </ul>
-<h2>Is this faster?</h2>
+<h2 id="is-this-faster">Is this faster?<a class="headerlink" href="#is-this-faster" title="Permanent link">&para;</a></h2>
 <p>The short answer a little, but not by much (yet).</p>
 <p>JIT compiling something doesn&rsquo;t make it faster. Actually, the overhead of compiling functions the first time they are called often makes it slower.</p>
 <p>JIT compilers are faster because of optimizations at runtime. A good JIT compiler will make assertions about the function that its compiling and how it behaves to optimize out code paths, shortcut calls and inline instructions. This can make drastic differences.</p>
@@ -287,15 +287,15 @@ There were some limitations to the original proof-of-concept:</p>
 <li>An optimizer for integers and floats to use machine-code instructions for binary arithmetic instead of the Python C-API</li>
 <li>An optimizer for Unicode string encoding</li>
 </ul>
-<h2>Does this help me use my .NET libraries from Python?</h2>
+<h2 id="does-this-help-me-use-my-net-libraries-from-python">Does this help me use my .NET libraries from Python?<a class="headerlink" href="#does-this-help-me-use-my-net-libraries-from-python" title="Permanent link">&para;</a></h2>
 <p>Short answer is no.</p>
 <p>Long answer is that CIL has two types of instructions, <strong>primitive</strong> and <strong>object-model</strong>. The CIL specification has an entire standard for object declaration, types, equivalence etc. Pyjion converts Python bytecode into primitive CIL instructions.
 Python bytecode itself is mostly primitive. There are some exceptions, like specialised bytecodes for declaring lists, dictionaries and tuples. But most of the work to convert classes, functions and fields into primitive types happens further up the chain.
 Therefore it would be a huge undertaking to implement object-model interfaces for Python.</p>
 <p>If you want to do this, I recommend checking out Python.NET.</p>
-<h2>Comparison with other projects</h2>
+<h2 id="comparison-with-other-projects">Comparison with other projects<a class="headerlink" href="#comparison-with-other-projects" title="Permanent link">&para;</a></h2>
 <p>Checkout Brett&rsquo;s <a href="https://github.com/tonybaloney/Pyjion#how-do-this-compare-to-">comprehensive answer to this question</a>.</p>
-<h2>Future potential</h2>
+<h2 id="future-potential">Future potential<a class="headerlink" href="#future-potential" title="Permanent link">&para;</a></h2>
 <p>There are some potential benefits to this project:</p>
 <ol>
 <li>A general purpose JIT could build optimizations in areas that are unloved, especially web applications</li>
@@ -303,11 +303,11 @@ Therefore it would be a huge undertaking to implement object-model interfaces fo
 <li>It doesn&rsquo;t require a bespoke build toolchain to use it</li>
 <li>Packaging compiling frames into a portable executable format like .EXE PE files</li>
 </ol>
-<h2>Awesome, how do I install it?</h2>
+<h2 id="awesome-how-do-i-install-it">Awesome, how do I install it?<a class="headerlink" href="#awesome-how-do-i-install-it" title="Permanent link">&para;</a></h2>
 <p>Checkout <a href="https://github.com/tonybaloney/pyjion">github.com/tonybaloney/pyjion</a>. For now, compile from source. I am also publishing from precompiled wheels <a href="https://pypi.org/project/pyjion/">onto PyPi</a>.</p>
 <p>It is very-much alpha. Don&rsquo;t deploy to production*</p>
 <p><code>*</code> unless its Friday.</p>
-<h2>Credits</h2>
+<h2 id="credits">Credits<a class="headerlink" href="#credits" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Thank you to Andy Ayers at Microsoft for helping me figure out the Windows <a href="https://github.com/dotnet/runtime/issues/44397">pointer offset issue</a> and the <a href="https://github.com/dotnet/runtime/issues/42925">helper function API</a>.</li>
 <li>Thank you to Steve Dower at Microsoft for helping me figure out the dynamic library loader.</li>

@@ -139,7 +139,7 @@ them to the high-level languages that I&rsquo;m familiar with.</p>
 <li>If Python C extensions compile to shared libraries, whats the magic inside them that makes them loadable by Python?</li>
 <li>What ABI does CPython have between C that could make it more extensible by other languages</li>
 </ul>
-<h2>Assembly quick summary</h2>
+<h2 id="assembly-quick-summary">Assembly quick summary<a class="headerlink" href="#assembly-quick-summary" title="Permanent link">&para;</a></h2>
 <p>Assembly code is a sequence of instructions, using an instruction set. Different CPU architectures have different instruction sets. With the most common being x86, ARM, and x86-64.
 There are also extension instructions on those CPU architectures. Over releases of a CPU architecture the manufacturers add new instructions to the set. Often to improve performance.</p>
 <p>The CPU has many registers and it loads data from registers to execute the instructions. You can also copy data from memory (RAM), but you can&rsquo;t copy from RAM to RAM, it must go via a register.
@@ -305,7 +305,7 @@ Most compilers would make this sort of optimization automatically, because they 
    jmp END
 </code></pre>
 
-<h3>Calling external functions</h3>
+<h3 id="calling-external-functions">Calling external functions<a class="headerlink" href="#calling-external-functions" title="Permanent link">&para;</a></h3>
 <p>Unless you want to entirely reinvent the wheel, your application or library will probably be using functions from other compiled libraries.</p>
 <p>In assembly, you can refer to the address of an external function by using the <code>extern</code> instruction with the symbol name.
 The linker will replace this with the actual value of the library, if the executable is statically linked, or depend upon a runtime value if the executable is dynamically linked. I don&rsquo;t want to get into linking in this article
@@ -411,7 +411,7 @@ pop rbp
 
 <p>Windows defines <a href="https://cda.ms/1VV">another calling convention</a>, using different registers for the arguments.
 It also requires a different prolog and epilog, which calculates address limits. This is a bit more complex than the original Intel spec.</p>
-<h3>Turning assembly into an executable</h3>
+<h3 id="turning-assembly-into-an-executable">Turning assembly into an executable<a class="headerlink" href="#turning-assembly-into-an-executable" title="Permanent link">&para;</a></h3>
 <p>You can&rsquo;t execute an assembly source file directly. It may seem like you&rsquo;re coding machine-code, but there is a wrapper around the assembly instructions required to make the OS run the instructions (an Executable File Format).</p>
 <p>The assembler will take an assembly source file and assemble it into a machine-code format. The formats are Operating System specific. Some common formats for executable code are:</p>
 <ul>
@@ -440,7 +440,7 @@ The Mach-O format is a supported grammar, and if you open up the CPython executa
 <p>A shared library can be imported dynamically (like a plugin) or linked during the build stage as a dependency to your application.
 When building CPython C extensions, you need to link the extension with the Python shared library.
 Your C extension is also in itself a shared library, and is dynamically loaded by CPython (when you <code>import mylibrary</code>).</p>
-<h3>Complex data structures in assembly</h3>
+<h3 id="complex-data-structures-in-assembly">Complex data structures in assembly<a class="headerlink" href="#complex-data-structures-in-assembly" title="Permanent link">&para;</a></h3>
 <p>If you were calling a function that had a more complex data type for its argument (like a pointer to a <code>struct</code>), you need to be aware of the storage size
 of the C data types:</p>
 <table class="table">
@@ -571,7 +571,7 @@ call calculatePosition
 
 <p>The function, <code>calculatePosition()</code>, is ignorant to whether it&rsquo;s being called by code written in C, Assembly, C++, etc.</p>
 <p>Its this principal that I&rsquo;ll explore next to see if we can write a dynamically loaded CPython Extension in Assembly.</p>
-<h2>Registering the Python Extension module</h2>
+<h2 id="registering-the-python-extension-module">Registering the Python Extension module<a class="headerlink" href="#registering-the-python-extension-module" title="Permanent link">&para;</a></h2>
 <p>When you load a module in Python, the import library will look in the <code>PYTHONPATH</code> for a matching module for the name you provided.</p>
 <p>Modules can be in either C (as compiled extensions) or Python. Many of the CPython standard library modules are written in C because they either require interfaces to lower-level Operating System APIs (disk IO, networking, etc.). The remainder of the standard library modules are written in Python. Some are a combination of both, a Python module with C extension functions. This is normally implemented as a hidden-module written in C with the public module written in Python. The Python module will import the hidden C module and wrap its functions.</p>
 <p>To write a C extension module, you need:</p>
@@ -799,7 +799,7 @@ frame #0: 0x0000000101adbf6c pymult.cpython-39-darwin.so`PyInit_pymult at pymult
 cc -shared -g pymult.obj -L/usr/shared/lib -lpython3.9 -o pymult.cpython-39-linux.so
 </code></pre>
 
-<h2>Adding a function to the module</h2>
+<h2 id="adding-a-function-to-the-module">Adding a function to the module<a class="headerlink" href="#adding-a-function-to-the-module" title="Permanent link">&para;</a></h2>
 <p>When we initialized the module, we provided the value <code>0</code> (<code>NULL</code>) as the list of functions.
 Using the same pattern as before, the <code>PyMethodDef</code> struct is:</p>
 <pre><code class="c">struct PyMethodDef {
@@ -946,7 +946,7 @@ Target 0: (Python) stopped.
 <p>Hooray! It works!</p>
 <p><em>For the record&hellip;</em> It took about 25-30 recompilations and changes to get this work succesfully. In hindsight, its not <strong>too</strong> complicated, but it was very frustrating to get this working.</p>
 <p>One of the issues with assembly is that it seems to either work, or it just fails spectacularly! There is no exception, it just crashes the process or corrupts the host process if you make a mistake. It&rsquo;s very unforgiving.</p>
-<h2>Extending setuptools/distutils</h2>
+<h2 id="extending-setuptoolsdistutils">Extending setuptools/distutils<a class="headerlink" href="#extending-setuptoolsdistutils" title="Permanent link">&para;</a></h2>
 <p>Next, its not much good pushing a bunch of assembly source files up to PyPi, because if you <code>pip install</code> it wouldn&rsquo;t work out of the box. The end user would have to know how to compile the libraries.</p>
 <p>The <code>setuptools</code> package adds the <code>build_ext</code> command to <code>setup.py</code>, so if you had this in <code>setup.py</code>:</p>
 <pre><code class="python">...
@@ -1015,7 +1015,7 @@ cc -shared -g build/temp.macosx-10.9-x86_64-3.8/src/pymult.obj -L/Library/Framew
 If someone is on another platform, the <code>pip install</code> command will try and compile from source using the custom <code>build</code> command.</p>
 <p>You can force this behaviour by running <code>pip install --no-binary :all: &lt;package&gt; -v --force</code> to see the whole download and compile process in verbose mode:</p>
 <p><img alt="custom-build-from-source" class="img-responsive center-block" src="/img/posts/custom-build-from-source.png"></p>
-<h2>GitHub CI/CD workflows</h2>
+<h2 id="github-cicd-workflows">GitHub CI/CD workflows<a class="headerlink" href="#github-cicd-workflows" title="Permanent link">&para;</a></h2>
 <p>Lastly, I wanted to add some unit tests and continuous testing to the GitHub repository, which meant compiling on GitHub actions.</p>
 <p>This wasn&rsquo;t too hard now that <code>setuptools</code> had been extended to build in a single command.</p>
 <p>There is only 1 unit test, which cautiously avoid negative numbers (!):</p>
@@ -1086,7 +1086,7 @@ def test_basic_multiplication():
           python -X dev -m pytest test.py
 </code></pre>
 
-<h2>Windows Support</h2>
+<h2 id="windows-support">Windows Support<a class="headerlink" href="#windows-support" title="Permanent link">&para;</a></h2>
 <p>I did end up extending <code>setuptools</code> to support NASM + the Microsoft Linker as a customer compiler implemenetation, <a href="https://github.com/tonybaloney/python-assembly-poc/blob/master/winnasmcompiler.py">WinAsmCompiler</a>.</p>
 <p>The biggest changes were:</p>
 <ul>
@@ -1096,7 +1096,7 @@ def test_basic_multiplication():
 <p>However, the existing code wouldn&rsquo;t work because it assumed the System-V calling conventions.</p>
 <p>You could write a second assembly function, or abstract the calling conventions to allow both standards and swap them out via macros. At this point, I decided to call it a day!
 (it does compile though, but crashes on import).</p>
-<h2>Conclusion</h2>
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
 <p>The full source code for this project is <a href="https://github.com/tonybaloney/python-assembly-poc">up on Github</a>.</p>
 <p>Some things I learned:</p>
 <ul>

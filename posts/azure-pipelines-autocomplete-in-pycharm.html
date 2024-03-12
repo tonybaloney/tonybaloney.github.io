@@ -129,14 +129,14 @@
 <p>Guessing the options and reading through the documentation is time-consuming, and even worse is having to wait for CI to finish only to realise you made a mistake in the YAML file.</p>
 <p>PyCharm, IntelliJ, WebStorm, CLion and Rider all support custom JSON schemas. These custom schemas can be setup to have auto-complete, syntax highlighting and validation of your Azure
 Pipelines workflows.</p>
-<h2>Downloading your Schema</h2>
+<h2 id="downloading-your-schema">Downloading your Schema<a class="headerlink" href="#downloading-your-schema" title="Permanent link">&para;</a></h2>
 <p>You can use a generic schema, like <a href="https://github.com/microsoft/azure-pipelines-vscode/raw/master/service-schema.json">this one</a>. However, the auto-complete will be more useful if you download your
 organization custom schema.</p>
 <p>This is available from the API:</p>
 <p><code>https://dev.azure.com/&lt;YOUR ORG NAME&gt;/_apis/distributedtask/yamlschema</code></p>
 <p>Visit this URL and you&rsquo;ll see a massive JSON document. Download this file and place inside your Documents folder, or any accesible directory.</p>
 <p><img alt="yaml-schema" class="img-responsive center-block" src="/img/posts/yaml-schema.png" style="width:50%"></p>
-<h2>Telling your IDE to use the schema</h2>
+<h2 id="telling-your-ide-to-use-the-schema">Telling your IDE to use the schema<a class="headerlink" href="#telling-your-ide-to-use-the-schema" title="Permanent link">&para;</a></h2>
 <p>Inside PyCharm, IntelliJ, etc. open up your Azure Pipelines YAML file. At the bottom toolbar you&rsquo;ll see a notification <strong>&lsquo;No JSON Schema&rsquo;</strong>.
 Click on this notification and at the top of the popup, click <strong>&ldquo;New Schema Mapping&rdquo;</strong>.</p>
 <p><img alt="no-schema" class="img-responsive center-block" src="/img/posts/no-schema.png" style="width:50%"></p>

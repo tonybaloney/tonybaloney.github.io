@@ -125,12 +125,12 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h2>The problem</h2>
+                <h2 id="the-problem">The problem<a class="headerlink" href="#the-problem" title="Permanent link">&para;</a></h2>
 <p>Asyncio is brilliant for improving performance of applications that benefit from increased concurrency. You can <code>await</code> calls to things like sleep functions, network sockets and HTTP requests without holding the GIL. </p>
 <p>Once you&rsquo;ve implemented an async API for your methods, you increasingly find <strong>async creep</strong>, where now that methods need to be awaited, you start to increasingly make your methods and their callers async too.</p>
 <p>The problem then comes at testing time. I&rsquo;ve found async testing in both pytest and unittest painful, confusing and buggy.</p>
 <p>Here are some patterns of solved problems you can copy+paste if Google brought you to my blog.</p>
-<h2>Async test functions</h2>
+<h2 id="async-test-functions">Async test functions<a class="headerlink" href="#async-test-functions" title="Permanent link">&para;</a></h2>
 <p>The easiest way to have <code>async</code> test functions in Pytest is to load the <a href="https://pypi.org/project/pytest-asyncio/"><code>pytest-asyncio</code></a> extension and use the <code>asyncio</code> marker:</p>
 <pre><code class="python">import pytest
 
@@ -157,7 +157,7 @@ class TestGroup:
         ...
 </code></pre>
 
-<h2>Async fixtures</h2>
+<h2 id="async-fixtures">Async fixtures<a class="headerlink" href="#async-fixtures" title="Permanent link">&para;</a></h2>
 <p>The <code>pytest-asyncio</code> extension also enables async fixtures, for example I recently had to create an async fixture for a HTTP async client for FastAPI. The challenge with Httpx (and other HTTP/TCP async classes) is they require usage in a context-manager, so that sockets are closed. If you don&rsquo;t close them, you&rsquo;ll get a stack of warnings about unclosed HTTP sessions.</p>
 <p>The solution was to create an async fixture, yielded within an async context-manager, so that once the test is completed, it will close the AsyncClient:</p>
 <pre><code class="python">from httpx import AsyncClient
@@ -185,7 +185,7 @@ async def test_create_user(async_app_client):
     assert response.status_code == 200, response.text
 </code></pre>
 
-<h2>Unittest classes from Pytest</h2>
+<h2 id="unittest-classes-from-pytest">Unittest classes from Pytest<a class="headerlink" href="#unittest-classes-from-pytest" title="Permanent link">&para;</a></h2>
 <p>Pytest has support for running unittest <code>TestCase</code> classes, but there are lots of caveats to the support.</p>
 <p>Once such caveat is that you can&rsquo;t annotate <code>@pytest.mark.asyncio</code> on a test method that&rsquo;s part of a <code>unittest.TestCase</code>.
 Instead, you have to create a class-level fixture for the event loop, then auto-use it on your test cases.</p>
@@ -217,7 +217,7 @@ class TestTheThings(unittest.TestCase):
 
 </code></pre>
 
-<h2>Async mocks</h2>
+<h2 id="async-mocks">Async mocks<a class="headerlink" href="#async-mocks" title="Permanent link">&para;</a></h2>
 <p>The <code>unittest.mock</code> library, or <code>pytest-mock</code> comes with <code>Mock()</code> and <code>MagicMock()</code> classes for patching out functions in modules and methods in classes. This is brilliant, but they implement the <code>__call__()</code> magic-method, so your mocks wont work.</p>
 <p>Python 3.8 comes with an <code>AsyncMock</code> class, but theres also the <a href="https://pypi.org/project/asyncmock/"><code>asyncmock</code> library</a>, which supports older versions of Python.</p>
 <p>In this example, you want to patch a class that looks like this:</p>

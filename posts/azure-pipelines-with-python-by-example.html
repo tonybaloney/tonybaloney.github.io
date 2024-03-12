@@ -129,7 +129,7 @@
 <p>Azure Pipelines is a cloud service that supports many environments, languages, and tools. It is configured via a master azure-pipelines.yml YAML file within your project.</p>
 <p>Your project can exist in multiple source repositories, and automated integrations are available for GitHub.</p>
 <p>If you want to see the project layouts and how the configuration looks, everything in this tutorial is on <a href="https://github.com/tonybaloney/azure-pipelines-python-examples">my GitHub repository</a>. It’s licensed as MIT, so you can do with it as you wish!</p>
-<h2>The Azure Pipeline Build</h2>
+<h2 id="the-azure-pipeline-build">The Azure Pipeline Build<a class="headerlink" href="#the-azure-pipeline-build" title="Permanent link">&para;</a></h2>
 <p>A build can have multiple jobs. You might want to segment your jobs by tasks like:</p>
 <ul>
 <li>Build</li>
@@ -143,7 +143,7 @@
 <p>Some of the pre-defined tasks you’ll need for Python are:</p>
 <p><code>UsePythonVersion@0</code> — Use a specific Python version (like a virtual environment)</p>
 <p><code>PublishTestResults@2</code> — Publish the test results to the dashboard. Test results should be in the Junit XML format.</p>
-<h3>Selecting an Operating System</h3>
+<h3 id="selecting-an-operating-system">Selecting an Operating System<a class="headerlink" href="#selecting-an-operating-system" title="Permanent link">&para;</a></h3>
 <p>When configuring a job, you have to pick which Virtual Machine image to use for the job agent to execute your steps. For Linux, there are many images to choose from, Ubuntu 16 has the latest versions of Python available.</p>
 <pre><code class="yaml">- job: 'your_job_name' 
   pool:    
@@ -160,7 +160,7 @@
 * macOS 10.13 (<code>macOS-10.13</code>)
 * Windows Server 1803 (<code>win1803</code>) - for running Windows containers
 * Visual Studio 2015 on Windows Server 2012R2 (<code>vs2015-win2012r2</code>)</p>
-<h2>Templating steps for re-use across jobs</h2>
+<h2 id="templating-steps-for-re-use-across-jobs">Templating steps for re-use across jobs<a class="headerlink" href="#templating-steps-for-re-use-across-jobs" title="Permanent link">&para;</a></h2>
 <p>Because steps are defined in a job, and a job can only have 1 operating system it can get very tedious to copy steps between jobs and keep the up to date.</p>
 <p>If your build and test steps are the same across Linux and Windows, you can move the steps into a separate file (in this example, called templates/steps.yml) and include it in the job.</p>
 <pre><code class="yaml">jobs: 
@@ -176,14 +176,14 @@
     - template: templates/steps.yml
 </code></pre>
 
-<h2>Test Output</h2>
+<h2 id="test-output">Test Output<a class="headerlink" href="#test-output" title="Permanent link">&para;</a></h2>
 <p>Once you’ve configured your testing jobs to output a Junit XML file and you’ve successfully configured the PublishTestResults task, you will see a detailed test dashboard. All test failures will be available here. In the examples, I’ve named the Test Results based on the operating system, job name and the version of Python so it’s easier to see what’s happening. You can add any variable or label to the test names.</p>
 <p><img alt="Screenshot of Azure Pipelines Test Console" class="img-responsive center-block" src="/img/posts/azure-test-output.png"></p>
-<h2>Testing a Django application</h2>
+<h2 id="testing-a-django-application">Testing a Django application<a class="headerlink" href="#testing-a-django-application" title="Permanent link">&para;</a></h2>
 <p>To test a Django application, there are 4 basic steps you need to add to a build job:</p>
-<h3>1. Choose the Python version.</h3>
+<h3 id="1-choose-the-python-version">1. Choose the Python version.<a class="headerlink" href="#1-choose-the-python-version" title="Permanent link">&para;</a></h3>
 <p>This is important as Django can behave very differently between Python versions. This example tests Python 3.6 and 3.7. You can change these for other versions, like 3.5.</p>
-<h3>2. Install Django</h3>
+<h3 id="2-install-django">2. Install Django<a class="headerlink" href="#2-install-django" title="Permanent link">&para;</a></h3>
 <p>The installation of Django would be via. pip . This script task updates the pip binary and then installs any dependencies in django-basic/requirements.txt, which is the example Django Project I’ve set up for this tutorial.</p>
 <pre><code class="yaml">- script: |      
     python -m pip install --upgrade pip      
@@ -191,7 +191,7 @@
   displayName: 'Install dependencies'
 </code></pre>
 
-<h3>3. Test your Django application</h3>
+<h3 id="3-test-your-django-application">3. Test your Django application<a class="headerlink" href="#3-test-your-django-application" title="Permanent link">&para;</a></h3>
 <p>To test a Django application you can use the python manage.py test command, or use another tool like Pytest.
 Because Azure Pipelines test output can be viewed and sorted online, it’s beneficial to use the Junit XML output. Pytest is the easiest way to generate this. The pytest-django package is a plugin for Pytest that will work with your existing Django tests. You only need to make a small change. Create a pytest.ini file in your project directory with these settings:</p>
 <pre><code>[pytest]
@@ -207,7 +207,7 @@ DJANGO_SETTINGS_MODULE = your_module_name.settings
   displayName: 'Run tests'
 </code></pre>
 
-<h3>4. Publish the test output</h3>
+<h3 id="4-publish-the-test-output">4. Publish the test output<a class="headerlink" href="#4-publish-the-test-output" title="Permanent link">&para;</a></h3>
 <p>Lastly, use the builtin task to copy the test output to the Azure Pipelines service.
 Here is the <code>azure-pipelines.yml</code> for the example Django app which can be <a href="https://github.com/tonybaloney/azure-pipelines-python-examples/tree/master/django-basic">found on GitHub</a>.</p>
 <pre><code class="yaml">trigger:
@@ -243,7 +243,7 @@ jobs:
     condition: succeededOrFailed()
 </code></pre>
 
-<h2>A multi-environment Django test</h2>
+<h2 id="a-multi-environment-django-test">A multi-environment Django test<a class="headerlink" href="#a-multi-environment-django-test" title="Permanent link">&para;</a></h2>
 <p>If you want to test your Django application against multiple versions of Django, or a particular plugin, you can add extra version numbers as variables in the build matrix.
 In this example, I’m testing 2 versions of Django across 2 versions of Python. This generates multiple jobs automatically.</p>
 <p>Because there is no built-in task for selecting the version of Django, we use the variable to control the version installed in pip.
@@ -294,7 +294,7 @@ jobs:
     condition: succeededOrFailed()
 </code></pre>
 
-<h2>A basic Flask test</h2>
+<h2 id="a-basic-flask-test">A basic Flask test<a class="headerlink" href="#a-basic-flask-test" title="Permanent link">&para;</a></h2>
 <p>If you’re using the Flask web framework, the steps are very similar to Django, but it doesn’t require a Pytest plugin.</p>
 <p>In the example repository, I’ve simply copied the Flask example web application which comes with tests. To use this on Azure Pipelines, you need to run the setup.py command using pip install -e . from the application directory. Adding the <code>[test]</code> suffix will install the testing tools.</p>
 <pre><code class="yaml">trigger:
@@ -332,7 +332,7 @@ jobs:
     condition: succeededOrFailed()
 </code></pre>
 
-<h2>A Flask test with coverage</h2>
+<h2 id="a-flask-test-with-coverage">A Flask test with coverage<a class="headerlink" href="#a-flask-test-with-coverage" title="Permanent link">&para;</a></h2>
 <p>If you wanted to calculate the test coverage of your application, you combine the testing task with the <code>coverage</code> package.
 For the <code>flask-basic</code> example project, you install both Pytest and coverage, then run pytest through the coverage run command.</p>
 <pre><code class="yaml">- script: |   
@@ -380,7 +380,7 @@ jobs:
     condition: succeededOrFailed()
 </code></pre>
 
-<h2>Testing a basic Python library</h2>
+<h2 id="testing-a-basic-python-library">Testing a basic Python library<a class="headerlink" href="#testing-a-basic-python-library" title="Permanent link">&para;</a></h2>
 <p>If you’re building Python libraries for distribution via shared files, PyPi or another artifact system, this example illustrates how to build source and binary distributions on Azure Pipelines.
 Aside from the test commands that have been shown throughout this tutorial, we need to add a couple of extra tasks.
 Azure Pipelines comes with an artifact publishing, hosting and indexing API that you can use through the tasks. You can also see the artifacts from a build in the web interface.</p>
@@ -465,7 +465,7 @@ jobs:
       artifactName: Library_Basic_Wheel
 </code></pre>
 
-<h2>Testing a modern Python library with pyproject.toml</h2>
+<h2 id="testing-a-modern-python-library-with-pyprojecttoml">Testing a modern Python library with pyproject.toml<a class="headerlink" href="#testing-a-modern-python-library-with-pyprojecttoml" title="Permanent link">&para;</a></h2>
 <p>If you’re using <code>pyproject.toml</code> as your configuration file and using Flit to publish and build packages, there are a few changes to make to the previous example.</p>
 <ul>
 <li>Run <code>flit install</code> instead of <code>pip install -e</code> .</li>

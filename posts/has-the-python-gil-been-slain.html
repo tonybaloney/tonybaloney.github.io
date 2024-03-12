@@ -134,7 +134,7 @@
 <p>Aside from the release of consumer multicore CPUs, something else happened in 2006, Python 2.5 was released! Python 2.5 came bundled with a beta version of the with statement that you know and love.
 Python 2.5 had one major limitation when it came to utilizing Intel’s Core 2 or AMD’s Athlon X2.</p>
 <p>&ndash; The GIL.</p>
-<h2>What is the GIL?</h2>
+<h2 id="what-is-the-gil">What is the GIL?<a class="headerlink" href="#what-is-the-gil" title="Permanent link">&para;</a></h2>
 <p>The GIL, or <strong>Global Interpreter Lock</strong>, is a boolean value in the Python interpreter, protected by a mutex. The lock is used by the core bytecode evaluation loop in CPython to set which thread is currently executing statements.</p>
 <p>CPython supports multiple threads within a single interpreter, but threads must request access to the GIL in order to execute Opcodes (low-level operations). This, in turn, means that Python developers can utilize async code, multi-threaded code and never have to worry about acquiring locks on any variables or having processes crash from deadlocks.
 The GIL makes multithreaded programming in Python simple.</p>
@@ -142,7 +142,7 @@ The GIL makes multithreaded programming in Python simple.</p>
 <p>The GIL also means that whilst CPython can be multi-threaded, only 1 thread can be executing at any given time. This means that your quad-core CPU is doing this — (minus the bluescreen, hopefully)</p>
 <p>The current version of the GIL was written in 2009, to support async features and has survived relatively untouched even after many attempts to remove it or reduce the requirement for it.</p>
 <p>The requirement for any proposal to remove the GIL is that it should not degrade the performance of any single-threaded code. Anyone who ever enabled Hyper-Threading back in 2003 will appreciate why that is important.</p>
-<h2>Avoiding the GIL in CPython</h2>
+<h2 id="avoiding-the-gil-in-cpython">Avoiding the GIL in CPython<a class="headerlink" href="#avoiding-the-gil-in-cpython" title="Permanent link">&para;</a></h2>
 <p>If you want truly concurrent code in CPython, you have to use multiple processes.
 In CPython 2.6 the multiprocessing module was added to the standard library. Multiprocessing was a wrapper around the spawning of CPython processes (each with its own GIL) —</p>
 <pre><code class="python">from multiprocessing import Process
@@ -161,7 +161,7 @@ if __name__ == '__main__':
 The multiprocessing has 1 major flaw. It has significant overhead, both in time and in memory usage. CPython startup times, even without no-site, are 100–200ms (see https://hackernoon.com/which-is-the-fastest-version-of-python-2ae7c61a6b2b).
 So you can have concurrent code in CPython, but you have to carefully plan it’s application for long-running processes that have little sharing of objects between them.
 Another alternative is a third party package like Twisted.</p>
-<h2>PEP554 and the death of the GIL?</h2>
+<h2 id="pep554-and-the-death-of-the-gil">PEP554 and the death of the GIL?<a class="headerlink" href="#pep554-and-the-death-of-the-gil" title="Permanent link">&para;</a></h2>
 <p>So to recap, multithreading in CPython is easy, but it’s not truly concurrent, and multiprocessing is concurrent but has a significant overhead.
 What if there was a better way?
 The clue in bypassing the GIL is in the name, the global interpreter lock is part of the global interpreter state. CPython processes can have multiple interpreters, and hence multiple locks, however, this feature is rarely used because it is only exposed via the C-API.
@@ -221,7 +221,7 @@ print(output_arry)
 </code></pre>
 
 <p>This example uses numpy and sends a numpy array over a channel by serializing it with the marshal module, the sub-interpreter then processes the data (on a separate GIL) so this could be a CPU-bound concurrency problem perfect for sub-interpreters.</p>
-<h3>That looks inefficient</h3>
+<h3 id="that-looks-inefficient">That looks inefficient<a class="headerlink" href="#that-looks-inefficient" title="Permanent link">&para;</a></h3>
 <p>The marshal module is fairly fast, but not as fast as sharing objects directly from memory.
 PEP 574 proposes a new pickle protocol (v5) which has support for allowing memory buffers to be handled separately from the rest of the pickle stream. For large data objects, serializing them all in one go and deserializing from the sub-interpreter would add a lot of overhead.
 The new API could be interfaced (hypothetically, neither have been merged yet) like this —</p>
@@ -275,10 +275,10 @@ output_arry = pickle.loads(output)
 print(f&quot;Got back: {output_arry}&quot;)
 </code></pre>
 
-<h2>That sure looks like a lot of boilerplate</h2>
+<h2 id="that-sure-looks-like-a-lot-of-boilerplate">That sure looks like a lot of boilerplate<a class="headerlink" href="#that-sure-looks-like-a-lot-of-boilerplate" title="Permanent link">&para;</a></h2>
 <p>Ok, so this example is using the low-level sub-interpreters API. If you’ve used the multiprocessing library you’ll recognize some of the problems. It’s not as simple as threading , you can’t just say run this function with this list of inputs in separate interpreters (yet).
 Once this PEP is merged, I expect we’ll see some of the other APIs in PyPi adopt them.</p>
-<h2>How much overhead does a sub-interpreter have?</h2>
+<h2 id="how-much-overhead-does-a-sub-interpreter-have">How much overhead does a sub-interpreter have?<a class="headerlink" href="#how-much-overhead-does-a-sub-interpreter-have" title="Permanent link">&para;</a></h2>
 <p>Short answer: More than a thread, less than a process.</p>
 <p>Long answer: The interpreter has its own state, so whilst PEP554 will make it easy to create sub-interpreters, it will need to clone and initialize the following:</p>
 <ul>
@@ -289,10 +289,10 @@ Once this PEP is merged, I expect we’ll see some of the other APIs in PyPi ado
 <li>core configuration</li>
 </ul>
 <p>The core configuration can be cloned easily from memory, but the imported modules are not so simple. Importing modules in Python is slow, so if creating a sub-interpreter means importing modules into another namespace each time, the benefits are diminished.</p>
-<h2>What about asyncio?</h2>
+<h2 id="what-about-asyncio">What about asyncio?<a class="headerlink" href="#what-about-asyncio" title="Permanent link">&para;</a></h2>
 <p>The existing implementation of the asyncio event loop in the standard library creates frames to be evaluated but shares state within the main interpreter (and therefore shares the GIL).</p>
 <p>After PEP554 has been merged, and likely in Python 3.9, an alternate event loop implementation could be implemented (although nobody has done so yet) that runs async methods within sub interpreters, and hence, concurrently.</p>
-<h2>Sounds great, ship it!</h2>
+<h2 id="sounds-great-ship-it">Sounds great, ship it!<a class="headerlink" href="#sounds-great-ship-it" title="Permanent link">&para;</a></h2>
 <p>Well, not quite.
 Because CPython has been implemented with a single interpreter for so long, many parts of the code base use the “Runtime State” instead of the “Interpreter State”, so if PEP554 were to be merged in it’s current form there would still be many issues.
 For example, the Garbage Collector (in 3.7&lt;) state belongs to the runtime.
@@ -300,10 +300,10 @@ During the PyCon sprints changes have started to move the garbage collector stat
 Another issue is that there are some “global”, variables lingering around in the CPython codebase and many C extensions. So when people suddenly started writing properly concurrent code, we might start to see some problems.
 Another issue is that file handles belong to the process, so if you have a file open for writing in one interpreter, the sub interpreter won’t be able to access the file (without further changes to CPython).
 In short, there are many other things still to be worked out.</p>
-<h2>Conclusion: Is the GIL dead?</h2>
+<h2 id="conclusion-is-the-gil-dead">Conclusion: Is the GIL dead?<a class="headerlink" href="#conclusion-is-the-gil-dead" title="Permanent link">&para;</a></h2>
 <p>The GIL will still exist for single-threaded applications. So even when PEP554 is merged, if you have single-threaded code, it won’t suddenly be concurrent.
 If you want concurrent code in Python 3.8, you have CPU-bound concurrency problems then this could be the ticket!</p>
-<h3>When?</h3>
+<h3 id="when">When?<a class="headerlink" href="#when" title="Permanent link">&para;</a></h3>
 <p>Pickle v5 and shared memory for multiprocessing will likely be Python 3.8 (October 2019) and sub-interpreters will be between 3.8 and 3.9.
 If you want to play with my examples now, I’ve built a custom branch with all of the code required https://github.com/tonybaloney/cpython/tree/subinterpreters</p>
             </div>

@@ -33,8 +33,8 @@ class BootstrapTreeprocessor(Treeprocessor):
 
 def main():
     posts = glob.glob("blog/*.md")
-    extensions = [BootstrapExtension(), 'extra', 'smarty', 'meta', 'tables']
-    _md = markdown.Markdown(extensions=extensions, output_format='html5')
+    extensions = [BootstrapExtension(), 'extra', 'smarty', 'meta', 'tables', 'toc']
+    _md = markdown.Markdown(extensions=extensions, output_format='html5', extension_configs={'toc': {'permalink': True}})
 
     loader = jinja2.FileSystemLoader(searchpath="./")
     env = jinja2.Environment(loader=loader)

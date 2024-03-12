@@ -128,9 +128,9 @@
                 <p>This week I raised <a href="https://github.com/python/cpython/pull/1069">my first pull-request</a> to the CPython core project, which was declined :-( but as to not completely waste my time I’m writing my findings on how CPython works and show you how easy it is to modify the Python syntax.
 I’m going to show you how to add a new feature to the Python syntax. That syntax is the increment/decrement operator, a common operator in most languages. Just to prove, open up the REPL and try it.</p>
 <p><img alt="" class="img-responsive center-block" src="/img/posts/bad-syntax.png"></p>
-<h2>Level 1: PEPs</h2>
+<h2 id="level-1-peps">Level 1: PEPs<a class="headerlink" href="#level-1-peps" title="Permanent link">&para;</a></h2>
 <p>Before the Python syntax is changed, a proposal needs to be made with a set of reasons, design and behaviours. All language changes are discussed by the core Python team and approved by the BDFL. Increment operators are not approved (and probably never will be), which gives us a good test.</p>
-<h2>Level 2: Grammar</h2>
+<h2 id="level-2-grammar">Level 2: Grammar<a class="headerlink" href="#level-2-grammar" title="Permanent link">&para;</a></h2>
 <p>The Grammar file is simple text file describing all the elements of the Python language. This is used by not just CPython, but other implementations like PyPy to keep consistency and agree on the types of language semantics.
 Internally, these keys form the tokens, which are parsed by the lexer. When you <code>make -j</code> a command converts these into a set of enums and constants in the C headers. This allows us to reference them later on.</p>
 <pre><code class="default">stmt: simple_stmt | compound_stmt
@@ -165,7 +165,7 @@ decr_stmt: '--'
 If you start Python with -d and try it you should get:</p>
 <p>Token <ERRORTOKEN>/’++’ … Illegal token</p>
 <p>What is a token? Let’s find out..</p>
-<h2>Level 3 : Lexer</h2>
+<h2 id="level-3-lexer">Level 3 : Lexer<a class="headerlink" href="#level-3-lexer" title="Permanent link">&para;</a></h2>
 <p>There are four steps that Python takes when you hit return: lexing, parsing, compiling, and interpreting. Lexing is breaking the line of code you just typed into tokens. The CPython lexer is called tokenizer.c. It has the functions that read from a file (like python file.py, a string (like the REPL). It also handles the special encoding comment at the top of files and parses your file as UTF-8, etc. It handles nesting, async and yield keywords, detects sets and tuple assignment, but only the grammar. It doesn’t know what those things are or what to do with them. It just cares about the text.
 For example, the code that allows you to use the o notation for octal values is in the tokenizer. The code to actually create octal values is in the compiler.
 Let’s add 2 things to <code>Parser/tokenizer.c</code>, the new INCREMENT and DECREMENT tokens, these are the keys that get returned by the tokenizer for each part of the code.</p>
@@ -206,7 +206,7 @@ const char *_PyParser_TokenNames[] = {
 <p>Now, when we run Python with -d and try our statement we see:</p>
 <p><img alt="" class="img-responsive center-block" src="/img/posts/token-s.png"></p>
 <p>It’s a token we know — Success!</p>
-<h2>Level 4 : Parser</h2>
+<h2 id="level-4-parser">Level 4 : Parser<a class="headerlink" href="#level-4-parser" title="Permanent link">&para;</a></h2>
 <p>The parser takes those tokens and generates a structure that shows their relationship to each other. For Python and many other langauges, this is the Abstract Syntax Tree (or AST). The compiler then takes the AST and turns it into one (or more) code objects. Finally, the interpreter takes each code object executes the code it represents. Think of your code as a tree. The top level is the root, a function might be a branch, a class is a branch and the class methods branch off that. The statements are leaves within a branch.
 The AST is defined in both ast.py and ast.c. ast.c is the file we need to change. The AST code is broken into methods that handle the types of tokens, ast_for_stmt handles statements, ast_for_expr handles expressions. We put the incr_stmtand decr_stmt as possible expression statements. They are almost identical to Augmented Expressions, e.g. test += 1 but there is no right-hand expression (1), it is implicit.
 This is the code for us to add to handle increment and decrement.</p>
@@ -259,7 +259,7 @@ ast_for_expr_stmt(struct compiling *c, const node *n)
 <p>This returns an Augmented Assignment — instead of a new Expression type with a constant value of 1. The operator is either Add or Sub(tract) depending on the token type incr_stmt or decr_stmt. Going back into the Python REPL after compiling — we can see our new statement!</p>
 <p><img alt="" class="img-responsive center-block" src="/img/posts/token-s2.png"></p>
 <p>At the REPL, you can try this : ast.parse(&ldquo;test=1; test++).body[1] and you’ll see the AugAssign type returned. The AST has just converted the statement into a statement expression which can then be handled by the compiler. The AugAssign function sets the field Kind which is used by the compiler.</p>
-<h2>Level 5: Compiler</h2>
+<h2 id="level-5-compiler">Level 5: Compiler<a class="headerlink" href="#level-5-compiler" title="Permanent link">&para;</a></h2>
 <p>The compiler then takes the syntax tree and ‘visits’ each branch, the CPython compiler has a method for visiting a statement, called compile_visit_stmt which is just a big switch statement looking at the statement kind. Our’s was a AugAssign type, so it calls out to compiler_augassign to handle the details. This function then converts our statement into a set of Byte-codes. These are an intermediary language between machine code (01010101) and the syntax tree. The Byte-code sequence is the thing cached in .pyc files.</p>
 <pre><code class="c">static int
 compiler_augassign(struct compiler *c, stmt_ty s)
@@ -282,10 +282,10 @@ compiler_augassign(struct compiler *c, stmt_ty s)
 <p>The output would be VISIT (load value — which is 1 for us), ADDOP (add operation of a binary op, depending on the operator (subtract, add), and STORE_NAME (store the result of ADDOP to the Name). Those methods respond with more specific byte-codes.
 If you load the dis module you can see the byte-code for yourself</p>
 <p><img alt="" class="img-responsive center-block" src="/img/posts/opcodes.png"></p>
-<h2>Level 6: Interpreter</h2>
+<h2 id="level-6-interpreter">Level 6: Interpreter<a class="headerlink" href="#level-6-interpreter" title="Permanent link">&para;</a></h2>
 <p>The final level is the interpreter. That takes the byte-code sequence and converts it into machine-specific operations. This is why Python.exe and Python for mac and Linux are all seperate binaries. Some byte codes need OS specific handling and checks. The threading API for example needs to work with GNU/Linux’s thread API which is very different to Windows threading.
 That’s it!</p>
-<h2>Further Reading</h2>
+<h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">&para;</a></h2>
 <p>If you’re interested in interpreters, I’ve given a talk on Pyjion, a plugin architecture for CPython which became PEP523</p>
 <p>If you still want to play, I pushed the code up to GitHub, along with my changes to the await tokenizer.</p>
 <p><a href="https://realpython.com/cpython-source-code-guide/">See also my article on realpython.com giving a full breakdown of the Python compiler</a></p>

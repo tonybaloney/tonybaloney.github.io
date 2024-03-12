@@ -127,9 +127,9 @@
             <div class="col-md-12">
                 <p><em>In this tutorial, I&rsquo;ll talk about the PyPy interpreter and how you can deploy a FastAPI Python application into production swapping out PyPy for CPython as the Python interpreter.</em></p>
 <p>All of the code for this tutorial is on <a href="https://github.com/tonybaloney/ants-azure-demos/tree/master/pypy-fastapi-container-instance">GitHub</a>.</p>
-<h2>What is PyPy</h2>
+<h2 id="what-is-pypy">What is PyPy<a class="headerlink" href="#what-is-pypy" title="Permanent link">&para;</a></h2>
 <p>PyPy is an alternative Python interpreter. The Python interpreter you get bundled with Linux distributions, macOS, from the Windows Store or from <a href="python.org/downloads">python.org/downloads</a> is CPython. CPython is the most-popular Python interpreter (by a long way). But it is not the fastest. CPython is a general-purpose interpreter.</p>
-<h2>Why use PyPy over CPython?</h2>
+<h2 id="why-use-pypy-over-cpython">Why use PyPy over CPython?<a class="headerlink" href="#why-use-pypy-over-cpython" title="Permanent link">&para;</a></h2>
 <p>PyPy is a performant alternative to CPython. PyPy can run <em>most</em> code that runs in CPython. You can run popular frameworks like requests, Django, Flask, FastAPI. You can run tests in frameworks like Pytest.</p>
 <p>PyPy is available for Python versions 2.7, 3.7, 3.8 and 3.9. It supports Linux, macOS and Windows.</p>
 <p>You&rsquo;d consider choosing PyPy over CPython because for many workloads it is faster. Much faster.</p>
@@ -147,7 +147,7 @@
 <li>Integration with C extensions</li>
 </ul>
 <p>Benchmark your application and see if it makes sense. In many production environments, CPython is not the bottleneck. The bottlenecks are external services like databases, network latency, storage and logging.</p>
-<h2>Example: Deploying a FastAPI application on PyPy</h2>
+<h2 id="example-deploying-a-fastapi-application-on-pypy">Example: Deploying a FastAPI application on PyPy<a class="headerlink" href="#example-deploying-a-fastapi-application-on-pypy" title="Permanent link">&para;</a></h2>
 <p>First, you&rsquo;ll need a copy of PyPy. My strong recommendation is to use a Docker image, such as the official <code>pypy:3.9-slim-buster</code> image.</p>
 <p>If you want to install locally outside of Docker, you can use <a href="https://www.pypy.org/download.html#linux-binaries-and-common-distributions">one of the downloadable binaries</a>.</p>
 <p>Once PyPy is installed, or if you&rsquo;re inside a Docker image, you follow the same workflow as with CPython.</p>
@@ -159,7 +159,7 @@ source .venv/bin/activate
 <p>Next, setup your editor to use this virtual environment. I&rsquo;m using VS Code, so I select the interpreter by using the <code>Python: Select Interpreter</code> command in the command pallette:</p>
 <p><img alt="Select interpreter in VS Code" class="img-responsive center-block" src="/img/posts/select-interpreter.jpg"></p>
 <p>Next, setup a Docker image so the app is testable locally and runnable in the cloud.</p>
-<h3>Setting up a Docker image</h3>
+<h3 id="setting-up-a-docker-image">Setting up a Docker image<a class="headerlink" href="#setting-up-a-docker-image" title="Permanent link">&para;</a></h3>
 <p>To keep the installation of PyPy simple both in the production environment and in development, we&rsquo;ll use Docker from now on.</p>
 <p>The Docker image I&rsquo;m using is the <code>3.9-slim-buster</code> image from the <code>pypy</code> org on Docker hub. There are <code>slim-bullseye</code>, <code>bullseye</code> and <code>buster</code> images too in the <a href="https://www.pypy.org/download.html#linux-binaries-and-common-distributions">tags</a>.</p>
 <p>My Dockerfile is a copy+paste of my usual Python dockerfiles. The only thing I&rsquo;m changing is to run <code>pypy</code> instead of <code>python</code> to execute both the pip installation and to run the web application.</p>
@@ -177,7 +177,7 @@ CMD [&quot;pypy&quot;, &quot;-m&quot;, &quot;uvicorn&quot;, &quot;--host&quot;, 
 </code></pre>
 
 <p>If you want to develop inside this Docker image, you can create a dev container. I&rsquo;ve written a todo on how to <a href="https://realpython.com/advanced-visual-studio-code-python/#remote-development-with-containers">configure this over at RealPython.com</a>.</p>
-<h3>Deploying to Azure</h3>
+<h3 id="deploying-to-azure">Deploying to Azure<a class="headerlink" href="#deploying-to-azure" title="Permanent link">&para;</a></h3>
 <p>Azure&rsquo;s PaaS options for Python like Azure Functions and Azure Web Apps are built on CPython. PyPy is not an option out-of-the-box. <em>However</em> you can deploy custom Docker images both to Azure Web Apps and to the shiny-new <a href="https://docs.microsoft.com/azure/container-instances/container-instances-overview?WT.mc_id=python-60075-anthonyshaw">Azure Container Instances (ACI) platform</a>.</p>
 <p>I&rsquo;m going to use <a href="https://docs.microsoft.com/azure/container-instances/container-instances-overview?WT.mc_id=python-60075-anthonyshaw">ACI</a> because it&rsquo;s the simplest way to throw a container at the cloud and watch it fly.
 I&rsquo;ll assume you have the <a href="https://docs.microsoft.com/cli/azure/install-azure-cli?WT.mc_id=python-60075-anthonyshaw">Azure CLI</a> installed and that you have an Azure Subscription.</p>
@@ -220,7 +220,7 @@ open http://${NAME}.${LOCATION}.azurecontainer.io/
 
 <p>If you want to automate those steps by setting up a CI/CD workflow, checkout the
 <a href="https://docs.microsoft.com/azure/container-instances/container-instances-github-action?WT.mc_id=python-60075-anthonyshaw#create-workflow-file">official docs with a Github actions example</a>.</p>
-<h2>So, is it faster?</h2>
+<h2 id="so-is-it-faster">So, is it faster?<a class="headerlink" href="#so-is-it-faster" title="Permanent link">&para;</a></h2>
 <p>To test this, we can run a simple benchmark. Using [Apache Bench] we can make 10 requests to the <code>/locations</code> endpoint. I&rsquo;ve seeded the database with 10,000 records and used the in-process SQLite API with aiosqlite, an async API. The data-reflection is being done using Tortoise ORM, an ORM written in Python.</p>
 <p>This is an exaggerated API call as it&rsquo;s handling a lot of data. I&rsquo;ve done this so it&rsquo;ll be clearer whether it made a difference. So first, lets try PyPy 3.9</p>
 <pre><code class="default">$ ab -n 10 -c 10 http://localhost:8080/locations
