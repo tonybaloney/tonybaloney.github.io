@@ -61,7 +61,7 @@ To better understand how the density of information-to-tokens, I looked [a datas
 
 For a language like Japanese that has both Kanji and Kana, sentences can be up to 8x the number of tokens of the English equivalent, but average at 2.12x.
 
-Mandarin has an average token ratio of 1.76, Cantonese has 2.10, and Korean 2.36. 
+Mandarin has an average token ratio of **1.76x**, Cantonese has **2.10x**, and Korean **2.36x**. 
 
 There are occasions where sentences in CJK languages will be fewer tokens than the English equivalent because the expression or phase can be said more concisely. For example, "This is the first time I've heard about it." (11 tokens) can be said in Japanese 
 "初耳だ" (5 tokens). These cases are the exception, not the rule, and it could be argued that a native English speaker would use a more colloquial term like "news to me" (3 tokens) which is why it is important to look at handwritten translations by native speakers instead of machine-translated. Ensure you are also comparing like-for-like with formal and informal text.
