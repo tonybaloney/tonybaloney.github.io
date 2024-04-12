@@ -8,11 +8,11 @@ blog_publish_date: April 12, 2024
 
 When you're building applications in Python, it can be really helpful to see live information about backend calls, errors, traces and monitor data.
 
-OpenTelemetry, an open-source project from the Cloud Native Computing Foundation (CNCF) is designed to cater for all of those things along with a catalogue of extensions to instrument common libraries and frameworks in Python like Flask, Django, Requests and FastAPI.
+[OpenTelemetry](https://opentelemetry.io/docs/languages/python/getting-started/), an open-source project from the Cloud Native Computing Foundation (CNCF) is designed to cater for all of those things along with a catalog of extensions to instrument common libraries and frameworks in Python like Flask, Django, Requests and FastAPI.
 
 In this tutorial, I'll show you how to setup OpenTelemetry in a little Flask project and configure instrumentation with the Aspire dashboard.
 
-You'll need Docker installed for this tutorial and some experience with Flask, or Django. If you're **already** familiar with OpenTelemetry, skip to the section on [running Aspire Dashboard](#running-the-aspire-dashboard).
+You'll need Docker installed for this tutorial and some code to instrument. If you're **already** familiar with OpenTelemetry, skip to the section on [configuring OTLP](#configuring-otlp-for-any-opentelemetry-instrumentation).
 
 ## Installing OpenTelemetry
 
