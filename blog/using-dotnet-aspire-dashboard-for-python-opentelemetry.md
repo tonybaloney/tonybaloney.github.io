@@ -98,7 +98,7 @@ Next, from your application's entry point, you can call this function to configu
 ```python
 from otel_grpc import configure_otel_otlp
 
-configure_oltp_grpc_tracing("my-service-name", endpoint=os.getenv("OTLP_GRPC_ENDPOINT"))
+configure_otel_otlp("my-service-name", endpoint=os.getenv("OTLP_GRPC_ENDPOINT"))
 
 # Instrumentation code here
 ```

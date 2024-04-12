@@ -202,7 +202,7 @@ def configure_otel_otlp(service_name: str = &quot;azure-search-openai-demo&quot;
 <p>Next, from your application&rsquo;s entry point, you can call this function to configure the OTLP exporter. Do this <strong>before</strong> running the <code>.instrument()</code> calls from various instrumentation libraries:</p>
 <pre><code class="python">from otel_grpc import configure_otel_otlp
 
-configure_oltp_grpc_tracing(&quot;my-service-name&quot;, endpoint=os.getenv(&quot;OTLP_GRPC_ENDPOINT&quot;))
+configure_otel_otlp(&quot;my-service-name&quot;, endpoint=os.getenv(&quot;OTLP_GRPC_ENDPOINT&quot;))
 
 # Instrumentation code here
 </code></pre>
