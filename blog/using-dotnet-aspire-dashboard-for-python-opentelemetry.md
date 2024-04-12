@@ -1,6 +1,7 @@
 blog_heading: Using the Aspire Dashboard for Python OpenTelemetry tracing, metrics, and logs
 blog_subheading: A short how-to of setting up the Aspire Dashboard to capture traces and metrics
-blog_header_image: posts/snake-dashboards.jpg
+blog_header_image: posts/snake-dashboards-header.jpg
+blog_card_image: posts/snake-dashboards.jpg
 blog_author: Anthony Shaw
 blog_publish_date: April 12, 2024
 ---
