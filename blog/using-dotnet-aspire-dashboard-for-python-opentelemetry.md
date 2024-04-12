@@ -130,6 +130,8 @@ This will also port-forward the gRPC endpoint to `localhost:4317` which is what 
 
 After that you can run your Python application and see the traces and metrics in the Aspire dashboard.
 
+This example sets `DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS` to `true` which allows the dashboard to run without any authentication. This is fine for local development, but you must secure the dashboard if you're running it in a production environment.
+
 ## Navigating the Aspire Dashboard
 
 In your browser, go to `http://localhost:18888`, and you'll see the Aspire dashboard. You can navigate to the Traces, Metrics and Logs tabs to see the data from your Python application. A bare Flask app wouldn't be very interesting, so I've added tracing to a big sample project we have at [azure-search-openai-demo](https://github.com/azure-samples/azure-search-openai-demo) which uses a ton of backend services and a lot of customization in Flask.
@@ -166,3 +168,7 @@ Once you're done exploring or debugging, stop the Docker container and the dashb
 When you're developing an application with a lot of backend calls or trying to debug performance issues, OpenTelemetry is a great tool to have in your toolbox. It's easy to get started with and has a lot of instrumentation packages available. The Aspire dashboard is a great way to visualize the data that OpenTelemetry captures and it's easy to run locally. I hope this tutorial has been helpful, and you can get started with OpenTelemetry and the Aspire dashboard in your Python applications.
 
 ![](/img/posts/snake-dashboards.jpg){: .img-responsive .center-block style="width:40%"}
+
+## Extra credits
+
+Thanks [Anthony Simmon](https://anthonysimmon.com/dotnet-aspire-dashboard-best-tool-visualize-opentelemetry-local-dev/) for this great article on the Aspire dashboard and OpenTelemetry to get me started.

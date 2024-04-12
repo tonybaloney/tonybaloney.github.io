@@ -225,6 +225,7 @@ FlaskInstrumentor().instrument_app(app)
 
 <p>This will also port-forward the gRPC endpoint to <code>localhost:4317</code> which is what we&rsquo;ll use in the OTLP exporter configuration and the UI will be available at <code>http://localhost:18888</code>.</p>
 <p>After that you can run your Python application and see the traces and metrics in the Aspire dashboard.</p>
+<p>This example sets <code>DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS</code> to <code>true</code> which allows the dashboard to run without any authentication. This is fine for local development, but you must secure the dashboard if you&rsquo;re running it in a production environment.</p>
 <h2 id="navigating-the-aspire-dashboard">Navigating the Aspire Dashboard<a class="headerlink" href="#navigating-the-aspire-dashboard" title="Permanent link">&para;</a></h2>
 <p>In your browser, go to <code>http://localhost:18888</code>, and you&rsquo;ll see the Aspire dashboard. You can navigate to the Traces, Metrics and Logs tabs to see the data from your Python application. A bare Flask app wouldn&rsquo;t be very interesting, so I&rsquo;ve added tracing to a big sample project we have at <a href="https://github.com/azure-samples/azure-search-openai-demo">azure-search-openai-demo</a> which uses a ton of backend services and a lot of customization in Flask.</p>
 <p>The first tab to explore is Logs. This will capture any logs that are sent to the OpenTelemetry logger. Python logging is complicated. In the code above, I setup logging at the root logger. For something like Django, you&rsquo;ll want to configure that handler to capture logs from the <a href="https://docs.djangoproject.com/en/5.0/topics/logging/#handlers">Django logger</a>.
@@ -244,6 +245,8 @@ In the sample project, I&rsquo;ve added a few logs to the Flask app to show how 
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
 <p>When you&rsquo;re developing an application with a lot of backend calls or trying to debug performance issues, OpenTelemetry is a great tool to have in your toolbox. It&rsquo;s easy to get started with and has a lot of instrumentation packages available. The Aspire dashboard is a great way to visualize the data that OpenTelemetry captures and it&rsquo;s easy to run locally. I hope this tutorial has been helpful, and you can get started with OpenTelemetry and the Aspire dashboard in your Python applications.</p>
 <p><img alt="" class="img-responsive center-block" src="/img/posts/snake-dashboards.jpg" style="width:40%"></p>
+<h2 id="extra-credits">Extra credits<a class="headerlink" href="#extra-credits" title="Permanent link">&para;</a></h2>
+<p>Thanks <a href="https://anthonysimmon.com/dotnet-aspire-dashboard-best-tool-visualize-opentelemetry-local-dev/">Anthony Simmon</a> for this great article on the Aspire dashboard and OpenTelemetry to get me started.</p>
             </div>
         </div>
         <div class="row">
