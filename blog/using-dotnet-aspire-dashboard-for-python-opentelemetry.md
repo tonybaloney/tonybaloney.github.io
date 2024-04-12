@@ -119,7 +119,7 @@ FlaskInstrumentor().instrument_app(app)
 
 [.NET Aspire](https://github.com/dotnet/aspire) is "an opinionated, cloud ready stack for building observable, production ready, distributed applications."
 
-_Lovely_, but what does that have to do with Python? Well, one of the components of .NET is a nice OTLP-compatible service that runs in a Docker container and has a simple UI for local development and testing. It doesn't require any authentication or setup, so it's a great way to get started with OpenTelemetry. Since it runs in Docker, it's easy to start and stop which is ideal for local development and you don't need to have .NET installed to use it, just Docker.
+_Lovely_, but what does that have to do with Python? Well, one of the components of **.NET Aspire** is a simple, OTLP-compatible service that runs in a Docker container and has a web UI for local development and testing. It doesn't require any authentication or setup, so it's a great way to get started with OpenTelemetry. Since it runs in Docker, it's easy to start and stop which is ideal for local development, and you don't need to have .NET installed to use it, just Docker.
 
 To get started, pull and run this Docker image:
 
