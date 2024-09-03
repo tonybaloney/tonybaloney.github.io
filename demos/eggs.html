@@ -309,17 +309,27 @@ const words = [...segmentedText].filter(s => s.isWordLike).map(s => s.segment);
         // If we're beyond the first word, connect this word with the previous one
         if (i > 0) {
             // Does the edge already exist?
-            //if (!graph.hasEdge(words[i - 1], words[i]))
-            storyEdges.push({
-                from: words[i - 1], 
-                to: words[i],
-                arrows: {
-                    to: {
-                    enabled: true,
-                    type: "arrow",
-                    },
-                },
+            var edgeExists = false;
+            storyEdges.forEach(function (edge) {
+                if (edge.from === words[i - 1] && edge.to === words[i]) {
+                    edge.label = (parseInt(edge.label) + 1).toString();
+                    edgeExists = true;
+                }
             });
+            
+            if (!edgeExists) {
+                storyEdges.push({
+                    from: words[i - 1], 
+                    to: words[i],
+                    label: "1",
+                    arrows: {
+                        to: {
+                            enabled: true,
+                            type: "arrow",
+                        },
+                    },
+                });
+            }
         }
         }
 
