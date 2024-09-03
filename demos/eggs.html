@@ -1,10 +1,7 @@
-<html>
+<html></html>
 <body>
 <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-<!--
-  Including other packages like Vis Timeline or Vis Graph3D here won't work.
-  You need the peer build to do that.
--->
+
 <style>
     html,
     body,
@@ -41,7 +38,9 @@
             <option selected>Green Eggs and Ham</option>
             <option>Out of the Woods</option>
         </select> 
-       Words <input id="max-words" type="number" value="3" onchange="javascript:update()"/></p>
+       Words <input id="max-words" type="number" value="3" onchange="javascript:update()"/>
+       <input type="checkbox" id="sentences" onchange="javascript:update()"> Sentences
+    </p>
     <div id="story">
         <p id="story-text"></p>
     </div>
@@ -330,8 +329,9 @@ const segmenter = new Intl.Segmenter([], { granularity: 'word' });
         const book = books[selectedText];
         // Make a paragraph for every sentence in the story
         var storyHTML = "";
-        var sentences = book.split("\n");
+        var sentences = book.split("\n").filter(s => s.length > 0);
         var maxWords = document.getElementById("max-words").value;
+        var sentenceIndex = 0;
         var i = 0;
         sentences.forEach(function (sentence) {
             var sentenceHTML = "";
@@ -349,7 +349,12 @@ const segmenter = new Intl.Segmenter([], { granularity: 'word' });
                 i ++;
             });
 
-            storyHTML += "<p>" + sentenceHTML + "</p>";
+            if (document.getElementById("sentences").checked && sentenceIndex < maxWords) {
+                storyHTML += "<p class='highlighted'>" + sentenceHTML + "</p>";
+            } else {
+                storyHTML += "<p>" + sentenceHTML + "</p>";
+            }
+            sentenceIndex ++;
         });
 
         // Replace the innerHTML of the story element with the spans
@@ -362,7 +367,11 @@ const segmenter = new Intl.Segmenter([], { granularity: 'word' });
         const book = books[selectedText];
 
         const segmentedText = segmenter.segment(book);
-        const words = [...segmentedText].filter(s => s.isWordLike).map(s => s.segment);
+        var words = [...segmentedText].filter(s => s.isWordLike).map(s => s.segment);
+        if (document.getElementById("sentences").checked) {
+            // Use sentences instead of words
+            words = book.split("\n").filter(s => s.length > 0);
+        }
 
         // Get the number of words to display
         var maxWords = document.getElementById("max-words").value;
@@ -375,7 +384,9 @@ const segmenter = new Intl.Segmenter([], { granularity: 'word' });
         var storyEdges = [];
 
         // Make sure maxWords is within the range of the number of words in the book
-        maxWords = Math.min(maxWords, words.length);
+        if (maxWords > words.length) {
+            maxWords = words.length;
+        }
 
         for (var i = 0; i < maxWords; i++) {
         // Have we seen this word before? If no, add a node
@@ -402,6 +413,7 @@ const segmenter = new Intl.Segmenter([], { granularity: 'word' });
             storyEdges.forEach(function (edge) {
                 if (edge.from === words[i - 1] && edge.to === words[i]) {
                     edge.label = (parseInt(edge.label) + 1).toString();
+                    edge.value ++;
                     edgeExists = true;
                 }
             });
@@ -411,6 +423,7 @@ const segmenter = new Intl.Segmenter([], { granularity: 'word' });
                     from: words[i - 1], 
                     to: words[i],
                     label: "1",
+                    value: 1,
                     arrows: {
                         to: {
                             enabled: true,
@@ -440,11 +453,34 @@ const segmenter = new Intl.Segmenter([], { granularity: 'word' });
             scaling: {
               min: 5,
               max: 10,
+              label: {
+                min: 10,
+                max: 15,
+              },
             },
           },
+          layout: { randomSeed: 2 },
+          interaction: { hover: true },
         };
         var network = new vis.Network(container, data, options);
         network.fit({ animation: { duration: 1000 } });
+        network.on("click", function (params) {
+            params.event = "[original event]";
+            var node = this.getNodeAt(params.pointer.DOM);
+            if (!node) {
+                return;
+            }
+            var edges = this.getConnectedEdges(node);
+            // Get all edges that start from this node
+            edges.forEach(function (edge) {
+                if (edge.from === node) {
+                    node.color = "red";
+                }
+            });
+        });
+        network.on("showPopup", function (nodeId) {
+            console.log(network.getNodeAt(nodeId));
+        });
 }
 
 function update() {
