@@ -36,16 +36,21 @@
   </style>
   
   <div id="container">
-    <p>Words <input id="maxWords" type="number" value="3" onchange="javascript:update()"/></p>
+    <p>Text: 
+        <select id="text-choice" onchange="javascript:update()">
+            <option selected>Green Eggs and Ham</option>
+            <option>Out of the Woods</option>
+        </select> 
+       Words <input id="max-words" type="number" value="3" onchange="javascript:update()"/></p>
     <div id="story">
-        <h1>Green Eggs and Ham</h1>
         <p id="story-text"></p>
     </div>
     <div id="graph"></div>
   </div>
 <script type="text/javascript">
-const book = `
-I am Sam
+const books = 
+
+{ 'Green Eggs and Ham': `I am Sam
 Sam I am
 
 That Sam-I-am
@@ -238,17 +243,95 @@ green eggs and ham!
 Thank you!
 Thank you,
 Sam-I-am
-`;
+`, 
+'Out of the Woods': `Looking at it now
+It all seems so simple
+We were lying on your couch
+I remember
+You took a Polaroid of us
+Then discovered (then discovered)
+The rest of the world was black and white
+But we were in screaming color
+And I remember thinking
+
+Are we out of the woods yet? Are we out of the woods yet?
+Are we out of the woods yet? Are we out of the woods?
+Are we in the clear yet? Are we in the clear yet?
+Are we in the clear yet? In the clear yet? Good
+Are we out of the woods yet? Are we out of the woods yet?
+Are we out of the woods yet? Are we out of the woods?
+Are we in the clear yet? Are we in the clear yet?
+Are we in the clear yet? In the clear yet? Good
+
+Are we out of the woods?
+
+Looking at it now
+Last December (last December)
+We were built to fall apart
+Then fall back together (back together)
+Ooh, your necklace hanging from my neck, the night we couldn't quite forget
+When we decided, we decided
+To move the furniture so we could dance, baby, like we stood a chance
+Two paper airplanes flying, flying, flying
+And I remember thinking
+
+Are we out of the woods yet? Are we out of the woods yet?
+Are we out of the woods yet? Are we out of the woods?
+Are we in the clear yet? Are we in the clear yet?
+Are we in the clear yet? In the clear yet? Good
+Are we out of the woods yet? Are we out of the woods yet?
+Are we out of the woods yet? Are we out of the woods?
+Are we in the clear yet? Are we in the clear yet?
+Are we in the clear yet? In the clear yet? Good
+
+Are we out of the woods?
+
+Remember when you hit the brakes too soon
+Twenty stitches in a hospital room
+When you started crying, baby, I did too
+But when the sun came up, I was looking at you
+Remember when we couldn't take the heat
+I walked out, I said, I'm setting you free
+But the monsters turned out to be just trees
+When the sun came up, you were looking at me
+
+You were looking at me, oh
+You were looking at me
+
+(Are we out of the woods yet? Are we out of the woods yet?)
+(Are we out of the woods yet? Are we out of the woods?) I remember
+(Are we in the clear yet? Are we in the clear yet?)
+(Are we in the clear yet? In the clear yet? Good) oh, I remember
+
+Are we out of the woods yet? Are we out of the woods yet?
+Are we out of the woods yet? Are we out of the woods?
+Are we in the clear yet? Are we in the clear yet?
+Are we in the clear yet? In the clear yet? Good
+Are we out of the woods yet? Are we out of the woods yet?
+Are we out of the woods yet? Are we out of the woods?
+Are we in the clear yet? Are we in the clear yet?
+Are we in the clear yet? In the clear yet? Good
+
+Are we out of the woods yet? Are we out of the woods yet?
+Are we out of the woods yet? Are we out of the woods?
+Are we in the clear yet? Are we in the clear yet?
+Are we in the clear yet? In the clear yet? Good
+Are we out of the woods yet? Are we out of the woods yet?
+Are we out of the woods yet? Are we out of the woods?
+Are we in the clear yet? Are we in the clear yet?
+Are we in the clear yet? In the clear yet? Good
+`};
+
 // Split the book into words
 const segmenter = new Intl.Segmenter([], { granularity: 'word' });
-const segmentedText = segmenter.segment(book);
-const words = [...segmentedText].filter(s => s.isWordLike).map(s => s.segment);
 
     function updateStory() {
+        const selectedText = document.getElementById("text-choice").value;
+        const book = books[selectedText];
         // Make a paragraph for every sentence in the story
         var storyHTML = "";
         var sentences = book.split("\n");
-        var maxWords = document.getElementById("maxWords").value;
+        var maxWords = document.getElementById("max-words").value;
         var i = 0;
         sentences.forEach(function (sentence) {
             var sentenceHTML = "";
@@ -275,8 +358,14 @@ const words = [...segmentedText].filter(s => s.isWordLike).map(s => s.segment);
 
 
     function updateGraph() {
+        const selectedText = document.getElementById("text-choice").value;
+        const book = books[selectedText];
+
+        const segmentedText = segmenter.segment(book);
+        const words = [...segmentedText].filter(s => s.isWordLike).map(s => s.segment);
+
         // Get the number of words to display
-        var maxWords = document.getElementById("maxWords").value;
+        var maxWords = document.getElementById("max-words").value;
 
         // Keep a list of unique words
         var uniqueWords = new Set();
@@ -345,8 +434,20 @@ const words = [...segmentedText].filter(s => s.isWordLike).map(s => s.segment);
             nodes: nodes,
             edges: edges
         };
-        var options = {};
+        var options = {
+          nodes: {
+            shape: "dot",
+            scaling: {
+              customScalingFunction: function (min, max, total, value) {
+                return value / total;
+              },
+              min: 5,
+              max: 150,
+            },
+          },
+        };
         var network = new vis.Network(container, data, options);
+        network.fit({ animation: { duration: 1000 } });
 }
 
 function update() {
