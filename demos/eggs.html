@@ -1,4 +1,7 @@
-<html><head><title>Markov Chains</title></head>
+<html>
+    <head>
+        <title>Markov Chains</title>
+    </head>
 <body>
 <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 
@@ -37,6 +40,7 @@
         <select id="text-choice" onchange="javascript:update()">
             <option selected>Green Eggs and Ham</option>
             <option>Out of the Woods</option>
+            <option>HIP (MAMAMOO)</option>
         </select> 
        Words <input id="max-words" type="number" value="3" onchange="javascript:update()"/>
        <input type="checkbox" id="sentences" onchange="javascript:update()"> Sentences
@@ -319,7 +323,65 @@ Are we out of the woods yet? Are we out of the woods yet?
 Are we out of the woods yet? Are we out of the woods?
 Are we in the clear yet? Are we in the clear yet?
 Are we in the clear yet? In the clear yet? Good
-`};
+`,
+'HIP (MAMAMOO)': `All I wanna be is 멋짐 내 마음대로 골라 kick it
+머리 어깨 무릎 다 hip해
+Do it, do it like me, do it, 나를 따라 해 kick it
+Clapping, clapping 모두 같이 hip, hip, hip, hip
+(Hip)
+(Hip, hip, hip)
+I love you 네가 뭐라든 간에
+Respect you 네가 뭘 하든 간에 (She's crazy)
+늘 따끈따끈해 그 관심이 따끔따끔해
+또 힐끔 힐끔 힐끔 (Hip, hip, hip)
+이젠 모든 일이 가뿐해 veteran
+성공을 썰어 먹어 마치 michelin
+누구보다 빠른 걸음을 걸었네 비시즌
+잊은 지도 오래야 뒷걸음
+All I wanna be is 멋짐 내 멋대로 골라 kick it
+머리 어깨 무릎 다 hip (Hip, hip, hip)
+삐삐삐 논란이 돼 my fashion (Oh)
+별로 신경 안 써 그저 action (Yeah)
+자꾸 click me, click me 홀린 듯이 zoom
+Close up, close up, close up
+Hip 해 hip, hip 머리 어깨 무릎 hip
+Hip, hip, hi-hi-hi-hip 해
+Hip, hip 머리 어깨 무릎 hip
+(Hip, hip) Hi-hi-hi-hip 해 hip (Hip, hip, hip)
+(Attention) 어딜 가든 넌
+(Reflection) 빛날 수 있어 (Yeah)
+세상에 넌 하나뿐인 걸
+근데 왜이래 네 얼굴에 침 뱉니 (칵투)
+날 자극한 여러분 감사
+거기서 멈춘 찌질이 반사
+덕분에 나의 멘탈은 단단해
+난 다음 앨범 만들러 갈게
+All you wanna be is trendy 어그로 끌기 gimmick 때찌
+그런 애들 끼리끼리 hip (Hip, hip, hip)
+삐삐삐 논란이 돼 my fashion (Oh)
+별로 신경 안 써 그저 action (Yeah)
+자꾸 click me, click me 홀린 듯이 zoom
+Close up, close up, close up
+Hip 해 hip, hip 머리 어깨 무릎 hip
+Hip, hip, hi-hi-hi-hip 해
+Hip, hip 머리 어깨 무릎 hip
+(Hip, hip) Hi-hi-hi-hip 해 hip (Hip, hip, hip)
+코 묻은 티 삐져나온 입
+떡진 머리 난 상관없지
+코 묻은 티 삐져나온 입
+떡진 머리 내가 하면 hip
+코 묻은 티 삐져나온 팬티
+떡진 머리 난 상관없지
+코 묻은 티 삐져나온 팬티
+떡진 머리 내가 하면 hip
+삐삐삐 논란이 돼 my fashion (Oh)
+별로 신경 안 써 그저 action (Yeah)
+자꾸 click me, click me 홀린 듯이 zoom
+Close up, close up, close up
+Hip 해 hip, hip 머리 어깨 무릎 hip
+Hip, hip, hi-hi-hi-hip 해
+Hip, hip 머리 어깨 무릎 hip
+(Hip, hip) Hi-hi-hi-hip 해 hip (Hip, hip, hip)`};
 
 // Split the book into words
 const segmenter = new Intl.Segmenter([], { granularity: 'word' });
