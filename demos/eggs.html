@@ -438,11 +438,8 @@ const segmenter = new Intl.Segmenter([], { granularity: 'word' });
           nodes: {
             shape: "dot",
             scaling: {
-              customScalingFunction: function (min, max, total, value) {
-                return value / total;
-              },
-              min: 5,
-              max: 150,
+              min: 1,
+              max: 20,
             },
           },
         };
