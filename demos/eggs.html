@@ -15,13 +15,35 @@
       padding: 0;
       overflow: hidden;
     }
+    #story {
+      width: 30%;
+      height: 100%;
+      float: left;
+      overflow: auto;
+    }
+    #graph {
+      width: 70%;
+      height: 100%;
+      float: left;
+    }
+    #story-text {
+        padding-left: 10px;
+        white-space: pre-wrap;
+    }
+    .highlighted {
+        background-color: yellow;
+    }
   </style>
-  <p>Words <input id="maxWords" type="number" value="3" onchange="javascript:updateGraph()"/></p>
-  <div id="container"></div>
+  
+  <div id="container">
+    <p>Words <input id="maxWords" type="number" value="3" onchange="javascript:update()"/></p>
+    <div id="story">
+        <h1>Green Eggs and Ham</h1>
+        <p id="story-text"></p>
+    </div>
+    <div id="graph"></div>
+  </div>
 <script type="text/javascript">
-    function updateGraph() {
-    // Get the number of words to display
-    const maxWords = document.getElementById("maxWords").value;
 const book = `
 I am Sam
 Sam I am
@@ -217,61 +239,110 @@ Thank you!
 Thank you,
 Sam-I-am
 `;
-
 // Split the book into words
 const segmenter = new Intl.Segmenter([], { granularity: 'word' });
 const segmentedText = segmenter.segment(book);
 const words = [...segmentedText].filter(s => s.isWordLike).map(s => s.segment);
 
-// Keep a list of unique words
-var uniqueWords = new Set();
+    function updateStory() {
+        // Make a paragraph for every sentence in the story
+        var storyHTML = "";
+        var sentences = book.split("\n");
+        var maxWords = document.getElementById("maxWords").value;
+        var i = 0;
+        sentences.forEach(function (sentence) {
+            var sentenceHTML = "";
 
-// Go through each word, up to LIMIT
-var wordNodes = [];
-var storyEdges = [];
+            const segmentedSentence = segmenter.segment(sentence);
+            const words = [...segmentedSentence].filter(s => s.isWordLike).map(s => s.segment);
 
-for (var i = 0; i < maxWords; i++) {
-  // Have we seen this word before? If no, add a node
-  if (!uniqueWords.has(words[i])) {
-    uniqueWords.add(words[i]);
-    wordNodes.push({
-      id: words[i],
-      label: words[i],
-    });
-  }
+            // Make a span tag for every word in the story
+            words.forEach(function (word) {
+                if (i < maxWords) {
+                    sentenceHTML += "<span class='highlighted'>" + word + "</span> ";
+                } else {
+                    sentenceHTML += "<span>" + word + "</span> ";
+                }
+                i ++;
+            });
 
-  // If we're beyond the first word, connect this word with the previous one
-  if (i > 0) {
-    // Does the edge already exist?
-    //if (!graph.hasEdge(words[i - 1], words[i]))
-      storyEdges.push({
-        from: words[i - 1], 
-        to: words[i],
-        arrows: {
-            to: {
-              enabled: true,
-              type: "arrow",
-            },
-          },
-      });
-  }
+            storyHTML += "<p>" + sentenceHTML + "</p>";
+        });
+
+        // Replace the innerHTML of the story element with the spans
+        document.getElementById("story-text").innerHTML = storyHTML;
+    }    
+
+
+    function updateGraph() {
+        // Get the number of words to display
+        var maxWords = document.getElementById("maxWords").value;
+
+        // Keep a list of unique words
+        var uniqueWords = new Set();
+
+        // Go through each word, up to LIMIT
+        var wordNodes = [];
+        var storyEdges = [];
+
+        // Make sure maxWords is within the range of the number of words in the book
+        maxWords = Math.min(maxWords, words.length);
+
+        for (var i = 0; i < maxWords; i++) {
+        // Have we seen this word before? If no, add a node
+        if (!uniqueWords.has(words[i])) {
+            uniqueWords.add(words[i]);
+            wordNodes.push({
+                id: words[i],
+                label: words[i],
+                value: 1,
+            });
+        } else {
+            // Make the node bigger!
+            wordNodes.forEach(function (node) {
+                if (node.id === words[i]) {
+                    node.value += 1;
+                }
+            });
+        }
+
+        // If we're beyond the first word, connect this word with the previous one
+        if (i > 0) {
+            // Does the edge already exist?
+            //if (!graph.hasEdge(words[i - 1], words[i]))
+            storyEdges.push({
+                from: words[i - 1], 
+                to: words[i],
+                arrows: {
+                    to: {
+                    enabled: true,
+                    type: "arrow",
+                    },
+                },
+            });
+        }
+        }
+
+        // create an array with nodes
+        var nodes = new vis.DataSet(wordNodes);
+
+        // create an array with edges
+        var edges = new vis.DataSet(storyEdges);
+
+        // create a network
+        var container = document.getElementById("graph");
+        var data = {
+            nodes: nodes,
+            edges: edges
+        };
+        var options = {};
+        var network = new vis.Network(container, data, options);
 }
 
-  // create an array with nodes
-  var nodes = new vis.DataSet(wordNodes);
-
-  // create an array with edges
-  var edges = new vis.DataSet(storyEdges);
-
-  // create a network
-  var container = document.getElementById("container");
-  var data = {
-    nodes: nodes,
-    edges: edges
-  };
-  var options = {};
-  var network = new vis.Network(container, data, options);
+function update() {
+    updateStory();
+    updateGraph();
 }
-updateGraph();
+update();
+
 </script>
-</body></html>
