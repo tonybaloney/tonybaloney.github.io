@@ -44,6 +44,8 @@
         </select> 
        Words <input id="max-words" type="number" value="3" onchange="javascript:update()"/>
        <input type="checkbox" id="sentences" onchange="javascript:update()"> Sentences
+
+       <button onclick="play()">Play</button>
     </p>
     <div id="story">
         <p id="story-text"></p>
@@ -133,7 +135,7 @@ Not in a car! You let me be.
 I do not like them in a box.
 I do not like them with a fox
 I do not like them in a house
-I do mot like them with a mouse
+I do not like them with a mouse
 I do not like them here or there.
 I do not like them anywhere.
 I do not like green eggs and ham.
@@ -252,77 +254,109 @@ It all seems so simple
 We were lying on your couch
 I remember
 You took a Polaroid of us
-Then discovered (then discovered)
+Then discovered
+(Then discovered)
 The rest of the world was black and white
 But we were in screaming color
 And I remember thinking
-
-Are we out of the woods yet? Are we out of the woods yet?
-Are we out of the woods yet? Are we out of the woods?
-Are we in the clear yet? Are we in the clear yet?
-Are we in the clear yet? In the clear yet? Good
-Are we out of the woods yet? Are we out of the woods yet?
-Are we out of the woods yet? Are we out of the woods?
-Are we in the clear yet? Are we in the clear yet?
-Are we in the clear yet? In the clear yet? Good
-
+Are we out of the woods yet?
+Are we out of the woods yet?
+Are we out of the woods yet?
 Are we out of the woods?
-
+Are we in the clear yet?
+Are we in the clear yet?
+Are we in the clear yet?
+In the clear yet, good
+Are we out of the woods yet?
+Are we out of the woods yet?
+Are we out of the woods yet?
+Are we out of the woods?
+Are we in the clear yet?
+Are we in the clear yet?
+Are we in the clear yet?
+In the clear yet, good
+(Are we out of the woods?)
 Looking at it now
-Last December (last December)
+Last December
+(Last December)
 We were built to fall apart
-Then fall back together (back together)
-Ooh, your necklace hanging from my neck, the night we couldn't quite forget
+Then fall back together
+(Back together)
+Ooh, your necklace hanging from my neck
+The night we couldn't quite forget
 When we decided, we decided
-To move the furniture so we could dance, baby, like we stood a chance
+To move the furniture so we could dance
+Baby, like we stood a chance
 Two paper airplanes flying, flying, flying
 And I remember thinking
-
-Are we out of the woods yet? Are we out of the woods yet?
-Are we out of the woods yet? Are we out of the woods?
-Are we in the clear yet? Are we in the clear yet?
-Are we in the clear yet? In the clear yet? Good
-Are we out of the woods yet? Are we out of the woods yet?
-Are we out of the woods yet? Are we out of the woods?
-Are we in the clear yet? Are we in the clear yet?
-Are we in the clear yet? In the clear yet? Good
-
+Are we out of the woods yet?
+Are we out of the woods yet?
+Are we out of the woods yet?
 Are we out of the woods?
-
-Remember when you hit the brakes too soon
+Are we in the clear yet?
+Are we in the clear yet?
+Are we in the clear yet?
+In the clear yet, good
+Are we out of the woods yet?
+Are we out of the woods yet?
+Are we out of the woods yet?
+Are we out of the woods?
+Are we in the clear yet?
+Are we in the clear yet?
+Are we in the clear yet?
+In the clear yet, good
+(Are we out of the woods?)
+Remember when you hit the brakes too soon?
 Twenty stitches in a hospital room
 When you started crying, baby, I did too
 But when the sun came up, I was looking at you
-Remember when we couldn't take the heat
-I walked out, I said, I'm setting you free
+Remember when we couldn't take the heat?
+I walked out, I said "I'm setting you free"
 But the monsters turned out to be just trees
-When the sun came up, you were looking at me
+When the sun came up you were looking at me
 
 You were looking at me, oh
 You were looking at me
-
-(Are we out of the woods yet? Are we out of the woods yet?)
-(Are we out of the woods yet? Are we out of the woods?) I remember
-(Are we in the clear yet? Are we in the clear yet?)
-(Are we in the clear yet? In the clear yet? Good) oh, I remember
-
-Are we out of the woods yet? Are we out of the woods yet?
-Are we out of the woods yet? Are we out of the woods?
-Are we in the clear yet? Are we in the clear yet?
-Are we in the clear yet? In the clear yet? Good
-Are we out of the woods yet? Are we out of the woods yet?
-Are we out of the woods yet? Are we out of the woods?
-Are we in the clear yet? Are we in the clear yet?
-Are we in the clear yet? In the clear yet? Good
-
-Are we out of the woods yet? Are we out of the woods yet?
-Are we out of the woods yet? Are we out of the woods?
-Are we in the clear yet? Are we in the clear yet?
-Are we in the clear yet? In the clear yet? Good
-Are we out of the woods yet? Are we out of the woods yet?
-Are we out of the woods yet? Are we out of the woods?
-Are we in the clear yet? Are we in the clear yet?
-Are we in the clear yet? In the clear yet? Good
+(Are we out of the woods yet?)
+(Are we out of the woods yet?)
+(Are we out of the woods yet?)
+(Are we out of the woods?)
+I remember
+(Are we in the clear yet?)
+(Are we in the clear yet?)
+Oh, I remember
+Are we out of the woods yet?
+Are we out of the woods yet? (Yeah)
+Are we out of the woods yet?
+Are we out of the woods?
+Are we in the clear yet?
+Are we in the clear yet?
+Are we in the clear yet?
+In the clear yet, good
+Are we out of the woods yet?
+Are we out of the woods yet?
+Are we out of the woods yet?
+Are we out of the woods?
+Are we in the clear yet? (Yeah)
+Are we in the clear yet? (Yeah)
+Are we in the clear yet?
+In the clear yet, good
+Are we out of the woods yet?
+Are we out of the woods yet?
+Are we out of the woods yet?
+Are we out of the woods?
+Are we in the clear yet?
+Are we in the clear yet?
+Are we in the clear yet?
+In the clear yet, good
+Are we out of the woods yet?
+Are we out of the woods yet?
+Are we out of the woods yet?
+Are we out of the woods?
+Are we in the clear yet?
+Are we in the clear yet?
+Are we in the clear yet?
+In the clear yet, good
 `,
 'HIP (MAMAMOO)': `All I wanna be is 멋짐 내 마음대로 골라 kick it
 머리 어깨 무릎 다 hip해
@@ -383,45 +417,159 @@ Hip, hip, hi-hi-hi-hip 해
 Hip, hip 머리 어깨 무릎 hip
 (Hip, hip) Hi-hi-hi-hip 해 hip (Hip, hip, hip)`};
 
+const timing = {
+    'Out of the Woods':
+    `[00:10.59]Looking at it now
+[00:14.65]It all seems so simple
+[00:20.22]We were lying on your couch
+[00:25.42]I remember
+[00:30.24]You took a Polaroid of us
+[00:35.88]Then discovered
+[00:38.54](Then discovered)
+[00:40.88]The rest of the world was black and white
+[00:45.64]But we were in screaming color
+[00:50.74]And I remember thinking
+[00:52.59]Are we out of the woods yet?
+[00:53.10]Are we out of the woods yet?
+[00:55.25]Are we out of the woods yet?
+[00:56.75]Are we out of the woods?
+[00:57.81]Are we in the clear yet?
+[00:59.34]Are we in the clear yet?
+[01:00.46]Are we in the clear yet?
+[01:01.85]In the clear yet, good
+[01:03.05]Are we out of the woods yet?
+[01:04.50]Are we out of the woods yet?
+[01:05.76]Are we out of the woods yet?
+[01:07.01]Are we out of the woods?
+[01:08.30]Are we in the clear yet?
+[01:09.76]Are we in the clear yet?
+[01:11.08]Are we in the clear yet?
+[01:12.48]In the clear yet, good
+[01:16.23](Are we out of the woods?)
+[01:18.52]Looking at it now
+[01:22.77]Last December
+[01:25.57](Last December)
+[01:28.04]We were built to fall apart
+[01:32.66]Then fall back together
+[01:36.11](Back together)
+[01:37.66]Ooh, your necklace hanging from my neck
+[01:41.08]The night we couldn't quite forget
+[01:43.66]When we decided, we decided
+[01:48.45]To move the furniture so we could dance
+[01:52.13]Baby, like we stood a chance
+[01:53.74]Two paper airplanes flying, flying, flying
+[01:58.70]And I remember thinking
+[02:00.49]Are we out of the woods yet?
+[02:01.84]Are we out of the woods yet?
+[02:03.10]Are we out of the woods yet?
+[02:04.33]Are we out of the woods?
+[02:05.78]Are we in the clear yet?
+[02:07.01]Are we in the clear yet?
+[02:08.37]Are we in the clear yet?
+[02:09.75]In the clear yet, good
+[02:11.06]Are we out of the woods yet?
+[02:12.33]Are we out of the woods yet?
+[02:13.65]Are we out of the woods yet?
+[02:14.94]Are we out of the woods?
+[02:16.12]Are we in the clear yet?
+[02:17.44]Are we in the clear yet?
+[02:18.80]Are we in the clear yet?
+[02:20.11]In the clear yet, good
+[02:24.01](Are we out of the woods?)
+[02:26.62]Remember when you hit the brakes too soon?
+[02:29.43]Twenty stitches in a hospital room
+[02:31.79]When you started crying, baby, I did too
+[02:34.38]But when the sun came up, I was looking at you
+[02:37.17]Remember when we couldn't take the heat?
+[02:39.85]I walked out, I said "I'm setting you free"
+[02:42.10]But the monsters turned out to be just trees
+[02:44.73]When the sun came up you were looking at me
+[02:48.25]
+[02:50.94]You were looking at me, oh
+[02:56.36]You were looking at me
+[02:57.89](Are we out of the woods yet?)
+[02:59.29](Are we out of the woods yet?)
+[03:00.41](Are we out of the woods yet?)
+[03:01.69](Are we out of the woods?)
+[03:02.37]I remember
+[03:02.84](Are we in the clear yet?)
+[03:04.50](Are we in the clear yet?)
+[03:05.89]Oh, I remember
+[03:08.03]Are we out of the woods yet?
+[03:09.61]Are we out of the woods yet? (Yeah)
+[03:10.87]Are we out of the woods yet?
+[03:12.20]Are we out of the woods?
+[03:13.57]Are we in the clear yet?
+[03:14.79]Are we in the clear yet?
+[03:15.95]Are we in the clear yet?
+[03:17.41]In the clear yet, good
+[03:18.62]Are we out of the woods yet?
+[03:20.19]Are we out of the woods yet?
+[03:21.41]Are we out of the woods yet?
+[03:22.72]Are we out of the woods?
+[03:23.71]Are we in the clear yet? (Yeah)
+[03:25.24]Are we in the clear yet? (Yeah)
+[03:26.46]Are we in the clear yet?
+[03:27.90]In the clear yet, good
+[03:29.32]Are we out of the woods yet?
+[03:30.62]Are we out of the woods yet?
+[03:31.85]Are we out of the woods yet?
+[03:33.03]Are we out of the woods?
+[03:34.37]Are we in the clear yet?
+[03:35.51]Are we in the clear yet?
+[03:37.09]Are we in the clear yet?
+[03:38.15]In the clear yet, good
+[03:39.49]Are we out of the woods yet?
+[03:40.99]Are we out of the woods yet?
+[03:42.25]Are we out of the woods yet?
+[03:43.64]Are we out of the woods?
+[03:44.84]Are we in the clear yet?
+[03:46.25]Are we in the clear yet?
+[03:47.35]Are we in the clear yet?
+[03:48.79]In the clear yet, good`
+}
+
+var network = null;
+
 // Split the book into words
 const segmenter = new Intl.Segmenter([], { granularity: 'word' });
 
-    function updateStory() {
-        const selectedText = document.getElementById("text-choice").value;
-        const book = books[selectedText];
-        // Make a paragraph for every sentence in the story
-        var storyHTML = "";
-        var sentences = book.split("\n").filter(s => s.length > 0);
-        var maxWords = document.getElementById("max-words").value;
-        var sentenceIndex = 0;
-        var i = 0;
-        sentences.forEach(function (sentence) {
-            var sentenceHTML = "";
+function updateStory() {
+    const selectedText = document.getElementById("text-choice").value;
+    const book = books[selectedText];
+    // Make a paragraph for every sentence in the story
+    var storyHTML = "";
+    var sentences = book.split("\n").filter(s => s.length > 0);
+    var maxWords = document.getElementById("max-words").value;
+    var sentenceIndex = 0;
+    var i = 0;
+    sentences.forEach(function (sentence) {
+        var sentenceHTML = "";
 
-            const segmentedSentence = segmenter.segment(sentence);
-            const words = [...segmentedSentence].filter(s => s.isWordLike).map(s => s.segment);
+        const segmentedSentence = segmenter.segment(sentence);
+        const words = [...segmentedSentence].filter(s => s.isWordLike).map(s => s.segment);
 
-            // Make a span tag for every word in the story
-            words.forEach(function (word) {
-                if (i < maxWords) {
-                    sentenceHTML += "<span class='highlighted'>" + word + "</span> ";
-                } else {
-                    sentenceHTML += "<span>" + word + "</span> ";
-                }
-                i ++;
-            });
-
-            if (document.getElementById("sentences").checked && sentenceIndex < maxWords) {
-                storyHTML += "<p class='highlighted'>" + sentenceHTML + "</p>";
+        // Make a span tag for every word in the story
+        words.forEach(function (word) {
+            if (i < maxWords) {
+                sentenceHTML += "<span class='highlighted'>" + word + "</span> ";
             } else {
-                storyHTML += "<p>" + sentenceHTML + "</p>";
+                sentenceHTML += "<span>" + word + "</span> ";
             }
-            sentenceIndex ++;
+            i ++;
         });
 
-        // Replace the innerHTML of the story element with the spans
-        document.getElementById("story-text").innerHTML = storyHTML;
-    }    
+        if (document.getElementById("sentences").checked && sentenceIndex < maxWords) {
+            storyHTML += "<p class='highlighted'>" + sentenceHTML + "</p>";
+        } else {
+            storyHTML += "<p>" + sentenceHTML + "</p>";
+        }
+        sentenceIndex ++;
+    });
+
+    // Replace the innerHTML of the story element with the spans
+    document.getElementById("story-text").innerHTML = storyHTML;
+}    
 
 
     function updateGraph() {
@@ -475,7 +623,6 @@ const segmenter = new Intl.Segmenter([], { granularity: 'word' });
             storyEdges.forEach(function (edge) {
                 if (edge.from === words[i - 1] && edge.to === words[i]) {
                     edge.label = (parseInt(edge.label) + 1).toString();
-                    edge.value ++;
                     edgeExists = true;
                 }
             });
@@ -485,7 +632,6 @@ const segmenter = new Intl.Segmenter([], { granularity: 'word' });
                     from: words[i - 1], 
                     to: words[i],
                     label: "1",
-                    value: 1,
                     arrows: {
                         to: {
                             enabled: true,
@@ -524,7 +670,7 @@ const segmenter = new Intl.Segmenter([], { granularity: 'word' });
           layout: { randomSeed: 2 },
           interaction: { hover: true },
         };
-        var network = new vis.Network(container, data, options);
+        network = new vis.Network(container, data, options);
         network.fit({ animation: { duration: 1000 } });
         network.on("click", function (params) {
             params.event = "[original event]";
@@ -543,6 +689,60 @@ const segmenter = new Intl.Segmenter([], { granularity: 'word' });
         network.on("showPopup", function (nodeId) {
             console.log(network.getNodeAt(nodeId));
         });
+}
+
+function focusOn(nodeId) {
+    var options = {
+        scale: 1.0,
+        offset: { x: 0, y: 0 },
+        animation: {
+        duration: 500,
+        easingFunction: "easeInQuart",
+        },
+    };
+    network.focus(nodeId, options);
+}
+
+
+function play() {
+    // Get timings for each sentence
+    const selectedText = document.getElementById("text-choice").value;
+
+    const timings = timing[selectedText];
+    if (!timings) {
+        console.log("No timings found for this text");
+        return;
+    }
+    // Split by line
+    const lines = timings.split("\n");
+
+    // Get the [00:00.00] part
+    const timeRegex = /\[(\d+:\d+\.\d+)\]/;
+    lines.forEach(function (line) {
+        const match = timeRegex.exec(line);
+        if (match) {
+            const time = match[1];
+            const timeParts = time.split(":");
+            const minutes = parseInt(timeParts[0]);
+            const seconds = parseFloat(timeParts[1]);
+            const totalSeconds = minutes * 60 + seconds;
+            
+            // Split the line by the word segmenter
+            const sentence = line.split("]").slice(1).join("]");
+            const segmentedSentence = segmenter.segment(sentence);
+            const words = [...segmentedSentence].filter(s => s.isWordLike).map(s => s.segment);
+
+            // Distribute the words over the time
+            words.forEach(function (word, index) {
+                setTimeout(function () {
+                    // get the node id of the word
+                    console.log("Focusing on", word);
+                    focusOn(word);
+                }, totalSeconds * 1000 + (index * 500));
+            });
+        }
+    });
+    console.log("Playing");
 }
 
 function update() {
