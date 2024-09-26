@@ -679,6 +679,11 @@ const timing = {
 [02:40.32]Eyday 誰も口を挟ませない (Don't test)`
 }
 
+const speed = {
+    'Out of the Woods': 500,
+    'Bling-bang-bang-born': 300,
+}
+
 var network = null;
 
 // Split the book into words
@@ -841,12 +846,12 @@ function updateStory() {
         });
 }
 
-function focusOn(nodeId) {
+function focusOn(nodeId, pace) {
     var options = {
-        scale: 1.0,
+        scale: 2.0,
         offset: { x: 0, y: 0 },
         animation: {
-        duration: 500,
+        duration: pace,
         easingFunction: "easeInQuart",
         },
     };
@@ -863,6 +868,7 @@ function play() {
         console.log("No timings found for this text");
         return;
     }
+    const pace = speed[selectedText] || 500;
     // Split by line
     const lines = timings.split("\n");
 
@@ -887,8 +893,8 @@ function play() {
                 setTimeout(function () {
                     // get the node id of the word
                     console.log("Focusing on", word);
-                    focusOn(word);
-                }, totalSeconds * 1000 + (index * 500));
+                    focusOn(word, pace);
+                }, totalSeconds * 1000 + (index * pace));
             });
         }
     });
