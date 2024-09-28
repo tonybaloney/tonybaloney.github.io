@@ -30,7 +30,7 @@ def get_pdf_contents(path: str | pathlib.Path) -> Generator[str, None, None]:
         pages = reader.pages
         for _, p in enumerate(pages):
             page_text = p.extract_text()
-            logger.info(f"Extracted text from page {p.page_number}")
+            logger.info(f"Extracted text from page {p.page_number}, {len(page_text)} characters")
             yield page_text
 
 # Step 2: Split the document into chunks based on the maximum token limit for the input in the
@@ -38,7 +38,7 @@ def get_pdf_contents(path: str | pathlib.Path) -> Generator[str, None, None]:
 
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-MODEL = "gpt-4"  # The encoding would be the same for GPT-3.5 and GPT-4, but GPT-4o has a new tokenization standard
+MODEL = "gpt-4o-mini"  # The encoding would be the same for GPT-3.5 and GPT-4, but GPT-4o has a new tokenization standard
 MAX_TOKENS = 4096  # Depends on the model deployment
 
 text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
@@ -47,10 +47,12 @@ text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
         chunk_overlap=0,
     )
 
+# If you're using public OpenAI, you'll need something like this
 # from openai import OpenAI
-
 # client = OpenAI(...)  # Depends on how you're using OpenAI
 
+
+# If you're using Azure OpenAI, you'll need something like this
 from openai import AzureOpenAI
 client = AzureOpenAI(
         api_version="2024-02-15-preview",
@@ -69,8 +71,7 @@ def translate(text: str, target: str = "Japanese") -> str:
         temperature=0,
         n=1,
     )
-    result = response.choices[0].message.content
-    return result
+    return response.choices[0].message.content
 
 
 if __name__ == "__main__":
@@ -79,13 +80,16 @@ if __name__ == "__main__":
         print(f"Usage: {sys.argv[0]} <pdf-file>")
     filepath = sys.argv[1]
     contents = "\n".join(page for page in get_pdf_contents(filepath))
-
+    logger.info(f"Extracted {len(contents)} characters from the PDF")
     chunks = text_splitter.split_text(contents)
 
     # Step 3: Translate the chunks
+    result = ""
+    logger.info(f"Translating {len(chunks)} chunks")
     for chunk in chunks:
         translation = translate(chunk, target="Japanese")
+        result += translation
     
     # Step 4: Save the translations
     with open("translated.txt", "w", encoding="utf-8") as f:
-        f.write(translation)
+        f.write(result)
