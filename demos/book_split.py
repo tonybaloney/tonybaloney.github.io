@@ -80,7 +80,7 @@ if __name__ == "__main__":
     filepath = sys.argv[1]
     contents = "\n".join(page for page in get_pdf_contents(filepath))
 
-    chunks = text_splitter.split(contents)
+    chunks = text_splitter.split_text(contents)
 
     # Step 3: Translate the chunks
     for chunk in chunks:
