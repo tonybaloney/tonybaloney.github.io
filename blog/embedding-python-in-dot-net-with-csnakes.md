@@ -10,11 +10,11 @@ This year, I've been working on a new project called [CSnakes](https://tonybalon
 
 ## What problem is this solving?
 
-Python and .NET are pretty different platforms in many ways. Python uses dynamic typing, while .NET uses static typing. Python is interpreted, while .NET is compiled. Python is a scripting language, while .NET is a framework. 
+Python and .NET are pretty different platforms in many ways. Python uses dynamic typing, while .NET uses static typing. Python is interpreted, while .NET is compiled. Python is a language, while .NET is a framework (as my colleague who keeps mentioning F#.NET likes to remind me).
 
 Because of this and many other differences, Python and .NET have taken hold in different parts of the software development world. Python is popular in data science, machine learning, and web development, while .NET is popular in enterprise software, desktop applications, and games.
 
-In Python, you can just about run something on the level of a [NES emulator](https://pypi.org/project/nes-py/), whereas .NET is used to build the [Unity game engine](https://unity.com/) for games like [Hollow Knight](https://www.hollowknight.com/) and Wasteland 3:
+In Python, you can just about write games on the level of a [NES emulator](https://pypi.org/project/nes-py/), whereas .NET is used to build the [Unity game engine](https://unity.com/) for games like [Hollow Knight](https://www.hollowknight.com/) and Wasteland 3:
 
 ![Wasteland 3 screenshot](/img/posts/wasteland3_1.jpg){.img-responsive .center-block style="width:50%"}
 
