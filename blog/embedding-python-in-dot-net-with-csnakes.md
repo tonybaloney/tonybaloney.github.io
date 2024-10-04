@@ -181,6 +181,12 @@ CSnakes also [supports the experimental feature in Python 3.13](https://tonybalo
 
 ## How do I get started?
 
+Here's a recap of the CSnakes architecture:
+
+![CSnakes architecture](https://tonybaloney.github.io/CSnakes/res/architecture_simple.png){.img-responsive .center-block style="width:50%"}
+
+CSnakes supports .NET 8 and 9 and Python versions 3.9 to 3.13. It also supports Windows, macOS, and Linux.
+
 Go to the [Getting Started](https://tonybaloney.github.io/CSnakes/getting-started/) guide on the CSnakes website. We have a tutorial that walks you through the process of setting up a new .NET project, installing the CSnakes NuGet package, and writing your first Python function.
 
 ## What are the limitations?
