@@ -179,6 +179,14 @@ We've built a bridge between these two paradigms into CSnakes so that you don't 
 
 CSnakes also [supports the experimental feature in Python 3.13](https://tonybaloney.github.io/CSnakes/advanced/#free-threading-mode) to __disable__ the GIL altogether. You can run "free threaded" Python embedded into .NET, which would provide much greater parallelism and performance. 
 
+## What are the limitations?
+
+We are documenting the limitations of CSnakes on the [Limitations](https://tonybaloney.github.io/CSnakes/limitations/) page. But, some important ones are:
+
+- If the function is async, it won't generate an "async" wrapper in C#. It's possible, but nobody has asked for this yet.
+- If the type signature is a Union, either with `typing.Union` or the union operator `|`, CSnakes won't generate a wrapper. C# doesn't have a direct equivalent to Union types, so we're still working on the best way to handle this.
+- If the result is a class or the function takes a class, even if that class is defined in something like `dataclasses`, CSnakes will just expose this as a generic `PyObject`. We don't do any kind of reflection for classes (yet). You can access methods, attributes and properties on the class, but they aren't strongly typed.
+
 ## How do I get started?
 
 Here's a recap of the CSnakes architecture:
@@ -189,10 +197,6 @@ CSnakes supports .NET 8 and 9 and Python versions 3.9 to 3.13. It also supports 
 
 Go to the [Getting Started](https://tonybaloney.github.io/CSnakes/getting-started/) guide on the CSnakes website. We have a tutorial that walks you through the process of setting up a new .NET project, installing the CSnakes NuGet package, and writing your first Python function.
 
-## What are the limitations?
+## What's next?
 
-We are documenting the limitations of CSnakes on the [Limitations](https://tonybaloney.github.io/CSnakes/limitations/) page. But, some important ones are:
-
-- If the function is async, it won't generate an "async" wrapper in C#. It's possible, but nobody has asked for this yet.
-- If the type signature is a Union, either with `typing.Union` or the union operator `|`, CSnakes won't generate a wrapper. C# doesn't have a direct equivalent to Union types, so we're still working on the best way to handle this.
-- If the result is a class or the function takes a class, even if that class is defined in something like `dataclasses`, CSnakes will just expose this as a generic `PyObject`. We don't do any kind of reflection for classes (yet). You can access methods, attributes and properties on the class, but they aren't strongly typed.
+We're looking for feedback right now. The API is still in beta, so I'm all ears on the interface, usability and technical constraints and decisions we've made. At .NET Conf this year, I'll be showcasing CSnakes with some interesting demos. 

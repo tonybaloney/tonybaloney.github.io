@@ -244,11 +244,6 @@ for (int i = 0; i &lt; resultMatrix.Height; i++)
 .NET on the other hand uses Managed Threads a <strong>lot</strong>. The .NET runtime is very efficient at spawning and managing threads. Also, the TAP (Task-based Asynchronous Pattern) in .NET is very efficient at managing asynchronous code.</p>
 <p>We&rsquo;ve built a bridge between these two paradigms into CSnakes so that you don&rsquo;t need to worry about the GIL. CSnakes has an internal recursive-lock around the GIL and in cases like the .NET GC collector thread, we queue instructions that require the GIL so that they&rsquo;re handled in a thread-safe way.</p>
 <p>CSnakes also <a href="https://tonybaloney.github.io/CSnakes/advanced/#free-threading-mode">supports the experimental feature in Python 3.13</a> to <strong>disable</strong> the GIL altogether. You can run &ldquo;free threaded&rdquo; Python embedded into .NET, which would provide much greater parallelism and performance. </p>
-<h2 id="how-do-i-get-started">How do I get started?<a class="headerlink" href="#how-do-i-get-started" title="Permanent link">&para;</a></h2>
-<p>Here&rsquo;s a recap of the CSnakes architecture:</p>
-<p><img alt="CSnakes architecture" class="img-responsive center-block" src="https://tonybaloney.github.io/CSnakes/res/architecture_simple.png" style="width:50%"></p>
-<p>CSnakes supports .NET 8 and 9 and Python versions 3.9 to 3.13. It also supports Windows, macOS, and Linux.</p>
-<p>Go to the <a href="https://tonybaloney.github.io/CSnakes/getting-started/">Getting Started</a> guide on the CSnakes website. We have a tutorial that walks you through the process of setting up a new .NET project, installing the CSnakes NuGet package, and writing your first Python function.</p>
 <h2 id="what-are-the-limitations">What are the limitations?<a class="headerlink" href="#what-are-the-limitations" title="Permanent link">&para;</a></h2>
 <p>We are documenting the limitations of CSnakes on the <a href="https://tonybaloney.github.io/CSnakes/limitations/">Limitations</a> page. But, some important ones are:</p>
 <ul>
@@ -256,6 +251,13 @@ for (int i = 0; i &lt; resultMatrix.Height; i++)
 <li>If the type signature is a Union, either with <code>typing.Union</code> or the union operator <code>|</code>, CSnakes won&rsquo;t generate a wrapper. C# doesn&rsquo;t have a direct equivalent to Union types, so we&rsquo;re still working on the best way to handle this.</li>
 <li>If the result is a class or the function takes a class, even if that class is defined in something like <code>dataclasses</code>, CSnakes will just expose this as a generic <code>PyObject</code>. We don&rsquo;t do any kind of reflection for classes (yet). You can access methods, attributes and properties on the class, but they aren&rsquo;t strongly typed.</li>
 </ul>
+<h2 id="how-do-i-get-started">How do I get started?<a class="headerlink" href="#how-do-i-get-started" title="Permanent link">&para;</a></h2>
+<p>Here&rsquo;s a recap of the CSnakes architecture:</p>
+<p><img alt="CSnakes architecture" class="img-responsive center-block" src="https://tonybaloney.github.io/CSnakes/res/architecture_simple.png" style="width:50%"></p>
+<p>CSnakes supports .NET 8 and 9 and Python versions 3.9 to 3.13. It also supports Windows, macOS, and Linux.</p>
+<p>Go to the <a href="https://tonybaloney.github.io/CSnakes/getting-started/">Getting Started</a> guide on the CSnakes website. We have a tutorial that walks you through the process of setting up a new .NET project, installing the CSnakes NuGet package, and writing your first Python function.</p>
+<h2 id="whats-next">What&rsquo;s next?<a class="headerlink" href="#whats-next" title="Permanent link">&para;</a></h2>
+<p>We&rsquo;re looking for feedback right now. The API is still in beta, so I&rsquo;m all ears on the interface, usability and technical constraints and decisions we&rsquo;ve made. At .NET Conf this year, I&rsquo;ll be showcasing CSnakes with some interesting demos. </p>
             </div>
         </div>
         <div class="row">
