@@ -7,9 +7,20 @@
             A collection of technology articles
         </description>
         <link>https://tonybaloney.github.io/#blog</link>
-        <lastBuildDate>Fri, 12 Apr 2024 03:45:42 -0000</lastBuildDate>
+        <lastBuildDate>Fri, 04 Oct 2024 02:47:23 -0000</lastBuildDate>
         <pubDate>Sat, 4 Jan 2020 19:15:54 -0500</pubDate>
         <atom:link href="https://tonybaloney.github.io/rss.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Embedding Python into your .NET project with CSnakes</title>
+            <description>
+                A deep-dive into a new integration between .NET and Python
+            </description>
+            <link>https://tonybaloney.github.io/posts/embedding-python-in-dot-net-with-csnakes.html</link>
+            <pubDate>Fri, 04 Oct 2024 00:00:00 -0000</pubDate>
+            <dc:creator>Anthony Shaw</dc:creator>
+            <guid>https://tonybaloney.github.io/posts/embedding-python-in-dot-net-with-csnakes.html</guid>
+        </item>
         
         <item>
             <title>Using the Aspire Dashboard for Python OpenTelemetry tracing, metrics, and logs</title>

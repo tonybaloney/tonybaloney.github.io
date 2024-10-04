@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Embedding Python into your .NET project with CSnakes</title>
+
+    <!-- Facebook Meta tags -->
+    <meta property="og:title" content="Embedding Python into your .NET project with CSnakes">
+    <meta property="og:description" content="A deep-dive into a new integration between .NET and Python">
+    <meta property="og:image" content="https://tonybaloney.github.io/img/posts/snake-robot.jpeg">
+    <meta property="og:url" content="https://tonybaloney.github.io/posts/embedding-python-in-dot-net-with-csnakes.html">
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:title" content="Embedding Python into your .NET project with CSnakes">
+    <meta name="twitter:description" content="A deep-dive into a new integration between .NET and Python">
+    <meta name="twitter:image" content="https://tonybaloney.github.io/img/posts/snake-robot.jpeg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@anthonypjshaw">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="/css/clean-blog.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js"></script>
+
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/x86asm.min.js"></script>
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/python.min.js"></script>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    Menu <i class="fa fa-bars"></i>
+                </button>
+
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/#">Home</a>
+                    </li>
+                    <li>
+                        <a href="/#projects">Projects</a>
+                    </li>
+                    <li>
+                        <a href="/#contributions">Contributions</a>
+                    </li>
+                    <li>
+                        <a href="/#courses">Courses</a>
+                    </li>
+                    <li>
+                        <a href="/#podcasts">Podcasts</a>
+                    </li>
+                    <li>
+                        <a href="/#talks">Talks</a>
+                    </li>
+                    <li>
+                        <a href="/#blog">Blog</a>
+                    </li>
+                    <li>
+                        <a href="https://twitter.com/anthonypjshaw"><i class='fa fa-2x fa-twitter'></i></a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/tonybaloney"><i class='fa fa-2x fa-github'></i></a>
+                    </li>
+                    <li>
+                        <a href="https://www.youtube.com/c/AnthonyShaw"><i class='fa fa-2x fa-youtube-play'></i></a>
+                    </li>
+                    <li>
+                        <a href="/rss.xml"><i class='fa fa-2x fa-rss-square'></i></a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('/img/posts/snake-robot-back.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="site-heading">
+                        <h1>Embedding Python into your .NET project with CSnakes</h1>
+                        <hr class="small">
+                        <span class="subheading">by Anthony Shaw, October 4, 2024</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <p>This year, I&rsquo;ve been working on a new project called <a href="https://tonybaloney.github.io/CSnakes">CSnakes</a>. It&rsquo;s a new way to embed Python into your .NET project. It&rsquo;s a deep integration that allows you to run Python code from within your .NET application without having to shell out to a separate process or use a REST API.</p>
+<h2 id="what-problem-is-this-solving">What problem is this solving?<a class="headerlink" href="#what-problem-is-this-solving" title="Permanent link">&para;</a></h2>
+<p>Python and .NET are pretty different platforms in many ways. Python uses dynamic typing, while .NET uses static typing. Python is interpreted, while .NET is compiled. Python is a scripting language, while .NET is a framework. </p>
+<p>Because of this and many other differences, Python and .NET have taken hold in different parts of the software development world. Python is popular in data science, machine learning, and web development, while .NET is popular in enterprise software, desktop applications, and games.</p>
+<p>In Python, you can just about run something on the level of a <a href="https://pypi.org/project/nes-py/">NES emulator</a>, whereas .NET is used to build the <a href="https://unity.com/">Unity game engine</a> for games like <a href="https://www.hollowknight.com/">Hollow Knight</a> and Wasteland 3:</p>
+<p><img alt="Wasteland 3 screenshot" class="img-responsive center-block" src="/img/posts/wasteland3_1.jpg" style="width:50%"></p>
+<p>On the flip side, Python has been used for some of the biggest scientific breakthroughs of the past 10 years. Python is used for the <a href="https://www.youtube.com/watch?v=TLaRrGSQ9rg&amp;list=PL8uoeex94UhE2pLJUo9ouV0h5yRtt3CAG&amp;index=2">James Webb Space Telescope</a>, was used to create the first images of a blackhole, and is used for the <a href="https://cds.cern.ch/record/2809574#:~:text=In%202019%2C%20Python%20was%20adopted%20as%20an%20officially,supported%20language%20for%20interacting%20with%20CERN%E2%80%99s%20accelerator%20controls.">CERN Large Hadron Collider</a>.</p>
+<p>In my opinion, when you pick a programming language for a project, the ecosystem is just as (if not more) important than the language itself. </p>
+<p>You technically <em>could</em> write a 3D game in Python, but you&rsquo;d be missing out on the Unity engine and all of the graphics card support. You <em>could</em> write a data science application in C#, but you&rsquo;d be missing out on 10,000&rsquo;s of libraries and their respective commuities. If you start with a language that has a strong ecosystem for the types of problems you&rsquo;re trying to solve, you&rsquo;ll be able to move faster (and have more fun).</p>
+<p>So sometimes, you need to use more than one language for an application. This is the case a lot of large applications. I work at Microsoft. Sure, we use a lot of .NET, but we also use Python, Go, C++, Java, C, TypeScript, etc.</p>
+<p>That&rsquo;s where CSnakes comes in. You have a .NET project and you want to leverage some of the value from the Python ecosystem.</p>
+<p>CSnakes is a .NET library for loading and embedding Python into your .NET application so that you can call Python functions, pass data back and forth without having to write an API between the two. </p>
+<p>The scenarios I&rsquo;ve prioritized are data science, machine learning, and scientific computing related because that&rsquo;s one of Python&rsquo;s biggest strengths. You can use CSnakes to embed pretty much anything you can do in Python into .NET (even a web app like Django).</p>
+<h2 id="what-do-you-mean-by-embedded">What do you mean by &ldquo;embedded&rdquo;?<a class="headerlink" href="#what-do-you-mean-by-embedded" title="Permanent link">&para;</a></h2>
+<p>The most popular (by far) runtime for Python is CPython. CPython is written in C. CPython comes with a large extensibility layer called the Python C API. This API is mostly designed so that you can write Python libraries in C, C++, and Rust. NumPy for example is written in a combination of C and Python. Pydantic, the model validation platform is a lot of modern APIs is written in Python and Rust. </p>
+<p>This is one of Python&rsquo;s biggest strengths, to allow developers to write high-performance code in C, C++, or Rust and then expose it to Python developers with a nice friendly module that can be installed in a single command.</p>
+<p>CSnakes <em>embeds</em> Python into .NET at the C level. (that&rsquo;s where the name comes from). If you call a Python function from .NET using CSnakes, you&rsquo;re making the same C calls that Python would make normally from it&rsquo;s own interpreter. The benefit of this is two-fold. Firstly, the performance is much better than shelling out to a separate process. Secondly, you can pass data back and forth between Python and .NET without having to serialize it to a format like Pickle, JSON, or Protobuf.</p>
+<h3 id="a-short-example">A short example<a class="headerlink" href="#a-short-example" title="Permanent link">&para;</a></h3>
+<p>Let&rsquo;s start with the basics. You have a Python module with a function and you want to call that from .NET:</p>
+<pre><code class="python"># example.py
+
+def this_is_a_demo(name: str, star_sign: Optional[str] = None) -&gt; str:
+    if star_sign:
+        return f&quot;Hello {name}, you're a {star_sign}&quot;
+    return f&quot;Hello {name}, you're a mystery&quot;
+</code></pre>
+
+<p>So, to call this from .NET you install the <code>CSnakes.Runtime</code> package from NuGet into your project. <a href="https://tonybaloney.github.io/CSnakes/getting-started/#marking-files-for-generation">You then mark the Python file for analysis in the C# project</a>.</p>
+<p>Then the next time you build the project, CSnakes will parse the Python code looking for functions at a module level and their <strong>type annotations</strong>. The type annotations (whilst not required) are important because CSnakes uses these to determine what wrapper function in .NET to create.</p>
+<p>For <code>this_is_a_demo</code> it will create a method with the signature:</p>
+<pre><code class="csharp">public string ThisIsADemo(string name, string starSign = null);
+</code></pre>
+
+<p>CSnakes generates a C# class that wraps the Python function. You can then call this from your .NET code:</p>
+<pre><code class="csharp">var env = app.Services.GetRequiredService&lt;IPythonEnvironment&gt;();
+
+var module = env.Example();  // This is the example.py module
+
+var result = module.ThisIsADemo(&quot;Anthony&quot;, &quot;Leo&quot;); // All the public functions are available on the module
+Console.WriteLine(result); // Hello Anthony, you're a Leo
+</code></pre>
+
+<h4 id="whats-happening-under-the-hood">What&rsquo;s happening under the hood?<a class="headerlink" href="#whats-happening-under-the-hood" title="Permanent link">&para;</a></h4>
+<p>CSnakes initiates an instance of embedded Python via the C API into the .NET process. We use a singleton in the Service Host environment as the mechanism so that it&rsquo;s easy to resolve a Python environment quickly. </p>
+<p>The CSnakes source generator creates a typed interface and a concrete implementation based on the Python module and the functions it finds. CSnakes has a basic Python parser so we can find the functions and their type annotations without having to spin up Python. You can use CSnakes without the source generator, but it automates the creation of all the boilerplate code for you.</p>
+<p>CSnakes also generates wrapper method for the target (<code>this_is_a_demo</code>) that handles:</p>
+<ul>
+<li>Loading the module</li>
+<li>Loading the callable object (the function)</li>
+<li>Converting the arguments to Python objects</li>
+<li>Calling the Python function</li>
+<li>Handling any Python exceptions and converting them to .NET exceptions</li>
+<li>Converting the return value to a .NET object</li>
+</ul>
+<p>We do all of these steps in C# using the Python C API, and in the most efficient way possible. The type annotations from Python are used by CSnakes to generate a readable, type-safe wrapper method in C#. They&rsquo;re also used to generate the fastest possible conversion code between Python and .NET types. Since type annotations are not guaranteed in Python, CSnakes will handle scenarios such as missing annotations, incorrect annotations, and more.</p>
+<h3 id="a-better-example">A better example<a class="headerlink" href="#a-better-example" title="Permanent link">&para;</a></h3>
+<p>Take this example&ndash; you want to leverage a Python library to analyse some data using an ML <a href="https://scikit-learn.org/stable/modules/clustering.html#k-means">algorithm like K-Means</a>. You have lots of options in Python, like scikit-learn, TensorFlow, PyTorch, etc. You select scikit-learn because it&rsquo;s easy to use and doesn&rsquo;t have too many dependencies. K-Means classifies data points into clusters based on their similarity. It then returns <code>n</code> clusters with the center (centroids):</p>
+<p><img alt="K-Means" class="img-responsive center-block" src="https://scikit-learn.org/stable/_images/sphx_glr_plot_kmeans_digits_001.png" style="width:50%"></p>
+<p>To use this algorithm in CSnakes, you first write a Python function with a simple type signature because the <code>kmeans</code> API for scikit-learn is complicated and exposing it directly would require a lot more boilerplate code on the .NET side.</p>
+<p>K-Means uses a Matrix of data points and returns a list of cluster assignments and the interia:</p>
+<pre><code class="python">from sklearn.cluster import k_means
+import numpy as np
+from typing_extensions import Buffer
+
+def calculate_kmeans_inertia(data: list[tuple[int, int]], n_clusters: int) -&gt; tuple[Buffer, float]:
+    # Demo data
+    X = np.array(data)
+    centroid, _, inertia = k_means(
+        X, n_clusters=n_clusters, n_init=&quot;auto&quot;, random_state=0
+    )
+    return centroid, inertia
+</code></pre>
+
+<p>This next example is a bit more complicated because the function takes a list of tuples and returns both a Buffer (I will explain why later) and a float (the interia).</p>
+<p>Since CSnakes uses embedded CPython, you can use libraries like numpy, scikit-learn, TensorFlow, PyTorch, etc. You provide 2 extra calls to the Python environment builder (<code>WithVirtualEnvironment()</code> and <code>WithPipInstaller()</code>) to install the required packages into a Virtual Environment. CSnakes will then use this environment to run the Python code.</p>
+<p>CSnakes generates a method signature for the Python function that has the closest equivalent to <code>list[tuple[int, int]]</code>, which is <code>IReadOnlyList&lt;(long, long)&gt;</code>. This gives you a simple, type-safe way of defining your input martrix:</p>
+<pre><code class="csharp">var env = app.Services.GetRequiredService&lt;IPythonEnvironment&gt;();
+
+// Get the centroids and inertia of a test matrix from scikit-learn kmeans algorithm
+var kmeansExample = env.KmeansExample();
+List&lt;(long, long)&gt; data = [
+    (1, 2), (1, 4), (1, 0),
+    (10, 2), (10, 4), (10, 0)
+];
+</code></pre>
+
+<p>The result is a tuple of a Numpy array and a float, so CSnakes converts that into a C# tuple, you can use a value tuple to simply assign the resulting components to two variables:</p>
+<pre><code class="csharp">var (centroids, inertia)= kmeansExample.CalculateKmeansInertia(data, 4);
+</code></pre>
+
+<p><code>interia</code> is a double-precision floating point number (<code>double</code>) and <code>centroids</code> is a <code>Buffer</code> object. The <code>Buffer</code> object is a special type in CSnakes uses Python&rsquo;s Buffer API to read directly from the internal memory of an array-like object. We use Buffer here because numpy arrays don&rsquo;t store numerical data using Python objects, they store it in a C array. We could use a call like <code>.tolist()</code> on the numpy array, but since C# and the Numpy arrays numerical data structures are compatible, we can use the Buffer API to read directly from the memory of the numpy array and convert that into a Read-Only Span in C#. This <a href="https://tonybaloney.github.io/CSnakes/buffers/">method provides a zero-copy API to access the data inside an n-dimensional numpy array</a>:</p>
+<pre><code class="csharp">var resultMatrix = centroids.AsReadOnlySpan2D&lt;double&gt;();
+Console.WriteLine($&quot;KMeans inertia is {inertia}, centroids are:&quot;);
+for (int i = 0; i &lt; resultMatrix.Height; i++)
+{
+    for (var j = 0; j &lt; resultMatrix.Width; j++)
+    {
+        Console.Write(resultMatrix[i, j].ToString().PadLeft(10));
+    }
+    Console.Write(&quot;\n&quot;);
+}
+</code></pre>
+
+<p>There is also a single-dimension equivalent (<code>AsReadOnlySpan&lt;T&gt;</code>) and if you&rsquo;re feeling adventurous, you can use the <code>AsSpan&lt;T&gt;</code> method to get a read-write span. This means that from C#.NET you can modify the data in the numpy array directly.</p>
+<p>From .NET 9, an experimental <code>TensorSpan</code> API is available, so if you&rsquo;re trying .NET 9 you can work with arrays beyond 2 dimensions. <a href="https://tonybaloney.github.io/CSnakes/buffers/#n-dimensional-buffers-net-9">Docs</a></p>
+<h2 id="can-i-use-this-in-a-web-app">Can I use this in a web app?<a class="headerlink" href="#can-i-use-this-in-a-web-app" title="Permanent link">&para;</a></h2>
+<p>Yes, absolutely. We&rsquo;ve got a demo specifically for that in the <a href="https://github.com/tonybaloney/CSnakes/tree/main/samples/Aspire">CSnakes repo</a> that wraps a Python module for analysing weather data from Seattle (spoiler alert - it rains a lot) into a REST API using ASP.NET and .NET Aspire. This demo also includes a demonstration of how to use Open Telemetry so that all logs and traces from Python are within the same trace as the .NET code. <a href="/posts/using-dotnet-aspire-dashboard-for-python-opentelemetry.html">See my other blog post on how to acheive this</a></p>
+<h2 id="how-does-this-compare-with-other-projects-that-integrate-python-and-net">How does this compare with other projects that integrate Python and .NET<a class="headerlink" href="#how-does-this-compare-with-other-projects-that-integrate-python-and-net" title="Permanent link">&para;</a></h2>
+<p>The closest projects to this are:</p>
+<ul>
+<li><a href="https://ironpython.net/"><strong>IronPython</strong></a>: IronPython is a .NET implementation of Python. It&rsquo;s a full Python interpreter written in C# that runs on the .NET runtime. Because IronPython is a full interpreter, it isn&rsquo;t compatible with most C extensions. Also, it hasn&rsquo;t been maintained in a while so isn&rsquo;t compatible with modern Python versions, or the latest .NET versions.</li>
+<li><a href="https://github.com/pythonnet/pythonnet"><strong>Python.NET</strong></a> There are some similarities, such as Python.NET has a wrapper around the Python C-API. However, CSnakes comes with a Source Generator to create an interop layer automatically between the two platforms and handle the type conversions based on the type hints in the Python code. Python.NET&rsquo;s main focus is the integration the other way around (calling .NET from Python). We&rsquo;ve also made some different design decisions, such as how we handle the GIL.</li>
+<li><a href="https://tonybaloney.github.io/posts/running-python-on-dotnet-5-with-pyjion.html"><strong>Pyjion</strong></a> Pyjion is a JIT for Python that uses the .NET JIT and ECMA335 CIL to compile Python code to machine code. It doesn&rsquo;t make calling Python from .NET any easier, it was designed as a way of making Python faster. But now Python has it&rsquo;s own JIT so it&rsquo;s not really needed anymore.</li>
+</ul>
+<h2 id="what-about-the-gil">What about the GIL?<a class="headerlink" href="#what-about-the-gil" title="Permanent link">&para;</a></h2>
+<p>Python has a Global Interpreter Lock (GIL) that prevents multiple threads from executing Python bytecodes at once. This is because most of Python&rsquo;s internal implementation isn&rsquo;t thread-safe and it simplifies multithreading for Python developers.
+.NET on the other hand uses Managed Threads a <strong>lot</strong>. The .NET runtime is very efficient at spawning and managing threads. Also, the TAP (Task-based Asynchronous Pattern) in .NET is very efficient at managing asynchronous code.</p>
+<p>We&rsquo;ve built a bridge between these two paradigms into CSnakes so that you don&rsquo;t need to worry about the GIL. CSnakes has an internal recursive-lock around the GIL and in cases like the .NET GC collector thread, we queue instructions that require the GIL so that they&rsquo;re handled in a thread-safe way.</p>
+<p>CSnakes also <a href="https://tonybaloney.github.io/CSnakes/advanced/#free-threading-mode">supports the experimental feature in Python 3.13</a> to <strong>disable</strong> the GIL altogether. You can run &ldquo;free threaded&rdquo; Python embedded into .NET, which would provide much greater parallelism and performance. </p>
+<h2 id="how-do-i-get-started">How do I get started?<a class="headerlink" href="#how-do-i-get-started" title="Permanent link">&para;</a></h2>
+<p>Go to the <a href="https://tonybaloney.github.io/CSnakes/getting-started/">Getting Started</a> guide on the CSnakes website. We have a tutorial that walks you through the process of setting up a new .NET project, installing the CSnakes NuGet package, and writing your first Python function.</p>
+<h2 id="what-are-the-limitations">What are the limitations?<a class="headerlink" href="#what-are-the-limitations" title="Permanent link">&para;</a></h2>
+<p>We are documenting the limitations of CSnakes on the <a href="https://tonybaloney.github.io/CSnakes/limitations/">Limitations</a> page. But, some important ones are:</p>
+<ul>
+<li>If the function is async, it won&rsquo;t generate an &ldquo;async&rdquo; wrapper in C#. It&rsquo;s possible, but nobody has asked for this yet.</li>
+<li>If the type signature is a Union, either with <code>typing.Union</code> or the union operator <code>|</code>, CSnakes won&rsquo;t generate a wrapper. C# doesn&rsquo;t have a direct equivalent to Union types, so we&rsquo;re still working on the best way to handle this.</li>
+<li>If the result is a class or the function takes a class, even if that class is defined in something like <code>dataclasses</code>, CSnakes will just expose this as a generic <code>PyObject</code>. We don&rsquo;t do any kind of reflection for classes (yet). You can access methods, attributes and properties on the class, but they aren&rsquo;t strongly typed.</li>
+</ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-8">
+                <a class="btn-default btn"
+                   href="https://twitter.com/intent/tweet">
+                    <i class="fa fa-twitter"></i>
+                    Share on Twitter</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="https://twitter.com/anthonypjshaw">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://youtube.com/c/AnthonyShaw">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-youtube fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/tonybaloney">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Copyright &copy; Anthony Shaw</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="/js/clean-blog.min.js"></script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Twitter Helper -->
+    <script>window.twttr = (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0],
+            t = window.twttr || {};
+        if (d.getElementById(id)) return t;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://platform.twitter.com/widgets.js";
+        fjs.parentNode.insertBefore(js, fjs);
+
+        t._e = [];
+        t.ready = function(f) {
+            t._e.push(f);
+        };
+        return t;
+    }(document, "script", "twitter-wjs"));</script>
+
+    <script type="text/javascript">
+        !function(T,l,y){var S=T.location,k="script",D="instrumentationKey",C="ingestionendpoint",I="disableExceptionTracking",E="ai.device.",b="toLowerCase",w="crossOrigin",N="POST",e="appInsightsSDK",t=y.name||"appInsights";(y.name||T[e])&&(T[e]=t);var n=T[t]||function(d){var g=!1,f=!1,m={initialize:!0,queue:[],sv:"5",version:2,config:d};function v(e,t){var n={},a="Browser";return n[E+"id"]=a[b](),n[E+"type"]=a,n["ai.operation.name"]=S&&S.pathname||"_unknown_",n["ai.internal.sdkVersion"]="javascript:snippet_"+(m.sv||m.version),{time:function(){var e=new Date;function t(e){var t=""+e;return 1===t.length&&(t="0"+t),t}return e.getUTCFullYear()+"-"+t(1+e.getUTCMonth())+"-"+t(e.getUTCDate())+"T"+t(e.getUTCHours())+":"+t(e.getUTCMinutes())+":"+t(e.getUTCSeconds())+"."+((e.getUTCMilliseconds()/1e3).toFixed(3)+"").slice(2,5)+"Z"}(),iKey:e,name:"Microsoft.ApplicationInsights."+e.replace(/-/g,"")+"."+t,sampleRate:100,tags:n,data:{baseData:{ver:2}}}}var h=d.url||y.src;if(h){function a(e){var t,n,a,i,r,o,s,c,u,p,l;g=!0,m.queue=[],f||(f=!0,t=h,s=function(){var e={},t=d.connectionString;if(t)for(var n=t.split(";"),a=0;a<n.length;a++){var i=n[a].split("=");2===i.length&&(e[i[0][b]()]=i[1])}if(!e[C]){var r=e.endpointsuffix,o=r?e.location:null;e[C]="https://"+(o?o+".":"")+"dc."+(r||"services.visualstudio.com")}return e}(),c=s[D]||d[D]||"",u=s[C],p=u?u+"/v2/track":d.endpointUrl,(l=[]).push((n="SDK LOAD Failure: Failed to load Application Insights SDK script (See stack for details)",a=t,i=p,(o=(r=v(c,"Exception")).data).baseType="ExceptionData",o.baseData.exceptions=[{typeName:"SDKLoadFailed",message:n.replace(/\./g,"-"),hasFullStack:!1,stack:n+"\nSnippet failed to load ["+a+"] -- Telemetry is disabled\nHelp Link: https://go.microsoft.com/fwlink/?linkid=2128109\nHost: "+(S&&S.pathname||"_unknown_")+"\nEndpoint: "+i,parsedStack:[]}],r)),l.push(function(e,t,n,a){var i=v(c,"Message"),r=i.data;r.baseType="MessageData";var o=r.baseData;return o.message='AI (Internal): 99 message:"'+("SDK LOAD Failure: Failed to load Application Insights SDK script (See stack for details) ("+n+")").replace(/\"/g,"")+'"',o.properties={endpoint:a},i}(0,0,t,p)),function(e,t){if(JSON){var n=T.fetch;if(n&&!y.useXhr)n(t,{method:N,body:JSON.stringify(e),mode:"cors"});else if(XMLHttpRequest){var a=new XMLHttpRequest;a.open(N,t),a.setRequestHeader("Content-type","application/json"),a.send(JSON.stringify(e))}}}(l,p))}function i(e,t){f||setTimeout(function(){!t&&m.core||a()},500)}var e=function(){var n=l.createElement(k);n.src=h;var e=y[w];return!e&&""!==e||"undefined"==n[w]||(n[w]=e),n.onload=i,n.onerror=a,n.onreadystatechange=function(e,t){"loaded"!==n.readyState&&"complete"!==n.readyState||i(0,t)},n}();y.ld<0?l.getElementsByTagName("head")[0].appendChild(e):setTimeout(function(){l.getElementsByTagName(k)[0].parentNode.appendChild(e)},y.ld||0)}try{m.cookie=l.cookie}catch(p){}function t(e){for(;e.length;)!function(t){m[t]=function(){var e=arguments;g||m.queue.push(function(){m[t].apply(m,e)})}}(e.pop())}var n="track",r="TrackPage",o="TrackEvent";t([n+"Event",n+"PageView",n+"Exception",n+"Trace",n+"DependencyData",n+"Metric",n+"PageViewPerformance","start"+r,"stop"+r,"start"+o,"stop"+o,"addTelemetryInitializer","setAuthenticatedUserContext","clearAuthenticatedUserContext","flush"]),m.SeverityLevel={Verbose:0,Information:1,Warning:2,Error:3,Critical:4};var s=(d.extensionConfig||{}).ApplicationInsightsAnalytics||{};if(!0!==d[I]&&!0!==s[I]){var c="onerror";t(["_"+c]);var u=T[c];T[c]=function(e,t,n,a,i){var r=u&&u(e,t,n,a,i);return!0!==r&&m["_"+c]({message:e,url:t,lineNumber:n,columnNumber:a,error:i}),r},d.autoExceptionInstrumented=!0}return m}(y.cfg);function a(){y.onInit&&y.onInit(n)}(T[t]=n).queue&&0===n.queue.length?(n.queue.push(a),n.trackPageView({})):a()}(window,document,{
+        src: "https://js.monitor.azure.com/scripts/b/ai.2.min.js", // The SDK URL Source
+        // name: "appInsights", // Global SDK Instance name defaults to "appInsights" when not supplied
+        // ld: 0, // Defines the load delay (in ms) before attempting to load the sdk. -1 = block page load and add to head. (default) = 0ms load after timeout,
+        // useXhr: 1, // Use XHR instead of fetch to report failures (if available),
+        crossOrigin: "anonymous", // When supplied this will add the provided value as the cross origin attribute on the script tag
+        // onInit: null, // Once the application insights instance has loaded and initialized this callback function will be called with 1 argument -- the sdk instance (DO NOT ADD anything to the sdk.queue -- As they won't get called)
+        cfg: { // Application Insights Configuration
+            instrumentationKey: "d0222e7b-7c27-4322-8d0f-36fa2df51f86"
+        }});
+    </script>
+</body>
+</html>

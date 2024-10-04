@@ -7,7 +7,9 @@ from github import Github
 from github import Auth
 
 import os
+import dotenv
 
+dotenv.load_dotenv()
 app = Site()
 
 
