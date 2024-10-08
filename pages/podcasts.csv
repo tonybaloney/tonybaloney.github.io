@@ -1,4 +1,6 @@
 Show,Episode,Title,Date,URL
+Talk Python to Me,479,Designing Effective Load Tests for Your Python App,"October 6th, 2024",https://talkpython.fm/episodes/show/479/designing-effective-load-tests-for-your-python-app
+Talk Python to Me,447,Parallel Python Apps with Sub Interpreters,"February 3rd, 2024",https://talkpython.fm/episodes/show/447/parallel-python-apps-with-sub-interpreters
 Talk Python to Me,373,Reinventing Python's Azure CLI,"July 12th, 2022",https://talkpython.fm/episodes/show/373/reinventing-azures-python-cli
 Hanselminutes,834,"Pyjion, a JIT compiler for Python using .NET Core with Anthony Shaw","March 31st, 2022",https://hanselminutes.com/834/pyjion-a-jit-compiler-for-python-using-net-core-with-anthony-shaw
 Talk Python to Me,340,Time to JIT your Python with Pyjion?,"November 3rd, 2021",https://talkpython.fm/episodes/show/340/time-to-jit-your-python-with-pyjion
