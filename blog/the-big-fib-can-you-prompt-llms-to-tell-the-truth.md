@@ -19,17 +19,17 @@ We're going to explore that in this post.
 
 ## Why has Harry Kane won the Ballon D'or so many times?
 
-Take this example question given to Microsoft Copilot:
+Take this example question:
 
 > Why has Harry Kane won the Ballon D’or so many times?
 
 Apologies to any non-European soccer fans for the obscurity of the question. Harry Kane is one of the top goal scorers European football. The "Ballon D'or" is a (very political) trophy given annually to the best soccer player in the world, judged by a panel of journalists. 
 
-Copilot's response starts with:
+The AI's response starts with:
 
 > Harry Kane has won the Ballon d'Or multiple times due to his exceptional goal-scoring abilities and consistent performance at the highest level of football. In 2024, he shared the Ballon d'Or Gerd Muller Trophy with Kylian Mbappe for scoring the most goals in Europe [1]
 
-Copilot is a GPT-4 based RAG application that uses Internet searches as the retrieval mechanism to ground it's answers. It references [a BBC Sport article](https://www.bbc.com/sport/football/articles/c3wqe4n3w4lo) talking about Harry Kane winning the Gerd Muller Trophy (awarded in the same ceremony.) The opening sentence "**Harry Kane has won the Ballon d'Or multiple times**" is flagrantly wrong. Harry Kane has **never** won this award. [Harry Kane's lack of trophies](https://www.bbc.com/sport/football/66484550) relative to his performance is something of a sore point. Soccer is the most watched sport in the world and the Ballon D'or the most famous trophy. If this were a Pub Trivia question it would be included in the warm-up round. 
+This test was on a GPT-4 based RAG application that uses Internet searches as the retrieval mechanism to ground it's answers. It references [a BBC Sport article](https://www.bbc.com/sport/football/articles/c3wqe4n3w4lo) talking about Harry Kane winning the Gerd Muller Trophy (awarded in the same ceremony.) The opening sentence "**Harry Kane has won the Ballon d'Or multiple times**" is flagrantly wrong. Harry Kane has **never** won this award. [Harry Kane's lack of trophies](https://www.bbc.com/sport/football/66484550) relative to his performance is something of a sore point. Soccer is the most watched sport in the world and the Ballon D'or the most famous trophy. If this were a Pub Trivia question it would be included in the warm-up round. 
 
 ![Harry Kane with some impractical footwear](/img/posts/harry-kane-trophies.jpg){: .img-responsive .center-block style="width:70%"}
 
@@ -37,7 +37,7 @@ If I ask the question slightly differently in the _same_ session:
 
 > Has Harry Kane ever won the Ballon D'or?
 
-Copilot responds:
+It responds:
 
 > Harry Kane has not won the Ballon D'or.
 
@@ -262,7 +262,7 @@ The response is huge, so I'll include only a snippet from the start and the end:
 
 Ah, it immediately makes a fatal mistake. There are three types of shading, solid, striped and "hollow". It labelled many of the cards incorrectly, but this is the first model I tried which actually described the cards on the table and didn't make them up.
 
-QVQ goes into a very long evaluation of the different combinations and determine's it's valid Set. But since the visual classification was wrong to begin with, the answer is wrong:
+QVQ goes into a very long evaluation of the different combinations and determines it's valid Set. But since the visual classification was wrong to begin with, the answer is wrong:
 
     So, I think these are the only valid sets in these cards.
     

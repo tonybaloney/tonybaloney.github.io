@@ -132,22 +132,22 @@
 <p>Now, an LLM doesn&rsquo;t <em>know</em> anything. It gives you the most probable answer. But you can instruct an LLM to admit when it doesn&rsquo;t have a good answer instead of hallucinating?</p>
 <p>We&rsquo;re going to explore that in this post. </p>
 <h2 id="why-has-harry-kane-won-the-ballon-dor-so-many-times">Why has Harry Kane won the Ballon D&rsquo;or so many times?<a class="headerlink" href="#why-has-harry-kane-won-the-ballon-dor-so-many-times" title="Permanent link">&para;</a></h2>
-<p>Take this example question given to Microsoft Copilot:</p>
+<p>Take this example question:</p>
 <blockquote>
 <p>Why has Harry Kane won the Ballon D’or so many times?</p>
 </blockquote>
 <p>Apologies to any non-European soccer fans for the obscurity of the question. Harry Kane is one of the top goal scorers European football. The &ldquo;Ballon D&rsquo;or&rdquo; is a (very political) trophy given annually to the best soccer player in the world, judged by a panel of journalists. </p>
-<p>Copilot&rsquo;s response starts with:</p>
+<p>The AI&rsquo;s response starts with:</p>
 <blockquote>
 <p>Harry Kane has won the Ballon d&rsquo;Or multiple times due to his exceptional goal-scoring abilities and consistent performance at the highest level of football. In 2024, he shared the Ballon d&rsquo;Or Gerd Muller Trophy with Kylian Mbappe for scoring the most goals in Europe [1]</p>
 </blockquote>
-<p>Copilot is a GPT-4 based RAG application that uses Internet searches as the retrieval mechanism to ground it&rsquo;s answers. It references <a href="https://www.bbc.com/sport/football/articles/c3wqe4n3w4lo">a BBC Sport article</a> talking about Harry Kane winning the Gerd Muller Trophy (awarded in the same ceremony.) The opening sentence &ldquo;<strong>Harry Kane has won the Ballon d&rsquo;Or multiple times</strong>&rdquo; is flagrantly wrong. Harry Kane has <strong>never</strong> won this award. <a href="https://www.bbc.com/sport/football/66484550">Harry Kane&rsquo;s lack of trophies</a> relative to his performance is something of a sore point. Soccer is the most watched sport in the world and the Ballon D&rsquo;or the most famous trophy. If this were a Pub Trivia question it would be included in the warm-up round. </p>
+<p>This test was on a GPT-4 based RAG application that uses Internet searches as the retrieval mechanism to ground it&rsquo;s answers. It references <a href="https://www.bbc.com/sport/football/articles/c3wqe4n3w4lo">a BBC Sport article</a> talking about Harry Kane winning the Gerd Muller Trophy (awarded in the same ceremony.) The opening sentence &ldquo;<strong>Harry Kane has won the Ballon d&rsquo;Or multiple times</strong>&rdquo; is flagrantly wrong. Harry Kane has <strong>never</strong> won this award. <a href="https://www.bbc.com/sport/football/66484550">Harry Kane&rsquo;s lack of trophies</a> relative to his performance is something of a sore point. Soccer is the most watched sport in the world and the Ballon D&rsquo;or the most famous trophy. If this were a Pub Trivia question it would be included in the warm-up round. </p>
 <p><img alt="Harry Kane with some impractical footwear" class="img-responsive center-block" src="/img/posts/harry-kane-trophies.jpg" style="width:70%"></p>
 <p>If I ask the question slightly differently in the <em>same</em> session:</p>
 <blockquote>
 <p>Has Harry Kane ever won the Ballon D&rsquo;or?</p>
 </blockquote>
-<p>Copilot responds:</p>
+<p>It responds:</p>
 <blockquote>
 <p>Harry Kane has not won the Ballon D&rsquo;or.</p>
 </blockquote>
@@ -344,7 +344,7 @@ Bottom row:
 12. Red oval, solid, one shape.
 </code></pre>
 <p>Ah, it immediately makes a fatal mistake. There are three types of shading, solid, striped and &ldquo;hollow&rdquo;. It labelled many of the cards incorrectly, but this is the first model I tried which actually described the cards on the table and didn&rsquo;t make them up.</p>
-<p>QVQ goes into a very long evaluation of the different combinations and determine&rsquo;s it&rsquo;s valid Set. But since the visual classification was wrong to begin with, the answer is wrong:</p>
+<p>QVQ goes into a very long evaluation of the different combinations and determines it&rsquo;s valid Set. But since the visual classification was wrong to begin with, the answer is wrong:</p>
 <pre><code>So, I think these are the only valid sets in these cards.
 
 Therefore, the valid "set" in these cards is:
