@@ -7,9 +7,20 @@
             A collection of technology articles
         </description>
         <link>https://tonybaloney.github.io/#blog</link>
-        <lastBuildDate>Fri, 04 Oct 2024 03:26:07 -0000</lastBuildDate>
+        <lastBuildDate>Mon, 06 Jan 2025 05:23:22 -0000</lastBuildDate>
         <pubDate>Sat, 4 Jan 2020 19:15:54 -0500</pubDate>
         <atom:link href="https://tonybaloney.github.io/rss.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Can you prompt LLMs to admit when they don't know the answer?</title>
+            <description>
+                An exploration of telling LLMs what to do when they don't know the answer, and whether it works.
+            </description>
+            <link>https://tonybaloney.github.io/posts/the-big-fib-can-you-prompt-llms-to-tell-the-truth.html</link>
+            <pubDate>Mon, 06 Jan 2025 00:00:00 -0000</pubDate>
+            <dc:creator>Anthony Shaw</dc:creator>
+            <guid>https://tonybaloney.github.io/posts/the-big-fib-can-you-prompt-llms-to-tell-the-truth.html</guid>
+        </item>
         
         <item>
             <title>Embedding Python into your .NET project with CSnakes</title>
