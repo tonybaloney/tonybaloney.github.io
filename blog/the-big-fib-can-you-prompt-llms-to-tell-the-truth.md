@@ -57,7 +57,7 @@ As alluded to earlier, the behaviour and unpredictability of these LLMS is still
 
 ## I am a helpful assistant!
 
-*"You are a helpful assistant"* is part the default system prompt in ChatGPT and other GPT/LLMs. Azure OpenAI defaults to *"You are an AI assistant that helps people find information."*. A **helpful** assistant would answer the question I gave it and not respond *"what are you talking about, Harry Kane has never won the Ballon D'or"*. If we changed the prompt slightly to say *"You are a **sports pundit**"*, or *"You are a helpful **sports journalist**"*, would it improve the quality of the answer?
+*"You are a helpful assistant"* is the default system prompt in ChatGPT and many other GPT/LLMs. Azure OpenAI defaults to *"You are an AI assistant that helps people find information."*. A **helpful** assistant would answer the question I gave it and not respond *"what are you talking about you fool, Harry Kane has never won the Ballon D'or"*. If we changed the prompt slightly to say *"You are a **sports pundit**"*, or *"You are a helpful **sports journalist**"*, would it improve the quality of the answer?
 
 In Zheng, Pei, Logeswaran, et al's study [`When “A Helpful Assistant” Is Not Really Helpful: Personas in System
 Prompts Do Not Improve Performances of Large Language Models`](https://arxiv.org/pdf/2311.10054), they tried experimenting with different generic personas like *you are a colleague/buddy/friend*. They also tried experimenting with domain-specific personas, like *you are a biologist/ecologist/baker*.
@@ -75,6 +75,8 @@ Does it work?
 ## The Big Fib
 
 On long car journeys we listen to a podcast for kids called ["The Big Fib"](https://gzmshows.com/shows/listing/the-big-fib/). On the show, they have a topic and two guests. One is an expert and the other is a confident liar. It is then the task of a child to interrogate both guests and determine which one is the real expert.
+
+![the Big Fib on disney+](/img/posts/the-big-fib.jpg){: .img-responsive .center-block style="width:70%"}
 
 The liar uses a combination of educated guesses, some quick research and completely made-up facts to answer the questions. The kid asking the questions has done a little research but they're really going on "vibes" to determine who is the liar.
 
@@ -156,7 +158,7 @@ Finally, to double check that we haven't just made an AI that just replies with 
 
 > Write a Python program to solve a game of Set given a collection of cards
 
-For this question get an explanation and a valid, useful code snippet.
+For this question I got an explanation and a valid, useful, code snippet.
 
 In summary, after this quick test it seems like GPT-4 models are able to reply with a coded response inplace of a poor-quality answer. This technique isn't foolproof. LLMs can take multiple paths in a response. I've seen (during a live demo of course) the LLM reply to say it doesn't know the answer to a question it previously responded to.
 

@@ -180,7 +180,7 @@
 <p>&ldquo;You are a helpful assistant&rdquo;.</p>
 </blockquote>
 <h2 id="i-am-a-helpful-assistant">I am a helpful assistant!<a class="headerlink" href="#i-am-a-helpful-assistant" title="Permanent link">&para;</a></h2>
-<p><em>&ldquo;You are a helpful assistant&rdquo;</em> is part the default system prompt in ChatGPT and other GPT/LLMs. Azure OpenAI defaults to <em>&ldquo;You are an AI assistant that helps people find information.&rdquo;</em>. A <strong>helpful</strong> assistant would answer the question I gave it and not respond <em>&ldquo;what are you talking about, Harry Kane has never won the Ballon D&rsquo;or&rdquo;</em>. If we changed the prompt slightly to say <em>&ldquo;You are a <strong>sports pundit</strong>&ldquo;</em>, or <em>&ldquo;You are a helpful <strong>sports journalist</strong>&ldquo;</em>, would it improve the quality of the answer?</p>
+<p><em>&ldquo;You are a helpful assistant&rdquo;</em> is the default system prompt in ChatGPT and many other GPT/LLMs. Azure OpenAI defaults to <em>&ldquo;You are an AI assistant that helps people find information.&rdquo;</em>. A <strong>helpful</strong> assistant would answer the question I gave it and not respond <em>&ldquo;what are you talking about you fool, Harry Kane has never won the Ballon D&rsquo;or&rdquo;</em>. If we changed the prompt slightly to say <em>&ldquo;You are a <strong>sports pundit</strong>&ldquo;</em>, or <em>&ldquo;You are a helpful <strong>sports journalist</strong>&ldquo;</em>, would it improve the quality of the answer?</p>
 <p>In Zheng, Pei, Logeswaran, et al&rsquo;s study <a href="https://arxiv.org/pdf/2311.10054"><code>When “A Helpful Assistant” Is Not Really Helpful: Personas in System
 Prompts Do Not Improve Performances of Large Language Models</code></a>, they tried experimenting with different generic personas like <em>you are a colleague/buddy/friend</em>. They also tried experimenting with domain-specific personas, like <em>you are a biologist/ecologist/baker</em>.</p>
 <p>Through their analysis they found that it made <strong>very little difference.</strong></p>
@@ -192,6 +192,7 @@ Prompts Do Not Improve Performances of Large Language Models</code></a>, they tr
 <p>Does it work?</p>
 <h2 id="the-big-fib">The Big Fib<a class="headerlink" href="#the-big-fib" title="Permanent link">&para;</a></h2>
 <p>On long car journeys we listen to a podcast for kids called <a href="https://gzmshows.com/shows/listing/the-big-fib/">&ldquo;The Big Fib&rdquo;</a>. On the show, they have a topic and two guests. One is an expert and the other is a confident liar. It is then the task of a child to interrogate both guests and determine which one is the real expert.</p>
+<p><img alt="the Big Fib on disney+" class="img-responsive center-block" src="/img/posts/the-big-fib.jpg" style="width:70%"></p>
 <p>The liar uses a combination of educated guesses, some quick research and completely made-up facts to answer the questions. The kid asking the questions has done a little research but they&rsquo;re really going on &ldquo;vibes&rdquo; to determine who is the liar.</p>
 <p>We must&rsquo;ve listened to 100 episodes of this show because we live in Australia and every car journey is a long one. I&rsquo;ve worked out a little trick to catch out the liar. In the quick-fire round at the end of the show, the expert will pass on questions when they don&rsquo;t know the answer. The liar will make something up. They never pass.</p>
 <p>The liar is the <strong>helpful assistant</strong>. </p>
@@ -257,7 +258,7 @@ for location in locations:
 <blockquote>
 <p>Write a Python program to solve a game of Set given a collection of cards</p>
 </blockquote>
-<p>For this question get an explanation and a valid, useful code snippet.</p>
+<p>For this question I got an explanation and a valid, useful, code snippet.</p>
 <p>In summary, after this quick test it seems like GPT-4 models are able to reply with a coded response inplace of a poor-quality answer. This technique isn&rsquo;t foolproof. LLMs can take multiple paths in a response. I&rsquo;ve seen (during a live demo of course) the LLM reply to say it doesn&rsquo;t know the answer to a question it previously responded to.</p>
 <h2 id="what-about-complex-reasoning-models">What about complex reasoning models?<a class="headerlink" href="#what-about-complex-reasoning-models" title="Permanent link">&para;</a></h2>
 <p>Harry Kane either did or didn&rsquo;t get the Ballon D&rsquo;or. What about a more complicated question? I was playing a game of <a href="https://www.setgame.com/set/puzzle">Set</a> the other day with one of my kids and we both passed on a puzzle. I quickly grabbed a photo of it to see how some of these newer AI models would respond when asked to solve it. I picked a few models that perform at-or-beyond the human grade on the <a href="https://mathvista.github.io/">MathVista visual mathematics benchmark</a>.</p>
