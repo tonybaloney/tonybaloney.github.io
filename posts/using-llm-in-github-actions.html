@@ -415,7 +415,7 @@ jobs:
 <p>So, I adapted the docs workflow to look at changes to the <code>l10n</code> folder and parse those to gpt-5-mini to ask it for blatantly inaccurate or offensive terms. </p>
 <pre><code class="yaml">    - name: Review l10n changes
         run: | 
-          git --no-pager diff -p --no-color origin/main...${{ github.sha }} l10n | llm prompt -m github/gpt-5-mini \
+          git --no-pager diff -p --no-color origin/main...${{ github.sha }} package.nls.*.json | llm prompt -m github/gpt-5-mini \
           &quot;For each of the changed lines in this output from git diff (those starting +), comment on whether the translation for that
           language is blatantly inaccurate or offensive. \
           Use the formatting for GitHub Actions, e.g. \
@@ -424,6 +424,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 </code></pre>
 
+<p>I ran this on some changes to the French translations related to the colors for horses and it provided some good insight that the translations someone has submitted not might be correct.</p>
+<p><img alt="A screenshot discussing the colors for horses" class="img-responsive center-block" src="/img/posts-original/pets-language.png"></p>
+<p>Great, so that provided value, saved me time and didn&rsquo;t cost me anything! ✅✅✅</p>
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
 <p>I think this has a lot of potential. <code>git diff</code> isn&rsquo;t an ideal mechanism for feeding content directly into an LLM — it mixes line-number metadata with text and makes accurate annotations harder. In practice it&rsquo;s better to separate parsing (to extract files and precise line numbers) from the LLM&rsquo;s content review. That approach gives more accurate annotations, reduces token usage, and is easier to debug.</p>
             </div>

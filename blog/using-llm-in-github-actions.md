@@ -342,7 +342,7 @@ So, I adapted the docs workflow to look at changes to the `l10n` folder and pars
 ```yaml
     - name: Review l10n changes
         run: | 
-          git --no-pager diff -p --no-color origin/main...${{ github.sha }} l10n | llm prompt -m github/gpt-5-mini \
+          git --no-pager diff -p --no-color origin/main...${{ github.sha }} package.nls.*.json | llm prompt -m github/gpt-5-mini \
           "For each of the changed lines in this output from git diff (those starting +), comment on whether the translation for that
           language is blatantly inaccurate or offensive. \
           Use the formatting for GitHub Actions, e.g. \
@@ -350,6 +350,12 @@ So, I adapted the docs workflow to look at changes to the `l10n` folder and pars
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
+
+I ran this on some changes to the French translations related to the colors for horses and it provided some good insight that the translations someone has submitted not might be correct.
+
+![A screenshot discussing the colors for horses](/img/posts-original/pets-language.png)
+
+Great, so that provided value, saved me time and didn't cost me anything! ✅✅✅
 
 ## Conclusion
 
