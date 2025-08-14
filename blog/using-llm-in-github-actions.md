@@ -11,6 +11,8 @@ As an open-source maintainer I'm always looking for opportunities to automate my
 
 One thing I struggle to keep on top of is documentation and tests. Bug fixes and features from folks in the community rarely include documentation updates and additional tests. I'm continually falling behind on updating the docs or maintaining test coverage.
 
+So, could AI help me? 
+
 ## GPT-5 in GitHub Models
 
 GPT-5 was just released last week, along with a series of models in different sizes (mini, nano, chat). 
