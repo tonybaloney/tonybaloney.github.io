@@ -116,8 +116,8 @@ Next we need the changed files in this branch. `git diff` is the tool for this. 
 Yesterday I was seeing if GPT-5 could implement multiple balls in [VS Code Pets](https://github.com/tonybaloney/vscode-pets)
  so I tested it on the [commit](https://github.com/tonybaloney/vscode-pets/commit/df705aec39bfa2f0ac5e6459636027d406179ec0):
 
-```shell
-git --no-pager diff -p --no-color HEAD^ | llm prompt -m github/gpt-5-mini "Review this git diff and suggest where the documentation might need to be updated. For each of the doc pages, specify the page name and the suggested updates in a short summary. Some pages might not need to be updated, so don't list them if the changes are not relevant. The doc pages are:
+```bash
+$ git --no-pager diff -p --no-color HEAD^ | llm prompt -m github/gpt-5-mini "Review this git diff and suggest where the documentation might need to be updated. For each of the doc pages, specify the page name and the suggested updates in a short summary. Some pages might not need to be updated, so don't list them if the changes are not relevant. The doc pages are:
 >> index.md - project overview and installation instructions, with links to the other docs and a quick 'Getting Started' pointer.
 >> getting-started.md - shows how to open the pet panel, start a session, change pet appearance/size/position, and lists quick links to common interactions (throwing balls, adding/removing pets, themes).
 >> pets.md - detailed user guide for interacting with pets: playing with pets, adding/removing pets, throwing a ball (including mouse-throw option), roll-call, and importing/exporting pet lists.
