@@ -195,7 +195,7 @@ Files that likely do not need changes
 - docs/requirements.txt — not impacted.
 ```
 
-Overall, I'm happy with this and it could be integrated into a GitHub Action that runs when PRs are submitted, or periodically. For large PRs, this would exaust token quotas quickly. In practice, you'd want to cap the input (`head -n 1000`) or tweak `git diff` to only show certain files and those which don't have huge changes.
+Overall, I'm happy with this and it could be integrated into a GitHub Action that runs when PRs are submitted, or periodically. For large PRs, this would exhaust token quotas quickly. In practice, you'd want to cap the input (`head -n 1000`) or tweak `git diff` to only show certain files and those which don't have huge changes.
 
 ## Experiment 2: Are there mistakes in the docs?
 
@@ -314,7 +314,7 @@ Nano gave me this output:
 
 It caught all three of the spelling/grammatical errors, but it missed the misplaced comma. Also, the nano responses were a lot more concise (maybe even terse).
 
-Another difference that's a bit harder to spot is nano reported the `cash` error as being line 45 but mini reported it as line 26. I'm not suprised at this. LLMs are bad at counting and it has to add to the line number in the diff. Although both the mini and nano models support up to 200,000 input tokens I'd expect mathematical errors like this to increase with a larger diff. 
+Another difference that's a bit harder to spot is nano reported the `cash` error as being line 45 but mini reported it as line 26. I'm not surprised at this. LLMs are bad at counting and it has to add to the line number in the diff. Although both the mini and nano models support up to 200,000 input tokens I'd expect mathematical errors like this to increase with a larger diff. 
 
 To try and fix this issue, I added `-U0` to `git diff` so that it wouldn't provide any lines of context to the diff. This reduces the input token count and reduces the chance of misreporting line numbers. For nano, this fixed the line numbers but this time around it only reported one issue (cash vs cache). For mini it only reported two.
 
