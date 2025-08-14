@@ -7,7 +7,7 @@
             A collection of technology articles
         </description>
         <link>https://tonybaloney.github.io/#blog</link>
-        <lastBuildDate>Thu, 14 Aug 2025 06:19:03 -0000</lastBuildDate>
+        <lastBuildDate>Thu, 14 Aug 2025 09:24:55 -0000</lastBuildDate>
         <pubDate>Sat, 4 Jan 2020 19:15:54 -0500</pubDate>
         <atom:link href="https://tonybaloney.github.io/rss.xml" rel="self" type="application/rss+xml" />
         
@@ -16,10 +16,10 @@
             <description>
                 Using the LLM CLI in a GitHub Action workflow with GitHub Models
             </description>
-            <link>https://tonybaloney.github.io/blog\using-llm-in-github-actions.html</link>
+            <link>https://tonybaloney.github.io/posts/using-llm-in-github-actions.html</link>
             <pubDate>Thu, 14 Aug 2025 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\using-llm-in-github-actions.html</guid>
+            <guid>https://tonybaloney.github.io/posts/using-llm-in-github-actions.html</guid>
         </item>
         
         <item>
@@ -27,10 +27,10 @@
             <description>
                 Exploring whether reasoning models can perform complex optimizations of old code
             </description>
-            <link>https://tonybaloney.github.io/blog\can-reasoning-models-optimize-20-year-old-code.html</link>
+            <link>https://tonybaloney.github.io/posts/can-reasoning-models-optimize-20-year-old-code.html</link>
             <pubDate>Thu, 30 Jan 2025 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\can-reasoning-models-optimize-20-year-old-code.html</guid>
+            <guid>https://tonybaloney.github.io/posts/can-reasoning-models-optimize-20-year-old-code.html</guid>
         </item>
         
         <item>
@@ -38,10 +38,10 @@
             <description>
                 An exploration of telling LLMs what to do when they don't know the answer, and whether it works.
             </description>
-            <link>https://tonybaloney.github.io/blog\the-big-fib-can-you-prompt-llms-to-tell-the-truth.html</link>
+            <link>https://tonybaloney.github.io/posts/the-big-fib-can-you-prompt-llms-to-tell-the-truth.html</link>
             <pubDate>Mon, 06 Jan 2025 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\the-big-fib-can-you-prompt-llms-to-tell-the-truth.html</guid>
+            <guid>https://tonybaloney.github.io/posts/the-big-fib-can-you-prompt-llms-to-tell-the-truth.html</guid>
         </item>
         
         <item>
@@ -49,10 +49,10 @@
             <description>
                 A deep-dive into a new integration between .NET and Python
             </description>
-            <link>https://tonybaloney.github.io/blog\embedding-python-in-dot-net-with-csnakes.html</link>
+            <link>https://tonybaloney.github.io/posts/embedding-python-in-dot-net-with-csnakes.html</link>
             <pubDate>Fri, 04 Oct 2024 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\embedding-python-in-dot-net-with-csnakes.html</guid>
+            <guid>https://tonybaloney.github.io/posts/embedding-python-in-dot-net-with-csnakes.html</guid>
         </item>
         
         <item>
@@ -60,10 +60,10 @@
             <description>
                 A short how-to of setting up the Aspire Dashboard to capture traces and metrics
             </description>
-            <link>https://tonybaloney.github.io/blog\using-dotnet-aspire-dashboard-for-python-opentelemetry.html</link>
+            <link>https://tonybaloney.github.io/posts/using-dotnet-aspire-dashboard-for-python-opentelemetry.html</link>
             <pubDate>Fri, 12 Apr 2024 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\using-dotnet-aspire-dashboard-for-python-opentelemetry.html</guid>
+            <guid>https://tonybaloney.github.io/posts/using-dotnet-aspire-dashboard-for-python-opentelemetry.html</guid>
         </item>
         
         <item>
@@ -71,10 +71,10 @@
             <description>
                 Best practices for working with CJK text in Large Language Models
             </description>
-            <link>https://tonybaloney.github.io/blog\cjk-chinese-japanese-korean-llm-ai-best-practices.html</link>
+            <link>https://tonybaloney.github.io/posts/cjk-chinese-japanese-korean-llm-ai-best-practices.html</link>
             <pubDate>Tue, 12 Mar 2024 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\cjk-chinese-japanese-korean-llm-ai-best-practices.html</guid>
+            <guid>https://tonybaloney.github.io/posts/cjk-chinese-japanese-korean-llm-ai-best-practices.html</guid>
         </item>
         
         <item>
@@ -82,10 +82,10 @@
             <description>
                 Reviewing the JIT in Python 3.13
             </description>
-            <link>https://tonybaloney.github.io/blog\python-gets-a-jit.html</link>
+            <link>https://tonybaloney.github.io/posts/python-gets-a-jit.html</link>
             <pubDate>Tue, 09 Jan 2024 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\python-gets-a-jit.html</guid>
+            <guid>https://tonybaloney.github.io/posts/python-gets-a-jit.html</guid>
         </item>
         
         <item>
@@ -93,10 +93,10 @@
             <description>
                 Exploring strategies for optimal Gunicorn, Uvicorn and Hypercorn configurations for Flask, Django, and FastAPI
             </description>
-            <link>https://tonybaloney.github.io/blog\fine-tuning-wsgi-and-asgi-applications.html</link>
+            <link>https://tonybaloney.github.io/posts/fine-tuning-wsgi-and-asgi-applications.html</link>
             <pubDate>Wed, 20 Dec 2023 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\fine-tuning-wsgi-and-asgi-applications.html</guid>
+            <guid>https://tonybaloney.github.io/posts/fine-tuning-wsgi-and-asgi-applications.html</guid>
         </item>
         
         <item>
@@ -104,10 +104,10 @@
             <description>
                 An exploration into the possibility of running a parallel application using sub interpreters
             </description>
-            <link>https://tonybaloney.github.io/blog\sub-interpreter-web-workers.html</link>
+            <link>https://tonybaloney.github.io/posts/sub-interpreter-web-workers.html</link>
             <pubDate>Fri, 17 Nov 2023 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\sub-interpreter-web-workers.html</guid>
+            <guid>https://tonybaloney.github.io/posts/sub-interpreter-web-workers.html</guid>
         </item>
         
         <item>
@@ -115,10 +115,10 @@
             <description>
                 What is the match statement in Python and why should you use it
             </description>
-            <link>https://tonybaloney.github.io/blog\python-match-statement.html</link>
+            <link>https://tonybaloney.github.io/posts/python-match-statement.html</link>
             <pubDate>Tue, 17 May 2022 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\python-match-statement.html</guid>
+            <guid>https://tonybaloney.github.io/posts/python-match-statement.html</guid>
         </item>
         
         <item>
@@ -126,10 +126,10 @@
             <description>
                 Links to my VS Code theme, fonts and terminal config
             </description>
-            <link>https://tonybaloney.github.io/blog\vscode-setup.html</link>
+            <link>https://tonybaloney.github.io/posts/vscode-setup.html</link>
             <pubDate>Tue, 17 May 2022 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\vscode-setup.html</guid>
+            <guid>https://tonybaloney.github.io/posts/vscode-setup.html</guid>
         </item>
         
         <item>
@@ -137,10 +137,10 @@
             <description>
                 Deploying a real-world Python application with PyPy
             </description>
-            <link>https://tonybaloney.github.io/blog\pypy-in-production.html</link>
+            <link>https://tonybaloney.github.io/posts/pypy-in-production.html</link>
             <pubDate>Thu, 10 Mar 2022 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\pypy-in-production.html</guid>
+            <guid>https://tonybaloney.github.io/posts/pypy-in-production.html</guid>
         </item>
         
         <item>
@@ -148,10 +148,10 @@
             <description>
                 Some examples and patterns for testing async code from Pytest
             </description>
-            <link>https://tonybaloney.github.io/blog\async-test-patterns-for-pytest-and-unittest.html</link>
+            <link>https://tonybaloney.github.io/posts/async-test-patterns-for-pytest-and-unittest.html</link>
             <pubDate>Thu, 05 Aug 2021 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\async-test-patterns-for-pytest-and-unittest.html</guid>
+            <guid>https://tonybaloney.github.io/posts/async-test-patterns-for-pytest-and-unittest.html</guid>
         </item>
         
         <item>
@@ -159,10 +159,10 @@
             <description>
                 An update on the Pyjion project to plug a JIT into CPython using the .NET 5 CLR JIT compiler
             </description>
-            <link>https://tonybaloney.github.io/blog\running-python-on-dotnet-5-with-pyjion.html</link>
+            <link>https://tonybaloney.github.io/posts/running-python-on-dotnet-5-with-pyjion.html</link>
             <pubDate>Wed, 11 Nov 2020 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\running-python-on-dotnet-5-with-pyjion.html</guid>
+            <guid>https://tonybaloney.github.io/posts/running-python-on-dotnet-5-with-pyjion.html</guid>
         </item>
         
         <item>
@@ -170,10 +170,10 @@
             <description>
                 A deep-dive technical overview of how you can write CPython extensions in assembly (with a bonus tutorial on assembly programming)
             </description>
-            <link>https://tonybaloney.github.io/blog\extending-python-with-assembly.html</link>
+            <link>https://tonybaloney.github.io/posts/extending-python-with-assembly.html</link>
             <pubDate>Sat, 15 Aug 2020 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\extending-python-with-assembly.html</guid>
+            <guid>https://tonybaloney.github.io/posts/extending-python-with-assembly.html</guid>
         </item>
         
         <item>
@@ -181,10 +181,10 @@
             <description>
                 A deep-dive on XSS exploitations in Django applications, how to find them and how to fix them
             </description>
-            <link>https://tonybaloney.github.io/blog\xss-exploitation-in-django.html</link>
+            <link>https://tonybaloney.github.io/posts/xss-exploitation-in-django.html</link>
             <pubDate>Wed, 22 Jul 2020 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\xss-exploitation-in-django.html</guid>
+            <guid>https://tonybaloney.github.io/posts/xss-exploitation-in-django.html</guid>
         </item>
         
         <item>
@@ -192,10 +192,10 @@
             <description>
                 Learn how to get autocomplete for your Azure Pipelines workflows
             </description>
-            <link>https://tonybaloney.github.io/blog\azure-pipelines-autocomplete-in-pycharm.html</link>
+            <link>https://tonybaloney.github.io/posts/azure-pipelines-autocomplete-in-pycharm.html</link>
             <pubDate>Thu, 11 Jun 2020 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\azure-pipelines-autocomplete-in-pycharm.html</guid>
+            <guid>https://tonybaloney.github.io/posts/azure-pipelines-autocomplete-in-pycharm.html</guid>
         </item>
         
         <item>
@@ -203,10 +203,10 @@
             <description>
                 If you want to learn Python, where do you start?
             </description>
-            <link>https://tonybaloney.github.io/blog\learning-python.html</link>
+            <link>https://tonybaloney.github.io/posts/learning-python.html</link>
             <pubDate>Thu, 28 May 2020 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\learning-python.html</guid>
+            <guid>https://tonybaloney.github.io/posts/learning-python.html</guid>
         </item>
         
         <item>
@@ -214,10 +214,10 @@
             <description>
                 A tutorial on deploying a production-reading Django application on Microsoft Azure
             </description>
-            <link>https://tonybaloney.github.io/blog\django-on-azure-beyond-hello-world.html</link>
+            <link>https://tonybaloney.github.io/posts/django-on-azure-beyond-hello-world.html</link>
             <pubDate>Mon, 13 Apr 2020 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\django-on-azure-beyond-hello-world.html</guid>
+            <guid>https://tonybaloney.github.io/posts/django-on-azure-beyond-hello-world.html</guid>
         </item>
         
         <item>
@@ -225,10 +225,10 @@
             <description>
                 A collection of the things I really enjoyed reading in 2019
             </description>
-            <link>https://tonybaloney.github.io/blog\favourite-python-stories-2019.html</link>
+            <link>https://tonybaloney.github.io/posts/favourite-python-stories-2019.html</link>
             <pubDate>Thu, 19 Dec 2019 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\favourite-python-stories-2019.html</guid>
+            <guid>https://tonybaloney.github.io/posts/favourite-python-stories-2019.html</guid>
         </item>
         
         <item>
@@ -236,10 +236,10 @@
             <description>
                 Exploring new features in upcoming Python 3.8 and how they address the GIL.
             </description>
-            <link>https://tonybaloney.github.io/blog\has-the-python-gil-been-slain.html</link>
+            <link>https://tonybaloney.github.io/posts/has-the-python-gil-been-slain.html</link>
             <pubDate>Wed, 15 May 2019 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\has-the-python-gil-been-slain.html</guid>
+            <guid>https://tonybaloney.github.io/posts/has-the-python-gil-been-slain.html</guid>
         </item>
         
         <item>
@@ -247,10 +247,10 @@
             <description>
                 Some of the amazing stories from the African continent
             </description>
-            <link>https://tonybaloney.github.io/blog\a-letter-to-the-python-community-in-africa.html</link>
+            <link>https://tonybaloney.github.io/posts/a-letter-to-the-python-community-in-africa.html</link>
             <pubDate>Fri, 18 Jan 2019 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\a-letter-to-the-python-community-in-africa.html</guid>
+            <guid>https://tonybaloney.github.io/posts/a-letter-to-the-python-community-in-africa.html</guid>
         </item>
         
         <item>
@@ -258,10 +258,10 @@
             <description>
                 A tutorial on Microsoft Azure pipelines and how to use it effectively for your Python projects.
             </description>
-            <link>https://tonybaloney.github.io/blog\azure-pipelines-with-python-by-example.html</link>
+            <link>https://tonybaloney.github.io/posts/azure-pipelines-with-python-by-example.html</link>
             <pubDate>Wed, 02 Jan 2019 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\azure-pipelines-with-python-by-example.html</guid>
+            <guid>https://tonybaloney.github.io/posts/azure-pipelines-with-python-by-example.html</guid>
         </item>
         
         <item>
@@ -269,10 +269,10 @@
             <description>
                 5 fun and simple coding projects to do with your kids
             </description>
-            <link>https://tonybaloney.github.io/blog\5-coding-projects-to-do-with-kids.html</link>
+            <link>https://tonybaloney.github.io/posts/5-coding-projects-to-do-with-kids.html</link>
             <pubDate>Wed, 26 Dec 2018 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\5-coding-projects-to-do-with-kids.html</guid>
+            <guid>https://tonybaloney.github.io/posts/5-coding-projects-to-do-with-kids.html</guid>
         </item>
         
         <item>
@@ -280,10 +280,10 @@
             <description>
                 A look into what makes Python slower than other languages
             </description>
-            <link>https://tonybaloney.github.io/blog\why-is-python-so-slow.html</link>
+            <link>https://tonybaloney.github.io/posts/why-is-python-so-slow.html</link>
             <pubDate>Mon, 16 Jul 2018 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\why-is-python-so-slow.html</guid>
+            <guid>https://tonybaloney.github.io/posts/why-is-python-so-slow.html</guid>
         </item>
         
         <item>
@@ -291,10 +291,10 @@
             <description>
                 A list of common security holes in Python applications, what causes them and how not to make those mistakes.
             </description>
-            <link>https://tonybaloney.github.io/blog\10-common-security-gotchas-in-python.html</link>
+            <link>https://tonybaloney.github.io/posts/10-common-security-gotchas-in-python.html</link>
             <pubDate>Mon, 18 Jun 2018 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\10-common-security-gotchas-in-python.html</guid>
+            <guid>https://tonybaloney.github.io/posts/10-common-security-gotchas-in-python.html</guid>
         </item>
         
         <item>
@@ -302,10 +302,10 @@
             <description>
                 A breakdown of how increases work (at most companies), how to navigate them and how to convince your boss to pay you more
             </description>
-            <link>https://tonybaloney.github.io/blog\tips-for-getting-a-raise.html</link>
+            <link>https://tonybaloney.github.io/posts/tips-for-getting-a-raise.html</link>
             <pubDate>Mon, 07 May 2018 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\tips-for-getting-a-raise.html</guid>
+            <guid>https://tonybaloney.github.io/posts/tips-for-getting-a-raise.html</guid>
         </item>
         
         <item>
@@ -313,10 +313,10 @@
             <description>
                 Showing you how to hack the Python grammar and compiler
             </description>
-            <link>https://tonybaloney.github.io/blog\modifying-the-python-language-in-6-minutes.html</link>
+            <link>https://tonybaloney.github.io/posts/modifying-the-python-language-in-6-minutes.html</link>
             <pubDate>Mon, 17 Apr 2017 00:00:00 -0000</pubDate>
             <dc:creator>Anthony Shaw</dc:creator>
-            <guid>https://tonybaloney.github.io/blog\modifying-the-python-language-in-6-minutes.html</guid>
+            <guid>https://tonybaloney.github.io/posts/modifying-the-python-language-in-6-minutes.html</guid>
         </item>
         
     </channel>
