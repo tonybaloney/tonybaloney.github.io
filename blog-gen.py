@@ -1,9 +1,15 @@
-from typing import TypedDict
+import json
+import os
 import markdown
 import jinja2
 import glob
 from datetime import datetime
 from email.utils import formatdate, format_datetime  # for RFC2822 formatting
+import openai
+import numpy as np
+import dotenv
+
+dotenv.load_dotenv()
 
 from markdown.treeprocessors import Treeprocessor
 
@@ -31,10 +37,50 @@ class BootstrapTreeprocessor(Treeprocessor):
 
         return node
 
+token = os.environ["GITHUB_TOKEN"]
+endpoint = "https://models.github.ai/inference"
+model_name = "openai/text-embedding-3-small"
+client = openai.OpenAI(
+        base_url=endpoint,
+        api_key=token,
+    )
 
-def get_closest_matches(title: str) -> tuple[str, str, str]:
-    pass
+def get_embedding(input: str):
+    response = client.embeddings.create(
+        input=[input],
+        model=model_name,
+    )
+    return response.data[0].embedding
 
+with open('embeddings.cache.json', "a+") as f:
+    contents = f.read()
+    if not contents:
+        _embeddings = {}
+    else:
+        _embeddings = json.loads(contents)
+
+def cosine_similarity(a: list[float], b: list[float]) -> float:
+    """
+    Calculate the cosine similarity between two vectors
+    """
+    a = np.array(a)
+    b = np.array(b)
+    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+
+def get_closest_matches(title: str, posts: list[dict]) -> tuple[dict, dict, dict]:
+    # build them once
+    for post in posts:
+        if post["blog_heading"] not in _embeddings:
+            _embeddings[post["blog_heading"]] = get_embedding(post["blog_heading"] + post["blog_subheading"])
+
+    embedding = get_embedding(title)
+    similarities = []
+    for post in posts:
+        post_embedding = _embeddings[post["blog_heading"]]
+        similarity = cosine_similarity(embedding, post_embedding)
+        similarities.append((post, similarity))
+    similarities.sort(key=lambda x: x[1], reverse=True)
+    return tuple(post for post, _ in similarities[1:4])
 
 def main():
     posts = glob.glob("blog/*.md")
@@ -48,18 +94,29 @@ def main():
     for post in posts:
         print("rendering {0}".format(post))
         with open(post, encoding="utf-8") as post_f:
-            _ = _md.convert(post_f.read()) # We only want metadata this time around
+            _ = _md.convert(post_f.read()) # We only want metadata this time around, Markdown puts it in a module global for some odd reason.
         url = post.replace(".md", ".html").replace("blog/", "posts/")
-        
-        _md.Meta['card_image'] = _md.Meta.get('blog_card_image', _md.Meta['blog_header_image'])[0]
-        post_date = datetime.strptime(_md.Meta['blog_publish_date'][0], "%B %d, %Y")
-        all_posts.append(dict(**_md.Meta, date=post_date, rfc2822_date=format_datetime(post_date), link="{0}{1}".format(BASE_URL, url), rel_html_path=url, rel_md_path=post))
+        meta = {}
+        meta['card_image'] = _md.Meta.get('blog_card_image', _md.Meta['blog_header_image'])[0]
+        meta['blog_heading'] = _md.Meta['blog_heading'][0]
+        meta['blog_subheading'] = _md.Meta['blog_subheading'][0]
+        meta['blog_header_image'] = _md.Meta['blog_header_image'][0]
+        meta['blog_author'] = _md.Meta['blog_author'][0]
+        meta['blog_publish_date'] = _md.Meta['blog_publish_date'][0]
+        meta['date'] = datetime.strptime(_md.Meta['blog_publish_date'][0], "%B %d, %Y")
+        meta['rfc2822_date'] = format_datetime(meta['date'])
+        meta['link'] = "{0}{1}".format(BASE_URL, url)
+        meta['rel_html_path'] = url
+        meta['rel_md_path'] = post
+        all_posts.append(meta)
 
     # Order blog posts by date published
     all_posts.sort(key=lambda item: item['date'], reverse=True)
 
     # render HTML
     for post in all_posts:
+        post["related_0"], post["related_1"], post["related_2"] = get_closest_matches(post["blog_heading"] + post["blog_subheading"], all_posts)
+
         with open(post["rel_md_path"], encoding="utf-8") as post_f:
             html = _md.convert(post_f.read())
             doc = env.get_template(TEMPLATE_FILE).render(content=html, baseurl=BASE_URL, url=post["rel_html_path"], **post)
@@ -67,6 +124,9 @@ def main():
         with open(post["rel_html_path"], "w", encoding="utf-8") as post_html_f:
             post_html_f.write(doc)
 
+    # Write the embedding cache back
+    with open('embeddings.cache.json', "w") as f:
+        json.dump(_embeddings, f)
 
     # Make the RSS feed
     with open("rss.xml", "w", encoding="utf-8") as rss_f:

@@ -2,3 +2,5 @@ jinja2
 render-engine
 Markdown<3.2
 openai
+numpy
+python-dotenv
