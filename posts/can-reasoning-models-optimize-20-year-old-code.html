@@ -104,6 +104,15 @@
     /* Footer icons: make sure stacked icons render white on dark theme */
     [data-theme='dark'] footer .fa-stack .fa-inverse { color: #ffffff !important; }
     [data-theme='dark'] footer .fa-stack .fa-circle { color: rgba(255,255,255,0.08) !important; }
+
+    /* Related posts card styling */
+    .related-posts { margin-top: 2rem; }
+    .related-posts .related-box { border: 1px solid rgba(0,0,0,0.06); padding: 12px; border-radius: 6px; background: var(--bg); color: var(--text); }
+    [data-theme='dark'] .related-posts .related-box { border-color: rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); }
+    .related-posts .related-box img { width:100%; height:200px; border-radius:4px;  }
+    .related-posts .related-box .title { font-weight:700; margin-top:8px; }
+    .related-posts .related-box .subheading { color: var(--muted); font-size:0.95em; }
+    .related-posts .related-box .post-meta { font-size:0.9em; margin-top:6px; }
     </style>
 
     <!-- Custom Fonts -->
@@ -382,6 +391,41 @@ v_iadd(digit *x, Py_ssize_t m, digit *y, Py_ssize_t n)
 <h2 id="phase-3-running-the-full-371b-parameter-model">Phase 3 : Running the full 371B parameter model<a class="headerlink" href="#phase-3-running-the-full-371b-parameter-model" title="Permanent link">&para;</a></h2>
 <p>Talk about the Azure model</p>
 <p>Show the result.</p>
+
+                
+                <H2>Related Posts</H2>
+                <div class="related-posts row">
+                    <div class="col-md-4">
+                        <a href="/posts/cjk-chinese-japanese-korean-llm-ai-best-practices.html">
+                        <div class="related-box">
+                            <img src="/img/posts-original/old_books.jpg" alt="Working with Chinese, Japanese, and Korean text in Generative AI pipelines" />
+                            <div class="title">Working with Chinese, Japanese, and Korean text in Generative AI pipelines</div>
+                            <div class="subheading">Best practices for working with CJK text in Large Language Models</div>
+                            <div class="post-meta"><i>Published March 12, 2024</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/xss-exploitation-in-django.html">
+                        <div class="related-box">
+                            <img src="/img/posts/danger-snake.jpeg" alt="XSS Exploitation in Django Applications" />
+                            <div class="title">XSS Exploitation in Django Applications</div>
+                            <div class="subheading">A deep-dive on XSS exploitations in Django applications, how to find them and how to fix them</div>
+                            <div class="post-meta"><i>Published July 22, 2020</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/fine-tuning-wsgi-and-asgi-applications.html">
+                        <div class="related-box">
+                            <img src="/img/posts/little-python-lemonade-stand.jpeg" alt="Fine Tuning Python WSGI and ASGI applications for Flask, Django, and FastAPI" />
+                            <div class="title">Fine Tuning Python WSGI and ASGI applications for Flask, Django, and FastAPI</div>
+                            <div class="subheading">Exploring strategies for optimal Gunicorn, Uvicorn and Hypercorn configurations for Flask, Django, and FastAPI</div>
+                            <div class="post-meta"><i>Published December 20, 2023</i></div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -104,6 +104,15 @@
     /* Footer icons: make sure stacked icons render white on dark theme */
     [data-theme='dark'] footer .fa-stack .fa-inverse { color: #ffffff !important; }
     [data-theme='dark'] footer .fa-stack .fa-circle { color: rgba(255,255,255,0.08) !important; }
+
+    /* Related posts card styling */
+    .related-posts { margin-top: 2rem; }
+    .related-posts .related-box { border: 1px solid rgba(0,0,0,0.06); padding: 12px; border-radius: 6px; background: var(--bg); color: var(--text); }
+    [data-theme='dark'] .related-posts .related-box { border-color: rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); }
+    .related-posts .related-box img { width:100%; height:200px; border-radius:4px;  }
+    .related-posts .related-box .title { font-weight:700; margin-top:8px; }
+    .related-posts .related-box .subheading { color: var(--muted); font-size:0.95em; }
+    .related-posts .related-box .post-meta { font-size:0.9em; margin-top:6px; }
     </style>
 
     <!-- Custom Fonts -->
@@ -388,6 +397,41 @@ What about memory?</p>
 <p>My assumption for the poor performance is that PyPy doesn&rsquo;t have much opportunity to optimize the core HTTP process, the FastAPI pipeline and the API route. Compared with the &ldquo;slow&rdquo; call, which does a lot more pure Python, with lots of loops, dictionaries and class instantiation. </p>
 <p>In conclusion. Swapping CPython for PyPy could be a simple way to get instant performance gains on your Python application. Or it might not. Either way, it&rsquo;s simple to try it out and benchmark.</p>
 <p>I recommend writing a <a href="https://tonybaloney.github.io/posts/django-on-azure-beyond-hello-world.html#performance">full benchmark suite on Locust</a> to decide for yourself.</p>
+
+                
+                <H2>Related Posts</H2>
+                <div class="related-posts row">
+                    <div class="col-md-4">
+                        <a href="/posts/azure-pipelines-with-python-by-example.html">
+                        <div class="related-box">
+                            <img src="/img/home-bg.jpg" alt="Azure Pipelines with Python - by example" />
+                            <div class="title">Azure Pipelines with Python - by example</div>
+                            <div class="subheading">A tutorial on Microsoft Azure pipelines and how to use it effectively for your Python projects.</div>
+                            <div class="post-meta"><i>Published January 2, 2019</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/sub-interpreter-web-workers.html">
+                        <div class="related-box">
+                            <img src="/img/posts/four-snakes-square.jpeg" alt="Running Python Parallel Applications with Sub Interpreters" />
+                            <div class="title">Running Python Parallel Applications with Sub Interpreters</div>
+                            <div class="subheading">An exploration into the possibility of running a parallel application using sub interpreters</div>
+                            <div class="post-meta"><i>Published November 17, 2023</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/embedding-python-in-dot-net-with-csnakes.html">
+                        <div class="related-box">
+                            <img src="/img/posts/snake-robot.jpeg" alt="Embedding Python into your .NET project with CSnakes" />
+                            <div class="title">Embedding Python into your .NET project with CSnakes</div>
+                            <div class="subheading">A deep-dive into a new integration between .NET and Python</div>
+                            <div class="post-meta"><i>Published October 4, 2024</i></div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

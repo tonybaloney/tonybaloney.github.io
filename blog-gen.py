@@ -37,22 +37,29 @@ class BootstrapTreeprocessor(Treeprocessor):
 
         return node
 
-token = os.environ["GITHUB_TOKEN"]
-endpoint = "https://models.github.ai/inference"
-model_name = "openai/text-embedding-3-small"
+# token = os.environ["GITHUB_TOKEN"]
+# endpoint = "https://models.github.ai/inference"
+# model_name = "openai/text-embedding-3-small"
+
+endpoint = "http://localhost:11434/v1/"
+model_name = "nomic-embed-text:latest"
+token = "ollama"
+
 client = openai.OpenAI(
         base_url=endpoint,
         api_key=token,
     )
 
 def get_embedding(input: str):
+    print(f"Calculating embedding for {input[:50]}")
     response = client.embeddings.create(
         input=[input],
         model=model_name,
+        dimensions=512
     )
     return response.data[0].embedding
 
-with open('embeddings.cache.json', "a+") as f:
+with open('embeddings.cache.json', "r") as f:
     contents = f.read()
     if not contents:
         _embeddings = {}
@@ -67,20 +74,20 @@ def cosine_similarity(a: list[float], b: list[float]) -> float:
     b = np.array(b)
     return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
-def get_closest_matches(title: str, posts: list[dict]) -> tuple[dict, dict, dict]:
+def get_closest_matches(post: dict, posts: list[dict]) -> tuple[dict, dict, dict]:
     # build them once
-    for post in posts:
-        if post["blog_heading"] not in _embeddings:
-            _embeddings[post["blog_heading"]] = get_embedding(post["blog_heading"] + post["blog_subheading"])
+    for p in posts:
+        if p["blog_heading"] not in _embeddings:
+            _embeddings[p["blog_heading"]] = get_embedding(p["blog_heading"] + p["blog_subheading"])
 
-    embedding = get_embedding(title)
+    embedding = _embeddings[post["blog_heading"]]
     similarities = []
-    for post in posts:
-        post_embedding = _embeddings[post["blog_heading"]]
+    for p in posts:
+        post_embedding = _embeddings[p["blog_heading"]]
         similarity = cosine_similarity(embedding, post_embedding)
-        similarities.append((post, similarity))
+        similarities.append((p, similarity))
     similarities.sort(key=lambda x: x[1], reverse=True)
-    return tuple(post for post, _ in similarities[1:4])
+    return tuple(p for p, _ in similarities[1:4])
 
 def main():
     posts = glob.glob("blog/*.md")
@@ -115,7 +122,7 @@ def main():
 
     # render HTML
     for post in all_posts:
-        post["related_0"], post["related_1"], post["related_2"] = get_closest_matches(post["blog_heading"] + post["blog_subheading"], all_posts)
+        post["related_0"], post["related_1"], post["related_2"] = get_closest_matches(post, all_posts)
 
         with open(post["rel_md_path"], encoding="utf-8") as post_f:
             html = _md.convert(post_f.read())

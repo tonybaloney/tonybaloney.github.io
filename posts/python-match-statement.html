@@ -104,6 +104,15 @@
     /* Footer icons: make sure stacked icons render white on dark theme */
     [data-theme='dark'] footer .fa-stack .fa-inverse { color: #ffffff !important; }
     [data-theme='dark'] footer .fa-stack .fa-circle { color: rgba(255,255,255,0.08) !important; }
+
+    /* Related posts card styling */
+    .related-posts { margin-top: 2rem; }
+    .related-posts .related-box { border: 1px solid rgba(0,0,0,0.06); padding: 12px; border-radius: 6px; background: var(--bg); color: var(--text); }
+    [data-theme='dark'] .related-posts .related-box { border-color: rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); }
+    .related-posts .related-box img { width:100%; height:200px; border-radius:4px;  }
+    .related-posts .related-box .title { font-weight:700; margin-top:8px; }
+    .related-posts .related-box .subheading { color: var(--muted); font-size:0.95em; }
+    .related-posts .related-box .post-meta { font-size:0.9em; margin-top:6px; }
     </style>
 
     <!-- Custom Fonts -->
@@ -404,6 +413,41 @@ Lewis Hamilton, a Mercedes driver.
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
 <p>I hope this has been insightful and you can see where you can replace messy, nested if-statements with fast and clean <code>match</code> statements.</p>
 <p>Please Share this article.</p>
+
+                
+                <H2>Related Posts</H2>
+                <div class="related-posts row">
+                    <div class="col-md-4">
+                        <a href="/posts/10-common-security-gotchas-in-python.html">
+                        <div class="related-box">
+                            <img src="/img/posts/danger-snake.jpeg" alt="10 common security gotchas in Python and how to avoid them" />
+                            <div class="title">10 common security gotchas in Python and how to avoid them</div>
+                            <div class="subheading">A list of common security holes in Python applications, what causes them and how not to make those mistakes.</div>
+                            <div class="post-meta"><i>Published June 18, 2018</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/learning-python.html">
+                        <div class="related-box">
+                            <img src="/img/posts/learningpython.jpg" alt="Learning Python from Scratch" />
+                            <div class="title">Learning Python from Scratch</div>
+                            <div class="subheading">If you want to learn Python, where do you start?</div>
+                            <div class="post-meta"><i>Published May 28, 2020</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/fine-tuning-wsgi-and-asgi-applications.html">
+                        <div class="related-box">
+                            <img src="/img/posts/little-python-lemonade-stand.jpeg" alt="Fine Tuning Python WSGI and ASGI applications for Flask, Django, and FastAPI" />
+                            <div class="title">Fine Tuning Python WSGI and ASGI applications for Flask, Django, and FastAPI</div>
+                            <div class="subheading">Exploring strategies for optimal Gunicorn, Uvicorn and Hypercorn configurations for Flask, Django, and FastAPI</div>
+                            <div class="post-meta"><i>Published December 20, 2023</i></div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

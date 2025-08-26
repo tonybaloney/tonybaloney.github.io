@@ -104,6 +104,15 @@
     /* Footer icons: make sure stacked icons render white on dark theme */
     [data-theme='dark'] footer .fa-stack .fa-inverse { color: #ffffff !important; }
     [data-theme='dark'] footer .fa-stack .fa-circle { color: rgba(255,255,255,0.08) !important; }
+
+    /* Related posts card styling */
+    .related-posts { margin-top: 2rem; }
+    .related-posts .related-box { border: 1px solid rgba(0,0,0,0.06); padding: 12px; border-radius: 6px; background: var(--bg); color: var(--text); }
+    [data-theme='dark'] .related-posts .related-box { border-color: rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); }
+    .related-posts .related-box img { width:100%; height:200px; border-radius:4px;  }
+    .related-posts .related-box .title { font-weight:700; margin-top:8px; }
+    .related-posts .related-box .subheading { color: var(--muted); font-size:0.95em; }
+    .related-posts .related-box .post-meta { font-size:0.9em; margin-top:6px; }
     </style>
 
     <!-- Custom Fonts -->
@@ -635,6 +644,41 @@ jobs:
 <li>Each script step will start from the root path, even if the previous step changed directories.</li>
 <li>Try to avoid using too much bash-scripting in your steps that is specific to Linux, this makes it easier to copy steps for Windows. In PowerShell, many of the commands you would expect in Linux exist, like <code>cd</code> <code>ls</code> <code>mkdir</code> <code>rm</code> .</li>
 </ul>
+
+                
+                <H2>Related Posts</H2>
+                <div class="related-posts row">
+                    <div class="col-md-4">
+                        <a href="/posts/azure-pipelines-autocomplete-in-pycharm.html">
+                        <div class="related-box">
+                            <img src="/img/clouds.jpg" alt="Azure Pipelines autocomplete in PyCharm, IntelliJ, WebStorm, CLion, and Rider" />
+                            <div class="title">Azure Pipelines autocomplete in PyCharm, IntelliJ, WebStorm, CLion, and Rider</div>
+                            <div class="subheading">Learn how to get autocomplete for your Azure Pipelines workflows</div>
+                            <div class="post-meta"><i>Published June 11, 2020</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/django-on-azure-beyond-hello-world.html">
+                        <div class="related-box">
+                            <img src="/img/clouds.jpg" alt="Django on Azure - beyond "hello world"" />
+                            <div class="title">Django on Azure - beyond "hello world"</div>
+                            <div class="subheading">A tutorial on deploying a production-reading Django application on Microsoft Azure</div>
+                            <div class="post-meta"><i>Published April 13, 2020</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/embedding-python-in-dot-net-with-csnakes.html">
+                        <div class="related-box">
+                            <img src="/img/posts/snake-robot.jpeg" alt="Embedding Python into your .NET project with CSnakes" />
+                            <div class="title">Embedding Python into your .NET project with CSnakes</div>
+                            <div class="subheading">A deep-dive into a new integration between .NET and Python</div>
+                            <div class="post-meta"><i>Published October 4, 2024</i></div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

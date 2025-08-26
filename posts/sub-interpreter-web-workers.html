@@ -104,6 +104,15 @@
     /* Footer icons: make sure stacked icons render white on dark theme */
     [data-theme='dark'] footer .fa-stack .fa-inverse { color: #ffffff !important; }
     [data-theme='dark'] footer .fa-stack .fa-circle { color: rgba(255,255,255,0.08) !important; }
+
+    /* Related posts card styling */
+    .related-posts { margin-top: 2rem; }
+    .related-posts .related-box { border: 1px solid rgba(0,0,0,0.06); padding: 12px; border-radius: 6px; background: var(--bg); color: var(--text); }
+    [data-theme='dark'] .related-posts .related-box { border-color: rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); }
+    .related-posts .related-box img { width:100%; height:200px; border-radius:4px;  }
+    .related-posts .related-box .title { font-weight:700; margin-top:8px; }
+    .related-posts .related-box .subheading { color: var(--muted); font-size:0.95em; }
+    .related-posts .related-box .post-meta { font-size:0.9em; margin-top:6px; }
     </style>
 
     <!-- Custom Fonts -->
@@ -552,6 +561,41 @@ asyncio_worker(config, hypercorn_sockets, shutdown_event=shutdown_event)
 <p>I was pleasantly suprised since I wasn&rsquo;t expecting it to work at all because sub interpreters are so new and the Python ecosystem hasn&rsquo;t been testing them. The next step is to test some more complex web applications, continue to report crashes and issues then get this web worker into a state where it&rsquo;s stable enough to benchmark.</p>
 <p>Then I might just submit a PR to Hypercorn for Python 3.13&rsquo;s release next year.</p>
 <p><img alt="" class="img-responsive center-block" src="/img/posts/four-snakes-cartoon.jpeg" style="width:40%"></p>
+
+                
+                <H2>Related Posts</H2>
+                <div class="related-posts row">
+                    <div class="col-md-4">
+                        <a href="/posts/pypy-in-production.html">
+                        <div class="related-box">
+                            <img src="/img/posts/platform_level.jpg" alt="PyPy in Production" />
+                            <div class="title">PyPy in Production</div>
+                            <div class="subheading">Deploying a real-world Python application with PyPy</div>
+                            <div class="post-meta"><i>Published March 10, 2022</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/azure-pipelines-with-python-by-example.html">
+                        <div class="related-box">
+                            <img src="/img/home-bg.jpg" alt="Azure Pipelines with Python - by example" />
+                            <div class="title">Azure Pipelines with Python - by example</div>
+                            <div class="subheading">A tutorial on Microsoft Azure pipelines and how to use it effectively for your Python projects.</div>
+                            <div class="post-meta"><i>Published January 2, 2019</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/extending-python-with-assembly.html">
+                        <div class="related-box">
+                            <img src="/img/posts/hammer-screw.jpeg" alt="Writing Python Extensions in Assembly" />
+                            <div class="title">Writing Python Extensions in Assembly</div>
+                            <div class="subheading">A deep-dive technical overview of how you can write CPython extensions in assembly (with a bonus tutorial on assembly programming)</div>
+                            <div class="post-meta"><i>Published August 15, 2020</i></div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

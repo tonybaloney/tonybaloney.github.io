@@ -104,6 +104,15 @@
     /* Footer icons: make sure stacked icons render white on dark theme */
     [data-theme='dark'] footer .fa-stack .fa-inverse { color: #ffffff !important; }
     [data-theme='dark'] footer .fa-stack .fa-circle { color: rgba(255,255,255,0.08) !important; }
+
+    /* Related posts card styling */
+    .related-posts { margin-top: 2rem; }
+    .related-posts .related-box { border: 1px solid rgba(0,0,0,0.06); padding: 12px; border-radius: 6px; background: var(--bg); color: var(--text); }
+    [data-theme='dark'] .related-posts .related-box { border-color: rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); }
+    .related-posts .related-box img { width:100%; height:200px; border-radius:4px;  }
+    .related-posts .related-box .title { font-weight:700; margin-top:8px; }
+    .related-posts .related-box .subheading { color: var(--muted); font-size:0.95em; }
+    .related-posts .related-box .post-meta { font-size:0.9em; margin-top:6px; }
     </style>
 
     <!-- Custom Fonts -->
@@ -371,6 +380,41 @@ jmpq    *%rax
 <h2 id="the-future-is-bright-the-future-is-jit-compiled">The future is bright, the future is JIT compiled<a class="headerlink" href="#the-future-is-bright-the-future-is-jit-compiled" title="Permanent link">&para;</a></h2>
 <p>The challenges with the existing interpreter being compiled ahead-of-time are that there are fewer opportunities for serious optimizations. Python 3.11&rsquo;s adaptive interpreter was a step in the right direction, but it needs to go a lot further for Python to see a step-change in performance. </p>
 <p>I think that whilst the first version of this JIT isn&rsquo;t going to seriously dent any benchmarks (yet), it opens the door to some huge optimizations and not just ones that benefit the toy benchmark programs in the standard benchmark suite. </p>
+
+                
+                <H2>Related Posts</H2>
+                <div class="related-posts row">
+                    <div class="col-md-4">
+                        <a href="/posts/running-python-on-dotnet-5-with-pyjion.html">
+                        <div class="related-box">
+                            <img src="/img/posts/turtle-pileup.jpg" alt="Running Python on .NET 5" />
+                            <div class="title">Running Python on .NET 5</div>
+                            <div class="subheading">An update on the Pyjion project to plug a JIT into CPython using the .NET 5 CLR JIT compiler</div>
+                            <div class="post-meta"><i>Published November 11, 2020</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/has-the-python-gil-been-slain.html">
+                        <div class="related-box">
+                            <img src="/img/posts/gil_header.jpeg" alt="Has the Python GIL been slain?" />
+                            <div class="title">Has the Python GIL been slain?</div>
+                            <div class="subheading">Exploring new features in upcoming Python 3.8 and how they address the GIL.</div>
+                            <div class="post-meta"><i>Published May 15, 2019</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/10-common-security-gotchas-in-python.html">
+                        <div class="related-box">
+                            <img src="/img/posts/danger-snake.jpeg" alt="10 common security gotchas in Python and how to avoid them" />
+                            <div class="title">10 common security gotchas in Python and how to avoid them</div>
+                            <div class="subheading">A list of common security holes in Python applications, what causes them and how not to make those mistakes.</div>
+                            <div class="post-meta"><i>Published June 18, 2018</i></div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

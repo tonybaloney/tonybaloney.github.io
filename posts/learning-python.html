@@ -104,6 +104,15 @@
     /* Footer icons: make sure stacked icons render white on dark theme */
     [data-theme='dark'] footer .fa-stack .fa-inverse { color: #ffffff !important; }
     [data-theme='dark'] footer .fa-stack .fa-circle { color: rgba(255,255,255,0.08) !important; }
+
+    /* Related posts card styling */
+    .related-posts { margin-top: 2rem; }
+    .related-posts .related-box { border: 1px solid rgba(0,0,0,0.06); padding: 12px; border-radius: 6px; background: var(--bg); color: var(--text); }
+    [data-theme='dark'] .related-posts .related-box { border-color: rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); }
+    .related-posts .related-box img { width:100%; height:200px; border-radius:4px;  }
+    .related-posts .related-box .title { font-weight:700; margin-top:8px; }
+    .related-posts .related-box .subheading { color: var(--muted); font-size:0.95em; }
+    .related-posts .related-box .post-meta { font-size:0.9em; margin-top:6px; }
     </style>
 
     <!-- Custom Fonts -->
@@ -374,6 +383,41 @@ If you can figure out the language pretty-quickly and need to get up to speed on
 </ul>
 <p><img alt="cartoon of person looking surprised" class="img-responsive center-block" src="/img/posts/Newbie_Watermarked.webp" style="width:40%"></p>
 <p><a class="btn btn-primary" href="https://realpython.com/tutorials/basics/">Check it out</a></p>
+
+                
+                <H2>Related Posts</H2>
+                <div class="related-posts row">
+                    <div class="col-md-4">
+                        <a href="/posts/azure-pipelines-with-python-by-example.html">
+                        <div class="related-box">
+                            <img src="/img/home-bg.jpg" alt="Azure Pipelines with Python - by example" />
+                            <div class="title">Azure Pipelines with Python - by example</div>
+                            <div class="subheading">A tutorial on Microsoft Azure pipelines and how to use it effectively for your Python projects.</div>
+                            <div class="post-meta"><i>Published January 2, 2019</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/modifying-the-python-language-in-6-minutes.html">
+                        <div class="related-box">
+                            <img src="/img/posts/token-s2.png" alt="Modifying the Python language in 6 minutes" />
+                            <div class="title">Modifying the Python language in 6 minutes</div>
+                            <div class="subheading">Showing you how to hack the Python grammar and compiler</div>
+                            <div class="post-meta"><i>Published April 17, 2017</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/why-is-python-so-slow.html">
+                        <div class="related-box">
+                            <img src="/img/posts/snail.jpg" alt="Why is Python so slow?" />
+                            <div class="title">Why is Python so slow?</div>
+                            <div class="subheading">A look into what makes Python slower than other languages</div>
+                            <div class="post-meta"><i>Published July 16, 2018</i></div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

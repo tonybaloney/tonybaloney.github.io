@@ -104,6 +104,15 @@
     /* Footer icons: make sure stacked icons render white on dark theme */
     [data-theme='dark'] footer .fa-stack .fa-inverse { color: #ffffff !important; }
     [data-theme='dark'] footer .fa-stack .fa-circle { color: rgba(255,255,255,0.08) !important; }
+
+    /* Related posts card styling */
+    .related-posts { margin-top: 2rem; }
+    .related-posts .related-box { border: 1px solid rgba(0,0,0,0.06); padding: 12px; border-radius: 6px; background: var(--bg); color: var(--text); }
+    [data-theme='dark'] .related-posts .related-box { border-color: rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); }
+    .related-posts .related-box img { width:100%; height:200px; border-radius:4px;  }
+    .related-posts .related-box .title { font-weight:700; margin-top:8px; }
+    .related-posts .related-box .subheading { color: var(--muted); font-size:0.95em; }
+    .related-posts .related-box .post-meta { font-size:0.9em; margin-top:6px; }
     </style>
 
     <!-- Custom Fonts -->
@@ -1197,6 +1206,41 @@ def test_basic_multiplication():
 </ul>
 <p>In particular, I think I could find security exploits in compiled Python C extensions. Not in the standard library, because hopefully they&rsquo;ve been tested, but in 3rd party libraries.</p>
 <p>Footnote: Kudos to p403n1x87 (Gabriele N. Tornetta) for <a href="https://p403n1x87.github.io/python/assembly/2018/03/23/asm_python.html">cracking this nut</a> in 2018</p>
+
+                
+                <H2>Related Posts</H2>
+                <div class="related-posts row">
+                    <div class="col-md-4">
+                        <a href="/posts/embedding-python-in-dot-net-with-csnakes.html">
+                        <div class="related-box">
+                            <img src="/img/posts/snake-robot.jpeg" alt="Embedding Python into your .NET project with CSnakes" />
+                            <div class="title">Embedding Python into your .NET project with CSnakes</div>
+                            <div class="subheading">A deep-dive into a new integration between .NET and Python</div>
+                            <div class="post-meta"><i>Published October 4, 2024</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/running-python-on-dotnet-5-with-pyjion.html">
+                        <div class="related-box">
+                            <img src="/img/posts/turtle-pileup.jpg" alt="Running Python on .NET 5" />
+                            <div class="title">Running Python on .NET 5</div>
+                            <div class="subheading">An update on the Pyjion project to plug a JIT into CPython using the .NET 5 CLR JIT compiler</div>
+                            <div class="post-meta"><i>Published November 11, 2020</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/sub-interpreter-web-workers.html">
+                        <div class="related-box">
+                            <img src="/img/posts/four-snakes-square.jpeg" alt="Running Python Parallel Applications with Sub Interpreters" />
+                            <div class="title">Running Python Parallel Applications with Sub Interpreters</div>
+                            <div class="subheading">An exploration into the possibility of running a parallel application using sub interpreters</div>
+                            <div class="post-meta"><i>Published November 17, 2023</i></div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -104,6 +104,15 @@
     /* Footer icons: make sure stacked icons render white on dark theme */
     [data-theme='dark'] footer .fa-stack .fa-inverse { color: #ffffff !important; }
     [data-theme='dark'] footer .fa-stack .fa-circle { color: rgba(255,255,255,0.08) !important; }
+
+    /* Related posts card styling */
+    .related-posts { margin-top: 2rem; }
+    .related-posts .related-box { border: 1px solid rgba(0,0,0,0.06); padding: 12px; border-radius: 6px; background: var(--bg); color: var(--text); }
+    [data-theme='dark'] .related-posts .related-box { border-color: rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); }
+    .related-posts .related-box img { width:100%; height:200px; border-radius:4px;  }
+    .related-posts .related-box .title { font-weight:700; margin-top:8px; }
+    .related-posts .related-box .subheading { color: var(--muted); font-size:0.95em; }
+    .related-posts .related-box .post-meta { font-size:0.9em; margin-top:6px; }
     </style>
 
     <!-- Custom Fonts -->
@@ -386,6 +395,41 @@ If you want concurrent code in Python 3.8, you have CPU-bound concurrency proble
 <h3 id="when">When?<a class="headerlink" href="#when" title="Permanent link">&para;</a></h3>
 <p>Pickle v5 and shared memory for multiprocessing will likely be Python 3.8 (October 2019) and sub-interpreters will be between 3.8 and 3.9.
 If you want to play with my examples now, I’ve built a custom branch with all of the code required https://github.com/tonybaloney/cpython/tree/subinterpreters</p>
+
+                
+                <H2>Related Posts</H2>
+                <div class="related-posts row">
+                    <div class="col-md-4">
+                        <a href="/posts/running-python-on-dotnet-5-with-pyjion.html">
+                        <div class="related-box">
+                            <img src="/img/posts/turtle-pileup.jpg" alt="Running Python on .NET 5" />
+                            <div class="title">Running Python on .NET 5</div>
+                            <div class="subheading">An update on the Pyjion project to plug a JIT into CPython using the .NET 5 CLR JIT compiler</div>
+                            <div class="post-meta"><i>Published November 11, 2020</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/python-gets-a-jit.html">
+                        <div class="related-box">
+                            <img src="/img/posts/snake_cookie_cutter.jpeg" alt="Python 3.13 gets a JIT" />
+                            <div class="title">Python 3.13 gets a JIT</div>
+                            <div class="subheading">Reviewing the JIT in Python 3.13</div>
+                            <div class="post-meta"><i>Published January 9, 2024</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/embedding-python-in-dot-net-with-csnakes.html">
+                        <div class="related-box">
+                            <img src="/img/posts/snake-robot.jpeg" alt="Embedding Python into your .NET project with CSnakes" />
+                            <div class="title">Embedding Python into your .NET project with CSnakes</div>
+                            <div class="subheading">A deep-dive into a new integration between .NET and Python</div>
+                            <div class="post-meta"><i>Published October 4, 2024</i></div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

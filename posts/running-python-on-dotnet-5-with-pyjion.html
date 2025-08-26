@@ -104,6 +104,15 @@
     /* Footer icons: make sure stacked icons render white on dark theme */
     [data-theme='dark'] footer .fa-stack .fa-inverse { color: #ffffff !important; }
     [data-theme='dark'] footer .fa-stack .fa-circle { color: rgba(255,255,255,0.08) !important; }
+
+    /* Related posts card styling */
+    .related-posts { margin-top: 2rem; }
+    .related-posts .related-box { border: 1px solid rgba(0,0,0,0.06); padding: 12px; border-radius: 6px; background: var(--bg); color: var(--text); }
+    [data-theme='dark'] .related-posts .related-box { border-color: rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); }
+    .related-posts .related-box img { width:100%; height:200px; border-radius:4px;  }
+    .related-posts .related-box .title { font-weight:700; margin-top:8px; }
+    .related-posts .related-box .subheading { color: var(--muted); font-size:0.95em; }
+    .related-posts .related-box .post-meta { font-size:0.9em; margin-top:6px; }
     </style>
 
     <!-- Custom Fonts -->
@@ -393,6 +402,41 @@ Therefore it would be a huge undertaking to implement object-model interfaces fo
 <li>Thank you to Steve Dower at Microsoft for helping me figure out the dynamic library loader.</li>
 <li>Thank you Dino and Brett for doing the heavy lifting to get the original POC together.</li>
 </ul>
+
+                
+                <H2>Related Posts</H2>
+                <div class="related-posts row">
+                    <div class="col-md-4">
+                        <a href="/posts/embedding-python-in-dot-net-with-csnakes.html">
+                        <div class="related-box">
+                            <img src="/img/posts/snake-robot.jpeg" alt="Embedding Python into your .NET project with CSnakes" />
+                            <div class="title">Embedding Python into your .NET project with CSnakes</div>
+                            <div class="subheading">A deep-dive into a new integration between .NET and Python</div>
+                            <div class="post-meta"><i>Published October 4, 2024</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/extending-python-with-assembly.html">
+                        <div class="related-box">
+                            <img src="/img/posts/hammer-screw.jpeg" alt="Writing Python Extensions in Assembly" />
+                            <div class="title">Writing Python Extensions in Assembly</div>
+                            <div class="subheading">A deep-dive technical overview of how you can write CPython extensions in assembly (with a bonus tutorial on assembly programming)</div>
+                            <div class="post-meta"><i>Published August 15, 2020</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/python-gets-a-jit.html">
+                        <div class="related-box">
+                            <img src="/img/posts/snake_cookie_cutter.jpeg" alt="Python 3.13 gets a JIT" />
+                            <div class="title">Python 3.13 gets a JIT</div>
+                            <div class="subheading">Reviewing the JIT in Python 3.13</div>
+                            <div class="post-meta"><i>Published January 9, 2024</i></div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

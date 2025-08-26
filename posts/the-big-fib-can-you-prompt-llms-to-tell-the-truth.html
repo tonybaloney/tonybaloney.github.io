@@ -104,6 +104,15 @@
     /* Footer icons: make sure stacked icons render white on dark theme */
     [data-theme='dark'] footer .fa-stack .fa-inverse { color: #ffffff !important; }
     [data-theme='dark'] footer .fa-stack .fa-circle { color: rgba(255,255,255,0.08) !important; }
+
+    /* Related posts card styling */
+    .related-posts { margin-top: 2rem; }
+    .related-posts .related-box { border: 1px solid rgba(0,0,0,0.06); padding: 12px; border-radius: 6px; background: var(--bg); color: var(--text); }
+    [data-theme='dark'] .related-posts .related-box { border-color: rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); }
+    .related-posts .related-box img { width:100%; height:200px; border-radius:4px;  }
+    .related-posts .related-box .title { font-weight:700; margin-top:8px; }
+    .related-posts .related-box .subheading { color: var(--muted); font-size:0.95em; }
+    .related-posts .related-box .post-meta { font-size:0.9em; margin-top:6px; }
     </style>
 
     <!-- Custom Fonts -->
@@ -493,6 +502,41 @@ else:
 However, if you provide the attributes of the cards as a list (e.g., number, color, shading, shape for each card), I can process the data and find the "Set" programmatically. For example, you might describe the cards as tuples like (1, 'red', 'solid', 'oval'), and I can then run the algorithm to find sets.
 </code></pre>
 <p>In conclusion, the AI will be a <em>helpul assistant</em> unless you tell it otherwise and a very small Python program could have solved this problem in the first place. </p>
+
+                
+                <H2>Related Posts</H2>
+                <div class="related-posts row">
+                    <div class="col-md-4">
+                        <a href="/posts/using-llm-in-github-actions.html">
+                        <div class="related-box">
+                            <img src="/img/posts-original/gpt-5-nano.jpg" alt="Using an LLM in GitHub Actions" />
+                            <div class="title">Using an LLM in GitHub Actions</div>
+                            <div class="subheading">Using the LLM CLI in a GitHub Action workflow with GitHub Models</div>
+                            <div class="post-meta"><i>Published August 14, 2025</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/tips-for-getting-a-raise.html">
+                        <div class="related-box">
+                            <img src="/img/home-bg0.jpg" alt="Tips for getting a raise at work" />
+                            <div class="title">Tips for getting a raise at work</div>
+                            <div class="subheading">A breakdown of how increases work (at most companies), how to navigate them and how to convince your boss to pay you more</div>
+                            <div class="post-meta"><i>Published May 7, 2018</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/can-reasoning-models-optimize-20-year-old-code.html">
+                        <div class="related-box">
+                            <img src="/img/posts/snail.jpg" alt="Can DeepSeek-R1 improve the performance of one of the worlds oldest codebases?" />
+                            <div class="title">Can DeepSeek-R1 improve the performance of one of the worlds oldest codebases?</div>
+                            <div class="subheading">Exploring whether reasoning models can perform complex optimizations of old code</div>
+                            <div class="post-meta"><i>Published January 30, 2025</i></div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

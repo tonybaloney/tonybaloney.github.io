@@ -104,6 +104,15 @@
     /* Footer icons: make sure stacked icons render white on dark theme */
     [data-theme='dark'] footer .fa-stack .fa-inverse { color: #ffffff !important; }
     [data-theme='dark'] footer .fa-stack .fa-circle { color: rgba(255,255,255,0.08) !important; }
+
+    /* Related posts card styling */
+    .related-posts { margin-top: 2rem; }
+    .related-posts .related-box { border: 1px solid rgba(0,0,0,0.06); padding: 12px; border-radius: 6px; background: var(--bg); color: var(--text); }
+    [data-theme='dark'] .related-posts .related-box { border-color: rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); }
+    .related-posts .related-box img { width:100%; height:200px; border-radius:4px;  }
+    .related-posts .related-box .title { font-weight:700; margin-top:8px; }
+    .related-posts .related-box .subheading { color: var(--muted); font-size:0.95em; }
+    .related-posts .related-box .post-meta { font-size:0.9em; margin-top:6px; }
     </style>
 
     <!-- Custom Fonts -->
@@ -236,6 +245,41 @@ Click on this notification and at the top of the popup, click <strong>&ldquo;New
 <p>You&rsquo;ll know its working correctly when the typeahead works and the bar that said &ldquo;No JSON Schema&rdquo; now says &ldquo;azure-pipelines&rdquo;.</p>
 <p><img alt="autocomplete-working" class="img-responsive center-block" src="/img/posts/azure-pipelines.gif" style="width:50%"></p>
 <p>In future, if you install any new actions from the Azure DevOps marketplace, you&rsquo;ll need to download and update the schema to get the new typeahead.</p>
+
+                
+                <H2>Related Posts</H2>
+                <div class="related-posts row">
+                    <div class="col-md-4">
+                        <a href="/posts/azure-pipelines-with-python-by-example.html">
+                        <div class="related-box">
+                            <img src="/img/home-bg.jpg" alt="Azure Pipelines with Python - by example" />
+                            <div class="title">Azure Pipelines with Python - by example</div>
+                            <div class="subheading">A tutorial on Microsoft Azure pipelines and how to use it effectively for your Python projects.</div>
+                            <div class="post-meta"><i>Published January 2, 2019</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/django-on-azure-beyond-hello-world.html">
+                        <div class="related-box">
+                            <img src="/img/clouds.jpg" alt="Django on Azure - beyond "hello world"" />
+                            <div class="title">Django on Azure - beyond "hello world"</div>
+                            <div class="subheading">A tutorial on deploying a production-reading Django application on Microsoft Azure</div>
+                            <div class="post-meta"><i>Published April 13, 2020</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/using-dotnet-aspire-dashboard-for-python-opentelemetry.html">
+                        <div class="related-box">
+                            <img src="/img/posts/snake-dashboards.jpg" alt="Using the Aspire Dashboard for Python OpenTelemetry tracing, metrics, and logs" />
+                            <div class="title">Using the Aspire Dashboard for Python OpenTelemetry tracing, metrics, and logs</div>
+                            <div class="subheading">A short how-to of setting up the Aspire Dashboard to capture traces and metrics</div>
+                            <div class="post-meta"><i>Published April 12, 2024</i></div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>{{blog_heading[0]}}</title>
+    <title>{{blog_heading}}</title>
 
     <script>
     (function() {
@@ -30,13 +30,13 @@
     </script>
 
     <!-- Facebook Meta tags -->
-    <meta property="og:title" content="{{blog_heading[0]}}">
-    <meta property="og:description" content="{{blog_subheading[0]}}">
+    <meta property="og:title" content="{{blog_heading}}">
+    <meta property="og:description" content="{{blog_subheading}}">
     <meta property="og:image" content="{{baseurl}}img/{{card_image}}">
     <meta property="og:url" content="{{baseurl}}{{url}}">
     <!-- Twitter Meta Tags -->
-    <meta name="twitter:title" content="{{blog_heading[0]}}">
-    <meta name="twitter:description" content="{{blog_subheading[0]}}">
+    <meta name="twitter:title" content="{{blog_heading}}">
+    <meta name="twitter:description" content="{{blog_subheading}}">
     <meta name="twitter:image" content="{{baseurl}}img/{{card_image}}">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@anthonypjshaw">
@@ -109,7 +109,7 @@
     .related-posts { margin-top: 2rem; }
     .related-posts .related-box { border: 1px solid rgba(0,0,0,0.06); padding: 12px; border-radius: 6px; background: var(--bg); color: var(--text); }
     [data-theme='dark'] .related-posts .related-box { border-color: rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); }
-    .related-posts .related-box img { width:100%; height:auto; border-radius:4px; }
+    .related-posts .related-box img { width:100%; height:200px; border-radius:4px;  }
     .related-posts .related-box .title { font-weight:700; margin-top:8px; }
     .related-posts .related-box .subheading { color: var(--muted); font-size:0.95em; }
     .related-posts .related-box .post-meta { font-size:0.9em; margin-top:6px; }
@@ -196,14 +196,14 @@
 
     <!-- Page Header -->
     <!-- Set your background image for this header on the line below. -->
-    <header class="intro-header" style="background-image: url('/img/{{blog_header_image[0]}}')">
+    <header class="intro-header" style="background-image: url('/img/{{blog_header_image}}')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="site-heading">
-                        <h1>{{blog_heading[0]}}</h1>
+                        <h1>{{blog_heading}}</h1>
                         <hr class="small">
-                        <span class="subheading">by {{blog_author[0]}}, {{blog_publish_date[0]}}</span>
+                        <span class="subheading">by {{blog_author}}, {{blog_publish_date}}</span>
                     </div>
                 </div>
             </div>
@@ -220,22 +220,32 @@
                 <H2>Related Posts</H2>
                 <div class="related-posts row">
                     <div class="col-md-4">
-                        <a href="/posts/learning-python.html">
+                        <a href="/{{ related_0.rel_html_path }}">
                         <div class="related-box">
-                            <img src="/img/posts/learningpython.jpg" alt="Learning Python" />
-                            <div class="title">Learning Python from Scratch</div>
-                            <div class="subheading">If you want to learn Python, where do you start?</div>
-                            <div class="post-meta"><i>Published May 28, 2020</i></div>
+                            <img src="/img/{{ related_0.card_image }}" alt="{{ related_0.blog_heading }}" />
+                            <div class="title">{{ related_0.blog_heading }}</div>
+                            <div class="subheading">{{ related_0.blog_subheading }}</div>
+                            <div class="post-meta"><i>Published {{ related_0.blog_publish_date }}</i></div>
                         </div>
                         </a>
                     </div>
                     <div class="col-md-4">
-                        <a href="/posts/my-favourite-python-stories-2019.html">
+                        <a href="/{{ related_1.rel_html_path }}">
                         <div class="related-box">
-                            <img src="/img/posts/freecodecamp.png" alt="Favourite stories" />
-                            <div class="title">My favourite Python stories of 2019</div>
-                            <div class="subheading">A curated list of articles I enjoyed that year.</div>
-                            <div class="post-meta"><i>Published December 19, 2019</i></div>
+                            <img src="/img/{{ related_1.card_image }}" alt="{{ related_1.blog_heading }}" />
+                            <div class="title">{{ related_1.blog_heading }}</div>
+                            <div class="subheading">{{ related_1.blog_subheading }}</div>
+                            <div class="post-meta"><i>Published {{ related_1.blog_publish_date }}</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/{{ related_2.rel_html_path }}">
+                        <div class="related-box">
+                            <img src="/img/{{ related_2.card_image }}" alt="{{ related_2.blog_heading }}" />
+                            <div class="title">{{ related_2.blog_heading }}</div>
+                            <div class="subheading">{{ related_2.blog_subheading }}</div>
+                            <div class="post-meta"><i>Published {{ related_2.blog_publish_date }}</i></div>
                         </div>
                         </a>
                     </div>

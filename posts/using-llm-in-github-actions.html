@@ -104,6 +104,15 @@
     /* Footer icons: make sure stacked icons render white on dark theme */
     [data-theme='dark'] footer .fa-stack .fa-inverse { color: #ffffff !important; }
     [data-theme='dark'] footer .fa-stack .fa-circle { color: rgba(255,255,255,0.08) !important; }
+
+    /* Related posts card styling */
+    .related-posts { margin-top: 2rem; }
+    .related-posts .related-box { border: 1px solid rgba(0,0,0,0.06); padding: 12px; border-radius: 6px; background: var(--bg); color: var(--text); }
+    [data-theme='dark'] .related-posts .related-box { border-color: rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); }
+    .related-posts .related-box img { width:100%; height:200px; border-radius:4px;  }
+    .related-posts .related-box .title { font-weight:700; margin-top:8px; }
+    .related-posts .related-box .subheading { color: var(--muted); font-size:0.95em; }
+    .related-posts .related-box .post-meta { font-size:0.9em; margin-top:6px; }
     </style>
 
     <!-- Custom Fonts -->
@@ -562,6 +571,41 @@ Inner error: {
 <p><code>git diff</code> isn&rsquo;t an ideal mechanism for feeding content directly into an LLM — it mixes line-number metadata with text and makes accurate annotations harder. In practice it&rsquo;s better to separate parsing (to extract files and precise line numbers) from the LLM&rsquo;s content review. That approach gives more accurate annotations, reduces token usage, and is easier to debug.
 I&rsquo;d love to see some progress on handling that.</p>
 <p>There are some new security implications that we need to better understand before giving this type of automation access to more tools.</p>
+
+                
+                <H2>Related Posts</H2>
+                <div class="related-posts row">
+                    <div class="col-md-4">
+                        <a href="/posts/azure-pipelines-with-python-by-example.html">
+                        <div class="related-box">
+                            <img src="/img/home-bg.jpg" alt="Azure Pipelines with Python - by example" />
+                            <div class="title">Azure Pipelines with Python - by example</div>
+                            <div class="subheading">A tutorial on Microsoft Azure pipelines and how to use it effectively for your Python projects.</div>
+                            <div class="post-meta"><i>Published January 2, 2019</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/xss-exploitation-in-django.html">
+                        <div class="related-box">
+                            <img src="/img/posts/danger-snake.jpeg" alt="XSS Exploitation in Django Applications" />
+                            <div class="title">XSS Exploitation in Django Applications</div>
+                            <div class="subheading">A deep-dive on XSS exploitations in Django applications, how to find them and how to fix them</div>
+                            <div class="post-meta"><i>Published July 22, 2020</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/the-big-fib-can-you-prompt-llms-to-tell-the-truth.html">
+                        <div class="related-box">
+                            <img src="/img/posts/beach_top.jpg" alt="Can you prompt LLMs to admit when they don't know the answer?" />
+                            <div class="title">Can you prompt LLMs to admit when they don't know the answer?</div>
+                            <div class="subheading">An exploration of telling LLMs what to do when they don't know the answer, and whether it works.</div>
+                            <div class="post-meta"><i>Published January 6, 2025</i></div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
