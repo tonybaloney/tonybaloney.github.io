@@ -85,7 +85,7 @@ For that test, I used the US-East 2 location, which is one of the more popular l
 
 The [Azure AI Foundry plugin for LLM](https://github.com/tonybaloney/llm-azure-ai-foundry) supports multiple AI Foundry projects and I have one in Australia East (100 miles away) to test on. To get a better spread of data, I've changed it to run each model prompt 100 times:
 
-> Tip: Use the --markdown flag to output the results table in a Markdown friendly format
+> Tip: Use the `--markdown` flag to output the results table in a Markdown friendly format
 
 |                 Benchmark | Total Time                | Time to First Chunk       | Length of Response   | Number of Chunks     | Chunks per Second         |
 |---------------------------|---------------------------|---------------------------|----------------------|----------------------|---------------------------|
