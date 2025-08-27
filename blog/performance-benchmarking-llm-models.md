@@ -73,7 +73,7 @@ In the example above, I used the `--graph` argument to specify the path to a PNG
 If you're not familiar with boxplots, they're a way to represent a distribution of data points through their quartiles. Average is a terrible metric for performance testing because one outlier can skew the data and outliers occur in network systems all the time. A boxplot shows the spread and skewness of the data, making it easier to identify trends and anomalies.
 
 - The colored box represents the [interquartile range (IQR)](https://en.wikipedia.org/wiki/Interquartile_range), which contains the middle 50% of the data points.
-- The line inside the box is the median (the 50th percentile).
+- The thick black line inside the box is the median (the 50th percentile).
 - The "whiskers" extend to the minimum and maximum values within 1.5 * IQR from the quartiles.
 - Points outside of this range are considered outliers and are plotted individually as circles.
 
