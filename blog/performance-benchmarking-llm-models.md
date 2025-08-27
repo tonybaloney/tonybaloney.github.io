@@ -134,7 +134,7 @@ We're starting to tap into the performance characteristics of these models in mo
 
 Instead, let's refactor that original prompt:
 
-```default
+```text
 Look at the input and try to reason about the underlying semantic intent / meaning.
 Here is the initial question:
 ------- 
@@ -145,7 +145,7 @@ Formulate an improved question:
 
 Let's try another version of that prompt that gives more clarity to what "improved" means:
 
-```default
+```text
 Analyze the given input to understand its underlying semantic intent. Here is the initial question:
 -------
 What does Lilian Weng say about types of reward hacking?

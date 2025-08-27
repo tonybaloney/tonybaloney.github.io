@@ -340,7 +340,7 @@
 <h2 id="detailed-plans">Detailed Plans<a class="headerlink" href="#detailed-plans" title="Permanent link">&para;</a></h2>
 <p>We&rsquo;re starting to tap into the performance characteristics of these models in more detail. Let&rsquo;s test out a theory that we can get better performance by giving the LLM constraints about the expected response length. <a href="https://platform.openai.com/docs/api-reference/responses/create#responses_create-max_output_tokens">Max Output Tokens</a> is a crude option that I rarely use. It &ldquo;cuts off&rdquo; responses that are too long, but it doesn&rsquo;t help with shorter responses.</p>
 <p>Instead, let&rsquo;s refactor that original prompt:</p>
-<pre><code class="default">Look at the input and try to reason about the underlying semantic intent / meaning.
+<pre><code class="text">Look at the input and try to reason about the underlying semantic intent / meaning.
 Here is the initial question:
 ------- 
 What does Lilian Weng say about types of reward hacking?
@@ -349,7 +349,7 @@ Formulate an improved question:
 </code></pre>
 
 <p>Let&rsquo;s try another version of that prompt that gives more clarity to what &ldquo;improved&rdquo; means:</p>
-<pre><code class="default">Analyze the given input to understand its underlying semantic intent. Here is the initial question:
+<pre><code class="text">Analyze the given input to understand its underlying semantic intent. Here is the initial question:
 -------
 What does Lilian Weng say about types of reward hacking?
 -------
