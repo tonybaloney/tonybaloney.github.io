@@ -38,7 +38,7 @@ At-a-glance it doesn't look like GPT-4.1-mini would actually be faster because i
 
 ## Quick Comparisons
 
-To get started, you'll need the `profile` plugin for the [llm CLI](https://llm.datasette.io/). To install the plugin and llm:
+To get started, you'll need the [`profile` plugin](https://github.com/tonybaloney/llm-profile) for the [llm CLI](https://llm.datasette.io/). To install the plugin and llm:
 
 ```bash
 $ pip install llm-profile
@@ -50,7 +50,7 @@ or to install it into your existing LLM environment:
 $ llm install llm-profile
 ```
 
-This adds a `benchmark` command to llm. The LLM Profiling tool is an extension to LLM because LLM already comes with plugins to connect to OpenAI.com, OpenRouter, Anthropic, Google, and just about any other major AI provider. You can also connect it to locally hosted models on something like ollama. 
+This adds a `benchmark` command to llm. The [LLM Profiling tool](https://github.com/tonybaloney/llm-profile) is an extension to LLM because LLM already comes with plugins to connect to OpenAI.com, OpenRouter, Anthropic, Google, and just about any other major AI provider. You can also connect it to locally hosted models on something like ollama. 
 
 There are two ways of running the benchmark command, either giving all the arguments over the command line or by writing out a more detailed test plan.
 

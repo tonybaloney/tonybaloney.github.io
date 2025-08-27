@@ -239,7 +239,7 @@
 <p><img alt="Results in terminal" class="img-responsive center-block" src="/img/posts/mini-full-compare-shell.png"></p>
 <p>At-a-glance it doesn&rsquo;t look like GPT-4.1-mini would actually be faster because its average time to respond is worse than GPT-4.1. This is odd, but there&rsquo;s more to unpack- let&rsquo;s look at what we&rsquo;re benchmarking and what impacts the results.</p>
 <h2 id="quick-comparisons">Quick Comparisons<a class="headerlink" href="#quick-comparisons" title="Permanent link">&para;</a></h2>
-<p>To get started, you&rsquo;ll need the <code>profile</code> plugin for the <a href="https://llm.datasette.io/">llm CLI</a>. To install the plugin and llm:</p>
+<p>To get started, you&rsquo;ll need the <a href="https://github.com/tonybaloney/llm-profile"><code>profile</code> plugin</a> for the <a href="https://llm.datasette.io/">llm CLI</a>. To install the plugin and llm:</p>
 <pre><code class="bash">$ pip install llm-profile
 </code></pre>
 
@@ -247,7 +247,7 @@
 <pre><code class="bash">$ llm install llm-profile
 </code></pre>
 
-<p>This adds a <code>benchmark</code> command to llm. The LLM Profiling tool is an extension to LLM because LLM already comes with plugins to connect to OpenAI.com, OpenRouter, Anthropic, Google, and just about any other major AI provider. You can also connect it to locally hosted models on something like ollama. </p>
+<p>This adds a <code>benchmark</code> command to llm. The <a href="https://github.com/tonybaloney/llm-profile">LLM Profiling tool</a> is an extension to LLM because LLM already comes with plugins to connect to OpenAI.com, OpenRouter, Anthropic, Google, and just about any other major AI provider. You can also connect it to locally hosted models on something like ollama. </p>
 <p>There are two ways of running the benchmark command, either giving all the arguments over the command line or by writing out a more detailed test plan.</p>
 <p>For the command-line option, you need to provide a list of models to test against and a prompt. Running <code>llm models</code> lists all available models. In the example I gave above, I have LLM connected to my Azure AI Foundry account using the <a href="https://github.com/tonybaloney/llm-azure-ai-foundry">Azure AI Foundry plugin</a>. As I mentioned before, you could be using anything, like the built-in OpenAI.com hosted models, or <a href="https://github.com/simonw/llm-anthropic">Anthropic</a>.</p>
 <p>To run the benchmark, you list as many models as you like with the <code>-m</code> argument, then the prompt. By default, it will only run the prompt once. To get a more accurate measure provide the <code>--repeat</code> option:</p>
