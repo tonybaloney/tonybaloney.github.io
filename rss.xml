@@ -7,9 +7,20 @@
             A collection of technology articles
         </description>
         <link>https://tonybaloney.github.io/#blog</link>
-        <lastBuildDate>Tue, 26 Aug 2025 04:05:32 -0000</lastBuildDate>
+        <lastBuildDate>Wed, 27 Aug 2025 05:52:10 -0000</lastBuildDate>
         <pubDate>Sat, 4 Jan 2020 19:15:54 -0500</pubDate>
         <atom:link href="https://tonybaloney.github.io/rss.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>P</title>
+            <description>
+                U
+            </description>
+            <link>https://tonybaloney.github.io/posts/performance-benchmarking-llm-models.html</link>
+            <pubDate>Wed, 27 Aug 2025 00:00:00 -0000</pubDate>
+            <dc:creator>A</dc:creator>
+            <guid>https://tonybaloney.github.io/posts/performance-benchmarking-llm-models.html</guid>
+        </item>
         
         <item>
             <title>U</title>
