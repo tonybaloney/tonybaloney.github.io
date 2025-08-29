@@ -226,7 +226,7 @@ Reading this chart:
 
 In summary, this demonstrated the value in doing profiling of the different models. We could have tested one (GPT-4.1-mini) and seen the shorter answers then upgraded to GPT-5-chat and assumed it would perform better. 
 
-Now, we're missing a point here that shorter is not nessecarily better. For this Agentic Retrieval task, we need to consider the quality and relevance of the responses, not just their length. Sometimes we want short answers from LLMs, sometimes we want particularly relevant ones. That's the purpose of [eval libraries](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/develop/evaluate-sdk). Sometimes the larger models can waffle on for ages before getting to the point, which costs time and money.
+Now, we're missing a point here that shorter is not necessarily better. For this Agentic Retrieval task, we need to consider the quality and relevance of the responses, not just their length. Sometimes we want short answers from LLMs, sometimes we want particularly relevant ones. That's the purpose of [eval libraries](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/develop/evaluate-sdk). Sometimes the larger models can waffle on for ages before getting to the point, which costs time and money.
 
 ## Benchmarking Embedding Models
 

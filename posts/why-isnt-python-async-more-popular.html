@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>{{blog_heading}}</title>
+    <title>Python has had async for 10 years -- why isn't it more popular?</title>
 
     <script>
     (function() {
@@ -30,14 +30,14 @@
     </script>
 
     <!-- Facebook Meta tags -->
-    <meta property="og:title" content="{{blog_heading}}">
-    <meta property="og:description" content="{{blog_subheading}}">
-    <meta property="og:image" content="{{baseurl}}img/{{card_image}}">
-    <meta property="og:url" content="{{baseurl}}{{url}}">
+    <meta property="og:title" content="Python has had async for 10 years -- why isn't it more popular?">
+    <meta property="og:description" content="A deep-dive into the challenges and misconceptions surrounding async programming in Python">
+    <meta property="og:image" content="https://tonybaloney.github.io/img/posts/fishing-2015.jpg">
+    <meta property="og:url" content="https://tonybaloney.github.io/posts/why-isnt-python-async-more-popular.html">
     <!-- Twitter Meta Tags -->
-    <meta name="twitter:title" content="{{blog_heading}}">
-    <meta name="twitter:description" content="{{blog_subheading}}">
-    <meta name="twitter:image" content="{{baseurl}}img/{{card_image}}">
+    <meta name="twitter:title" content="Python has had async for 10 years -- why isn't it more popular?">
+    <meta name="twitter:description" content="A deep-dive into the challenges and misconceptions surrounding async programming in Python">
+    <meta name="twitter:image" content="https://tonybaloney.github.io/img/posts/fishing-2015.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@anthonypjshaw">
 
@@ -118,9 +118,6 @@
     .related-posts .related-box .title { font-weight:700; margin-top:8px; }
     .related-posts .related-box .subheading { color: var(--muted); font-size:0.95em; }
     .related-posts .related-box .post-meta { font-size:0.9em; margin-top:6px; }
-
-    [data-theme='dark'] blockquote { color: #EEE; }
-    blockquote { color: #444; }
     </style>
 
     <!-- Custom Fonts -->
@@ -204,14 +201,14 @@
 
     <!-- Page Header -->
     <!-- Set your background image for this header on the line below. -->
-    <header class="intro-header" style="background-image: url('/img/{{blog_header_image}}')">
+    <header class="intro-header" style="background-image: url('/img/posts/fishing-2015.jpg')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="site-heading">
-                        <h1>{{blog_heading}}</h1>
+                        <h1>Python has had async for 10 years -- why isn't it more popular?</h1>
                         <hr class="small">
-                        <span class="subheading">by {{blog_author}}, {{blog_publish_date}}</span>
+                        <span class="subheading">by Anthony Shaw, August 29, 2025</span>
                     </div>
                 </div>
             </div>
@@ -222,38 +219,68 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                {{content}}
+                <p>The <a href="https://www.youtube.com/watch?v=GfH4QL4VqJ0&amp;pp=ygUScHl0aG9uIGRvY3VtZW50YXJ5">Python Documentary</a> dropped this morning. In the middle of the documentary, there&rsquo;s a dramatic segment about how the transition from Python 2 to 3 divided the community (spoiler alert: it didn&rsquo;t in the end).</p>
+<p>The early versions of Python 3 (3.0-3.4) were mostly focused on stability and offering pathways for users moving from 2.7. Along came 3.5 in 2015 with a new feature: <a href="https://peps.python.org/pep-0492/"><code>async</code> and <code>await</code> keywords for executing coroutines</a>.</p>
+<p>What is now ten years and 9 releases of Python later, Python 3.14 is shipping in weeks. </p>
+<p>Whilst everyone will be distracted by the shiny colorful REPL features in 3.14, there are some big announcements nestled in the release notes. Both related to concurrency and parallelism</p>
+<p><img alt="Colorful REPL" class="img-responsive center-block" src="/img/posts/colorful-repl.png"></p>
+<ol>
+<li><a href="https://docs.python.org/3.14/whatsnew/3.14.html#pep-779-free-threaded-python-is-officially-supported">PEP779 Free-Threading is Officially Supported</a>. </li>
+<li><a href="https://docs.python.org/3.14/whatsnew/3.14.html#pep-734-multiple-interpreters-in-the-stdlib">PEP 734: Multiple interpreters in the stdlib</a></li>
+</ol>
+<p>Both of these features are huge advancements in how Python can be used to execute concurrent code. But if <code>async</code> has been here for 10 years, why do we need them?</p>
+<p>The killer use-case for async is web development. Coroutines lend well to out-of-process network calls, like HTTP requests and database queries. Why block the entire Python interpreter waiting for a SQL query to run on another server?</p>
+<p>Yet, of the three most popular web frameworks for Python async support is still not universal. FastAPI is async from the ground-up, Django has some support, but is <a href="https://docs.djangoproject.com/en/5.2/topics/async/"><strong>&ldquo;still working on async support&rdquo;</strong></a> in key areas like the ORM. Then Flask is and probably always will be synchronous, but Quart is an async alternative with similar APIs. The most popular ORM for Python, SQLalchemy only <a href="https://docs.sqlalchemy.org/en/20/changelog/migration_14.html#change-3414">just got asyncio support in 2023</a>.</p>
+<p>I posed the question <em>&ldquo;Why isn&rsquo;t async more popular&rdquo;</em> to a couple of other developers to get their thoughts.</p>
+<p><a href="https://realpython.com/team/ctrudeau/">Christopher Trudeau</a>, co-host of the <a href="https://realpython.com/podcasts/rpp/">Real Python Podcast</a>, shared his perspective:</p>
+<blockquote>
+<p>Certain kinds of errors get caught by the compiler, others just disappear. Why didn&rsquo;t that function run? Oops, forgot to await it. Error in the coroutine? Did you remember to launch with the right params, if not, it doesn&rsquo;t percolate up. I still find threads easier to wrap my head around.</p>
+</blockquote>
+<p><a href="https://talkpython.fm/">Michael Kennedy</a> offered some additional insight:</p>
+<blockquote>
+<p>The [GIL] is so omnipresent that most Python people never developed multithreaded/async thinking. Because async/await only works for I/O bound work, not CPU as well, it&rsquo;s of much less use. E.g. You can use in on the web, but most servers fork out to 4-8 web workers anyway</p>
+</blockquote>
+<h2 id="problem-1-no-matter-how-fast-you-run-you-cant-escape-the-gil">Problem 1: No matter how fast you run, you can&rsquo;t escape the GIL<a class="headerlink" href="#problem-1-no-matter-how-fast-you-run-you-cant-escape-the-gil" title="Permanent link">&para;</a></h2>
+<h2 id="problem-2-maintaining-two-apis-is-hard">Problem 2: Maintaining two APIs is hard<a class="headerlink" href="#problem-2-maintaining-two-apis-is-hard" title="Permanent link">&para;</a></h2>
+<h2 id="problem-3-old-habits-are-hard-to-break">Problem 3: Old habits are hard to break<a class="headerlink" href="#problem-3-old-habits-are-hard-to-break" title="Permanent link">&para;</a></h2>
+<h2 id="problem-4-obvious-things-are-hard-to-do">Problem 4: Obvious things are hard to do<a class="headerlink" href="#problem-4-obvious-things-are-hard-to-do" title="Permanent link">&para;</a></h2>
+<ul>
+<li>async dunder methods?</li>
+</ul>
+<h2 id="problem-5">Problem 5:<a class="headerlink" href="#problem-5" title="Permanent link">&para;</a></h2>
+<h2 id="counter-point-this-is-as-good-as-it-gets">Counter-point: This is as good as it gets<a class="headerlink" href="#counter-point-this-is-as-good-as-it-gets" title="Permanent link">&para;</a></h2>
+<h2 id="python-314-interpreter-pool-executor">Python 3.14 Interpreter Pool Executor<a class="headerlink" href="#python-314-interpreter-pool-executor" title="Permanent link">&para;</a></h2>
 
                 
                 <H2>Related Posts</H2>
                 <div class="related-posts row">
                     <div class="col-md-4">
-                        <a href="/{{ related_0.rel_html_path }}">
+                        <a href="/posts/why-is-python-so-slow.html">
                         <div class="related-box">
-                            <img src="/img/{{ related_0.card_image }}" alt="{{ related_0.blog_heading }}" />
-                            <div class="title">{{ related_0.blog_heading }}</div>
-                            <div class="subheading">{{ related_0.blog_subheading }}</div>
-                            <div class="post-meta"><i>Published {{ related_0.blog_publish_date }}</i></div>
+                            <img src="/img/posts/snail.jpg" alt="Why is Python so slow?" />
+                            <div class="title">Why is Python so slow?</div>
+                            <div class="subheading">A look into what makes Python slower than other languages</div>
+                            <div class="post-meta"><i>Published July 16, 2018</i></div>
                         </div>
                         </a>
                     </div>
                     <div class="col-md-4">
-                        <a href="/{{ related_1.rel_html_path }}">
+                        <a href="/posts/async-test-patterns-for-pytest-and-unittest.html">
                         <div class="related-box">
-                            <img src="/img/{{ related_1.card_image }}" alt="{{ related_1.blog_heading }}" />
-                            <div class="title">{{ related_1.blog_heading }}</div>
-                            <div class="subheading">{{ related_1.blog_subheading }}</div>
-                            <div class="post-meta"><i>Published {{ related_1.blog_publish_date }}</i></div>
+                            <img src="/img/home-bg.jpg" alt="async test patterns for Pytest" />
+                            <div class="title">async test patterns for Pytest</div>
+                            <div class="subheading">Some examples and patterns for testing async code from Pytest</div>
+                            <div class="post-meta"><i>Published August 5, 2021</i></div>
                         </div>
                         </a>
                     </div>
                     <div class="col-md-4">
-                        <a href="/{{ related_2.rel_html_path }}">
+                        <a href="/posts/fine-tuning-wsgi-and-asgi-applications.html">
                         <div class="related-box">
-                            <img src="/img/{{ related_2.card_image }}" alt="{{ related_2.blog_heading }}" />
-                            <div class="title">{{ related_2.blog_heading }}</div>
-                            <div class="subheading">{{ related_2.blog_subheading }}</div>
-                            <div class="post-meta"><i>Published {{ related_2.blog_publish_date }}</i></div>
+                            <img src="/img/posts/little-python-lemonade-stand.jpeg" alt="Fine Tuning Python WSGI and ASGI applications for Flask, Django, and FastAPI" />
+                            <div class="title">Fine Tuning Python WSGI and ASGI applications for Flask, Django, and FastAPI</div>
+                            <div class="subheading">Exploring strategies for optimal Gunicorn, Uvicorn and Hypercorn configurations for Flask, Django, and FastAPI</div>
+                            <div class="post-meta"><i>Published December 20, 2023</i></div>
                         </div>
                         </a>
                     </div>
