@@ -233,6 +233,8 @@ As a package maintainer, supporting both synchronous and asynchronous APIs is a 
 
 Python's **Magic** (`__dunder__`) methods cannot be async. `__init__` cannot be async for example, so none of your code can use network requests in the initializer.
 
+### Async properties
+
 This is an odd-pattern but I'll keep it simple to illustrate my point. You have a class `User` with a property `records`. This property gives a list of records for that user. A synchronous API is straightforward:
 
 ```python
@@ -275,9 +277,15 @@ if await user.records:
 
 [The further we go into this implementation](https://tryexceptpass.org/article/controlling-python-async-creep/), the more we wait for the user to accidentally forget to await the property and it fails silently.
 
+### Duplicated implementations
+
 The Azure Python SDK, a ginormous Python project supports both sync and async. Maintaining both is achieved via a lot of code-generation infrastructure. This is ok for a project with tens of full-time engineers, but for anything small or voluntary you need to copy + paste a lot of your code base to create an async version. Then you need to patch and backport fixes and changes between the two. The differences (mostly `await` calls) are big enough to confuse Git. I was reviewing some langchain implementations last year which had both sync and async implementation. Every method was copied+pasted, with little behavioral differences and their own bugs. People would submit bug fix PR's to one implementation and not the other so instead of merging directly, maintainers had to port the fix, skip it, or ask the contributors to do both.
 
+### Backend fragmentation
+
 Since we're largely talking about HTTP/Network IO, you also need to pick a backend for sync and async. For synchronous HTTP calls, `requests`, `httpx` are suitable backends. For `async`, its `aiohttp` and `httpx`. Since neither are part of the Python standard library, the adoption and support for CPython's main platforms is out of sync. E.g. as of today, `aiohttp` has [no Python 3.14 wheels, nor free-threaded support](https://pypi.org/project/aiohttp/#files). UV Loop, the alternative implementation of the event loop has [no Python 3.14 support, nor any Windows support.](https://pypi.org/project/uvloop/#files) (Python 3.14 isn't out yet, so it's reasonable to not have support in either open-source project).
+
+### Testing overhead
 
 Further down the copy+paste maintainer overhead is the testing of these APIs. Testing your async code requires different mocks, different calls and in the case of Pytest a whole set of extensions and patterns for fixtures. This situation is so [confusing I wrote a post about it and it's one of the most popular on my blog](/posts/async-test-patterns-for-pytest-and-unittest.html).
 
