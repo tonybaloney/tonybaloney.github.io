@@ -437,5 +437,17 @@ If you get good at answering that question (and you can convince them of your an
 
     gtag('config', 'G-PNMEXCY7DV');
     </script>
+
+    <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    var theme = document.documentElement.getAttribute('data-theme') || 'default';
+    if (theme != 'dark'){
+        theme = 'default';
+    }
+    mermaid.initialize({ 
+        startOnLoad: true,
+        theme: theme
+     });
+    </script>
 </body>
 </html>
