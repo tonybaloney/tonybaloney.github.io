@@ -10,7 +10,7 @@ The [Python Documentary](https://www.youtube.com/watch?v=GfH4QL4VqJ0&pp=ygUScHl0
 
 The early versions of Python 3 (3.0-3.4) were mostly focused on stability and offering pathways for users moving from 2.7. Along came 3.5 in 2015 with a new feature: [`async` and `await` keywords for executing coroutines](https://peps.python.org/pep-0492/).
 
-Ten years and nine releases later, Python 3.14 is shipping in a few weeks.
+Ten years and nine releases later, Python 3.14 is [weeks away](https://peps.python.org/pep-0745/).
 
 Whilst everyone will be distracted by the shiny, colorful REPL features in 3.14, there are some big announcements nestled in the release notes — both related to concurrency and parallelism
 
@@ -23,7 +23,7 @@ Both of these features are huge advancements in how Python can be used to execut
 
 The killer use-case for async is web development. Coroutines lend well to out-of-process network calls, like HTTP requests and database queries. Why block the entire Python interpreter waiting for a SQL query to run on another server?
 
-Yet, among the three most popular Python web frameworks, async support is still not universal. FastAPI is async from the ground-up, Django has some support, but is [__"still working on async support"__](https://docs.djangoproject.com/en/5.2/topics/async/) in key areas like the ORM. Then Flask is and probably always will be synchronous (Quart is an async alternative with similar APIs). The most popular ORM for Python, SQLAlchemy, only added asyncio support in 2023 ([changelog](https://docs.sqlalchemy.org/en/20/changelog/migration_14.html#change-3414)).
+Yet, among the three most popular Python web frameworks, async support is still not universal. FastAPI is async from the ground-up, Django has some support, but is [__"still working on async support"__](https://docs.djangoproject.com/en/5.2/topics/async/) in key areas like the ORM (database). Then Flask is and probably always will be synchronous (Quart is an async alternative with similar APIs). The most popular ORM for Python, SQLAlchemy, only added asyncio support in 2023 ([changelog](https://docs.sqlalchemy.org/en/20/changelog/migration_14.html#change-3414)).
 
 I posed the question _"Why isn't async more popular"_ to a couple of other developers to get their thoughts.
 
@@ -37,11 +37,11 @@ I posed the question _"Why isn't async more popular"_ to a couple of other devel
 
 So **what's going on here** and **can we apply the lessons to Free-Threading and Multiple Interpreters in 3.14** so that in another ten years we're looking back and wondering why **they** aren't more popular?
 
-## Problem 1: I have an asynchronous-shaped hole, now I need an asynchronous-shaped problem
+## Problem 1: What is an asynchronous-shaped problem?
 
 _Coroutines_ are most valuable with IO-related tasks. In Python, you can start hundreds of coroutines to make network requests, then wait for them all to finish without running them one at a time. The concepts behind coroutines are quite straightforward. You have a loop (the event loop) and you pass it coroutines to evaluate.
 
-Let's go back to the classic use-case: HTTP requests. They take ages and the protocol works well with coroutines. Let's say you have a function to fetch something from the net:
+Let's go back to the classic use-case, HTTP requests:
 
 ```python
 def get_thing_sync():
@@ -57,9 +57,9 @@ async def get_thing_async():
 
 If you call function `get_thing_sync()` versus `await get_thing_async()`, they take **the same amount of time**. Calling it _"✨ asynchronously ✨"_ does not somehow make it faster. The gains are when you have more than one coroutine running at once. 
 
-If you want to fetch several things from the Internet using a HTTP client, you can initiate all of those requests using the Operating-System's network stack and handle them one-at-a-time when they're finished. The important distinction is that some other process is handling the work whilst you wait for it to complete. Async works best when you have a system that can start work, it gives a task identifier and you have a library which can notify the coroutine when it's completed without using too many CPU cycles.
+When fetching multiple HTTP resources you can start all the requests at once via the OS network stack, then handle each response as it arrives. The important point is that the actual work — sending packets and waiting for remote servers — happens outside your Python process while your code waits. Async is most effective here: you start operations, receive awaitable handles (tasks/futures), and the event loop efficiently notifies the coroutine when each operation completes without wasting CPU on busy‑polling.
 
-This HTTP scenario works well because:
+This scenario works well because:
 
 1. The remote end is handling the work in another process
 1. The local end (asyncio HTTP library) can yield control while waiting for the response
@@ -82,15 +82,15 @@ async with aiofiles.open('filename', mode='r') as f:
     contents = await f.read()
 ```
 
-So, mission accomplished? No because `aiofiles` uses a **thread pool** to offload the blocking file I/O operations. It's an async API for a thread execution API since file IO in Python was never a GIL-blocking operation. Why?
+So, mission accomplished? No because `aiofiles` uses a **thread pool** to offload the blocking file I/O operations. 
 
 ### Side-Quest: Why isn't file IO async?
 
-Windows has an async File IO API from 2021 called [IoRing](https://learn.microsoft.com/en-us/windows/win32/api/ioringapi/). Linux has this availability in newer Kernels via [`io_uring`](https://kernel.dk/io_uring.pdf). All I could find for a Python implementation of `io_uring` is this [synchronous API written in Cython](https://github.com/YoSTEALTH/Liburing).
+Windows has an async file IO API called [IoRing](https://learn.microsoft.com/en-us/windows/win32/api/ioringapi/). Linux has this availability in newer Kernels via [`io_uring`](https://kernel.dk/io_uring.pdf). All I could find for a Python implementation of `io_uring` is this [synchronous API written in Cython](https://github.com/YoSTEALTH/Liburing).
 
 There were io_uring APIs for other platforms, Rust has implementations with [tokio](https://github.com/tokio-rs/tokio-uring), C++ has [Asio](https://think-async.com/Asio/asio-1.24.0/doc/asio/history.html#asio.history.asio_1_21_0) and Node.JS has [libuv](https://www.phoronix.com/news/libuv-io-uring).
 
-We could have async file IO in Python, but
+So, the asyncio Wiki is a little out of date, but
 
 1. __Most__ production Python applications run on Linux, where the implementation is `io_uring`
 1. `io_uring` has been plagued by security issues so bad that RedHat, Google and others have restricted or removed its availability. After paying out $1 million in bug bounties related to `io_uring`, [Google disabled it on some products](https://security.googleblog.com/2023/06/learnings-from-kctf-vrps-42-linux.html). The issue was severe; many of the related bug‑bounty reports involved io_uring exploits.
@@ -133,7 +133,7 @@ The benefit of C#'s model is that a `Task` is a higher-level abstraction over a 
 
 In Python "An event loop runs in a thread (typically the main thread) and executes all callbacks and Tasks in its thread. While a Task is running in the event loop, no other Tasks can run in the same thread. When a Task executes an await expression, the running Task gets suspended, and the event loop executes the next Task." [1](https://docs.python.org/3/library/asyncio-dev.html#asyncio-multithreading)
 
-Going back to Will's comment __"Of course, that blocks the entire loop"__, he's talking about operations inside async functions which are blocking and therefore block the entire event loop. Since we covered in Problem 1, that's essentially everything except network calls and sleeping. 
+Going back to Will's comment __"Of course, that blocks the entire loop"__, he's talking about operations inside async functions which are blocking and therefore block the entire event loop. Since we covered in Problem 1, that's practically everything except network calls and sleeping. 
 
 With Python's GIL, it doesn't matter if you're running 1 thread or 10, the GIL will lock everything so that only 1 is operating at a time.
 
@@ -194,6 +194,12 @@ Because parallelism in Python using threads has always been so limited, the APIs
 
 Last week I was implementing a registry function that did two discrete tasks. One calls a very slow sync-only API and the other calls several async APIs. 
 
+I want the behavior that:
+
+- Both are started at the same time
+- If one fails, it cancels the other and raises an exception with the exception details of the failed function
+- The result is only combined when both are complete
+
 <pre class="mermaid">
 flowchart LR
   Start([Start]) --> Invoke["tpl.invoke()"]
@@ -203,12 +209,6 @@ flowchart LR
   f2 -->|f2 -> T2| Join
   Join --> End([End])
 </pre>
-
-I want the behavior that:
-
-- Both are started at the same time
-- If one fails, it cancels the other and raises an exception with the exception details of the failed function
-- The result is only combined when both are complete
 
 Since there are only two tasks, I don't want to have to define a thread-pool or a set number of workers. I also don't want to have to map or gather the callees. I want to retain my typing information so that the resulting variables are strongly typed from the return types of `function_a` and `function_a`. Essentially an API like this:
 
