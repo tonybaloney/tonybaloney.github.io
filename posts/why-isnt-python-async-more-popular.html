@@ -118,6 +118,9 @@
     .related-posts .related-box .title { font-weight:700; margin-top:8px; }
     .related-posts .related-box .subheading { color: var(--muted); font-size:0.95em; }
     .related-posts .related-box .post-meta { font-size:0.9em; margin-top:6px; }
+
+    [data-theme='dark'] blockquote { color: #EEE; }
+    blockquote { color: #444; }
     </style>
 
     <!-- Custom Fonts -->
@@ -230,7 +233,7 @@
 </ol>
 <p>Both of these features are huge advancements in how Python can be used to execute concurrent code. But if <code>async</code> has been here for 10 years, why do we need them?</p>
 <p>The killer use-case for async is web development. Coroutines lend well to out-of-process network calls, like HTTP requests and database queries. Why block the entire Python interpreter waiting for a SQL query to run on another server?</p>
-<p>Yet, of the three most popular web frameworks for Python async support is still not universal. FastAPI is async from the ground-up, Django has some support, but is <a href="https://docs.djangoproject.com/en/5.2/topics/async/"><strong>&ldquo;still working on async support&rdquo;</strong></a> in key areas like the ORM. Then Flask is and probably always will be synchronous, but Quart is an async alternative with similar APIs. The most popular ORM for Python, SQLalchemy only <a href="https://docs.sqlalchemy.org/en/20/changelog/migration_14.html#change-3414">just got asyncio support in 2023</a>.</p>
+<p>Yet, of the three most popular web frameworks for Python async support is still not universal. FastAPI is async from the ground-up, Django has some support, but is <a href="https://docs.djangoproject.com/en/5.2/topics/async/"><strong>&ldquo;still working on async support&rdquo;</strong></a> in key areas like the ORM. Then Flask is and probably always will be synchronous (Quart is an async alternative with similar APIs). The most popular ORM for Python, SQLalchemy only <a href="https://docs.sqlalchemy.org/en/20/changelog/migration_14.html#change-3414">just got asyncio support in 2023</a>.</p>
 <p>I posed the question <em>&ldquo;Why isn&rsquo;t async more popular&rdquo;</em> to a couple of other developers to get their thoughts.</p>
 <p><a href="https://realpython.com/team/ctrudeau/">Christopher Trudeau</a>, co-host of the <a href="https://realpython.com/podcasts/rpp/">Real Python Podcast</a>, shared his perspective:</p>
 <blockquote>
@@ -240,15 +243,150 @@
 <blockquote>
 <p>The [GIL] is so omnipresent that most Python people never developed multithreaded/async thinking. Because async/await only works for I/O bound work, not CPU as well, it&rsquo;s of much less use. E.g. You can use in on the web, but most servers fork out to 4-8 web workers anyway</p>
 </blockquote>
-<h2 id="problem-1-no-matter-how-fast-you-run-you-cant-escape-the-gil">Problem 1: No matter how fast you run, you can&rsquo;t escape the GIL<a class="headerlink" href="#problem-1-no-matter-how-fast-you-run-you-cant-escape-the-gil" title="Permanent link">&para;</a></h2>
-<h2 id="problem-2-maintaining-two-apis-is-hard">Problem 2: Maintaining two APIs is hard<a class="headerlink" href="#problem-2-maintaining-two-apis-is-hard" title="Permanent link">&para;</a></h2>
-<h2 id="problem-3-old-habits-are-hard-to-break">Problem 3: Old habits are hard to break<a class="headerlink" href="#problem-3-old-habits-are-hard-to-break" title="Permanent link">&para;</a></h2>
-<h2 id="problem-4-obvious-things-are-hard-to-do">Problem 4: Obvious things are hard to do<a class="headerlink" href="#problem-4-obvious-things-are-hard-to-do" title="Permanent link">&para;</a></h2>
+<p>So <strong>what&rsquo;s going on here</strong> and <strong>can we apply the lessons to Free-Threading and Multiple Interpreters in 3.14</strong> so that in another ten years we&rsquo;re looking back and wondering why <strong>they</strong> aren&rsquo;t more popular?</p>
+<h2 id="problem-1-i-have-an-asynchronous-shaped-hole-now-i-need-an-asynchronous-shaped-problem">Problem 1: I have an asynchronous-shaped hole, now I need an asynchronous-shaped problem<a class="headerlink" href="#problem-1-i-have-an-asynchronous-shaped-hole-now-i-need-an-asynchronous-shaped-problem" title="Permanent link">&para;</a></h2>
+<p><em>Coroutines</em> are most valuable with IO-related tasks. In Python, you can start hundreds of coroutines to make network requests, then wait for them all to finish without running them one at a time. The concepts behind coroutines are quite straightforward. You have a loop (the event loop) and you pass it coroutines to evaluate.</p>
+<p>Let&rsquo;s go back to the classic use-case: HTTP requests. They take ages and the protocol works well with coroutines. Let&rsquo;s say you have a function to fetch something from the net:</p>
+<pre><code class="python">def get_thing_sync():
+    return http_client.get('/thing/which_takes?ages=1')
+</code></pre>
+
+<p>The equivalent async function is clean and readable:</p>
+<pre><code class="python">async def get_thing_async():
+    return await http_client.get('/thing/which_takes?ages=1')
+</code></pre>
+
+<p>If you call function <code>get_thing_sync()</code> versus <code>await get_thing_async()</code>, they take <strong>the same amount of time</strong>. Calling it <em>&ldquo;✨ asynchronously ✨&rdquo;</em> does not somehow make it faster. The gains are when you have more than one coroutine running at once. </p>
+<p>If you want to fetch several things from the Internet using a HTTP client, you can initiate all of those requests using the Operating-System&rsquo;s network stack and handle them one-at-a-time when they&rsquo;re finished. The important distinction is that some other process is handling the work whilst you wait for it to complete. Async works best when you have a system that can start work, it gives a task identifier and you have a library which can notify the coroutine when it&rsquo;s completed without using too many CPU cycles.</p>
+<p>This HTTP scenario works well because:</p>
+<ol>
+<li>The remote end is handling the work in another process</li>
+<li>The local end (asyncio HTTP library) can yield control while waiting for the response</li>
+<li>Operating-Systems have stacks and APIs for managing sockets and network</li>
+</ol>
+<p>That&rsquo;s all fine, but I started with the statement <strong><em>Coroutines</em> are most valuable with IO-related tasks.</strong> I then picked the one task that asyncio can handle really well, HTTP requests.</p>
+<p>What about disk IO? I have <strong>far</strong> more applications in Python which read and write from files on disks or memory than I do making HTTP requests. I also have Python programs which run other programs using <code>subprocess</code>.</p>
+<p>Can I make all of those <code>async</code>?  </p>
+<p>No, not really. From the <a href="https://github.com/python/asyncio/wiki/ThirdParty#filesystem">asyncio Wiki</a>:</p>
+<blockquote>
+<p>asyncio does not support asynchronous operations on the filesystem. Even if files are opened with O_NONBLOCK, read and write will block.</p>
+</blockquote>
+<p>The solution is to use a third-party package, <code>aiofiles</code>, which gives you async file I/O capabilities:</p>
+<pre><code class="python">async with aiofiles.open('filename', mode='r') as f:
+    contents = await f.read()
+</code></pre>
+
+<p>So, mission accomplished? No because <code>aiofiles</code> uses a <strong>thread pool</strong> to offload the blocking file I/O operations. It&rsquo;s an async API for a thread execution API since file IO in Python was never a GIL-blocking operation. Why?</p>
+<h3 id="side-quest-why-isnt-file-io-async">Side-Quest: Why isn&rsquo;t file IO async?<a class="headerlink" href="#side-quest-why-isnt-file-io-async" title="Permanent link">&para;</a></h3>
+<p>Windows has an async File IO API from 2021 called <a href="https://learn.microsoft.com/en-us/windows/win32/api/ioringapi/">IoRing</a>. Linux has this availability in newer Kernels via <a href="https://kernel.dk/io_uring.pdf"><code>io_uring</code></a>. All I could find for a Python implementation of <code>io_uring</code> is this <a href="https://github.com/YoSTEALTH/Liburing">synchronous API written in Cython</a>.</p>
+<p>There were io_uring APIs for other platforms, Rust has implementations with <a href="https://github.com/tokio-rs/tokio-uring">tokio</a>, C++ has <a href="https://think-async.com/Asio/asio-1.24.0/doc/asio/history.html#asio.history.asio_1_21_0">Asio</a> and Node.JS has <a href="https://www.phoronix.com/news/libuv-io-uring">libuv</a>.</p>
+<p>We could have async file IO in Python, but</p>
+<ol>
+<li><strong>Most</strong> production Python applications run on Linux, where the implementation is <code>io_uring</code></li>
+<li><code>io_uring</code> has been plagued by security issues so bad that RedHat, Google and others have restricted or removed it&rsquo;s availability. Google, after <a href="https://security.googleblog.com/2023/06/learnings-from-kctf-vrps-42-linux.html">paying out $1 million in bug bounties related to <code>io_uring</code> disabled it on their products</a>. The issue was so bad, that 60% of Google&rsquo;s bug bounty submissions used exploitations in <code>io_uring</code>.</li>
+</ol>
+<p>So we should hold our horses a little while longer. Operating Systems have long held a file IO API that handles threads for concurrent IO. It does the job just fine for now.</p>
+<p>So in summary, <em>Coroutines are most valuable with IO-related tasks</em> is only really true for <strong>network IO</strong> and network sockets in Python were never blocking operations in the first place. Socket open in Python is one of the few operations which releases the GIL and works <a href="https://github.com/python/cpython/blob/v3.14.0rc2/Modules/socketmodule.c#L939-L1085">concurrently in a thread pool</a> as a non-blocking operation.</p>
+<h3 id="recap-what-are-the-async-operations-in-asyncio">Recap: What are the async operations in asyncio?<a class="headerlink" href="#recap-what-are-the-async-operations-in-asyncio" title="Permanent link">&para;</a></h3>
+<table class="table">
+<thead>
+<tr>
+<th>Operation</th>
+<th>Asyncio API</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sleep</td>
+<td><a href="https://docs.python.org/3/library/asyncio-task.html#asyncio.sleep"><code>asyncio.sleep()</code></a></td>
+<td>Asynchronously sleep for a given duration.</td>
+</tr>
+<tr>
+<td>TCP/UDP Streams</td>
+<td><a href="https://docs.python.org/3/library/asyncio-stream.html#asyncio-streams"><code>asyncio.open_connection()</code></a></td>
+<td>Open a TCP/UDP connection.</td>
+</tr>
+<tr>
+<td>HTTP</td>
+<td><a href="https://docs.aiohttp.org/en/stable/client_reference.html#aiohttp.ClientSession"><code>aiohttp.ClientSession()</code></a></td>
+<td>Asynchronous HTTP client.</td>
+</tr>
+<tr>
+<td>Run Subprocesses</td>
+<td><a href="https://docs.python.org/3/library/asyncio-subprocess.html#asyncio-subprocess"><code>asyncio.subprocess</code></a></td>
+<td>Asynchronously run subprocesses.</td>
+</tr>
+<tr>
+<td>Queues</td>
+<td><a href="https://docs.python.org/3/library/asyncio-queue.html#asyncio-queues"><code>asyncio.Queue</code></a></td>
+<td>Asynchronous queue implementation.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="problem-2-no-matter-how-fast-you-run-you-cant-escape-the-gil">Problem 2: No matter how fast you run, you can&rsquo;t escape the GIL<a class="headerlink" href="#problem-2-no-matter-how-fast-you-run-you-cant-escape-the-gil" title="Permanent link">&para;</a></h2>
+<p>The idea behind coroutines </p>
+<p><a href="https://willmcgugan.github.io/">Will McGugan</a>, the creator of Rich, Textualize, and several other extremely popular Python libraries offered his perspective on async:</p>
+<blockquote>
+<p>I really enjoy async programming, but it isn&rsquo;t intuitive for most devs that don&rsquo;t have a background writing network code. A reoccurring problem I see with Textual is folk testing concurrency by dropping in a time.sleep(10) call to simulate the work they are planning. Of course, that blocks the entire loop. But that&rsquo;s a class of issue which is difficult to explain to devs who haven&rsquo;t used async much. i.e. what does it mean for code to &ldquo;block&rdquo;, and when is it necessary to defer to threads.  Without that grounding in the fundamentals, your async code is going to misbehave, but its not going to break per se. So devs don&rsquo;t get the rapid iteration and feedback that we expect from Python.</p>
+</blockquote>
+<p>Now that we&rsquo;ve covered the limited use cases for async, another challenge keeps coming up. The Python GIL.</p>
+<p>I&rsquo;ve been working on this C#/Python bridge project called <a href="https://tonybaloney.github.io/CSnakes">CSnakes</a>, one of the features that caused the most head-scratching was <a href="https://tonybaloney.github.io/CSnakes/v1/user-guide/async/">async</a>.</p>
+<p>C#, the language from which the <a href="https://peps.python.org/pep-0492/#why-async-and-await-keywords"><code>async</code>/<code>await</code> syntax was borrowed</a>, has a far-broader adoption of async in it&rsquo;s core IO libraries because it a <a href="https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/task-asynchronous-programming-model">Task based Async Pattern</a> where tasks are dispatched onto a managed thread pool. All disk, network, memory IO operations have async and sync methods.</p>
+<p>In-fact the C# implementation goes all the way up from the disk to the higher-level APIs like serialization libraries. <a href="https://learn.microsoft.com/en-us/dotnet/api/system.text.json.jsonserializer.deserializeasync?view=net-9.0#system-text-json-jsonserializer-deserializeasync(system-io-stream-system-type-system-text-json-serialization-jsonserializercontext-system-threading-cancellationtoken)">JSON deserialization is async</a>, so is XML. </p>
+<p>The <a href="https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/task-based-asynchronous-programming">C# Async model</a> and the Python Async models have some important differences:</p>
+<ul>
+<li>C# creates a task pool and tasks are scheduled on this pool. The number of threads is managed automatically by the runtime.</li>
+<li>Python event loops belong to the thread that created them. C# tasks can be scheduled on any thread.</li>
+<li>Python async functions are coroutines that are scheduled on the event loop. C# async functions are tasks that are scheduled on the task pool.</li>
+</ul>
+<p>The benefit of C#&rsquo;s model is that a <code>Task</code> is a higher-level abstraction over a thread or coroutine. This means that you don&rsquo;t have to worry about the underlying thread management, you can schedule several tasks to be awaited concurrently or you can run them in parallel with Task Parallel Library (TPL).</p>
+<p>Going back to Will&rsquo;s comment <strong>&ldquo;Of course, that blocks the entire loop&rdquo;</strong>, he&rsquo;s talking about operations inside async functions which are blocking and therefore block the entire event loop. Since we covered in Problem 1, that&rsquo;s essentially everything except network calls and sleeping. </p>
+<p>With Python&rsquo;s GIL, it doesn&rsquo;t matter if you&rsquo;re running 1 thread or 10, the GIL will lock everything so that only 1 is operating at a time.</p>
+<p><img alt="Breakdancing meme" class="img-responsive center-block" src="/img/posts/breakdance.gif"></p>
+<p>There are some operations don&rsquo;t block the GIL (e.g. File IO) and in those cases you can run them in threads. For example, if you used <code>httpx</code>&lsquo;s streaming feature to stream a large network download onto disk:</p>
+<pre><code class="python">import httpx
+import tempfile
+
+def download_file(url: str):
+    with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
+        with httpx.stream(&quot;GET&quot;, url) as response:
+            for chunk in response.iter_bytes():
+                tmp_file.write(chunk)
+    return tmp_file.name
+</code></pre>
+
+<p>Neither the <code>httpx</code> stream iterator or <code>tmp_file.write</code> operations are GIL-blocking, so they benefit from being able to run in separate threads.</p>
+<p>We can merge this behavior with an asyncio API, by using the<a href="https://docs.python.org/3/library/asyncio-eventloop.html#executing-code-in-thread-or-process-pools"> Event Loop <code>run_in_executor()</code> function</a> and passing it a thread pool:</p>
+<pre><code class="python">import asyncio
+import concurrent.futures
+
+async def main():
+    loop = asyncio.get_running_loop()
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as pool:
+        result = await loop.run_in_executor(
+            pool, download_file, &quot;https://example.com/large-file&quot;)
+        print('custom thread pool', result)
+</code></pre>
+
+<p>We get ourselves into tangle following this pattern any further, since <a href="https://docs.python.org/3/library/asyncio-eventloop.html#asyncio.loop.call_soon">call_soon</a> isn&rsquo;t thread-safe. </p>
+<h3 id="does-the-free-threaded-mode-make-asyncio-more-useful-or-redundant">Does the free-threaded mode make asyncio more useful or redundant?<a class="headerlink" href="#does-the-free-threaded-mode-make-asyncio-more-useful-or-redundant" title="Permanent link">&para;</a></h3>
+<h2 id="problem-3-maintaining-two-apis-is-hard">Problem 3: Maintaining two APIs is hard<a class="headerlink" href="#problem-3-maintaining-two-apis-is-hard" title="Permanent link">&para;</a></h2>
+<h3 id="maintaining-two-http-backends">Maintaining two HTTP backends<a class="headerlink" href="#maintaining-two-http-backends" title="Permanent link">&para;</a></h3>
+<ul>
+<li>aiohttp https://github.com/aio-libs/aiohttp or encode&rsquo;s HTTPx https://www.python-httpx.org/async/</li>
+</ul>
+<h2 id="problem-4-old-habits-are-hard-to-break">Problem 4: Old habits are hard to break<a class="headerlink" href="#problem-4-old-habits-are-hard-to-break" title="Permanent link">&para;</a></h2>
+<h2 id="problem-5-obvious-things-are-hard-to-do">Problem 5: Obvious things are hard to do<a class="headerlink" href="#problem-5-obvious-things-are-hard-to-do" title="Permanent link">&para;</a></h2>
 <ul>
 <li>async dunder methods?</li>
+<li>file IO?</li>
+<li>logging?</li>
+<li>testing! /posts/async-test-patterns-for-pytest-and-unittest.html</li>
 </ul>
-<h2 id="problem-5">Problem 5:<a class="headerlink" href="#problem-5" title="Permanent link">&para;</a></h2>
-<h2 id="counter-point-this-is-as-good-as-it-gets">Counter-point: This is as good as it gets<a class="headerlink" href="#counter-point-this-is-as-good-as-it-gets" title="Permanent link">&para;</a></h2>
+<h2 id="problem-6-going-from-sync-to-async-and-back-again-is-hard">Problem 6: Going from sync to async and back again is hard<a class="headerlink" href="#problem-6-going-from-sync-to-async-and-back-again-is-hard" title="Permanent link">&para;</a></h2>
+<h2 id="counter-point-this-is-as-good-as-it-gets">Counter-point: This is as good as it gets.<a class="headerlink" href="#counter-point-this-is-as-good-as-it-gets" title="Permanent link">&para;</a></h2>
 <h2 id="python-314-interpreter-pool-executor">Python 3.14 Interpreter Pool Executor<a class="headerlink" href="#python-314-interpreter-pool-executor" title="Permanent link">&para;</a></h2>
 
                 
