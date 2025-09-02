@@ -291,7 +291,7 @@ Further down the copy+paste maintainer overhead is the testing of these APIs. Te
 
 ## Summary
 
-That's enough complaining. Let's talk about the positives of async in Python.
+In summary, I think the use cases for asyncio are limited (mostly for reasons beyond the control of `asyncio`) and this has constrained it's popularity. Maintaining duplicate code-bases is a burden.
 
 FastAPI, the web framework that's [async from-the-ground-up](https://www.starlette.io/) grew in [popularity again](https://blog.jetbrains.com/pycharm/2025/08/the-state-of-python-2025/#python-web-devs-resurgence) from 29% to 38% share of the web frameworks for Python, taking the #1 spot. It has over 100-million downloads a month. Considering the big use-case for async is HTTP and network IO, having the #1 web framework be an async one is a sign of asyncio's success. 
 
