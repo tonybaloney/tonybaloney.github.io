@@ -12,13 +12,13 @@
         <atom:link href="https://tonybaloney.github.io/rss.xml" rel="self" type="application/rss+xml" />
         {% for item in posts %}
         <item>
-            <title>{{item.blog_heading[0]}}</title>
+            <title>{{item.blog_heading}}</title>
             <description>
-                {{item.blog_subheading[0]}}
+                {{item.blog_subheading}}
             </description>
             <link>{{item.link}}</link>
             <pubDate>{{item.rfc2822_date}}</pubDate>
-            <dc:creator>{{item.blog_author[0]}}</dc:creator>
+            <dc:creator>{{item.blog_author}}</dc:creator>
             <guid>{{item.link}}</guid>
         </item>
         {% endfor %}
