@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Running Python Parallel Applications with Sub Interpreters</title>
+
+    <!-- Facebook Meta tags -->
+    <meta property="og:title" content="Running Python Parallel Applications with Sub Interpreters">
+    <meta property="og:description" content="An exploration into the possibility of running a parallel application using sub interpreters">
+    <meta property="og:image" content="https://tonybaloney.github.io/img/posts/four-snakes-square.jpeg">
+    <meta property="og:url" content="https://tonybaloney.github.io/blog\sub-interpreter-web-workers.html">
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:title" content="Running Python Parallel Applications with Sub Interpreters">
+    <meta name="twitter:description" content="An exploration into the possibility of running a parallel application using sub interpreters">
+    <meta name="twitter:image" content="https://tonybaloney.github.io/img/posts/four-snakes-square.jpeg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@anthonypjshaw">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="/css/clean-blog.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js"></script>
+
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/x86asm.min.js"></script>
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/python.min.js"></script>
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    Menu <i class="fa fa-bars"></i>
+                </button>
+
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/#">Home</a>
+                    </li>
+                    <li>
+                        <a href="/#projects">Projects</a>
+                    </li>
+                    <li>
+                        <a href="/#contributions">Contributions</a>
+                    </li>
+                    <li>
+                        <a href="/#courses">Courses</a>
+                    </li>
+                    <li>
+                        <a href="/#podcasts">Podcasts</a>
+                    </li>
+                    <li>
+                        <a href="/#talks">Talks</a>
+                    </li>
+                    <li>
+                        <a href="/#blog">Blog</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/tonybaloney"><i class='fa fa-2x fa-github'></i></a>
+                    </li>
+                    <li>
+                        <a href="https://www.youtube.com/c/AnthonyShaw"><i class='fa fa-2x fa-youtube-play'></i></a>
+                    </li>
+                    <li>
+                        <a href="/rss.xml"><i class='fa fa-2x fa-rss-square'></i></a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('/img/posts/four-snakes-square.jpeg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="site-heading">
+                        <h1>Running Python Parallel Applications with Sub Interpreters</h1>
+                        <hr class="small">
+                        <span class="subheading">by Anthony Shaw, November 17, 2023</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <p>Python 3.12 introduced a new API for &ldquo;sub interpreters&rdquo;, which are a different parallel execution model for Python that provide a nice
+compromise between the true parallelism of multiprocessing, but with a much faster startup time. In this post, I&rsquo;ll explain what a sub interpreter is, why it&rsquo;s important for parallel code execution in Python and how it compares with other approaches.</p>
+<h2 id="what-is-a-sub-interpreter">What is a sub interpreter?<a class="headerlink" href="#what-is-a-sub-interpreter" title="Permanent link">&para;</a></h2>
+<p>Python&rsquo;s system architecture is roughly made up of three parts:</p>
+<ul>
+<li>A Python process, which contains one or more interpreters</li>
+<li>An interpreter, which contains a lock (the GIL) and one or more Python threads</li>
+<li>A thread, which contains information about the currently executing code.</li>
+</ul>
+<p><img alt="" class="img-responsive center-block" src="/img/posts/interpreter-states-1.png" style="width:60%"></p>
+<p>To learn more about this, you should read the <strong>&ldquo;Parallelism and Concurrency&rdquo;</strong> chapter of my book <a href="/#books">CPython Internals</a>.</p>
+<p>Since Python 1.5, there has been a C-API to have multiple interpreters, but this functionality was severely limited by the GIL and didn&rsquo;t really enable true parallelism. As a consequence, the most commonly used technique for running code in parallel (without third party libraries) is to use the <a href="http://docs.python.org/"><code>multiprocessing</code> module</a>.</p>
+<p>In 2017, CPython core developers proposed to change the structure of interpreters so that the they were better isolated from the owning Python process and could operate in parallel. The actual work to achieve this was pretty huge (it isn&rsquo;t finished 6 years later) and is split into two PEPs. <a href="https://peps.python.org/pep-0684/">PEP684</a> changes the GIL to be per-interpreter and <a href="https://peps.python.org/pep-0554/">PEP554</a> which provides an API to create interpreters and share data between them.</p>
+<p>The GIL is the <strong>&ldquo;Global Interpreter Lock&rdquo;</strong>, a lock in a Python process that means that only 1 instruction can execute at any time in a Python process, even if it has multiple threads. This effectively means that even if you start 4 Python threads and run them concurrently on your nice 4-core CPU, only 1 thread will be running at any one time.</p>
+<p><img alt="A cartoon of a snake doing work, whilst 3 other snakes watch it" class="img-responsive center-block" src="/img/posts/hard-working-snake.jpeg" style="width:60%"></p>
+<p>You can see a simple test by creating a numpy array or integers and crudely calculating the distance of each value from 50:</p>
+<pre><code class="python">import numpy
+# Create a random array of 100,000 integers between 0 and 100
+a = numpy.random.randint(0, 100, 100_000)
+for x in a:
+  abs(x - 50)
+</code></pre>
+
+<p>In theory, you would expect (at least with a language like C) that by splitting the work into chunks and distributing the work to threads the execution time would be faster:</p>
+<pre><code class="python">import numpy, threading
+a = numpy.random.randint(0, 100, 100_000)
+threads = []
+# Split array into blocks of 100 and start a thread for each
+for ar in numpy.split(a, 100):
+    t = threading.Thread(target=simple_abs_range, args=(ar,))
+    t.start()
+    threads.append(t)
+for t in threads:
+    t.join()
+</code></pre>
+
+<p>In practice the second example is twice as slow. That&rsquo;s because all those threads are bound to the same GIL and only 1 of them will execute at any time. The extra time is all the song-and-dance to spawn a thread to accomplish very little.</p>
+<p>Despite it&rsquo;s name, the GIL was never really a lock in the interpreter state. PEP684 changed that by stopping the sharing of the GIL between interpreters so that each interpreter in a Python process had it&rsquo;s own GIL and could therefore run in parallel. A major reason for the per-interpreter GIL working taking many years is that CPython has internally relied upon the GIL as a source of thread-safety. This took the form of many C-Extensions having globally shared state. If you were to introduce a parallelism within the same Python process and two interpreters tried to write to the same memory space, bad things would happen.</p>
+<p>In Python 3.12 and ongoing in Python 3.13, the Python standard library extensions written in C are being tested and any global shared state is being moved to a new API that puts that state within either the module, or in the interpreter state. Even when this work is completed, third party C extensions will likely have to test in sub interpreters (I maintain 1 library written in C++ and it <a href="https://github.com/microsoft/picologging/pull/167">required changes</a>).</p>
+<h2 id="what-about-the-work-to-remove-the-gil-doesnt-that-make-this-irrelevant">What about the work to remove the GIL? Doesn&rsquo;t that make this irrelevant?<a class="headerlink" href="#what-about-the-work-to-remove-the-gil-doesnt-that-make-this-irrelevant" title="Permanent link">&para;</a></h2>
+<p>The <a href="https://peps.python.org/pep-0703/">very-recently approved proposal, PEP703</a> to make the GIL optional in CPython works collaboratively with the per-interpreter GIL. Both proposals have the prerequisites:</p>
+<ul>
+<li><a href="https://peps.python.org/pep-0683/">Immortal Objects</a></li>
+<li>Updating C extensions to not use shared global state</li>
+</ul>
+<p>Another important point is that whilst PEP703 has been accepted, it was done so with the clause that it is an optional flag, and if it proved too problematic or complex then the changes would be reverted in future. Per-interpreter GIL on the other hand is largely complete and doesn&rsquo;t require an alternative compile-time flag in CPython.</p>
+<p>I will write a lot more about PEP703 in the future. Later in this post I&rsquo;ll share some code where I&rsquo;m going to combine the two approaches together.</p>
+<h2 id="what-is-the-difference-between-threading-multiprocessing-and-sub-interpreters">What is the difference between threading, multiprocessing, and sub interpreters?<a class="headerlink" href="#what-is-the-difference-between-threading-multiprocessing-and-sub-interpreters" title="Permanent link">&para;</a></h2>
+<p>The Python standard library has a few options for concurrent programming, depending on some factors:</p>
+<ul>
+<li>Is the task you&rsquo;re completing IO-bound (e.g. reading from a network, writing to disk)</li>
+<li>Does the task require CPU-heavy work, e.g. computation</li>
+<li>Can the tasks be broken into small chunks or are they large pieces of work?</li>
+</ul>
+<p>Here are the models:</p>
+<ul>
+<li><strong>Threads</strong> are fast to create, you can share any Python objects between them and have a small overhead. Their drawback is that Python threads are bound to the GIL of the process, so if the workload is CPU-intensive then you won&rsquo;t see any performance gains. Threading is very useful for background, polling tasks like a function that waits and listens for a message on a queue.</li>
+<li><strong>Coroutines</strong> are extremely fast to create, you can share any Python objects between them and have a miniscule overhead. Coroutines are ideal for IO-based activity that has an underlying API that supports async/await.</li>
+<li><strong>Multiprocessing</strong> is a Python wrapper that creates Python processes and links them together. These processes are slow to start, so the workload that you give them needs to be large enough to see the benefit of parallelising the workload. However, they are truly parallel since each one has it&rsquo;s own GIL.</li>
+<li><strong>Sub interpreters</strong> have the parallelism of multiprocessing, but with a much faster startup time.</li>
+</ul>
+<p><a href="https://youtu.be/mqOQtC9Dt84?t=6850">I gave a talk on this at PyCon APAC 2023</a> so check that out for a verbal, detailed explanation.</p>
+<p>Or, in a table:</p>
+<table class="table">
+<thead>
+<tr>
+<th>Model</th>
+<th>Execution</th>
+<th>Start-up time</th>
+<th>Data Exchange</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>threads</td>
+<td>Parallel *</td>
+<td>small</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>coroutines</td>
+<td>Concurrent</td>
+<td>smallest</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Async functions</td>
+<td>Concurrent</td>
+<td>smallest</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Greenlets</td>
+<td>Concurrent</td>
+<td>smallest</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>multiprocessing</td>
+<td>Parallel</td>
+<td>large</td>
+<td>Serialization</td>
+</tr>
+<tr>
+<td>Sub Interpreters</td>
+<td>Parallel</td>
+<td>medium</td>
+<td>Serialization or Shared Memory</td>
+</tr>
+</tbody>
+</table>
+<p>* As we explored, Threads are only parallel with IO-bound tasks</p>
+<h2 id="how-do-sub-interpreters-compare-in-performance-in-real-terms">How do sub interpreters compare in performance (in real terms)?<a class="headerlink" href="#how-do-sub-interpreters-compare-in-performance-in-real-terms" title="Permanent link">&para;</a></h2>
+<p>In a <a href="https://github.com/tonybaloney/thesis-benchmarks/blob/master/bm_bare.py">simple benchmark</a>, I measured the time to create:</p>
+<ul>
+<li>100 threads</li>
+<li>100 sub interpreters</li>
+<li>100 processes using multiprocessing</li>
+</ul>
+<p>Here are the results:</p>
+<p><img alt="" class="img-responsive center-block" src="/img/posts/results_bare_execution.png" style="width:80%"></p>
+<p>This benchmark showed that threading is about 100 times faster to start than sub interpreters, which are about 10 times faster than multiprocessing. What I&rsquo;m hoping isn&rsquo;t lost in this chart is how much closer to threads interpreters are than multiprocessing.</p>
+<p>This benchmark also doesn&rsquo;t measure the performance of data-sharing (which is must faster in sub interpreters than multiprocessing) and the memory overhead (which again is significantly less).</p>
+<p>Running nothing in parallel isn&rsquo;t a very useful benchmark for purposes other than measuring the <em>minimum</em> time to start. Next, I benchmarked a CPU-intensive workload to calculate Pi to 2000 decimal places.</p>
+<p><img alt="" class="img-responsive center-block" src="/img/posts/results_pi_execution.png" style="width:80%"></p>
+<h3 id="great-so-all-parallel-workloads-will-be-faster-with-sub-interpreters">Great! So all parallel workloads will be faster with sub interpreters?<a class="headerlink" href="#great-so-all-parallel-workloads-will-be-faster-with-sub-interpreters" title="Permanent link">&para;</a></h3>
+<p>Alas no. Going back to the first benchmark, sub interpreters are still 100 times slower to start than threads. So if the task is really small, for example calculating Pi to 200 digits then the benefits of parallelism outweigh the startup overhead and threading is still faster:</p>
+<p><img alt="" class="img-responsive center-block" src="/img/posts/results_pi_execution_200.png" style="width:80%"></p>
+<p>To visually explain the idea of there being a &ldquo;cut-off&rdquo; point when parallelism is faster, this graph shows the workload size and the rate of growth for the execution time. The cut-off time isn&rsquo;t a fixed value because it depends on the CPU, the background tasks and lots of other variances.</p>
+<p><img alt="" class="img-responsive center-block" src="/img/posts/graph-sub-interpreters.png" style="width:80%"></p>
+<p>Another important point is that <code>multiprocessing</code> is often used in a model where the processes are long-running and handed lots of tasks instead of being spawned and destroyed for a single workload. One great example is Gunicorn, the popular Python web server. Gunicorn will spawn &ldquo;workers&rdquo; using <code>multiprocessing</code> and those workers will live for the lifetime of the main process. The time to start a process or a sub interpreter then becomes irrelevant (at 89 ms or 1 second) when the web worker can be running for weeks, months or years.
+The ideal way to use these parallel workers for small tasks (like handle a single web request) is to keep them running and use a main process to coordinate and distribute the workload:</p>
+<p><img alt="" class="img-responsive center-block" src="/img/posts/interpreter-spooling.png" style="width:80%"></p>
+<p>Both multiprocessing processes and interpreters have their own import state. This is drastically different to threads and coroutines. When you <code>await</code> an async function, you don&rsquo;t need to worry about whether that coroutine has imported the required modules. The same applies for threads. For example, you can import something in your module and reference it from inside the thread function:</p>
+<pre><code class="python">import threading
+from super.duper.module import cool_function
+
+def worker(info):
+    cool_function() # This already exists in the interpreter state
+
+info = {'a': 1}
+thread = Thread(target=worker, args=(info, ))
+</code></pre>
+
+<p>Half of the time taken to start an interpreter is taken up running &ldquo;site import&rdquo;. This is a special module called <code>site.py</code> that lives within the Python installation. Interpreters have their own caches, their own builtins, they are effectively mini-Python processes. Starting a thread or a coroutine is so fast because it doesn&rsquo;t have to do any of that work (it shares that state with the owning interpreter), but it&rsquo;s bound by the lock and isn&rsquo;t parallel.</p>
+<h2 id="once-a-interpreter-and-a-process-are-up-and-running-does-it-make-a-difference-to-performance">Once a interpreter and a process are up and running, does it make a difference to performance?<a class="headerlink" href="#once-a-interpreter-and-a-process-are-up-and-running-does-it-make-a-difference-to-performance" title="Permanent link">&para;</a></h2>
+<p>The next point when using a parallel execution model like multiprocessing or sub interpreters is how you share data. Once you get over the hurdle of starting one, this quickly becomes the most important point. You have two questions to answer:</p>
+<ol>
+<li>How do we communicate between workers?</li>
+<li>How do we manage the state of workers?</li>
+</ol>
+<p>Let&rsquo;s address those individually.</p>
+<h3 id="inter-worker-communication">Inter-Worker communication<a class="headerlink" href="#inter-worker-communication" title="Permanent link">&para;</a></h3>
+<p>Whether using sub interpreters or multiprocessing you cannot simply send existing Python objects to worker processes.</p>
+<p>Multiprocessing uses <code>pickle</code> by default. When you start a process or use a <a href="https://docs.python.org/3/library/concurrent.futures.html#concurrent.futures.ProcessPoolExecutor">process pool</a>, you can use pipes, queues and shared memory as mechanisms to sending data to/from the workers and the main process. These mechanisms revolve around pickling. Pickling is the builtin serialization library for Python that can convert <em>most</em> Python objects into a byte string and back into a Python object.</p>
+<p>Pickle is very flexible. You can serialize a lot of different types of Python objects (but not all) and Python objects can even <a href="https://docs.python.org/3/library/pickle.html#pickling-class-instances">define a method for how they can be serialized</a>. It also handles nested objects and properties. However, with that flexibility comes a performance hit. Pickle is slow. So if you have a worker model that relies upon continuous inter-worker communication of complex pickled data you&rsquo;ll likely see a bottleneck.</p>
+<p>Sub interpreters can accept pickled data. They also have a second mechanism called shared data. Shared data is a high-speed shared memory space that interpreters can write to and share data with other interpreters. It supports only immutable types, those are:</p>
+<ul>
+<li>Strings</li>
+<li>Byte Strings</li>
+<li>Integers and Floats</li>
+<li>Boolean and None</li>
+<li>Tuples (and tuples of tuples)</li>
+</ul>
+<p>I <a href="https://github.com/python/cpython/pull/111628">implemented the tuple sharing</a> mechanism last week so that we had some option of a sequence type.</p>
+<p>To share data with an interpreter, you can either set it as initialization data or you can send it through a channel.</p>
+<h3 id="worker-state-management">Worker state management<a class="headerlink" href="#worker-state-management" title="Permanent link">&para;</a></h3>
+<p>This is a work in progress for sub interpreters. If a sub interpreter crashes, it won&rsquo;t kill the main interpreter. Exceptions can be raised up to the main interpreter and handled gracefully. The details of this are still being worked out.</p>
+<h2 id="how-do-i-use-a-sub-interpreter">How do I use a sub interpreter?<a class="headerlink" href="#how-do-i-use-a-sub-interpreter" title="Permanent link">&para;</a></h2>
+<p>In Python 3.12, the sub interpreter API is experimental and some of the things I&rsquo;m going to mention were only implemented a week ago so haven&rsquo;t been released yet so you&rsquo;ll see them in future releases of 3.13. If you want to compile the main branch of CPython you can follow along at home.</p>
+<p>The interpreters module proposed in <a href="https://peps.python.org/pep-0554/">PEP554</a> isn&rsquo;t finished. A version of it is a secret, hidden module called <code>_xxsubinterpreters</code>. In all my code I rename the import to <code>interpreters</code> because that&rsquo;s what it&rsquo;ll be called in future.</p>
+<p>You can create, run and stop a sub interpreter with the <code>.run()</code> function which takes a string or a simple function</p>
+<pre><code class="python">import _xxsubinterpreters as interpreters
+
+interpreters.run('''
+print(&quot;Hello World&quot;)
+''')
+</code></pre>
+
+<p>Starting a sub interpreter is a <em>blocking</em> operation, so most of the time you want to start one inside a thread.</p>
+<pre><code class="python">from threading import Thread
+import _xxsubinterpreters as interpreters
+
+t = Thread(target=interpreters.run, args=(&quot;print('hello world')&quot;,))
+t.start()
+</code></pre>
+
+<p>To start an interpreter that sticks around, you can use <code>interpreters.create()</code> which returns the interpreter ID. This ID can be used for subsequent <code>.run_string</code> calls:</p>
+<pre><code class="python">import _xxsubinterpreters as interpreters
+
+interp_id = interpreters.create(site=site)
+interpreters.run_string(interp_id, &quot;print('hello world')&quot;)
+interpreters.run_string(interp_id, &quot;print('hello universe')&quot;)
+interpreters.destroy(interp_id)
+</code></pre>
+
+<p>To share data, you can use the <code>shared</code> argument and provide a dictionary with shareable (int, float, bool, bytes, str, None, tuple) values:</p>
+<pre><code class="python">import _xxsubinterpreters as interpreters
+
+interp_id = interpreters.create(site=site)
+interpreters.run_string(
+    interp_id, 
+    &quot;print(message)&quot;,
+    shared={
+        &quot;message&quot;: &quot;hello world!&quot;
+    }
+)
+interpreters.run_string(
+    interp_id, 
+&quot;&quot;&quot;
+for message in messages:
+    print(message)
+&quot;&quot;&quot;,
+    shared={
+        &quot;messages&quot;: (&quot;hello world!&quot;, &quot;this&quot;, &quot;is&quot;, &quot;me&quot;)
+    }
+)
+interpreters.destroy(interp_id)
+</code></pre>
+
+<p>Once an interpreter is running (remembering what I said that it is preferable to leave them running) you can share data using a channel. The channels module is also part of PEP554 and available using a secret-import:</p>
+<pre><code class="python">import _xxsubinterpreters as interpreters
+import _xxinterpchannels as channels
+
+interp_id = interpreters.create(site=site)
+channel_id = channels.create()
+interpreters.run_string(
+    interp_id, 
+&quot;&quot;&quot;
+import _xxinterpchannels as channels
+channels.send('hello!')
+&quot;&quot;&quot;,
+    shared={
+        &quot;channel_id&quot;: channel_id
+    }
+)
+print(channels.recv(channel_id))
+</code></pre>
+
+<h2 id="parallel-workers-in-the-world-of-web-applications">Parallel workers in the world of web applications<a class="headerlink" href="#parallel-workers-in-the-world-of-web-applications" title="Permanent link">&para;</a></h2>
+<p>Applying the <code>multiprocessing</code> and <code>threading</code> models to web applications. The Python web servers that sit in front of your framework like Django, Flask, FastAPI or Quart use an interface called WSGI for traditional web frameworks and ASGI for async ones.
+The web servers listen on a HTTP port for requests, then divvy up the requests to a pool of workers. If you only had 1 worker, then when a user made a HTTP request, everyone else would have to sit and wait until it finished responding to the first request (this is also why you should never ship <code>python manage.py runserver</code> as the web server because it only has 1 worker).</p>
+<p><img alt="" class="img-responsive center-block" src="/img/posts/snakes-waiting.jpeg" style="width:40%"></p>
+<p>The recommended best practice for Gunicorn is to run multiple Python processes, coordinated by a main process and for each process to have a pool of threads:</p>
+<ul>
+<li>A number of workers are started using multiprocessing (typically 1 worker for each CPU core)</li>
+<li>A web request is given to a thread pool</li>
+</ul>
+<p>This design (sometimes called multi-worker-multi-thread) means that using multiprocessing you have 1 GIL for each CPU Core and you have a pool of threads to handle incoming requests concurrently. Uvicorn, the async implementation builds on that by using coroutines to handle concurrency with frameworks that support async.</p>
+<p>There are some downsides to this approach. As we explored earlier, threads are not parallel so if you had 2 threads inside a single worker being very busy, Python can&rsquo;t &ldquo;move&rdquo; or schedule that task on a different CPU core.</p>
+<h2 id="applying-sub-interpreters-to-web-applications">Applying sub interpreters to web applications<a class="headerlink" href="#applying-sub-interpreters-to-web-applications" title="Permanent link">&para;</a></h2>
+<p>So, my goal is to replace <code>multiprocessing</code> as the mechanism for the workers with an interpreter. This would have the benefit of using the high-performance shared memory channels API for inter-worker communication <strong>and</strong> the workers would be lighter weight taking up less memory on the host (leaving more memory and resources to process requests).</p>
+<p>The second, rather wild goal is to compile CPython 3.13 (main branch) with the PEP703 GIL-less thread implementation to see if we can run GIL-free threads inside this model. I also want to identify issues early and report them upstream (there were a few).</p>
+<p>For this experiment, I tried to fork Gunicorn and replace multiprocessing with sub interpreters. What I found was that this would be a huge effort because Gunicorn does have a concept of &ldquo;workers&rdquo; and abstracts those in an interface called worker classes. However, it makes some assumptions about the worker class capabilities which sub interpreters don&rsquo;t fulfill.</p>
+<p>Someone on Mastodon suggested I check out Hypercorn, which turned out to be ideal for this test. Hypercorn has an async worker module with a callable that could be imported from inside the interpreter. All I need to work out is:</p>
+<ul>
+<li>How can the workers share the sockets?</li>
+<li>How can I signal a worker to shutdown cleanly (async events won&rsquo;t work between interpreters)</li>
+</ul>
+<p>So, I roughly followed this design:</p>
+<ol>
+<li>Create an interpreter</li>
+<li>Create a signal channel to signal shutdown requests</li>
+<li>Subclass the <code>threading.Thread</code> class and implement a custom <code>.stop()</code> method that sends the signal to the sub interpreter</li>
+<li>Run each sub interpreter in a thread</li>
+<li>Convert the list of sockets into a tuple of tuples</li>
+</ol>
+<p>The worker class looks like this:</p>
+<pre><code class="python">class SubinterpreterWorker(threading.Thread):
+
+    def __init__(self, number: int, config: Config, sockets: Sockets):
+        self.worker_number = number
+        self.interp = interpreters.create()
+        self.channel = channels.create()
+        self.config = config # TODO copy other parameters from config
+        self.sockets = sockets
+        super().__init__(target=self.run, daemon=True)
+
+    def run(self):
+        # Convert insecure sockets to a tuple of tuples because the Sockets type cannot be shared
+        insecure_sockets = []
+        for s in self.sockets.insecure_sockets:
+            insecure_sockets.append((int(s.family), int(s.type), s.proto, s.fileno()))
+
+        interpreters.run_string(
+            self.interp,
+            interpreter_worker,
+            shared={
+                'worker_number': self.worker_number,
+                'insecure_sockets': tuple(insecure_sockets),
+                'application_path': self.config.application_path,
+                'workers': self.config.workers,
+                'channel_id': self.channel,
+            }
+        )
+
+    def stop(self):
+        print(&quot;Sending stop signal to worker {}&quot;.format(self.worker_number))
+        channels.send(self.channel, &quot;stop&quot;)
+
+</code></pre>
+
+<p>The sub interpreter daemon code (<code>interpreter_worker</code>) is:</p>
+<pre><code class="python">import sys
+sys.path.append('experiments')
+from hypercorn.asyncio.run import asyncio_worker
+from hypercorn.config import Config, Sockets
+import asyncio
+import threading
+import _xxinterpchannels as channels
+from socket import socket
+import time
+shutdown_event = asyncio.Event()
+
+def wait_for_signal():
+    while True:
+        msg = channels.recv(channel_id, default=None)
+        if msg == &quot;stop&quot;:
+            print(&quot;Received stop signal, shutting down {} &quot;.format(worker_number))
+            shutdown_event.set()
+        else:
+            time.sleep(1)
+
+print(&quot;Starting hypercorn worker in subinterpreter {} &quot;.format({worker_number}))
+_insecure_sockets = []
+# Rehydrate the sockets list from the tuple
+for s in insecure_sockets:
+    _insecure_sockets.append(socket(*s))
+hypercorn_sockets = Sockets([], _insecure_sockets, [])
+
+config = Config()
+config.application_path = application_path
+config.workers = workers
+thread = threading.Thread(target=wait_for_signal)
+thread.start()
+asyncio_worker(config, hypercorn_sockets, shutdown_event=shutdown_event)
+</code></pre>
+
+<p>The complete code is <a href="https://github.com/tonybaloney/subinterpreter-web/blob/master/microweb.py">available on GitHub</a>.</p>
+<h2 id="findings">Findings<a class="headerlink" href="#findings" title="Permanent link">&para;</a></h2>
+<p>My first cut of this approach still doesn&rsquo;t have multiple threads inside the sub interpreter (other than the signal thread). I&rsquo;m building and testing an unstable build of CPython in debug mode. It&rsquo;s not ready for a comparison performance test - yet. </p>
+<p>PEP703 isn&rsquo;t finished yet. The <a href="https://github.com/python/cpython/issues/108219">100+ todo-list issue</a> in GitHub is about 50% complete. Only at the end of this list can the GIL be disabled.</p>
+<p>I also discovered a few issues. Firstly, Django won&rsquo;t run <em>at all</em>. Remember earlier in this post I mentioned that some Python C extensions use a global shared state? Well, <code>datetime</code> is one of those modules. There is an issue to update it, but it hasn&rsquo;t been merged yet. The consequence is that if you import <code>zoneinfo</code> from a sub interpreter, it will fail. Django uses <code>zoneinfo</code>, so it doesn&rsquo;t even start.</p>
+<p>I did have more luck with a very crude FastAPI and Flask application. I was able to launch a 2, 4 and 10 worker setup with those applications. I did run a few benchmarks on the FastAPI and Flask applications to see that it handled 10,000 requests with a concurrency of 20. Both performed admirably with all my CPU cores beavering away.</p>
+<p>I was pleasantly suprised since I wasn&rsquo;t expecting it to work at all because sub interpreters are so new and the Python ecosystem hasn&rsquo;t been testing them. The next step is to test some more complex web applications, continue to report crashes and issues then get this web worker into a state where it&rsquo;s stable enough to benchmark.</p>
+<p>Then I might just submit a PR to Hypercorn for Python 3.13&rsquo;s release next year.</p>
+<p><img alt="" class="img-responsive center-block" src="/img/posts/four-snakes-cartoon.jpeg" style="width:40%"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="https://youtube.com/c/AnthonyShaw">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-youtube fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/tonybaloney">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Copyright &copy; Anthony Shaw</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="/js/clean-blog.min.js"></script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>

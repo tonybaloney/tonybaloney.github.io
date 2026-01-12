@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Running Python on .NET 5</title>
+
+    <!-- Facebook Meta tags -->
+    <meta property="og:title" content="Running Python on .NET 5">
+    <meta property="og:description" content="An update on the Pyjion project to plug a JIT into CPython using the .NET 5 CLR JIT compiler">
+    <meta property="og:image" content="https://tonybaloney.github.io/img/posts/turtle-pileup.jpg">
+    <meta property="og:url" content="https://tonybaloney.github.io/blog\running-python-on-dotnet-5-with-pyjion.html">
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:title" content="Running Python on .NET 5">
+    <meta name="twitter:description" content="An update on the Pyjion project to plug a JIT into CPython using the .NET 5 CLR JIT compiler">
+    <meta name="twitter:image" content="https://tonybaloney.github.io/img/posts/turtle-pileup.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@anthonypjshaw">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="/css/clean-blog.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js"></script>
+
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/x86asm.min.js"></script>
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/python.min.js"></script>
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    Menu <i class="fa fa-bars"></i>
+                </button>
+
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/#">Home</a>
+                    </li>
+                    <li>
+                        <a href="/#projects">Projects</a>
+                    </li>
+                    <li>
+                        <a href="/#contributions">Contributions</a>
+                    </li>
+                    <li>
+                        <a href="/#courses">Courses</a>
+                    </li>
+                    <li>
+                        <a href="/#podcasts">Podcasts</a>
+                    </li>
+                    <li>
+                        <a href="/#talks">Talks</a>
+                    </li>
+                    <li>
+                        <a href="/#blog">Blog</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/tonybaloney"><i class='fa fa-2x fa-github'></i></a>
+                    </li>
+                    <li>
+                        <a href="https://www.youtube.com/c/AnthonyShaw"><i class='fa fa-2x fa-youtube-play'></i></a>
+                    </li>
+                    <li>
+                        <a href="/rss.xml"><i class='fa fa-2x fa-rss-square'></i></a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('/img/posts/turtle-pileup.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="site-heading">
+                        <h1>Running Python on .NET 5</h1>
+                        <hr class="small">
+                        <span class="subheading">by Anthony Shaw, November 11, 2020</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <p><em>This post is an update on the Pyjion project to plug the .NET 5 CLR JIT compiler into Python 3.9.</em></p>
+<p>.NET 5 was released on November 10, 2020. It is the cross-platform and open-source replacement of the <a href="https://github.com/dotnet/core"><strong>.NET Core</strong></a> project and the <strong>.NET</strong> project that ran exclusively on Windows since the late 90&rsquo;s.</p>
+<p>.NET is formed of many components:</p>
+<ul>
+<li>3 builtin languages, C#, F# and VB.NET, each with its own compiler</li>
+<li>A standard library</li>
+<li>A common intermediate language to abstract the high level languages from the core runtime. This is a standard known as <a href="https://github.com/tonybaloney/ecma-335/tree/master/docs">ECMA 335 CIL</a>.</li>
+<li>A common language runtime (CLR) that compiles CIL into native machine code so that it can be executed and packages executables into .exe formats.</li>
+</ul>
+<p><img alt=".NET architecture" class="img-responsive center-block" src="/img/posts/Common_Language_Infrastructure.png" style="width:40%"></p>
+<p>.NET 5 CLR comes bundled with a performant JIT compiler (codenamed RyuJIT) that will compile .NETs CIL into native machine instructions on Intel x86, x86-64, and ARM CPU architectures.</p>
+<p>You can write code in a number of languages, like C++, C#, F# and compile those into CIL and then into native machine code (as a binary executable) on macOS, Linux, and Windows. Pretty neat.</p>
+<p>But this is a blog about Python. So what does this have to do with Python?</p>
+<p>Pyjion is a project to replace the core execution loop of CPython by transpiling CPython bytecode to ECMA CIL and then using the .NET 5 CLR to compile that into machine code. It then executes the machine-code compiled JIT frames at runtime instead of using the native execution loop of CPython.</p>
+<h2 id="very-quick-overview-of-pythons-compiler">Very-quick overview of Python&rsquo;s compiler<a class="headerlink" href="#very-quick-overview-of-pythons-compiler" title="Permanent link">&para;</a></h2>
+<p>When CPython compiles Python code, it compiles it into an intermediate format, similar to .NET, called Python bytecode. This bytecode is cached on disk so that when you import a module that hasn&rsquo;t changed, it doesn&rsquo;t compile it every time. You can see the bytecode by disassembling any Python function:</p>
+<pre><code>&gt;&gt;&gt; import dis
+&gt;&gt;&gt; def half(x):
+...    return x/2
+... 
+&gt;&gt;&gt; dis.dis(half)
+  2           0 LOAD_FAST                0 (x)
+              2 LOAD_CONST               1 (2)
+              4 BINARY_TRUE_DIVIDE
+              6 RETURN_VALUE
+</code></pre>
+
+<p>To execute anything on a CPU, you have to provide the OS with machine-code instructions. This can be accomplished by compiling them up-front using a compiled like the C or C++ compilers. They compile code into executable formats as either shared libraries or standalone executables. <a href="https://tonybaloney.github.io/posts/extending-python-with-assembly.html"><em>See my post on Python/assembly for a bit more info on this topic</em></a>.</p>
+<p>CPython converts the bytecode into machine code instructions like looping over them in a precompiled function, called the evaluation loop. This is essentially a big for loop with a switch statement. The compiled version of CPython that you&rsquo;re running already has the instructions required. This is why CPython&rsquo;s evaluation loop is an &ldquo;AOT&rdquo;, or &ldquo;Ahead of Time&rdquo; compiled library:</p>
+<p><img alt="diagram 1" class="img-responsive center-block" src="/img/posts/Slide1.png"></p>
+<p><strong>Note: There is a lot more to CPython&rsquo;s compiler. I&rsquo;ve written a <a href="https://realpython.com/products/cpython-internals-book/">whole book on the CPython compiler and the internals of CPython</a> if you want to learn more.</strong></p>
+<p>There are a few issues with this approach. The biggest is speed. A series of inline machine-code instructions is very performant. CPython has to make judgements at runtime for which code branch to follow every time your function is run. This leads to CPython being 100x slower in &ldquo;tight-loop&rdquo; problems where its executing the same thing again and again. The machine-code is compiled ahead of time and it has to loop around to get to the right instructions. Checkout my PyCon talk for a more in-depth explanation:</p>
+<iframe width="560" height="315" class="center-block" src="https://www.youtube.com/embed/I4nkgJdVZFA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<p>The most common way around this performance barrier is to compile Python extensions from C. This produces a custom binary with inline machine-code instructions for the task at hand. This is how most machine-learning and data science libraries like numpy, pandas, SKL are put together. This approach is still AOT compiling the code. It also requires a lot of knowledge of C. This approach has worked really well for the data science community, where algorithms can be performant and leverage low-level platforms <a href="https://numba.pydata.org/numba-doc/latest/cuda/index.html">like GPUs or specialised AI chipsets</a>.</p>
+<p>There are a few issues with the AOT extension module approach. One is that it still uses the evaluation loop. C extension modules are a set of functions. Once you call the C-compiled function, its in the performant code, but your Python code that&rsquo;s calling it still lives inside Python&rsquo;s loop. If you want to leverage a compiled library and your Python code is doing some heavy number crunching, you end up having to use an API of functions, like numpy, instead of a more fluent Python API:</p>
+<pre><code class="python">&gt;&gt;&gt; import numpy as np
+&gt;&gt;&gt; a = np.ones([9, 5, 7, 4])
+&gt;&gt;&gt; c = np.ones([9, 5, 4, 3])
+&gt;&gt;&gt; np.dot(a, c).shape
+(9, 5, 7, 9, 5, 3)
+&gt;&gt;&gt; np.matmul(a, c).shape
+(9, 5, 7, 3)
+</code></pre>
+
+<h2 id="what-pyjion-does-to-solve-this-issue">What Pyjion does to solve this issue<a class="headerlink" href="#what-pyjion-does-to-solve-this-issue" title="Permanent link">&para;</a></h2>
+<p>A few releases of Python ago (CPython specifically, the most commonly used version of Python) in 3.7 a new API was added to be able to swap out &ldquo;frame execution&rdquo; with a replacement implementation. This is otherwise known as <a href="https://www.python.org/dev/peps/pep-0523/">PEP 523</a>. PEP 523 also added the capability to store additional attributes in <em>code objects</em> (compiled Python code.</p>
+<p>Pyjion does not compile Python code. It compiles Python frames (code objects, like blocks, functions, methods, classes) into machine-code at runtime using a performant JIT:</p>
+<p><img alt="diagram 2" class="img-responsive center-block" src="/img/posts/Slide2.png"></p>
+<p>CPython compiles the Python code, so whatever language features and behaviours there are in CPython 3.9, like the walrus operator, <a href="https://www.python.org/dev/peps/pep-0584">the dictionary union operator</a>, will all work exactly the same with this extension enabled. This also means that this extension uses the same standard library as Python 3.9.</p>
+<p>Pyjion is a &ldquo;pip installable&rdquo; package for standard CPython that JIT compiles all Python code at runtime using the .NET 5 JIT compiler. You can use off-the-shelf CPython 3.9 on macOS, Linux or Windows. After installing this package you just import the module and enable the JIT.</p>
+<p>Once a frame has been compiled, the binary code is cached in memory and reused every time the function is called:</p>
+<p><img alt="diagram 3" class="img-responsive center-block" src="/img/posts/Slide3.png"></p>
+<h2 id="using-pyjion">Using Pyjion<a class="headerlink" href="#using-pyjion" title="Permanent link">&para;</a></h2>
+<p>To get started, you need to have .NET 5 installed, with Python 3.9 and the Pyjion package (I also recommend using a virtual environment).</p>
+<p>After importing pyjion, enable it by calling <code>pyjion.enable()</code> which sets a compilation threshold to 0 (the code only needs to be run once to be compiled by the JIT):</p>
+<pre><code>&gt;&gt;&gt; import pyjion
+&gt;&gt;&gt; pyjion.enable()
+</code></pre>
+
+<p>Any Python code you define or import after enabling pyjion will be JIT compiled. You don&rsquo;t need to execute functions in any special API, its completely transparent:</p>
+<pre><code>&gt;&gt;&gt; def half(x):
+...    return x/2
+&gt;&gt;&gt; half(2)
+1.0
+</code></pre>
+
+<p>Pyjion will have compiled the <code>half</code> function into machine code on-the-fly and stored a cached version of that compiled function inside the function object.
+You can see some basic stats by running <code>pyjion.info(f)</code>, where <code>f</code> is the function object:</p>
+<pre><code>&gt;&gt;&gt; pyjion.info(half)
+{'failed': False, 'compiled': True, 'run_count': 1}
+</code></pre>
+
+<p>You can see the machine code for the compiled function by disassembling it in the Python REPL.
+Pyjion has essentially compiled your small Python function into a small, standalone application.
+Install <code>distorm3</code> first to disassemble x86-64 assembly and run <code>pyjion.dis.dis_native(f)</code>:</p>
+<pre><code>&gt;&gt;&gt; import pyjion.dis
+&gt;&gt;&gt; pyjion.dis.dis_native(half)
+00000000: PUSH RBP
+00000001: MOV RBP, RSP
+00000004: PUSH R14
+00000006: PUSH RBX
+00000007: MOV RBX, RSI
+0000000a: MOV R14, [RDI+0x40]
+0000000e: CALL 0x1b34
+00000013: CMP DWORD [RAX+0x30], 0x0
+00000017: JZ 0x31
+00000019: CMP QWORD [RAX+0x40], 0x0
+0000001e: JZ 0x31
+00000020: MOV RDI, RAX
+00000023: MOV RSI, RBX
+00000026: XOR EDX, EDX
+00000028: POP RBX
+00000029: POP R14
+...
+</code></pre>
+
+<p>The complex logic of converting a portable instruction set into low-level machine instructions is done by .NET&rsquo;s CLR JIT compiler.</p>
+<p>All Python code executed after the JIT is enabled will be compiled into native machine code at runtime and cached on disk. For example, to enable the JIT on a simple <code>app.py</code> for a Flask web app:</p>
+<pre><code class="python">import pyjion
+pyjion.enable()
+
+from flask import Flask
+app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+    return 'Hello, World!'
+
+app.run()
+</code></pre>
+
+<p>That&rsquo;s it.</p>
+<h2 id="will-this-be-compatible-with-my-existing-python-code-what-about-c-extensions">Will this be compatible with my existing Python code? What about C Extensions?<a class="headerlink" href="#will-this-be-compatible-with-my-existing-python-code-what-about-c-extensions" title="Permanent link">&para;</a></h2>
+<p>The short answer is- if your existing Python code runs on CPython 3.9 &ndash; <strong>yes</strong> it will be compatible. To make sure, Pyjion has been tested against the full CPython &ldquo;test suite&rdquo; on all platforms. In fact, it was the first JIT ever to pass the test suite.</p>
+<p>Thats because this isn&rsquo;t a Python runtime, it uses the existing Python compiler to compile your code into Python bytecode (low level instructions).</p>
+<p>Pyjion uses the same dynamic module loader as CPython, so if you import a Python extension from your virtual environment, it will work just the same in Pyjion.</p>
+<h2 id="project-history">Project History<a class="headerlink" href="#project-history" title="Permanent link">&para;</a></h2>
+<p>Pyjion isn&rsquo;t new. Brett Cannon and Dino Viehland started the Pyjion project 4 years ago. This was the first JIT to pass the full CPython test suite.
+There were some limitations to the original proof-of-concept:</p>
+<ul>
+<li>Written against an old version of .NET Core</li>
+<li>Required custom patches of .NET and compiling from source</li>
+<li>Required custom patches of CPython and compiling from source</li>
+<li>Only worked on Windows</li>
+<li>It was written for Python 3.6 before PEP 523 was agreed and merged</li>
+</ul>
+<p>Has much changed since Python 3.6? To the average user, not really. But under the hood, the implementation of a few things has completely changed:</p>
+<ul>
+<li>Function calls</li>
+<li>Iterators</li>
+<li>Exception Handling</li>
+<li>Dictionary, list and set comprehensions</li>
+<li>Generators and coroutines</li>
+</ul>
+<p>Actually, a <strong>lot</strong> has changed in the last few releases of CPython. The new fork to get Pyjion working with the latest version of everything was a big undertaking&hellip;</p>
+<p><img alt="not-much-has-changed" class="img-responsive center-block" src="/img/posts-original/not-much-has-changed.png"></p>
+<p>The goal with the latest patch was to get the project up to the condition of:</p>
+<ul>
+<li>Using the release binaries of .NET 5 and CPython 3.9</li>
+<li>Making it work across all platforms</li>
+<li>Implement the PEP523 interface</li>
+<li>Implement all the new features of Python 3.9</li>
+<li>Making the package &ldquo;pip installable&rdquo; from PyPi</li>
+<li>Improving the test coverage</li>
+<li>Adding a disassembler (both machine-code and CIL) to aid development</li>
+</ul>
+<h2 id="is-this-faster">Is this faster?<a class="headerlink" href="#is-this-faster" title="Permanent link">&para;</a></h2>
+<p>The short answer a little, but not by much (yet).</p>
+<p>JIT compiling something doesn&rsquo;t make it faster. Actually, the overhead of compiling functions the first time they are called often makes it slower.</p>
+<p>JIT compilers are faster because of optimizations at runtime. A good JIT compiler will make assertions about the function that its compiling and how it behaves to optimize out code paths, shortcut calls and inline instructions. This can make drastic differences.</p>
+<p>However, Pyjion doesn&rsquo;t do that. Yet. The goal with <a href="https://github.com/microsoft/Pyjion/pull/237">this patch</a> was to build a solid foundation on which optimizations could be written and tested.</p>
+<p>There will now come seperate patches to try writing optimization phases.</p>
+<p>The .NET JIT does have some optimizations for CIL-&gt;machine-code, but it has absolutely no knowledge of Python, types or structure. This needs to be written in Pyjion.</p>
+<p>I think these optimizations will be game-changing in terms of performance gains for Python.</p>
+<p>Here are some basic ideas I&rsquo;ve been thinking about and it would be great to test:</p>
+<ul>
+<li>An optimizer for string parsing and dictionary lookups that would make template compiling in Jinja2 or Django faster</li>
+<li>An optimizer for unrolling small comprehensions or loops that would make general code faster</li>
+<li>An optimizer for integers and floats to use machine-code instructions for binary arithmetic instead of the Python C-API</li>
+<li>An optimizer for Unicode string encoding</li>
+</ul>
+<h2 id="does-this-help-me-use-my-net-libraries-from-python">Does this help me use my .NET libraries from Python?<a class="headerlink" href="#does-this-help-me-use-my-net-libraries-from-python" title="Permanent link">&para;</a></h2>
+<p>Short answer is no.</p>
+<p>Long answer is that CIL has two types of instructions, <strong>primitive</strong> and <strong>object-model</strong>. The CIL specification has an entire standard for object declaration, types, equivalence etc. Pyjion converts Python bytecode into primitive CIL instructions.
+Python bytecode itself is mostly primitive. There are some exceptions, like specialised bytecodes for declaring lists, dictionaries and tuples. But most of the work to convert classes, functions and fields into primitive types happens further up the chain.
+Therefore it would be a huge undertaking to implement object-model interfaces for Python.</p>
+<p>If you want to do this, I recommend checking out Python.NET.</p>
+<h2 id="comparison-with-other-projects">Comparison with other projects<a class="headerlink" href="#comparison-with-other-projects" title="Permanent link">&para;</a></h2>
+<p>Checkout Brett&rsquo;s <a href="https://github.com/tonybaloney/Pyjion#how-do-this-compare-to-">comprehensive answer to this question</a>.</p>
+<h2 id="future-potential">Future potential<a class="headerlink" href="#future-potential" title="Permanent link">&para;</a></h2>
+<p>There are some potential benefits to this project:</p>
+<ol>
+<li>A general purpose JIT could build optimizations in areas that are unloved, especially web applications</li>
+<li>Having a pip-installable JIT that is compatible with all CPython code is a huge benefit to making everyday applications faster</li>
+<li>It doesn&rsquo;t require a bespoke build toolchain to use it</li>
+<li>Packaging compiling frames into a portable executable format like .EXE PE files</li>
+</ol>
+<h2 id="awesome-how-do-i-install-it">Awesome, how do I install it?<a class="headerlink" href="#awesome-how-do-i-install-it" title="Permanent link">&para;</a></h2>
+<p>Checkout <a href="https://github.com/tonybaloney/pyjion">github.com/tonybaloney/pyjion</a>. For now, compile from source. I am also publishing from precompiled wheels <a href="https://pypi.org/project/pyjion/">onto PyPi</a>.</p>
+<p>It is very-much alpha. Don&rsquo;t deploy to production*</p>
+<p><code>*</code> unless its Friday.</p>
+<h2 id="credits">Credits<a class="headerlink" href="#credits" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Thank you to Andy Ayers at Microsoft for helping me figure out the Windows <a href="https://github.com/dotnet/runtime/issues/44397">pointer offset issue</a> and the <a href="https://github.com/dotnet/runtime/issues/42925">helper function API</a>.</li>
+<li>Thank you to Steve Dower at Microsoft for helping me figure out the dynamic library loader.</li>
+<li>Thank you Dino and Brett for doing the heavy lifting to get the original POC together.</li>
+</ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="https://youtube.com/c/AnthonyShaw">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-youtube fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/tonybaloney">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Copyright &copy; Anthony Shaw</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="/js/clean-blog.min.js"></script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Learning Python from Scratch</title>
+
+    <!-- Facebook Meta tags -->
+    <meta property="og:title" content="Learning Python from Scratch">
+    <meta property="og:description" content="If you want to learn Python, where do you start?">
+    <meta property="og:image" content="https://tonybaloney.github.io/img/posts/learningpython.jpg">
+    <meta property="og:url" content="https://tonybaloney.github.io/blog\learning-python.html">
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:title" content="Learning Python from Scratch">
+    <meta name="twitter:description" content="If you want to learn Python, where do you start?">
+    <meta name="twitter:image" content="https://tonybaloney.github.io/img/posts/learningpython.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@anthonypjshaw">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="/css/clean-blog.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js"></script>
+
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/x86asm.min.js"></script>
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/python.min.js"></script>
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    Menu <i class="fa fa-bars"></i>
+                </button>
+
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/#">Home</a>
+                    </li>
+                    <li>
+                        <a href="/#projects">Projects</a>
+                    </li>
+                    <li>
+                        <a href="/#contributions">Contributions</a>
+                    </li>
+                    <li>
+                        <a href="/#courses">Courses</a>
+                    </li>
+                    <li>
+                        <a href="/#podcasts">Podcasts</a>
+                    </li>
+                    <li>
+                        <a href="/#talks">Talks</a>
+                    </li>
+                    <li>
+                        <a href="/#blog">Blog</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/tonybaloney"><i class='fa fa-2x fa-github'></i></a>
+                    </li>
+                    <li>
+                        <a href="https://www.youtube.com/c/AnthonyShaw"><i class='fa fa-2x fa-youtube-play'></i></a>
+                    </li>
+                    <li>
+                        <a href="/rss.xml"><i class='fa fa-2x fa-rss-square'></i></a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('/img/posts/learningpython.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="site-heading">
+                        <h1>Learning Python from Scratch</h1>
+                        <hr class="small">
+                        <span class="subheading">by Anthony Shaw, May 28, 2020</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <p>So, you want to learn Python? That&rsquo;s great news!</p>
+<p>I get asked on a weekly basis for starting points. Where should you start if you want to learn Python? What&rsquo;s the best tutorial, video, website, or library to get going?</p>
+<p>Before I can give you that advice, I need to know one thing</p>
+<h2 id="where-are-you-starting-from">Where are you starting from?<a class="headerlink" href="#where-are-you-starting-from" title="Permanent link">&para;</a></h2>
+<p>To help work out which tutorials are going to work for <em>you</em>. It&rsquo;s important to decide what programming experience you have. A lot of Python tutorials and guides <em>assume</em> that you already know
+how to code. That means you at least know about loops, variables, scope, and functions.</p>
+<p>If you pick a tutorial that is aimed at developers and you&rsquo;re new to programming, you&rsquo;re going to get confused and frustrated <em>really</em> quickly.</p>
+<p>Which of these statements applies to you and we&rsquo;ll continue from there:</p>
+<ol>
+<li><a href="#newbie">I&rsquo;m new to programming</a></li>
+<li><a href="#intermediate">I know another programming language</a></li>
+</ol>
+<h2 id="newbie">New to Programming<a class="headerlink" href="#newbie" title="Permanent link">&para;</a></h2>
+<p>That&rsquo;s great that you want to learn to program. Python is a great language for beginners.</p>
+<p>You&rsquo;re also in great company, there are millions of people learning Python right now. That means there are loads of resources available for you to use to learn.</p>
+<p>Actually, there&rsquo;s almost too much choice. Its a little overwhelming, and if you ask people, they might give you conflicting views.</p>
+<p>My perspective is that you should pick the approach that meets the way you like to learn. This should be fun. Programming is about writing code, so to really learn, you need to build
+things and execute them. You can&rsquo;t learn to ride a bike by reading a book.</p>
+<p>There is a bunch of theory you need to learn as part of your programming journey. The really <strong>great</strong> programming tutorials are the ones that relate concepts in programming to
+things in real life. It makes it so much easier to understand, it they are low on technical jargon.</p>
+<p>Something else about programming that&rsquo;s different to learning many other skills, is that computers are really particular about what you type in. This isn&rsquo;t like cookery where you can be a bit creative.
+If you follow the recipe for baking a cake but mucked up some of the steps, you&rsquo;re still going to get a cake. It might not taste
+great, but it&rsquo;ll still be edible.</p>
+<p><img alt="photo of a child making a cake" class="img-responsive center-block" src="/img/posts/baking-a-cake.jpeg" style="width:40%"></p>
+<p>Computers aren&rsquo;t like that. If you miss a step, or get a step even <em>slightly</em> wrong, they&rsquo;ll throw a big error message at you. This is intimidating for lots of beginners and puts them off continuing
+with learning after making a few mistakes. One of the skills that you need to learn when you program is how to solve errors. Most of the tutorials skip over this part, and when you follow the instructions
+and things don&rsquo;t work like the instructor said, you&rsquo;re on your own.</p>
+<p>For this reason, I suggest asking someone who knows how to code to support you. Websites and forums can be quite unfriendly to beginners, so its good to have someone you can ask to look over your code and tell you
+what you&rsquo;ve done wrong. This isn&rsquo;t something that just beginners do, its something that <em>all</em> programmers do.</p>
+<h3 id="learning-to-program-by-watching-tutorial-videos">Learning to Program by Watching Tutorial Videos<a class="headerlink" href="#learning-to-program-by-watching-tutorial-videos" title="Permanent link">&para;</a></h3>
+<p>If you&rsquo;re happy watching videos, there are thousands of video tutorials on learning Python. Before you invest a lot of time into a course, you want to know a few things:</p>
+<ul>
+<li>Is the instructor good at explaining things to beginners?</li>
+<li>Is the tutorial up to date?</li>
+<li>Is the course easy to follow and at a good pace?</li>
+</ul>
+<p>I&rsquo;ve selected three of the best for you to choose from:</p>
+<ol>
+<li><a href="#python-for-absolute-beginners">&ldquo;Python for Absolute Begineers&rdquo;</a></li>
+<li><a href="#learn-python-course">&ldquo;Learn Python - Full Course for Beginners&rdquo; at freeCodeCamp</a></li>
+<li><a href="#python-for-absolute-beginners">&ldquo;Python Tutorial for Absolute Beginners&rdquo;</a></li>
+</ol>
+<p>These courses are many hours long. Anything that claims to teach you in &ldquo;20 minutes&rdquo; is total nonsense. You need weeks to learn it properly, even if you&rsquo;re some kind of prodigal genius.</p>
+<p>Something else about the resources in this article is that some are paid and some are free. As with all things in life, you <em>get what you pay for</em>. There is a lot of bad, inaccurate, content out there
+for free or for a few dollars. It ends up being a waste of <strong>your time</strong> to save a few $. If you can&rsquo;t afford the cost of the paid courses, <em>some</em> of the free options are great to get started.</p>
+<p>They are 4-7 hours long, but don&rsquo;t think this is a Netflix show that you can binge-watch. <em>Take it slow</em> and stop the video to follow along with the steps on your computer.
+Try playing the video on a tablet and doing the tasks on your computer. Remember that programming is <strong>something you do</strong>. You can&rsquo;t learn by watching someone else doing it!</p>
+<h4 id="python-for-absolute-beginners">Recommendation 1: Python for Absolute Beginners<a class="headerlink" href="#python-for-absolute-beginners" title="Permanent link">&para;</a></h4>
+<p>Python for Absolute Beginners is for people who are totally new to programming. I really like this course because:</p>
+<ul>
+<li>The instructor, Michael Kennedy, is one of the best out there. I&rsquo;ve directed over 5000 people to his courses and the feedback has always been excellent.</li>
+<li>This course is <strong>7 hours</strong> and takes you from the absolute basics.</li>
+<li>It has a lot of visual diagrams and illustrations to explain concepts.</li>
+<li>You get to make things which are fun like games.</li>
+<li>You don&rsquo;t need a formal Computer Science education to use this course.</li>
+</ul>
+<p>This course costs $50 USD, but its worth every cent.
+Remember I said to find someone to help you if you get stuck? As part of the cost of the course, the instructor makes themself available to help you. You can book time online.</p>
+<p><img alt="image of python for absolute beginners course" class="img-responsive center-block" src="/img/posts/python-for-absolute-beginners.png" style="width:40%"></p>
+<p><a class="btn btn-primary" href="https://training.talkpython.fm/courses/explore_beginners/python-for-absolute-beginners">Check it out</a></p>
+<h4 id="learn-python-course">Recommendation 2: Learn Python - Full Course for Beginners (YouTube.com)<a class="headerlink" href="#learn-python-course" title="Permanent link">&para;</a></h4>
+<p>This is a <strong>free</strong>, 4 hour tutorial for beginners that show you how to install Python and write the most basic script all the way up to functioning games.
+freeCodeCamp.org have a whole bunch of <a href="https://www.youtube.com/playlist?list=PLWKjhJtqVAbnqBxcdjVGgT3uVR10bzTEB">free videos on their Python channel</a>.</p>
+<p>Things I like about this course:</p>
+<ul>
+<li>The instructor teaches at a nice pace, its not rushed.</li>
+<li>They start with some really simple examples and work up to more complex ones.</li>
+<li>Its easy to follow.</li>
+</ul>
+<p>Note: The instructor is using a mac, but if you&rsquo;re on Windows, follow <a href="https://realpython.com/installing-python/#step-1-download-the-python-3-installer">these steps</a> for installing on Windows.</p>
+<p><img alt="freecodecamp" class="img-responsive center-block" src="/img/posts/freecodecamp.png" style="width:40%"></p>
+<p><a class="btn btn-primary" href="https://www.youtube.com/watch?v=rfscVS0vtbw">Check it out</a></p>
+<h4 id="python-for-absolute-beginners">Recommendation 3: Python Tutorial for Absolute Beginners (YouTube.com)<a class="headerlink" href="#python-for-absolute-beginners" title="Permanent link">&para;</a></h4>
+<p>Similar to Recommendation 2, this is a <strong>free</strong> tutorial course on YouTube for total beginners. Things I like about this course:</p>
+<ul>
+<li>The instructor gives you challenges to solve.</li>
+<li>It includes an overview of Jupyter, a popular tool for data science (and where 50% of the Python jobs are!).</li>
+<li>Its well paced and comes with illustrations to explain harder concepts.</li>
+</ul>
+<p><img alt="python-for-beginners-youtube" class="img-responsive center-block" src="/img/posts/python-for-beginners-youtube.png" style="width:40%"></p>
+<p><a class="btn btn-primary" href="https://www.youtube.com/playlist?list=PLBZBJbE_rGRWeh5mIBhD-hhDwSEDxogDg">Check it out</a></p>
+<h3 id="learning-to-program-by-reading">Learning to Program by Reading<a class="headerlink" href="#learning-to-program-by-reading" title="Permanent link">&para;</a></h3>
+<p>If you&rsquo;re still at college or university, or you&rsquo;re used to studying from text books, there are lots of great books and online content for learning to program. Two big benefits of books over videos is that you can
+go at your own pace, you can read a page twice, put a bookmark in, come back. The second benefit is that books are very dense in information. Something that would take an instructor a while to explain
+on video could be explained in a few pages in a book.</p>
+<h4 id="recommendation-4-python-crash-course-2nd-edition">Recommendation 4: Python Crash Course (2nd Edition)<a class="headerlink" href="#recommendation-4-python-crash-course-2nd-edition" title="Permanent link">&para;</a></h4>
+<p>Python Crash Course is the world best-selling book on learning to program with Python. This book is designed for people who don&rsquo;t have any programming experience. I like this book because:</p>
+<ul>
+<li>The language is clear and simple. It&rsquo;s not <em>too</em> academic.</li>
+<li>The pace of the book is quite fast, it covers a lot of topics in a dense book. But its not rushed.</li>
+<li>The covers practical things to make and contains lots of resources to develop your knowledge further.</li>
+</ul>
+<p>The book is about $30-40. If you don&rsquo;t have an eReader, I recommend getting a physical copy. Programming books are reference material. You want something that you can have next to your laptop, open on the right
+page.</p>
+<p><img alt="photo of the python crash course book" class="img-responsive center-block" src="/img/posts/pcc2e_cover-front_final.webp" style="width:20%"></p>
+<p><a class="btn btn-primary" href="https://nostarch.com/pythoncrashcourse2e">Check it out</a></p>
+<h3 id="making-stuff-with-python">Making Stuff with Python<a class="headerlink" href="#making-stuff-with-python" title="Permanent link">&para;</a></h3>
+<p>So far you&rsquo;ve got some recommendations on places to learn how to program, but not what you can do with it.
+Sure, you could start writing some tax-accounting software, but that might not be that much fun!</p>
+<p>One of the great things about Python is that it works well on little devices. You can buy a small device for $30 that runs Python, and use it to program things around you.</p>
+<p>There are two popular options for this- raspberry pi and adafruit circuitpython:</p>
+<ul>
+<li><a href="https://www.raspberrypi.org/documentation/usage/python/">Recommendation 5: Python on the raspberry pi</a></li>
+<li><a href="https://learn.adafruit.com/welcome-to-circuitpython/what-is-circuitpython">Recommendation 6: Python on circuitpython</a></li>
+</ul>
+<p><img alt="photo of the a pyportal device" class="img-responsive center-block" src="/img/posts/pyportal.jpeg" style="width:40%"></p>
+<p>Using either of these you can write small, simple Python scripts to control circuits, motors, 3D printers, lights, robots or even LEGO.</p>
+<h3 id="what-next">What next?<a class="headerlink" href="#what-next" title="Permanent link">&para;</a></h3>
+<p>Make sure you checkout <a href="http://realpython.com/">realpython.com</a> as its brimming with free, detailed tutorials on any Python topic.</p>
+<p>There are tutorials on data science, engineering, games, web applications, and more.</p>
+<h2 id="intermediate">I Know Another Programming Langauge<a class="headerlink" href="#intermediate" title="Permanent link">&para;</a></h2>
+<p>If you already know another programming language, it doesn&rsquo;t matter if its similar to Python or not.
+The thing that matters is you understand basic principles of programming. With this knowledge, you can fast-track learning a
+new language by focusing on a few things:</p>
+<ul>
+<li>The syntax and language</li>
+<li>The application and compilation process</li>
+<li>Packaging, modules and imports</li>
+<li>APIs, library and extensions</li>
+</ul>
+<p>My recommendations are a combination of video tutorial, written tutorials, and interactive samples.
+As with the beginner recommendations, you get what you pay for, so I do recommend investing in your skills and picking the right option, not the cheapest (if you can afford to).</p>
+<h3 id="recommendation-7-learnpythonorg">Recommendation 7: LearnPython.org<a class="headerlink" href="#recommendation-7-learnpythonorg" title="Permanent link">&para;</a></h3>
+<p>The course at <a href="https://www.learnpython.org/">learnpython.org</a> is <strong>free</strong> and ideal for those who already know how to code in another language.</p>
+<p>I really like this course because:</p>
+<ul>
+<li>You can code in the browser.</li>
+<li>It jumps straight into syntax and examples.</li>
+<li>It links to data science tutorials.</li>
+<li>It has exercises that it tests you on within the website.</li>
+</ul>
+<p><img alt="pluralsight-screenshot" class="img-responsive center-block" src="/img/posts/learnpython-screenshot.png" style="width:40%"></p>
+<p><a class="btn btn-primary" href="https://www.learnpython.org/">Check it out</a></p>
+<h3 id="recommendation-8-codecademy-learn-python-3">Recommendation 8: Codecademy Learn Python 3<a class="headerlink" href="#recommendation-8-codecademy-learn-python-3" title="Permanent link">&para;</a></h3>
+<p>At codecademy, the tutorials, exercises and editor is all a single interface. This makes it really easy to read the tutorial, write the code and test it.
+There is a great course on Python that takes you from basic function calls, to variables, loops, classes and more complex language structures.</p>
+<p>I like this course because:</p>
+<ul>
+<li>The interface is great, you can follow along with the samples</li>
+<li>It goes beyond basic &ldquo;hello world&rdquo; and gets into more advanced language features</li>
+</ul>
+<p>Interactive Python examples are free and a pro subscription is $20/month.</p>
+<p><img alt="codeacademy screenshot" class="img-responsive center-block" src="/img/posts/codeacademy-screenshot.png" style="width:40%"></p>
+<p><a class="btn btn-primary" href="https://www.codecademy.com/learn/learn-python-3">Check it out</a></p>
+<h3 id="recommendation-9-the-python-path-on-pluralsight">Recommendation 9: The Python path on Pluralsight<a class="headerlink" href="#recommendation-9-the-python-path-on-pluralsight" title="Permanent link">&para;</a></h3>
+<p>I&rsquo;m not going to recommend a specific course on Pluralsight, since your subscription gives you unlimited access to the whole catalog.</p>
+<p>There is instead a learning path on Python comprising of over 21 hours of course content. I strongly recommend this path (and yes, I&rsquo;ve finished the whole thing!) but stagger it over a few months.<br>
+ I really like this learning path because:</p>
+<ul>
+<li>It has a built in knowledge checker, called Pluralsight IQ.</li>
+<li>The instructors are worldwide experts.</li>
+<li>It contains &ldquo;interactive courses&rdquo; where you can code into your web browser.</li>
+<li>It takes you from the basics to advanced topics.</li>
+<li>It has a mobile app, with offline access, perfect for commuting.</li>
+</ul>
+<p>A Pluralsight subscription costs $29/month, but like I said it covers the whole catalog (about 6000 courses). They also often have a promotion- so keep an eye out.</p>
+<p><img alt="pluralsight-screenshot" class="img-responsive center-block" src="/img/posts/pluralsight-screenshot.png" style="width:40%"></p>
+<p><a class="btn btn-primary" href="https://app.pluralsight.com/paths/skill/python">Check it out</a></p>
+<h3 id="recommendation-10-the-python-basics-tutorials-on-realpythoncom">Recommendation 10: The Python Basics tutorials on RealPython.com<a class="headerlink" href="#recommendation-10-the-python-basics-tutorials-on-realpythoncom" title="Permanent link">&para;</a></h3>
+<p>My final recommendation is the &ldquo;Python Basics&rdquo; tutorials at RealPython.com. This is the recommendation for anyone who wants to cherry-pick topics and concepts that they need to learn.
+If you can figure out the language pretty-quickly and need to get up to speed on web-development in Python, then <a href="realpython.com">realpython</a> has you covered.</p>
+<p>I like realpython&rsquo;s articles because:</p>
+<ul>
+<li>The writers are Python experts.</li>
+<li>They are written in clear, easy to follow language.</li>
+<li>They are constantly reviewed and updated.</li>
+</ul>
+<p><img alt="cartoon of person looking surprised" class="img-responsive center-block" src="/img/posts/Newbie_Watermarked.webp" style="width:40%"></p>
+<p><a class="btn btn-primary" href="https://realpython.com/tutorials/basics/">Check it out</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="https://youtube.com/c/AnthonyShaw">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-youtube fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/tonybaloney">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Copyright &copy; Anthony Shaw</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="/js/clean-blog.min.js"></script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>

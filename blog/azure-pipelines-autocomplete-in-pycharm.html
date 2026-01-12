@@ -9,17 +9,17 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>{{blog_heading[0]}}</title>
+    <title>Azure Pipelines autocomplete in PyCharm, IntelliJ, WebStorm, CLion, and Rider</title>
 
     <!-- Facebook Meta tags -->
-    <meta property="og:title" content="{{blog_heading[0]}}">
-    <meta property="og:description" content="{{blog_subheading[0]}}">
-    <meta property="og:image" content="{{baseurl}}img/{{card_image}}">
-    <meta property="og:url" content="{{baseurl}}{{url}}">
+    <meta property="og:title" content="Azure Pipelines autocomplete in PyCharm, IntelliJ, WebStorm, CLion, and Rider">
+    <meta property="og:description" content="Learn how to get autocomplete for your Azure Pipelines workflows">
+    <meta property="og:image" content="https://tonybaloney.github.io/img/clouds.jpg">
+    <meta property="og:url" content="https://tonybaloney.github.io/blog\azure-pipelines-autocomplete-in-pycharm.html">
     <!-- Twitter Meta Tags -->
-    <meta name="twitter:title" content="{{blog_heading[0]}}">
-    <meta name="twitter:description" content="{{blog_subheading[0]}}">
-    <meta name="twitter:image" content="{{baseurl}}img/{{card_image}}">
+    <meta name="twitter:title" content="Azure Pipelines autocomplete in PyCharm, IntelliJ, WebStorm, CLion, and Rider">
+    <meta name="twitter:description" content="Learn how to get autocomplete for your Azure Pipelines workflows">
+    <meta name="twitter:image" content="https://tonybaloney.github.io/img/clouds.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@anthonypjshaw">
 
@@ -98,14 +98,14 @@
 
     <!-- Page Header -->
     <!-- Set your background image for this header on the line below. -->
-    <header class="intro-header" style="background-image: url('/img/{{blog_header_image[0]}}')">
+    <header class="intro-header" style="background-image: url('/img/clouds.jpg')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="site-heading">
-                        <h1>{{blog_heading[0]}}</h1>
+                        <h1>Azure Pipelines autocomplete in PyCharm, IntelliJ, WebStorm, CLion, and Rider</h1>
                         <hr class="small">
-                        <span class="subheading">by {{blog_author[0]}}, {{blog_publish_date[0]}}</span>
+                        <span class="subheading">by Anthony Shaw, June 11, 2020</span>
                     </div>
                 </div>
             </div>
@@ -116,7 +116,37 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                {{content}}
+                <p>Azure Pipelines YAML files support a complex array of structures and nesting.</p>
+<p>Guessing the options and reading through the documentation is time-consuming, and even worse is having to wait for CI to finish only to realise you made a mistake in the YAML file.</p>
+<p>PyCharm, IntelliJ, WebStorm, CLion and Rider all support custom JSON schemas. These custom schemas can be setup to have auto-complete, syntax highlighting and validation of your Azure
+Pipelines workflows.</p>
+<h2 id="downloading-your-schema">Downloading your Schema<a class="headerlink" href="#downloading-your-schema" title="Permanent link">&para;</a></h2>
+<p>You can use a generic schema, like <a href="https://github.com/microsoft/azure-pipelines-vscode/raw/master/service-schema.json">this one</a>. However, the auto-complete will be more useful if you download your
+organization custom schema.</p>
+<p>This is available from the API:</p>
+<p><code>https://dev.azure.com/&lt;YOUR ORG NAME&gt;/_apis/distributedtask/yamlschema</code></p>
+<p>Visit this URL and you&rsquo;ll see a massive JSON document. Download this file and place inside your Documents folder, or any accesible directory.</p>
+<p><img alt="yaml-schema" class="img-responsive center-block" src="/img/posts/yaml-schema.png" style="width:50%"></p>
+<h2 id="telling-your-ide-to-use-the-schema">Telling your IDE to use the schema<a class="headerlink" href="#telling-your-ide-to-use-the-schema" title="Permanent link">&para;</a></h2>
+<p>Inside PyCharm, IntelliJ, etc. open up your Azure Pipelines YAML file. At the bottom toolbar you&rsquo;ll see a notification <strong>&lsquo;No JSON Schema&rsquo;</strong>.
+Click on this notification and at the top of the popup, click <strong>&ldquo;New Schema Mapping&rdquo;</strong>.</p>
+<p><img alt="no-schema" class="img-responsive center-block" src="/img/posts/no-schema.png" style="width:50%"></p>
+<p>This opens a dialog to configure custom schema mappings.</p>
+<ul>
+<li>Set the name as <code>azure-pipelines</code></li>
+<li>Set the file as the schema file you downloaded in the last step</li>
+<li>Change the Schema Version to <code>JSON Schema version 7</code></li>
+</ul>
+<p>Add 2 File Path Patterns:</p>
+<ol>
+<li><code>.azure-pipelines.yml</code></li>
+<li><code>.azure-pipelines/*.yml</code></li>
+</ol>
+<p><img alt="schema-window" class="img-responsive center-block" src="/img/posts/schema-window.png" style="width:50%"></p>
+<p>When you&rsquo;re all done, click OK and your IDE should automatically detect any files and apply the schema.</p>
+<p>You&rsquo;ll know its working correctly when the typeahead works and the bar that said &ldquo;No JSON Schema&rdquo; now says &ldquo;azure-pipelines&rdquo;.</p>
+<p><img alt="autocomplete-working" class="img-responsive center-block" src="/img/posts/azure-pipelines.gif" style="width:50%"></p>
+<p>In future, if you install any new actions from the Azure DevOps marketplace, you&rsquo;ll need to download and update the schema to get the new typeahead.</p>
             </div>
         </div>
     </div>

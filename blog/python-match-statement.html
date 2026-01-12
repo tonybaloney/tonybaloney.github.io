@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Using the Python match statement</title>
+
+    <!-- Facebook Meta tags -->
+    <meta property="og:title" content="Using the Python match statement">
+    <meta property="og:description" content="What is the match statement in Python and why should you use it">
+    <meta property="og:image" content="https://tonybaloney.github.io/img/posts/frogs.jpg">
+    <meta property="og:url" content="https://tonybaloney.github.io/blog\python-match-statement.html">
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:title" content="Using the Python match statement">
+    <meta name="twitter:description" content="What is the match statement in Python and why should you use it">
+    <meta name="twitter:image" content="https://tonybaloney.github.io/img/posts/frogs.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@anthonypjshaw">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="/css/clean-blog.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js"></script>
+
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/x86asm.min.js"></script>
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/python.min.js"></script>
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    Menu <i class="fa fa-bars"></i>
+                </button>
+
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/#">Home</a>
+                    </li>
+                    <li>
+                        <a href="/#projects">Projects</a>
+                    </li>
+                    <li>
+                        <a href="/#contributions">Contributions</a>
+                    </li>
+                    <li>
+                        <a href="/#courses">Courses</a>
+                    </li>
+                    <li>
+                        <a href="/#podcasts">Podcasts</a>
+                    </li>
+                    <li>
+                        <a href="/#talks">Talks</a>
+                    </li>
+                    <li>
+                        <a href="/#blog">Blog</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/tonybaloney"><i class='fa fa-2x fa-github'></i></a>
+                    </li>
+                    <li>
+                        <a href="https://www.youtube.com/c/AnthonyShaw"><i class='fa fa-2x fa-youtube-play'></i></a>
+                    </li>
+                    <li>
+                        <a href="/rss.xml"><i class='fa fa-2x fa-rss-square'></i></a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('/img/posts/frogs.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="site-heading">
+                        <h1>Using the Python match statement</h1>
+                        <hr class="small">
+                        <span class="subheading">by Anthony Shaw, May 17, 2022</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 id="match-is-not-a-switch-statement">Match is not a <code>switch</code> statement!<a class="headerlink" href="#match-is-not-a-switch-statement" title="Permanent link">&para;</a></h2>
+<p>Let&rsquo;s get this out the way. The <code>match</code> statement <strong>is not</strong> a <code>switch</code> statement like you may be familiar with in C, C++, C# and many other languages.
+You can use it as a switch statement, but there is little to be gained versus a series of <code>if..elif</code> statements.</p>
+<p>The Python match statement is a pattern matching statement with a syntax of sub-expressions for:</p>
+<ul>
+<li>Matching the shape of a sequence</li>
+<li>Matching items in a sequence</li>
+<li>Matching keys and values in a dictionary</li>
+<li>Matching literal values</li>
+</ul>
+<p>You can combine one or many of these into a single statement to filter data based on the input. This is called &ldquo;structural pattern matching&rdquo; and it&rsquo;s a feature of many functional programming languages.</p>
+<h2 id="sequence-pattern-matching">Sequence pattern matching<a class="headerlink" href="#sequence-pattern-matching" title="Permanent link">&para;</a></h2>
+<p>The match statement has a special syntax for matching sequences. The syntax uses <code>[]</code> square brackets, but it will match against <strong>any</strong> <code>Sequence</code> type (tuple, list, bytearray).</p>
+<p>Starting with something simple. This function will return true if the input is a sequence that starts with a string literal of a unicode frog.</p>
+<pre><code class="python">from typing import Sequence
+
+def starts_with_frog(seq: Sequence[str]) -&gt; bool:
+    &quot;&quot;&quot; Test matching the first element of a sequence is a frog. &quot;&quot;&quot;
+    match seq:
+        case [&quot;🐸&quot;, *_]: return True
+        case _: return False
+
+print(starts_with_frog([&quot;🐸&quot;, &quot;🐛&quot;, &quot;🦋&quot;, &quot;🪲&quot;]))  # True
+print(starts_with_frog([&quot;🐛&quot;, &quot;🦋&quot;, &quot;🪲&quot;])) # False
+
+# Also works for tuples without modification
+print(starts_with_frog((&quot;🐸&quot;, &quot;🐛&quot;, &quot;🦋&quot;, &quot;🪲&quot;)))  # True
+
+# You can throw all sorts of junk at the function without it crashing
+print(starts_with_frog(None)) # False
+print(starts_with_frog(&quot;ribbit&quot;)) # False
+print(starts_with_frog(&quot;🐸&quot;)) # False
+</code></pre>
+
+<p>The equivalent Python code would be expressed as:</p>
+<pre><code class="python">def starts_with_frog(seq: Sequence[str]) -&gt; bool:
+    if isinstance(seq, Sequence) and len(seq) &gt; 0 and seq[0] == &quot;🐸&quot;: 
+        return True
+    return False
+</code></pre>
+
+<p>So what is to be gained by using the match statement? Well, the match statement version is 86% faster! This is because the expression for sequence matching compiles into instructions that are far more efficient than a chained if-statement.</p>
+<p>With the match statement, cases are evaluated in order. Use this to set specific cases at the top and then get more generic as you go down. For sequence matching, you can use the wildcard <code>*_</code> expression to match <code>n</code> items.</p>
+<p>You can use the <code>[]</code> expression to match an empty sequence and then afterward use <code>[*_]</code> to match any other sequence:</p>
+<pre><code class="python">from typing import Sequence
+
+def describe(seq: Sequence[str]) -&gt; str:
+    match seq:
+        case [&quot;🐸&quot;, *_, &quot;🦋&quot;, &quot;🌼&quot;]: return &quot;Starts with frog and ends with a flower, with a butterfly in between&quot;
+        case [&quot;🐸&quot;, *_, &quot;🦋&quot;]: return &quot;Starts with frog and ends with a butterfly&quot;
+        case [*_, &quot;🦋&quot;]: return &quot;Ends with a butterfly&quot;
+        case [&quot;🐸&quot;, *_, &quot;🌼&quot;]: return &quot;Starts with frog&quot;
+        case [&quot;🐸&quot;, *_]: return &quot;Starts with frog&quot;
+        case []: return &quot;An empty sequence&quot;
+        case [*_]: return &quot;A sequence of things&quot;
+        case _: return &quot;Not a sequence&quot;
+
+print(describe([&quot;🐸&quot;, &quot;🐸&quot;, &quot;🐸&quot;])) # Starts with frog
+print(describe([&quot;🐸&quot;, &quot;🦋&quot;])) # Starts with frog and ends with a butterfly
+print(describe([&quot;🐸&quot;, &quot;🦋&quot;, &quot;🌼&quot;])) # Starts with frog and ends with a flower, with a butterfly in between
+print(describe(None)) # Not a sequence
+</code></pre>
+
+<p>The <code>*_</code> wildcard uses the throwaway variable name <code>_</code>. You can replace this with a name to use that variable within the case block:</p>
+<pre><code class="python">from typing import Sequence
+
+def describe(seq: Sequence[str]) -&gt; str:
+    match seq:
+        case [&quot;🐸&quot;, *others]: return f&quot;Starts with frog and ends with {others}&quot;
+        case _: return &quot;Not sure&quot;
+
+print(describe([&quot;🐸&quot;, &quot;🐸&quot;, &quot;🐸&quot;])) # Starts with frog and ends with ['🐸', '🐸']
+</code></pre>
+
+<p>You can use &ldquo;sub-patterns&rdquo; in sequence matching to match different cases within any of the items. Use parenthesis to mark a group and the <code>|</code> pipe operator to indicate and &ldquo;or&rdquo; clause:</p>
+<pre><code class="python">from typing import Sequence
+
+def describe(seq: Sequence[str]) -&gt; str:
+    match seq:
+        case [&quot;🐸&quot;, (&quot;🌹&quot; | &quot;🌸&quot; | &quot;🌺&quot; | &quot;🌻&quot; | &quot;🌼&quot;)]: return f&quot;A frog and a flower&quot;
+        case _: return &quot;Not sure&quot;
+</code></pre>
+
+<h2 id="literal-matching">Literal matching<a class="headerlink" href="#literal-matching" title="Permanent link">&para;</a></h2>
+<p>Case statements can include any literal, like a string literal, a number, a boolean, <code>None</code>.</p>
+<p>Update the example to match against a single string literal with the frog:</p>
+<pre><code class="python">from typing import Any
+
+def describe(seq: Any) -&gt; str:
+    match seq:
+        case [&quot;🐸&quot;, *others]: return f&quot;Starts with frog and ends with {others}&quot;
+        case &quot;🐸&quot;: return &quot;A frog&quot;
+        case _: return &quot;No idea&quot;
+
+print(describe([&quot;🐸&quot;, &quot;🐸&quot;, &quot;🐸&quot;])) # Starts with frog and ends with ['🐸', '🐸']
+print(describe(&quot;🐸&quot;)) # A frog
+</code></pre>
+
+<p>Literal matching is the closest to a <code>switch</code> statement, but as we covered at the beginning, you can combine it with any of the other pattern matching expressions.</p>
+<p>Literal matching can also include the <code>|</code> pipe operator or indicate <code>or</code> expressions</p>
+<pre><code class="python">def describe(seq) -&gt; str:
+    match seq:
+        case [&quot;🐸&quot;, *others]: return f&quot;A frog and {others}&quot;
+        case &quot;🐸&quot; | &quot;🤴&quot;: return &quot;A frog or a prince?&quot;
+        case &quot;👸&quot;: return &quot;A princess&quot;
+        case &quot;😘&quot;: return &quot;A kiss&quot;
+        case _: return &quot;Not sure&quot;
+
+print(describe(&quot;🐸&quot;)) # A frog or a prince?
+print(describe(&quot;🤴&quot;)) # A frog or a prince?
+print(describe(&quot;😘&quot;)) # A kiss
+print(describe(None)) # Not sure
+</code></pre>
+
+<p>To complete this function, lets replace the sequence case with a recursive call to describe each of the elements in the sequence:</p>
+<pre><code class="python">def describe(seq) -&gt; str:
+    match seq:
+        case [*others]: return &quot;, &quot;.join(describe(other) for other in others)
+        case &quot;🐸&quot; | &quot;🤴&quot;: return &quot;A frog or a prince?&quot;
+        case &quot;👸&quot;: return &quot;A princess&quot;
+        case &quot;😘&quot;: return &quot;A kiss&quot;
+        case _: return &quot;Not sure&quot;
+
+print(describe(&quot;🐸&quot;)) # A frog or a prince?
+print(describe([&quot;🐸&quot;, &quot;👸&quot;, &quot;😘&quot;, &quot;🤴&quot;])) # A frog or a prince?, A princess, A kiss, A frog or a prince?
+</code></pre>
+
+<h2 id="matching-mappings">Matching mappings<a class="headerlink" href="#matching-mappings" title="Permanent link">&para;</a></h2>
+<p>The match statement has a syntax for matching keys and values in mapping types (dictionaries and subclasses of dictionaries).</p>
+<p>Say you have an API that takes semi-structured JSON data as the input:</p>
+<pre><code class="json">{
+    &quot;name&quot;: &quot;Charles Leclerc&quot;,
+    &quot;team&quot;: &quot;Ferrari&quot;,
+    &quot;height&quot;: 179
+}
+</code></pre>
+
+<p>The JSON data is then deserialized using <code>json.load()</code>, but you need to cater for a few scenarios:</p>
+<ul>
+<li>The user did not include the <code>team</code> field, so we need to look this up</li>
+<li>The user did not include the <code>height</code> field, so we need to look this up</li>
+<li>The user did not submit the required fields</li>
+</ul>
+<p>You can express mapping matches by using the <code>{}</code> curly braces and then one or many keys you want to match using literals. You can then use named expressions, or the <code>_</code> throwaway name to capture that data for the case block:</p>
+<pre><code class="python">def add_driver(driver):
+    match driver:
+        case {&quot;name&quot;: name, &quot;team&quot;: team, &quot;height&quot;: height}: insert_driver_record(name, team, height)
+        case {&quot;name&quot;: name, &quot;height&quot;: height}: insert_driver_record(name, lookup_team(name), height)
+        case {&quot;name&quot;: name}: insert_driver_record(name, lookup_team(name), lookup_height(height))
+        case _: raise ValueError(&quot;Invalid request. Missing required fields&quot;)
+</code></pre>
+
+<p>Importantly, the mapping matching will check for the existence of the keys regardless of what other data is in the dictionary.</p>
+<p>If you want to capture the other keys and values, you can use the <code>**</code> expression with a named variable:</p>
+<pre><code class="python">def add_driver(driver):
+    match driver:
+        case {&quot;name&quot;: name, &quot;team&quot;: team, &quot;height&quot;: height, **extra}: insert_driver_record(name, team, height, extra)
+</code></pre>
+
+<h2 id="matching-objects">Matching objects<a class="headerlink" href="#matching-objects" title="Permanent link">&para;</a></h2>
+<p>Finally, and perhaps the most powerful feature of the match statement is object matching.</p>
+<p>Take this basic class structure based on the API we just described with the attributes <code>name</code>, <code>team</code> and <code>extra</code>:</p>
+<pre><code class="python">class Driver:
+    def __init__(self, name, team, **extra):
+        self.name = name
+        self.team = team
+        self.extra = extra
+</code></pre>
+
+<p>You can use object pattern matching to match cases of the attributes of those classes:</p>
+<pre><code class="python">def describe_driver(driver):
+    match driver:
+        case Driver(name=&quot;Max Verstappen&quot;): return f&quot;Max Verstappen, the current world #1&quot;
+        case Driver(name=name, team=&quot;Ferrari&quot;): return f&quot;{name}, a Ferrari driver!! 🐎&quot;
+        case Driver(name=name, team=team): return f&quot;{name}, a {team} driver.&quot;
+        case _: raise ValueError(&quot;Invalid request&quot;)
+
+drivers = [
+    Driver(name=&quot;Max Verstappen&quot;, team=&quot;Red Bull&quot;, ),
+    Driver(name=&quot;Sergio Perez&quot;, team=&quot;Red Bull&quot;, ),
+    Driver(name=&quot;Charles Leclerc&quot;, team=&quot;Ferrari&quot;, ),
+    Driver(name=&quot;Lewis Hamilton&quot;, team=&quot;Mercedes&quot;, ),
+]
+
+for driver in drivers:
+    print(describe_driver(driver))
+
+&quot;&quot;&quot;
+Result:
+Max Verstappen, the current world #1
+Sergio Perez, a Red Bull driver.
+Charles Leclerc, a Ferrari driver!! 🐎
+Lewis Hamilton, a Mercedes driver.
+&quot;&quot;&quot;
+</code></pre>
+
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
+<p>I hope this has been insightful and you can see where you can replace messy, nested if-statements with fast and clean <code>match</code> statements.</p>
+<p>Please Share this article.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="https://youtube.com/c/AnthonyShaw">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-youtube fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/tonybaloney">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Copyright &copy; Anthony Shaw</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="/js/clean-blog.min.js"></script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>
