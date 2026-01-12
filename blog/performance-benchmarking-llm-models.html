@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Performance Benchmarking LLM Models</title>
+
+    <script>
+    (function() {
+        // Set initial theme as early as possible to avoid flash. Use stored preference if present,
+        // otherwise default to the user's system preference (prefers-color-scheme).
+        var stored = null;
+        try { stored = localStorage.getItem('theme'); } catch (e) { stored = null; }
+        var theme;
+        if (stored === 'light' || stored === 'dark') {
+            theme = stored;
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            theme = 'dark';
+        } else {
+            theme = 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+    </script>
+
+    <!-- Facebook Meta tags -->
+    <meta property="og:title" content="Performance Benchmarking LLM Models">
+    <meta property="og:description" content="Using the LLM CLI to compare latency and throughput of multiple LLMs">
+    <meta property="og:image" content="https://tonybaloney.github.io/img/posts/llama-race.jpg">
+    <meta property="og:url" content="https://tonybaloney.github.io/blog\performance-benchmarking-llm-models.html">
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:title" content="Performance Benchmarking LLM Models">
+    <meta name="twitter:description" content="Using the LLM CLI to compare latency and throughput of multiple LLMs">
+    <meta name="twitter:image" content="https://tonybaloney.github.io/img/posts/llama-race.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@anthonypjshaw">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="/css/clean-blog.min.css" rel="stylesheet">
+
+    <style>
+    /* Simple CSS variable-based theme with a dark variant. Adjusts background, text, nav, footer and code blocks. */
+    :root {
+        --bg: #ffffff;
+        --text: #222222;
+        --muted: #777777;
+        --link: #337ab7;
+        --navbar-bg: rgba(255,255,255,0.95);
+        --navbar-text: #222222;
+        --code-bg: #f6f8fa;
+        --pre-color: #2e2e2e;
+    }
+    [data-theme='dark'] {
+        --bg: #0b0f17;
+        --text: #e6edf3;
+        --muted: #9aa0a6;
+        --link: #8fc7ff;
+        --navbar-bg: rgba(10,10,10,0.95);
+        --navbar-text: #e6edf3;
+        --code-bg: #282c34;
+        --pre-color: #abb2bf;
+    }
+
+    html, body {
+        background-color: var(--bg) !important;
+        color: var(--text) !important;
+    }
+
+    a, a:link, a:visited { color: var(--link) !important; }
+
+    /* Navbar */
+    .navbar-default { background-color: var(--navbar-bg) !important; border-color: transparent !important; }
+    .navbar-default .navbar-nav>li>a { color: var(--navbar-text) !important; }
+
+    /* Header: site heading text should always be light to ensure contrast over background images */
+    .intro-header .site-heading h1,
+    .intro-header .site-heading .subheading {
+        color: #ffffff !important;
+        /* subtle shadow to help legibility on light/detailed background images */
+        text-shadow: 0 1px 3px rgba(0,0,0,0.6) !important;
+    }
+
+    /* Footer */
+    footer { color: var(--muted) !important; }
+
+    /* Code / highlight.js */
+    pre, code, .hljs { background: var(--code-bg) !important; color: var(--pre-color) !important; }
+    .hljs { padding: 1em; display:block; overflow-x:auto; }
+
+    /* Toggle button sizing */
+    #theme-toggle { display:inline-flex; align-items:center; justify-content:center; padding:6px; }
+    #theme-toggle i { font-size:1.6em; }
+
+    /* A few token overrides for dark mode highlighting (when highlight.js default theme is used) */
+    [data-theme='dark'] .hljs { background: #282c34 !important; color: #abb2bf !important; }
+    [data-theme='dark'] .hljs-keyword, [data-theme='dark'] .hljs-selector-tag, [data-theme='dark'] .hljs-literal { color: #c678dd; }
+    [data-theme='dark'] .hljs-string, [data-theme='dark'] .hljs-title, [data-theme='dark'] .hljs-name { color: #98c379; }
+    [data-theme='dark'] .hljs-comment, [data-theme='dark'] .hljs-quote { color: #5c6370; font-style: italic; }
+
+    /* Footer icons: make sure stacked icons render white on dark theme */
+    [data-theme='dark'] footer .fa-stack .fa-inverse { color: #ffffff !important; }
+    [data-theme='dark'] footer .fa-stack .fa-circle { color: rgba(255,255,255,0.08) !important; }
+
+    /* Related posts card styling */
+    .related-posts { margin-top: 2rem; }
+    .related-posts .related-box { border: 1px solid rgba(0,0,0,0.06); padding: 12px; border-radius: 6px; background: var(--bg); color: var(--text); }
+    [data-theme='dark'] .related-posts .related-box { border-color: rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); }
+    .related-posts .related-box img { width:100%; height:200px; border-radius:4px;  }
+    .related-posts .related-box .title { font-weight:700; margin-top:8px; }
+    .related-posts .related-box .subheading { color: var(--muted); font-size:0.95em; }
+    .related-posts .related-box .post-meta { font-size:0.9em; margin-top:6px; }
+
+    [data-theme='dark'] blockquote { color: #EEE; }
+    blockquote { color: #444; }
+    </style>
+
+    <!-- Custom Fonts -->
+    <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js"></script>
+
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/x86asm.min.js"></script>
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/python.min.js"></script>
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    Menu <i class="fa fa-bars"></i>
+                </button>
+
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/#">Home</a>
+                    </li>
+                    <li>
+                        <a href="/#projects">Projects</a>
+                    </li>
+                    <li>
+                        <a href="/#contributions">Contributions</a>
+                    </li>
+                    <li>
+                        <a href="/#courses">Courses</a>
+                    </li>
+                    <li>
+                        <a href="/#podcasts">Podcasts</a>
+                    </li>
+                    <li>
+                        <a href="/#talks">Talks</a>
+                    </li>
+                    <li>
+                        <a href="/#blog">Blog</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/tonybaloney"><i class='fa fa-2x fa-github'></i></a>
+                    </li>
+                    <li>
+                        <a href="https://www.youtube.com/c/AnthonyShaw"><i class='fa fa-2x fa-youtube-play'></i></a>
+                    </li>
+                    <li>
+                        <a href="/rss.xml"><i class='fa fa-2x fa-rss-square'></i></a>
+                    </li>
+                    <li>
+                        <a href="#" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode"><i class="fa fa-2x fa-moon-o" aria-hidden="true"></i></a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('/img/posts/llama-race.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="site-heading">
+                        <h1>Performance Benchmarking LLM Models</h1>
+                        <hr class="small">
+                        <span class="subheading">by Anthony Shaw, August 27, 2025</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <p>There are <a href="https://huggingface.co/collections/open-llm-leaderboard/the-big-benchmarks-collection-64faca6335a7fc7d4ffe974a">hundreds of benchmarks</a> out there for LLMs. Most are focused on quality, capability, and accuracy. The <a href="https://huggingface.co/spaces/optimum/llm-perf-leaderboard">LLM Perf</a> leaderboard is great if you&rsquo;re hosting the model yourself, but doesn&rsquo;t take into account the realities of latency talking to hosted models in the cloud.</p>
+<p>The actual throughput you get on a model like Llama or Gemma is going to depend entirely on where it&rsquo;s running. Sometimes you want to pick a language model that is &ldquo;<strong>small</strong>&rdquo; and <strong>fast</strong>. This is where performance benchmarking comes in.</p>
+<h2 id="why-benchmark-llms">Why Benchmark LLMs?<a class="headerlink" href="#why-benchmark-llms" title="Permanent link">&para;</a></h2>
+<p>When picking a language model, I think you generally need to select the fastest and cheapest model for the task you have. This is especially true for agents. Looking at a demo for a platform like <a href="https://langchain-ai.github.io/langgraph/tutorials/rag/langgraph_agentic_rag/">Agentic RAG on langgraph&rsquo;s website</a>:</p>
+<p><img alt="Langgraph example flow" class="img-responsive center-block" src="/img/posts/langgraph_example.png"></p>
+<p>They&rsquo;ve selected OpenAI&rsquo;s GPT-4.1 for this tutorial, but unpacking the workflow there are three prompts:</p>
+<ol>
+<li>A yes/no grading prompt which marks retrieved documents as to their relevance</li>
+<li>A rewrite prompt which extracts the semantic intent from the question so that retrieval is more effective</li>
+<li>A final answer prompt which generates the answer based on the retrieved documents</li>
+</ol>
+<p>You could use an advanced <a href="https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/develop/evaluate-sdk">evaluator</a> to compare how well each model performs on these prompts. At-a-glance I think GPT-4.1-mini could handle the first and second prompts. This would give you a 5 times cost reduction. The choice of GPT-4.1, GPT-5, or one of the mini models for the answer depends on how long you want the answer and the quality expectations. </p>
+<p>What I do want to see is whether this agent flow will run any faster by switching from GPT-4.1 to GPT-4.1-mini. I can run a benchmark using a little plugin to the <a href="https://llm.datasette.io/">llm CLI</a> I wrote last week to get the answer:</p>
+<pre><code class="bash">$ llm benchmark -m azure/gpt-4.1 -m azure/gpt-4.1-mini --repeat 10 &quot;Look at the input and try to reason about the underlying semantic intent / meaning.\n Here is the initial question:\n ------- \nWhat does Lilian Weng say about types of reward hacking?\n ------- \nFormulate an improved question:&quot; --graph mini-full-compare.png
+</code></pre>
+
+<p>That will print out this comparison table:</p>
+<p><img alt="Results in terminal" class="img-responsive center-block" src="/img/posts/mini-full-compare-shell.png"></p>
+<p>At-a-glance it doesn&rsquo;t look like GPT-4.1-mini would actually be faster because its average time to respond is worse than GPT-4.1. This is odd, but there&rsquo;s more to unpack- let&rsquo;s look at what we&rsquo;re benchmarking and what impacts the results.</p>
+<h2 id="quick-comparisons">Quick Comparisons<a class="headerlink" href="#quick-comparisons" title="Permanent link">&para;</a></h2>
+<p>To get started, you&rsquo;ll need the <a href="https://github.com/tonybaloney/llm-profile"><code>profile</code> plugin</a> for the <a href="https://llm.datasette.io/">llm CLI</a>. To install the plugin and llm:</p>
+<pre><code class="bash">$ pip install llm-profile
+</code></pre>
+
+<p>or to install it into your existing LLM environment:</p>
+<pre><code class="bash">$ llm install llm-profile
+</code></pre>
+
+<p>This adds a <code>benchmark</code> command to llm. The <a href="https://github.com/tonybaloney/llm-profile">LLM Profiling tool</a> is an extension to LLM because LLM already comes with plugins to connect to OpenAI.com, OpenRouter, Anthropic, Google, and just about any other major AI provider. You can also connect it to locally hosted models on something like ollama. </p>
+<p>There are two ways of running the benchmark command, either giving all the arguments over the command line or by writing out a more detailed test plan.</p>
+<p>For the command-line option, you need to provide a list of models to test against and a prompt. Running <code>llm models</code> lists all available models. In the example I gave above, I have LLM connected to my Azure AI Foundry account using the <a href="https://github.com/tonybaloney/llm-azure-ai-foundry">Azure AI Foundry plugin</a>. As I mentioned before, you could be using anything, like the built-in OpenAI.com hosted models, or <a href="https://github.com/simonw/llm-anthropic">Anthropic</a>.</p>
+<p>To run the benchmark, you list as many models as you like with the <code>-m</code> argument, then the prompt. By default, it will only run the prompt once. To get a more accurate measure provide the <code>--repeat</code> option:</p>
+<pre><code class="bash">$ llm benchmark -m gpt-4.1 -m gpt-4.1-mini -m o4-mini &quot;What is the capital of Azerbaijan?&quot; --repeat 10
+</code></pre>
+
+<h2 id="unpacking-the-results">Unpacking the results<a class="headerlink" href="#unpacking-the-results" title="Permanent link">&para;</a></h2>
+<p>In my first demo benchmark, the results table showed that GPT-4.1-mini was on average slower than GPT-4.1 which surprised me. </p>
+<p>In the example above, I used the <code>--graph</code> argument to specify the path to a PNG containing box plots for the 4 metrics. That looks something like this:</p>
+<p><img alt="Graph of the first test" class="img-responsive center-block" src="/img/posts/mini-full-compare.png"></p>
+<p>If you&rsquo;re not familiar with boxplots, they&rsquo;re a way to represent a distribution of data points through their quartiles. Average is a terrible metric for performance testing because one outlier can skew the data and outliers occur in network systems all the time. A boxplot shows the spread and skewness of the data, making it easier to identify trends and anomalies.</p>
+<ul>
+<li>The colored box represents the <a href="https://en.wikipedia.org/wiki/Interquartile_range">interquartile range (IQR)</a>, which contains the middle 50% of the data points.</li>
+<li>The thick black line inside the box is the median (the 50th percentile).</li>
+<li>The &ldquo;whiskers&rdquo; extend to the minimum and maximum values within 1.5 * IQR from the quartiles.</li>
+<li>Points outside of this range are considered outliers and are plotted individually as circles.</li>
+</ul>
+<p>Or, to put it more simply, the colored box is the range of times you get <em>most</em> of the time. The larger the box, the wider the range is. </p>
+<p>Looking at our original benchmark, although GPT-4.1-mini had an average (mean) of 0.8 secs v.s. 0.73 for GPT-4.1, that was because of a 3 second outlier. The median value is closer to 0.6, the IQR is far smaller and lower in the timing range. Or, to put it simply, <strong>most of the time it&rsquo;s twice as fast, but one time it was really slow</strong>. Generally speaking, in network testing we look at the <strong>95th to 99th percentile</strong> to get a better sense of the typical user experience. The 3 second outlier is probably unrelated to the AI and a consequence of the person digging up the road outside my house (but such is the <a href="https://en.wikipedia.org/wiki/Series_of_tubes">reality of the Internet</a>).</p>
+<p>For that test, I used the US-East 2 location, which is one of the more popular locations. It&rsquo;s also about 10,000 miles from my computer. Which isn&rsquo;t ideal.</p>
+<p>The <a href="https://github.com/tonybaloney/llm-azure-ai-foundry">Azure AI Foundry plugin for LLM</a> supports multiple AI Foundry projects and I have one in Australia East (100 miles away) to test on. To get a better spread of data, I&rsquo;ve changed it to run each model prompt 100 times:</p>
+<blockquote>
+<p>Tip: Use the <code>--markdown</code> flag to output the results table in a Markdown friendly format</p>
+</blockquote>
+<table class="table">
+<thead>
+<tr>
+<th>Benchmark</th>
+<th>Total Time</th>
+<th>Time to First Chunk</th>
+<th>Length of Response</th>
+<th>Number of Chunks</th>
+<th>Chunks per Second</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>azure/gpt-4.1</td>
+<td>0.53 &lt;-&gt; 2.67 (x̄=0.88)</td>
+<td>0.37 &lt;-&gt; 1.25 (x̄=0.56)</td>
+<td>72 &lt;-&gt; 330 (x̄=118.3)</td>
+<td>15 &lt;-&gt; 60 (x̄=25.0)</td>
+<td>10.47 &lt;-&gt; 49.51 (x̄=30.22)</td>
+</tr>
+<tr>
+<td>azure/gpt-4.1-mini</td>
+<td>0.44 &lt;-&gt; 3.04 (x̄=0.62)</td>
+<td>0.31 &lt;-&gt; 2.88 (x̄=0.41)</td>
+<td>64 &lt;-&gt; 117 (x̄=77.8)</td>
+<td>15 &lt;-&gt; 24 (x̄=16.8)</td>
+<td>5.27 &lt;-&gt; 41.24 (x̄=29.43)</td>
+</tr>
+<tr>
+<td>azure.0/ants-gpt-4.1-mini</td>
+<td>0.46 &lt;-&gt; 2.76 (x̄=0.60)</td>
+<td>0.26 &lt;-&gt; 2.35 (x̄=0.33)</td>
+<td>66 &lt;-&gt; 110 (x̄=76.0)</td>
+<td>15 &lt;-&gt; 24 (x̄=16.6)</td>
+<td>6.88 &lt;-&gt; 35.10 (x̄=29.53)</td>
+</tr>
+</tbody>
+</table>
+<p><img alt="Graph of the second test" class="img-responsive center-block" src="/img/posts/mini-full-compare-oz-50.png"></p>
+<h3 id="chunks-and-response-length-determine-time-to-respond">Chunks and Response Length determine time to respond<a class="headerlink" href="#chunks-and-response-length-determine-time-to-respond" title="Permanent link">&para;</a></h3>
+<p>Responses from LLMs are token streams. Since you need to transfer this data over a network, tokens are split into chunks and these chunks are streamed back to you in several HTTP responses. A well-designed integration with an LLM will stream the responses back to the user instead of waiting for the entire response. This is why GPT UIs like ChatGPT seem to be &lsquo;typing&rsquo; back to you. It&rsquo;s streaming the data back as it comes in.</p>
+<p>For benchmarking, this is important because we care about three things:</p>
+<ol>
+<li>How long does it take for the first chunk to arrive (time to first chunk)</li>
+<li>How many chunks are there?</li>
+<li>How long does it take for all of them to arrive?</li>
+</ol>
+<p>The number of chunks is determined by the length of the answer. Each chunk contains several tokens (depending on how it&rsquo;s setup). If you ask for a short essay, there could be hundreds of chunks, if you ask the LLM for a one word answer there could be 1. </p>
+<p>The LLM profiler presents these metrics:</p>
+<ul>
+<li><strong>Total Time (Sec)</strong></li>
+<li><strong>Time to First Chunk (Sec)</strong></li>
+<li><strong>Length of Response (Characters)</strong></li>
+<li><strong>Number of Chunks</strong></li>
+<li><strong>Chunks per Second</strong></li>
+</ul>
+<p>Chunks per second = number of chunks ÷ total time; it&rsquo;s our throughput metric.</p>
+<p>This is very important to understand for the comparison between GPT-4.1 and GPT-4.1-mini because the default responses for GPT-4.1-mini will be <strong>shorter</strong> than GPT-4.1, therefore it has fewer chunks. You can see that in the table, on average GPT-4.1-mini has a 77 character answer compared to 118 for GPT-4.1.</p>
+<p>Going to the right-hand plots the <strong>Time to First Chunk</strong> and <strong>Chunks per Second</strong>, GPT-4.1-mini is consistently faster (both in US-EAST2 and Australia East) to start streaming data back. Australia East is the fastest, because it&rsquo;s the closest to me (the chunks have to travel down the tubes to my house). Then for chunks per second, they all perform similarly but the <a href="https://en.wikipedia.org/wiki/Interquartile_range">IQR</a> is wider for GPT-4.1.</p>
+<p>Another curiosity is that GPT‑4.1&rsquo;s length range went up to 330 characters. This is important to keep in mind because, for the same prompt with the default temperature and no random seed, response length can vary significantly between calls.</p>
+<h3 id="in-conclusion">In Conclusion<a class="headerlink" href="#in-conclusion" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Shorter answers have shorter response times. Nowhere in the original prompt did we specify our expectations for response length; it was determined by the model&rsquo;s weights.</li>
+<li>GPT-4.1-mini is faster to start streaming data back than GPT-4.1</li>
+</ol>
+<h2 id="detailed-plans">Detailed Plans<a class="headerlink" href="#detailed-plans" title="Permanent link">&para;</a></h2>
+<p>We&rsquo;re starting to tap into the performance characteristics of these models in more detail. Let&rsquo;s test out a theory that we can get better performance by giving the LLM constraints about the expected response length. <a href="https://platform.openai.com/docs/api-reference/responses/create#responses_create-max_output_tokens">Max Output Tokens</a> is a crude option that I rarely use. It &ldquo;cuts off&rdquo; responses that are too long, but it doesn&rsquo;t help with shorter responses.</p>
+<p>Instead, let&rsquo;s refactor that original prompt:</p>
+<pre><code class="text">Look at the input and try to reason about the underlying semantic intent / meaning.
+Here is the initial question:
+------- 
+What does Lilian Weng say about types of reward hacking?
+-------
+Formulate an improved question:
+</code></pre>
+
+<p>Let&rsquo;s try another version of that prompt that gives more clarity to what &ldquo;improved&rdquo; means:</p>
+<pre><code class="text">Analyze the given input to understand its underlying semantic intent. Here is the initial question:
+-------
+What does Lilian Weng say about types of reward hacking?
+-------
+Formulate an improved question that is clearer and more specific: 
+</code></pre>
+
+<p>The LLM benchmark plugin has a second mode where you provide a test plan in the form of a YAML file. In the test plan YAML, we provide a name, the repeat count and then an optional dictionary of model options (temperature, seed, etc.). You can also put an <code>options</code> section in each model definition, say for example you wanted to compare reasoning effort between model runs.</p>
+<p>Then provide a list of models by a name, model id (from <code>llm models</code>) and the prompt. You can also set things like <code>system</code> for system prompt.</p>
+<p>Let&rsquo;s put that together and compare our original prompt with an &ldquo;improved&rdquo; one against both GPT-4.1-mini in Australia East and GPT-5-chat in US East 2:</p>
+<pre><code class="yaml">name: Comparing Prompts
+repeat: 50
+options:
+  temperature: 0
+models:
+  - name: GPT-5-chat (Original)
+    model: azure/gpt-5-chat
+    prompt: |
+        Look at the input and try to reason about the underlying semantic intent / meaning.
+        Here is the initial question:
+        ------- 
+        What does Lilian Weng say about types of reward hacking?
+        -------
+        Formulate an improved question:
+  - name: GPT-5-chat (Improved)
+    model: azure/gpt-5-chat
+    prompt: |
+        Analyze the given input to understand its underlying semantic intent. Here is the initial question:
+        -------
+        What does Lilian Weng say about types of reward hacking?
+        -------
+        Formulate an improved question that is clearer and more specific:
+
+  - name: GPT-4.1-mini (Original)
+    model: azure/gpt-5-chat
+    prompt: |
+        Look at the input and try to reason about the underlying semantic intent / meaning.
+        Here is the initial question:
+        ------- 
+        What does Lilian Weng say about types of reward hacking?
+        -------
+        Formulate an improved question:
+  - name: GPT-4.1-mini (Improved)
+    model: azure/gpt-5-chat
+    prompt: |
+        Analyze the given input to understand its underlying semantic intent. Here is the initial question:
+        -------
+        What does Lilian Weng say about types of reward hacking?
+        -------
+        Formulate an improved question that is clearer and more specific:
+</code></pre>
+
+<p>Then to run we provide the <code>--plan</code> argument with a path to the YAML file and request a graph.</p>
+<pre><code class="bash">$ llm benchmark --plan test-plan-gpt-5.yaml --graph gpt-5-4-compare.png --markdown
+</code></pre>
+
+<table class="table">
+<thead>
+<tr>
+<th>Benchmark</th>
+<th>Total Time</th>
+<th>Time to First Chunk</th>
+<th>Length of Response</th>
+<th>Number of Chunks</th>
+<th>Chunks per Second</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GPT-5-chat (Original)</td>
+<td>0.61 &lt;-&gt; 1.75 (x̄=0.71)</td>
+<td>0.33 &lt;-&gt; 0.49 (x̄=0.36)</td>
+<td>172 &lt;-&gt; 184 (x̄=172.2)</td>
+<td>39 &lt;-&gt; 39 (x̄=39.0)</td>
+<td>22.23 &lt;-&gt; 63.92 (x̄=56.52)</td>
+</tr>
+<tr>
+<td>GPT-5-chat (Improved)</td>
+<td>0.66 &lt;-&gt; 2.13 (x̄=0.99)</td>
+<td>0.32 &lt;-&gt; 1.00 (x̄=0.38)</td>
+<td>191 &lt;-&gt; 488 (x̄=321.1)</td>
+<td>43 &lt;-&gt; 99 (x̄=69.2)</td>
+<td>32.76 &lt;-&gt; 87.36 (x̄=70.60)</td>
+</tr>
+<tr>
+<td>GPT-4.1-mini (Original)</td>
+<td>0.47 &lt;-&gt; 3.01 (x̄=0.64)</td>
+<td>0.26 &lt;-&gt; 2.74 (x̄=0.34)</td>
+<td>74 &lt;-&gt; 100 (x̄=93.6)</td>
+<td>16 &lt;-&gt; 19 (x̄=18.4)</td>
+<td>6.31 &lt;-&gt; 40.10 (x̄=31.49)</td>
+</tr>
+<tr>
+<td>GPT-4.1-mini (Improved)</td>
+<td>0.49 &lt;-&gt; 1.20 (x̄=0.60)</td>
+<td>0.25 &lt;-&gt; 0.39 (x̄=0.28)</td>
+<td>86 &lt;-&gt; 110 (x̄=88.5)</td>
+<td>19 &lt;-&gt; 24 (x̄=19.5)</td>
+<td>15.86 &lt;-&gt; 39.05 (x̄=33.32)</td>
+</tr>
+</tbody>
+</table>
+<p>The results are interesting:</p>
+<p><img alt="GPT-5-chat vs GPT-4.1-mini" class="img-responsive center-block" src="/img/posts/gpt-5-4-compare.png"></p>
+<p>Reading this chart:</p>
+<ul>
+<li>The <strong>&ldquo;improved&rdquo;</strong> prompt actually made the responses significantly longer in GPT-5-chat, but consistently shorter in GPT-4.1-mini!</li>
+<li>The <strong>&ldquo;improved&rdquo;</strong> prompt gave a larger IQR for GPT-5-chat for length, time and <strong>throughput</strong> (I don&rsquo;t understand this one). </li>
+</ul>
+<p>In summary, this demonstrated the value in doing profiling of the different models. We could have tested one (GPT-4.1-mini) and seen the shorter answers then upgraded to GPT-5-chat and assumed it would perform better. </p>
+<p>Now, we&rsquo;re missing a point here that shorter is not necessarily better. For this Agentic Retrieval task, we need to consider the quality and relevance of the responses, not just their length. Sometimes we want short answers from LLMs, sometimes we want particularly relevant ones. That&rsquo;s the purpose of <a href="https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/develop/evaluate-sdk">eval libraries</a>. Sometimes the larger models can waffle on for ages before getting to the point, which costs time and money.</p>
+<h2 id="benchmarking-embedding-models">Benchmarking Embedding Models<a class="headerlink" href="#benchmarking-embedding-models" title="Permanent link">&para;</a></h2>
+<p>So far we&rsquo;ve looked at language models. The LLM CLI also supports embedding models. Embedding models are used a lot in semantic search and RAG. They have different characteristics than LLMS. For a given input the result is deterministic. It&rsquo;s also the same length (dimensions) so all we want to measure is how long it takes to respond. The embedding model benchmark you want to checkout for how well it performs at retrieval is the MTEB (Multilingual Text Embedding Benchmark). </p>
+<p>After looking at that, you&rsquo;ll likely settle on the same 3 models that everyone else uses. So let&rsquo;s look at those.</p>
+<p>In LLM, you get a list of embedding models with this command:</p>
+<pre><code class="bash">$ llm embed-models
+</code></pre>
+
+<p>For the LLM profiler, there&rsquo;s another command, <code>llm embed-benchmark</code> with similar syntax to provide an input (text), then one or many models to compare.</p>
+<p>The <code>--graph</code>, <code>--repeat</code> and <code>--markdown</code> flags all apply as well.</p>
+<p>Let&rsquo;s compare a few models, OpenAI text-embedding-small with both dimension configurations, the old ada-002 model and for fun, I&rsquo;ll test nomic-embed running on my laptop using ollama:</p>
+<pre><code class="bash">$ llm embed-benchmark &quot;I'm on the red eye flight to nowhere. How about you?&quot; -m  azure/text-embedding-3-small-512 -m  azure/text-embedding-3-small -m azure/text-embedding-ada-002 -m nomic-embed-text:latest --repeat 50 --markdown
+</code></pre>
+
+<table class="table">
+<thead>
+<tr>
+<th>Benchmark</th>
+<th>Total Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>azure/text-embedding-3-small-512</td>
+<td>0.45 &lt;-&gt; 10.48 (x̄=1.13)</td>
+</tr>
+<tr>
+<td>azure/text-embedding-3-small</td>
+<td>0.88 &lt;-&gt; 9.55 (x̄=1.35)</td>
+</tr>
+<tr>
+<td>azure/text-embedding-ada-002</td>
+<td>0.87 &lt;-&gt; 3.40 (x̄=0.99)</td>
+</tr>
+<tr>
+<td>nomic-embed-text:latest</td>
+<td>0.67 &lt;-&gt; 3.03 (x̄=1.06)</td>
+</tr>
+</tbody>
+</table>
+<p>All of the Azure OpenAI models I tested were deployed in US East (10,000 miles away), so the timing is mostly network latency.</p>
+<p>We get a single graph: </p>
+<p><img alt="Embed graphs" class="img-responsive center-block" src="/img/posts/embed-graph.png"></p>
+<p>Amazingly, nomic on my NPU ran very well. So much so I&rsquo;ve used it <a href="https://github.com/tonybaloney/tonybaloney.github.io/commit/23e3ef8c0b279383413dc37da988d46ad76eaa26#diff-f2ccb19e3d624d9974dae9a9d2f1995f45d076ee926eb07f1a7a36a1fd1c6429">to generate the &ldquo;Recommended Posts&rdquo; at the end of all my blogs</a>.</p>
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
+<p>It&rsquo;s always important to test all aspects of a system thoroughly. Using LLM and this plugin you can measure latency and throughput of different models in different locations and on different platforms. It also helps identify prompts and configurations to see how they impact the length of the stream coming back from the model.</p>
+<p>For simple scenarios, look for the fastest and cheapest model for what you need to do. </p>
+
+                
+                <H2>Related Posts</H2>
+                <div class="related-posts row">
+                    <div class="col-md-4">
+                        <a href="/blog\using-llm-in-github-actions.html">
+                        <div class="related-box">
+                            <img src="/img/posts-original/gpt-5-nano.jpg" alt="Using an LLM in GitHub Actions" />
+                            <div class="title">Using an LLM in GitHub Actions</div>
+                            <div class="subheading">Using the LLM CLI in a GitHub Action workflow with GitHub Models</div>
+                            <div class="post-meta"><i>Published August 14, 2025</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/blog\the-big-fib-can-you-prompt-llms-to-tell-the-truth.html">
+                        <div class="related-box">
+                            <img src="/img/posts/beach_top.jpg" alt="Can you prompt LLMs to admit when they don't know the answer?" />
+                            <div class="title">Can you prompt LLMs to admit when they don't know the answer?</div>
+                            <div class="subheading">An exploration of telling LLMs what to do when they don't know the answer, and whether it works.</div>
+                            <div class="post-meta"><i>Published January 6, 2025</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/blog\can-reasoning-models-optimize-20-year-old-code.html">
+                        <div class="related-box">
+                            <img src="/img/posts/snail.jpg" alt="Can DeepSeek-R1 improve the performance of one of the worlds oldest codebases?" />
+                            <div class="title">Can DeepSeek-R1 improve the performance of one of the worlds oldest codebases?</div>
+                            <div class="subheading">Exploring whether reasoning models can perform complex optimizations of old code</div>
+                            <div class="post-meta"><i>Published January 30, 2025</i></div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="https://youtube.com/c/AnthonyShaw">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-youtube fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/tonybaloney">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Copyright &copy; Anthony Shaw</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="/js/clean-blog.min.js"></script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <script>
+    (function() {
+        // Setup the toggle behavior and persistence. If the user hasn't chosen a preference, the site
+        // follows the system preference (prefers-color-scheme). Stored choice overrides system changes.
+        var toggle = document.getElementById('theme-toggle');
+        var icon = toggle ? toggle.querySelector('i') : null;
+
+        function getStored() {
+            try { return localStorage.getItem('theme'); } catch (e) { return null; }
+        }
+        function setStored(t) {
+            try { localStorage.setItem('theme', t); } catch (e) { }
+        }
+        function systemPrefersDark() {
+            return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+        function updateIcon(t) {
+            if (!icon) return;
+            // sun when dark to indicate clicking will switch to light; moon when light to switch to dark
+            icon.className = t === 'dark' ? 'fa fa-2x fa-sun-o' : 'fa fa-2x fa-moon-o';
+        }
+        function setTheme(t, save) {
+            document.documentElement.setAttribute('data-theme', t);
+            updateIcon(t);
+            if (save) setStored(t);
+        }
+
+        if (toggle) {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                var current = document.documentElement.getAttribute('data-theme') || (systemPrefersDark() ? 'dark' : 'light');
+                var next = current === 'dark' ? 'light' : 'dark';
+                setTheme(next, true);
+            });
+            // initialize icon from the attribute (which was set early in the head)
+            var initial = document.documentElement.getAttribute('data-theme') || (getStored() || (systemPrefersDark() ? 'dark' : 'light'));
+            updateIcon(initial);
+        }
+
+        // If the user hasn't explicitly set a preference, follow system changes.
+        try {
+            var mq = window.matchMedia('(prefers-color-scheme: dark)');
+            var onChange = function(e) {
+                if (!getStored()) {
+                    setTheme(e.matches ? 'dark' : 'light', false);
+                }
+            };
+            if (mq.addEventListener) mq.addEventListener('change', onChange);
+            else if (mq.addListener) mq.addListener(onChange);
+        } catch (e) { }
+    })();
+    </script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PNMEXCY7DV"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-PNMEXCY7DV');
+    </script>
+
+    <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    var theme = document.documentElement.getAttribute('data-theme') || 'default';
+    if (theme != 'dark'){
+        theme = 'default';
+    }
+    mermaid.initialize({ 
+        startOnLoad: true,
+        theme: theme
+     });
+    </script>
+</body>
+</html>

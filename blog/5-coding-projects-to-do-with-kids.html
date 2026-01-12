@@ -11,6 +11,24 @@
 
     <title>5 coding projects to do with kids</title>
 
+    <script>
+    (function() {
+        // Set initial theme as early as possible to avoid flash. Use stored preference if present,
+        // otherwise default to the user's system preference (prefers-color-scheme).
+        var stored = null;
+        try { stored = localStorage.getItem('theme'); } catch (e) { stored = null; }
+        var theme;
+        if (stored === 'light' || stored === 'dark') {
+            theme = stored;
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            theme = 'dark';
+        } else {
+            theme = 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+    </script>
+
     <!-- Facebook Meta tags -->
     <meta property="og:title" content="5 coding projects to do with kids">
     <meta property="og:description" content="5 fun and simple coding projects to do with your kids">
@@ -28,6 +46,82 @@
 
     <!-- Theme CSS -->
     <link href="/css/clean-blog.min.css" rel="stylesheet">
+
+    <style>
+    /* Simple CSS variable-based theme with a dark variant. Adjusts background, text, nav, footer and code blocks. */
+    :root {
+        --bg: #ffffff;
+        --text: #222222;
+        --muted: #777777;
+        --link: #337ab7;
+        --navbar-bg: rgba(255,255,255,0.95);
+        --navbar-text: #222222;
+        --code-bg: #f6f8fa;
+        --pre-color: #2e2e2e;
+    }
+    [data-theme='dark'] {
+        --bg: #0b0f17;
+        --text: #e6edf3;
+        --muted: #9aa0a6;
+        --link: #8fc7ff;
+        --navbar-bg: rgba(10,10,10,0.95);
+        --navbar-text: #e6edf3;
+        --code-bg: #282c34;
+        --pre-color: #abb2bf;
+    }
+
+    html, body {
+        background-color: var(--bg) !important;
+        color: var(--text) !important;
+    }
+
+    a, a:link, a:visited { color: var(--link) !important; }
+
+    /* Navbar */
+    .navbar-default { background-color: var(--navbar-bg) !important; border-color: transparent !important; }
+    .navbar-default .navbar-nav>li>a { color: var(--navbar-text) !important; }
+
+    /* Header: site heading text should always be light to ensure contrast over background images */
+    .intro-header .site-heading h1,
+    .intro-header .site-heading .subheading {
+        color: #ffffff !important;
+        /* subtle shadow to help legibility on light/detailed background images */
+        text-shadow: 0 1px 3px rgba(0,0,0,0.6) !important;
+    }
+
+    /* Footer */
+    footer { color: var(--muted) !important; }
+
+    /* Code / highlight.js */
+    pre, code, .hljs { background: var(--code-bg) !important; color: var(--pre-color) !important; }
+    .hljs { padding: 1em; display:block; overflow-x:auto; }
+
+    /* Toggle button sizing */
+    #theme-toggle { display:inline-flex; align-items:center; justify-content:center; padding:6px; }
+    #theme-toggle i { font-size:1.6em; }
+
+    /* A few token overrides for dark mode highlighting (when highlight.js default theme is used) */
+    [data-theme='dark'] .hljs { background: #282c34 !important; color: #abb2bf !important; }
+    [data-theme='dark'] .hljs-keyword, [data-theme='dark'] .hljs-selector-tag, [data-theme='dark'] .hljs-literal { color: #c678dd; }
+    [data-theme='dark'] .hljs-string, [data-theme='dark'] .hljs-title, [data-theme='dark'] .hljs-name { color: #98c379; }
+    [data-theme='dark'] .hljs-comment, [data-theme='dark'] .hljs-quote { color: #5c6370; font-style: italic; }
+
+    /* Footer icons: make sure stacked icons render white on dark theme */
+    [data-theme='dark'] footer .fa-stack .fa-inverse { color: #ffffff !important; }
+    [data-theme='dark'] footer .fa-stack .fa-circle { color: rgba(255,255,255,0.08) !important; }
+
+    /* Related posts card styling */
+    .related-posts { margin-top: 2rem; }
+    .related-posts .related-box { border: 1px solid rgba(0,0,0,0.06); padding: 12px; border-radius: 6px; background: var(--bg); color: var(--text); }
+    [data-theme='dark'] .related-posts .related-box { border-color: rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); }
+    .related-posts .related-box img { width:100%; height:200px; border-radius:4px;  }
+    .related-posts .related-box .title { font-weight:700; margin-top:8px; }
+    .related-posts .related-box .subheading { color: var(--muted); font-size:0.95em; }
+    .related-posts .related-box .post-meta { font-size:0.9em; margin-top:6px; }
+
+    [data-theme='dark'] blockquote { color: #EEE; }
+    blockquote { color: #444; }
+    </style>
 
     <!-- Custom Fonts -->
     <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -88,6 +182,9 @@
                     </li>
                     <li>
                         <a href="/rss.xml"><i class='fa fa-2x fa-rss-square'></i></a>
+                    </li>
+                    <li>
+                        <a href="#" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode"><i class="fa fa-2x fa-moon-o" aria-hidden="true"></i></a>
                     </li>
                 </ul>
             </div>
@@ -174,6 +271,41 @@ This requires minimal coding and zero-setup. You can get started with any decent
 <p>Why not try hacking them, change the physics and see how the game responds? Can you add new game rules and concepts? Can you add your own characters?</p>
 <p>The skills learnt in this exercise are very relevant to any career in software. If you want to learn a new language you can just start by reading other people’s source code, changing it to see what happens.</p>
 <p><strong>Have fun!</strong></p>
+
+                
+                <H2>Related Posts</H2>
+                <div class="related-posts row">
+                    <div class="col-md-4">
+                        <a href="/blog\azure-pipelines-with-python-by-example.html">
+                        <div class="related-box">
+                            <img src="/img/home-bg.jpg" alt="Azure Pipelines with Python - by example" />
+                            <div class="title">Azure Pipelines with Python - by example</div>
+                            <div class="subheading">A tutorial on Microsoft Azure pipelines and how to use it effectively for your Python projects.</div>
+                            <div class="post-meta"><i>Published January 2, 2019</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/blog\running-python-on-dotnet-5-with-pyjion.html">
+                        <div class="related-box">
+                            <img src="/img/posts/turtle-pileup.jpg" alt="Running Python on .NET 5" />
+                            <div class="title">Running Python on .NET 5</div>
+                            <div class="subheading">An update on the Pyjion project to plug a JIT into CPython using the .NET 5 CLR JIT compiler</div>
+                            <div class="post-meta"><i>Published November 11, 2020</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/blog\embedding-python-in-dot-net-with-csnakes.html">
+                        <div class="related-box">
+                            <img src="/img/posts/snake-robot.jpeg" alt="Embedding Python into your .NET project with CSnakes" />
+                            <div class="title">Embedding Python into your .NET project with CSnakes</div>
+                            <div class="subheading">A deep-dive into a new integration between .NET and Python</div>
+                            <div class="post-meta"><i>Published October 4, 2024</i></div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -217,5 +349,80 @@ This requires minimal coding and zero-setup. You can get started with any decent
     <script src="/js/clean-blog.min.js"></script>
 
     <script>hljs.initHighlightingOnLoad();</script>
+
+    <script>
+    (function() {
+        // Setup the toggle behavior and persistence. If the user hasn't chosen a preference, the site
+        // follows the system preference (prefers-color-scheme). Stored choice overrides system changes.
+        var toggle = document.getElementById('theme-toggle');
+        var icon = toggle ? toggle.querySelector('i') : null;
+
+        function getStored() {
+            try { return localStorage.getItem('theme'); } catch (e) { return null; }
+        }
+        function setStored(t) {
+            try { localStorage.setItem('theme', t); } catch (e) { }
+        }
+        function systemPrefersDark() {
+            return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+        function updateIcon(t) {
+            if (!icon) return;
+            // sun when dark to indicate clicking will switch to light; moon when light to switch to dark
+            icon.className = t === 'dark' ? 'fa fa-2x fa-sun-o' : 'fa fa-2x fa-moon-o';
+        }
+        function setTheme(t, save) {
+            document.documentElement.setAttribute('data-theme', t);
+            updateIcon(t);
+            if (save) setStored(t);
+        }
+
+        if (toggle) {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                var current = document.documentElement.getAttribute('data-theme') || (systemPrefersDark() ? 'dark' : 'light');
+                var next = current === 'dark' ? 'light' : 'dark';
+                setTheme(next, true);
+            });
+            // initialize icon from the attribute (which was set early in the head)
+            var initial = document.documentElement.getAttribute('data-theme') || (getStored() || (systemPrefersDark() ? 'dark' : 'light'));
+            updateIcon(initial);
+        }
+
+        // If the user hasn't explicitly set a preference, follow system changes.
+        try {
+            var mq = window.matchMedia('(prefers-color-scheme: dark)');
+            var onChange = function(e) {
+                if (!getStored()) {
+                    setTheme(e.matches ? 'dark' : 'light', false);
+                }
+            };
+            if (mq.addEventListener) mq.addEventListener('change', onChange);
+            else if (mq.addListener) mq.addListener(onChange);
+        } catch (e) { }
+    })();
+    </script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PNMEXCY7DV"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-PNMEXCY7DV');
+    </script>
+
+    <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    var theme = document.documentElement.getAttribute('data-theme') || 'default';
+    if (theme != 'dark'){
+        theme = 'default';
+    }
+    mermaid.initialize({ 
+        startOnLoad: true,
+        theme: theme
+     });
+    </script>
 </body>
 </html>
