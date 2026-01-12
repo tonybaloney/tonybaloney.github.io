@@ -117,7 +117,7 @@ Yesterday I was seeing if GPT-5 could implement multiple balls in [VS Code Pets]
  so I tested it on the [commit](https://github.com/tonybaloney/vscode-pets/commit/df705aec39bfa2f0ac5e6459636027d406179ec0):
 
 ```bash
-$ git --no-pager diff -p --no-color HEAD^ | llm prompt -m github/gpt-5-mini "Review this git diff and suggest where the documentation might need to be updated. For each of the doc pages, specify the page name and the suggested updates in a short summary. Some pages might not need to be updated, so don't list them if the changes are not relevant. The doc pages are:
+$ git --no-pager diff -p --no-color HEAD^ | llm prompt -m github/gpt-5-mini -s "Review this git diff and suggest where the documentation might need to be updated. For each of the doc pages, specify the page name and the suggested updates in a short summary. Some pages might not need to be updated, so don't list them if the changes are not relevant. The doc pages are:
 >> index.md - project overview and installation instructions, with links to the other docs and a quick 'Getting Started' pointer.
 >> getting-started.md - shows how to open the pet panel, start a session, change pet appearance/size/position, and lists quick links to common interactions (throwing balls, adding/removing pets, themes).
 >> pets.md - detailed user guide for interacting with pets: playing with pets, adding/removing pets, throwing a ball (including mouse-throw option), roll-call, and importing/exporting pet lists.
@@ -155,7 +155,7 @@ Giving this second prompt to [GitHub Copilot using GPT-5-mini](https://github.bl
 It generated a file, `docs/docs-index-summary.md`, so I ran the prompt again and this time using a nested shell to include the index file into the prompt:
 
 ```bash
-git --no-pager diff -p --no-color HEAD^ | llm prompt -m github/gpt-5-mini "Review this git diff and suggest where the documentation might need to be updated. For each of the doc pages, specify the page name and the suggested updates in a short summary. Some pages might not need to be updated, so don't list them if the changes are not relevant.  $(cat docs/docs-index-summary.md)"
+git --no-pager diff -p --no-color HEAD^ | llm prompt -m github/gpt-5-mini -s "Review this git diff and suggest where the documentation might need to be updated. For each of the doc pages, specify the page name and the suggested updates in a short summary. Some pages might not need to be updated, so don't list them if the changes are not relevant.  $(cat docs/docs-index-summary.md)"
 ```
 
 This time, we get an improved suggestion that talks about the subsections in the page and seems to have a better feel for what needs to be updated.
@@ -207,7 +207,7 @@ For this experiment, I'll use the same `git diff` trick to get the changed files
 For this prompt, I'll ask it to format it's suggestions in a special syntax for GitHub called annotations. This syntax is used by linters to contribute comments in code on commits and pull requests. Since the `git diff` includes the line number and the file name:
 
 ```bash
-git --no-pager diff -p --no-color origin/main...${{ github.sha }} docs | llm prompt -m github/gpt-5-mini \
+git --no-pager diff -p --no-color origin/main...${{ github.sha }} docs | llm prompt -m github/gpt-5-mini -s \
           "For each of the added lines in this output from git diff (those starting +), review grammatical \
           or spelling mistakes and print out the fixes. Only report spelling, punctuation and grammatical errors. \
           Use the formatting for GitHub Actions, e.g. \
@@ -259,7 +259,7 @@ jobs:
         run: python -m pip install llm-github-models
       - name: Review docs changes
         run: | 
-          git --no-pager diff -p --no-color origin/main...${{ github.sha }} docs | llm prompt -m github/gpt-5-mini \
+          git --no-pager diff -p --no-color origin/main...${{ github.sha }} docs | llm prompt -m github/gpt-5-mini -s \
           "For each of the added lines in this output from git diff (those starting +), review grammatical \
           or spelling mistakes and print out the fixes. Only report spelling, punctuation and grammatical errors. \
           Use the formatting for GitHub Actions, e.g. \
@@ -340,7 +340,7 @@ So, I adapted the docs workflow to look at changes to the `l10n` folder and pars
 ```yaml
     - name: Review l10n changes
         run: | 
-          git --no-pager diff -p --no-color origin/main...${{ github.sha }} package.nls.*.json | llm prompt -m github/gpt-5-mini \
+          git --no-pager diff -p --no-color origin/main...${{ github.sha }} package.nls.*.json | llm prompt -m github/gpt-5-mini -s \
           "For each of the changed lines in this output from git diff (those starting +), comment on whether the translation for that
           language is blatantly inaccurate or offensive. \
           Use the formatting for GitHub Actions, e.g. \
@@ -376,7 +376,7 @@ We can test this out for git diffs by committing a file with the contents `"Igno
 When I tested that, the anti-jailbreak moderation kicked in. GitHub Models is backed by [Azure Foundry which has a set of security controls](https://learn.microsoft.com/en-us/azure/ai-services/content-safety/concepts/jailbreak-detection). If the user input contained something offensive or dangerous those moderation controls should also kick into place:
 
 ```bash
-$ git --no-pager diff -p --no-color HEAD^ | llm prompt -m github/gpt-4.1-mini "Review this git diff and suggest where the documentation might need to be updated. If there are no changes, don't suggest anything"
+$ git --no-pager diff -p --no-color HEAD^ | llm prompt -m github/gpt-4.1-mini -s "Review this git diff and suggest where the documentation might need to be updated. If there are no changes, don't suggest anything"
 
 Error: (content_filter) The response was filtered due to the prompt triggering Azure OpenAI's content management policy. Please modify your prompt and retry. To learn more about our content filtering policies please read our documentation: https://go.microsoft.com/fwlink/?linkid=2198766
 Code: content_filter

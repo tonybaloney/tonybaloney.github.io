@@ -11,6 +11,24 @@
 
     <title>My favourite Python stories of 2019</title>
 
+    <script>
+    (function() {
+        // Set initial theme as early as possible to avoid flash. Use stored preference if present,
+        // otherwise default to the user's system preference (prefers-color-scheme).
+        var stored = null;
+        try { stored = localStorage.getItem('theme'); } catch (e) { stored = null; }
+        var theme;
+        if (stored === 'light' || stored === 'dark') {
+            theme = stored;
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            theme = 'dark';
+        } else {
+            theme = 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+    </script>
+
     <!-- Facebook Meta tags -->
     <meta property="og:title" content="My favourite Python stories of 2019">
     <meta property="og:description" content="A collection of the things I really enjoyed reading in 2019">
@@ -28,6 +46,82 @@
 
     <!-- Theme CSS -->
     <link href="/css/clean-blog.min.css" rel="stylesheet">
+
+    <style>
+    /* Simple CSS variable-based theme with a dark variant. Adjusts background, text, nav, footer and code blocks. */
+    :root {
+        --bg: #ffffff;
+        --text: #222222;
+        --muted: #777777;
+        --link: #337ab7;
+        --navbar-bg: rgba(255,255,255,0.95);
+        --navbar-text: #222222;
+        --code-bg: #f6f8fa;
+        --pre-color: #2e2e2e;
+    }
+    [data-theme='dark'] {
+        --bg: #0b0f17;
+        --text: #e6edf3;
+        --muted: #9aa0a6;
+        --link: #8fc7ff;
+        --navbar-bg: rgba(10,10,10,0.95);
+        --navbar-text: #e6edf3;
+        --code-bg: #282c34;
+        --pre-color: #abb2bf;
+    }
+
+    html, body {
+        background-color: var(--bg) !important;
+        color: var(--text) !important;
+    }
+
+    a, a:link, a:visited { color: var(--link) !important; }
+
+    /* Navbar */
+    .navbar-default { background-color: var(--navbar-bg) !important; border-color: transparent !important; }
+    .navbar-default .navbar-nav>li>a { color: var(--navbar-text) !important; }
+
+    /* Header: site heading text should always be light to ensure contrast over background images */
+    .intro-header .site-heading h1,
+    .intro-header .site-heading .subheading {
+        color: #ffffff !important;
+        /* subtle shadow to help legibility on light/detailed background images */
+        text-shadow: 0 1px 3px rgba(0,0,0,0.6) !important;
+    }
+
+    /* Footer */
+    footer { color: var(--muted) !important; }
+
+    /* Code / highlight.js */
+    pre, code, .hljs { background: var(--code-bg) !important; color: var(--pre-color) !important; }
+    .hljs { padding: 1em; display:block; overflow-x:auto; }
+
+    /* Toggle button sizing */
+    #theme-toggle { display:inline-flex; align-items:center; justify-content:center; padding:6px; }
+    #theme-toggle i { font-size:1.6em; }
+
+    /* A few token overrides for dark mode highlighting (when highlight.js default theme is used) */
+    [data-theme='dark'] .hljs { background: #282c34 !important; color: #abb2bf !important; }
+    [data-theme='dark'] .hljs-keyword, [data-theme='dark'] .hljs-selector-tag, [data-theme='dark'] .hljs-literal { color: #c678dd; }
+    [data-theme='dark'] .hljs-string, [data-theme='dark'] .hljs-title, [data-theme='dark'] .hljs-name { color: #98c379; }
+    [data-theme='dark'] .hljs-comment, [data-theme='dark'] .hljs-quote { color: #5c6370; font-style: italic; }
+
+    /* Footer icons: make sure stacked icons render white on dark theme */
+    [data-theme='dark'] footer .fa-stack .fa-inverse { color: #ffffff !important; }
+    [data-theme='dark'] footer .fa-stack .fa-circle { color: rgba(255,255,255,0.08) !important; }
+
+    /* Related posts card styling */
+    .related-posts { margin-top: 2rem; }
+    .related-posts .related-box { border: 1px solid rgba(0,0,0,0.06); padding: 12px; border-radius: 6px; background: var(--bg); color: var(--text); }
+    [data-theme='dark'] .related-posts .related-box { border-color: rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); }
+    .related-posts .related-box img { width:100%; height:200px; border-radius:4px;  }
+    .related-posts .related-box .title { font-weight:700; margin-top:8px; }
+    .related-posts .related-box .subheading { color: var(--muted); font-size:0.95em; }
+    .related-posts .related-box .post-meta { font-size:0.9em; margin-top:6px; }
+
+    [data-theme='dark'] blockquote { color: #EEE; }
+    blockquote { color: #444; }
+    </style>
 
     <!-- Custom Fonts -->
     <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -97,6 +191,9 @@
                     </li>
                     <li>
                         <a href="/rss.xml"><i class='fa fa-2x fa-rss-square'></i></a>
+                    </li>
+                    <li>
+                        <a href="#" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode"><i class="fa fa-2x fa-moon-o" aria-hidden="true"></i></a>
                     </li>
                 </ul>
             </div>
@@ -175,14 +272,41 @@ This article is no exception, Trey presents some funny, ugly and confusing anti-
 <p>Thank you for reading,
 Have a great holiday and New Year</p>
 <p>Anthony Shaw</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4 col-md-offset-8">
-                <a class="btn-default btn"
-                   href="https://twitter.com/intent/tweet">
-                    <i class="fa fa-twitter"></i>
-                    Share on Twitter</a>
+
+                
+                <H2>Related Posts</H2>
+                <div class="related-posts row">
+                    <div class="col-md-4">
+                        <a href="/posts/a-letter-to-the-python-community-in-africa.html">
+                        <div class="related-box">
+                            <img src="/img/posts/pycon-namibia-heading.jpeg" alt="A letter to the Python community in Africa" />
+                            <div class="title">A letter to the Python community in Africa</div>
+                            <div class="subheading">Some of the amazing stories from the African continent</div>
+                            <div class="post-meta"><i>Published January 18, 2019</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/learning-python.html">
+                        <div class="related-box">
+                            <img src="/img/posts/learningpython.jpg" alt="Learning Python from Scratch" />
+                            <div class="title">Learning Python from Scratch</div>
+                            <div class="subheading">If you want to learn Python, where do you start?</div>
+                            <div class="post-meta"><i>Published May 28, 2020</i></div>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/posts/why-isnt-python-async-more-popular.html">
+                        <div class="related-box">
+                            <img src="/img/posts/fishing-2015.jpg" alt="Python has had async for 10 years -- why isn't it more popular?" />
+                            <div class="title">Python has had async for 10 years -- why isn't it more popular?</div>
+                            <div class="subheading">A deep-dive into the challenges and misconceptions surrounding async programming in Python</div>
+                            <div class="post-meta"><i>Published September 2, 2025</i></div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -235,34 +359,79 @@ Have a great holiday and New Year</p>
 
     <script>hljs.initHighlightingOnLoad();</script>
 
-    <!-- Twitter Helper -->
-    <script>window.twttr = (function(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0],
-            t = window.twttr || {};
-        if (d.getElementById(id)) return t;
-        js = d.createElement(s);
-        js.id = id;
-        js.src = "https://platform.twitter.com/widgets.js";
-        fjs.parentNode.insertBefore(js, fjs);
+    <script>
+    (function() {
+        // Setup the toggle behavior and persistence. If the user hasn't chosen a preference, the site
+        // follows the system preference (prefers-color-scheme). Stored choice overrides system changes.
+        var toggle = document.getElementById('theme-toggle');
+        var icon = toggle ? toggle.querySelector('i') : null;
 
-        t._e = [];
-        t.ready = function(f) {
-            t._e.push(f);
-        };
-        return t;
-    }(document, "script", "twitter-wjs"));</script>
+        function getStored() {
+            try { return localStorage.getItem('theme'); } catch (e) { return null; }
+        }
+        function setStored(t) {
+            try { localStorage.setItem('theme', t); } catch (e) { }
+        }
+        function systemPrefersDark() {
+            return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+        function updateIcon(t) {
+            if (!icon) return;
+            // sun when dark to indicate clicking will switch to light; moon when light to switch to dark
+            icon.className = t === 'dark' ? 'fa fa-2x fa-sun-o' : 'fa fa-2x fa-moon-o';
+        }
+        function setTheme(t, save) {
+            document.documentElement.setAttribute('data-theme', t);
+            updateIcon(t);
+            if (save) setStored(t);
+        }
 
-    <script type="text/javascript">
-        !function(T,l,y){var S=T.location,k="script",D="instrumentationKey",C="ingestionendpoint",I="disableExceptionTracking",E="ai.device.",b="toLowerCase",w="crossOrigin",N="POST",e="appInsightsSDK",t=y.name||"appInsights";(y.name||T[e])&&(T[e]=t);var n=T[t]||function(d){var g=!1,f=!1,m={initialize:!0,queue:[],sv:"5",version:2,config:d};function v(e,t){var n={},a="Browser";return n[E+"id"]=a[b](),n[E+"type"]=a,n["ai.operation.name"]=S&&S.pathname||"_unknown_",n["ai.internal.sdkVersion"]="javascript:snippet_"+(m.sv||m.version),{time:function(){var e=new Date;function t(e){var t=""+e;return 1===t.length&&(t="0"+t),t}return e.getUTCFullYear()+"-"+t(1+e.getUTCMonth())+"-"+t(e.getUTCDate())+"T"+t(e.getUTCHours())+":"+t(e.getUTCMinutes())+":"+t(e.getUTCSeconds())+"."+((e.getUTCMilliseconds()/1e3).toFixed(3)+"").slice(2,5)+"Z"}(),iKey:e,name:"Microsoft.ApplicationInsights."+e.replace(/-/g,"")+"."+t,sampleRate:100,tags:n,data:{baseData:{ver:2}}}}var h=d.url||y.src;if(h){function a(e){var t,n,a,i,r,o,s,c,u,p,l;g=!0,m.queue=[],f||(f=!0,t=h,s=function(){var e={},t=d.connectionString;if(t)for(var n=t.split(";"),a=0;a<n.length;a++){var i=n[a].split("=");2===i.length&&(e[i[0][b]()]=i[1])}if(!e[C]){var r=e.endpointsuffix,o=r?e.location:null;e[C]="https://"+(o?o+".":"")+"dc."+(r||"services.visualstudio.com")}return e}(),c=s[D]||d[D]||"",u=s[C],p=u?u+"/v2/track":d.endpointUrl,(l=[]).push((n="SDK LOAD Failure: Failed to load Application Insights SDK script (See stack for details)",a=t,i=p,(o=(r=v(c,"Exception")).data).baseType="ExceptionData",o.baseData.exceptions=[{typeName:"SDKLoadFailed",message:n.replace(/\./g,"-"),hasFullStack:!1,stack:n+"\nSnippet failed to load ["+a+"] -- Telemetry is disabled\nHelp Link: https://go.microsoft.com/fwlink/?linkid=2128109\nHost: "+(S&&S.pathname||"_unknown_")+"\nEndpoint: "+i,parsedStack:[]}],r)),l.push(function(e,t,n,a){var i=v(c,"Message"),r=i.data;r.baseType="MessageData";var o=r.baseData;return o.message='AI (Internal): 99 message:"'+("SDK LOAD Failure: Failed to load Application Insights SDK script (See stack for details) ("+n+")").replace(/\"/g,"")+'"',o.properties={endpoint:a},i}(0,0,t,p)),function(e,t){if(JSON){var n=T.fetch;if(n&&!y.useXhr)n(t,{method:N,body:JSON.stringify(e),mode:"cors"});else if(XMLHttpRequest){var a=new XMLHttpRequest;a.open(N,t),a.setRequestHeader("Content-type","application/json"),a.send(JSON.stringify(e))}}}(l,p))}function i(e,t){f||setTimeout(function(){!t&&m.core||a()},500)}var e=function(){var n=l.createElement(k);n.src=h;var e=y[w];return!e&&""!==e||"undefined"==n[w]||(n[w]=e),n.onload=i,n.onerror=a,n.onreadystatechange=function(e,t){"loaded"!==n.readyState&&"complete"!==n.readyState||i(0,t)},n}();y.ld<0?l.getElementsByTagName("head")[0].appendChild(e):setTimeout(function(){l.getElementsByTagName(k)[0].parentNode.appendChild(e)},y.ld||0)}try{m.cookie=l.cookie}catch(p){}function t(e){for(;e.length;)!function(t){m[t]=function(){var e=arguments;g||m.queue.push(function(){m[t].apply(m,e)})}}(e.pop())}var n="track",r="TrackPage",o="TrackEvent";t([n+"Event",n+"PageView",n+"Exception",n+"Trace",n+"DependencyData",n+"Metric",n+"PageViewPerformance","start"+r,"stop"+r,"start"+o,"stop"+o,"addTelemetryInitializer","setAuthenticatedUserContext","clearAuthenticatedUserContext","flush"]),m.SeverityLevel={Verbose:0,Information:1,Warning:2,Error:3,Critical:4};var s=(d.extensionConfig||{}).ApplicationInsightsAnalytics||{};if(!0!==d[I]&&!0!==s[I]){var c="onerror";t(["_"+c]);var u=T[c];T[c]=function(e,t,n,a,i){var r=u&&u(e,t,n,a,i);return!0!==r&&m["_"+c]({message:e,url:t,lineNumber:n,columnNumber:a,error:i}),r},d.autoExceptionInstrumented=!0}return m}(y.cfg);function a(){y.onInit&&y.onInit(n)}(T[t]=n).queue&&0===n.queue.length?(n.queue.push(a),n.trackPageView({})):a()}(window,document,{
-        src: "https://js.monitor.azure.com/scripts/b/ai.2.min.js", // The SDK URL Source
-        // name: "appInsights", // Global SDK Instance name defaults to "appInsights" when not supplied
-        // ld: 0, // Defines the load delay (in ms) before attempting to load the sdk. -1 = block page load and add to head. (default) = 0ms load after timeout,
-        // useXhr: 1, // Use XHR instead of fetch to report failures (if available),
-        crossOrigin: "anonymous", // When supplied this will add the provided value as the cross origin attribute on the script tag
-        // onInit: null, // Once the application insights instance has loaded and initialized this callback function will be called with 1 argument -- the sdk instance (DO NOT ADD anything to the sdk.queue -- As they won't get called)
-        cfg: { // Application Insights Configuration
-            instrumentationKey: "d0222e7b-7c27-4322-8d0f-36fa2df51f86"
-        }});
+        if (toggle) {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                var current = document.documentElement.getAttribute('data-theme') || (systemPrefersDark() ? 'dark' : 'light');
+                var next = current === 'dark' ? 'light' : 'dark';
+                setTheme(next, true);
+            });
+            // initialize icon from the attribute (which was set early in the head)
+            var initial = document.documentElement.getAttribute('data-theme') || (getStored() || (systemPrefersDark() ? 'dark' : 'light'));
+            updateIcon(initial);
+        }
+
+        // If the user hasn't explicitly set a preference, follow system changes.
+        try {
+            var mq = window.matchMedia('(prefers-color-scheme: dark)');
+            var onChange = function(e) {
+                if (!getStored()) {
+                    setTheme(e.matches ? 'dark' : 'light', false);
+                }
+            };
+            if (mq.addEventListener) mq.addEventListener('change', onChange);
+            else if (mq.addListener) mq.addListener(onChange);
+        } catch (e) { }
+    })();
+    </script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PNMEXCY7DV"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-PNMEXCY7DV');
+    </script>
+
+    <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    var theme = document.documentElement.getAttribute('data-theme') || 'default';
+    if (theme != 'dark'){
+        theme = 'default';
+    }
+    mermaid.initialize({ 
+        startOnLoad: true,
+        theme: theme
+     });
     </script>
 </body>
 </html>
