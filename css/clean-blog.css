@@ -10,13 +10,13 @@
   width: 40%;
 }
 body {
-  font-family: 'Lora', 'Times New Roman', serif;
-  font-size: 20px;
+  font-family: 'Lora', 'Georgia', serif;
+  font-size: 18px;
   color: #333333;
 }
 p {
-  line-height: 1.5;
-  margin: 30px 0;
+  line-height: 1.75;
+  margin: 24px 0;
 }
 p a {
   text-decoration: underline;
@@ -30,8 +30,9 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-weight: 800;
+  font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 a {
   color: #333333;
@@ -60,7 +61,7 @@ hr.small {
   left: 0;
   width: 100%;
   z-index: 3;
-  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 .navbar-custom .navbar-brand {
   font-weight: 800;
