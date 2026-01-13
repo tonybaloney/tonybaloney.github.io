@@ -44,81 +44,43 @@
     <!-- Bootstrap Core CSS -->
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Theme CSS -->
-    <link href="/css/clean-blog.min.css" rel="stylesheet">
-
     <!-- Blog Post CSS -->
+    <link href="/css/homepage.css" rel="stylesheet">
     <link href="/css/blog-post.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/default.min.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/a11y-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 
-    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/x86asm.min.js"></script>
-    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/python.min.js"></script>
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/x86asm.min.js"></script>
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/python.min.js"></script>
 
 </head>
 
 <body>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header page-scroll">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    Menu <i class="fa fa-bars"></i>
-                </button>
-
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="/#">Home</a>
-                    </li>
-                    <li>
-                        <a href="/#projects">Projects</a>
-                    </li>
-                    <li>
-                        <a href="/#contributions">Contributions</a>
-                    </li>
-                    <li>
-                        <a href="/#courses">Courses</a>
-                    </li>
-                    <li>
-                        <a href="/#podcasts">Podcasts</a>
-                    </li>
-                    <li>
-                        <a href="/#talks">Talks</a>
-                    </li>
-                    <li>
-                        <a href="/#blog">Blog</a>
-                    </li>
-                    <li>
-                        <a href="https://github.com/tonybaloney"><i class='fa fa-2x fa-github'></i></a>
-                    </li>
-                    <li>
-                        <a href="https://www.youtube.com/c/AnthonyShaw"><i class='fa fa-2x fa-youtube-play'></i></a>
-                    </li>
-                    <li>
-                        <a href="/rss.xml"><i class='fa fa-2x fa-rss-square'></i></a>
-                    </li>
-                    <li>
-                        <a href="#" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode"><i class="fa fa-2x fa-moon-o" aria-hidden="true"></i></a>
-                    </li>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-inner">
+                <a href="/" class="navbar-brand"><span class="navbar-brand-symbol">&gt;</span><span class="navbar-brand-text"> tonybaloney</span></a>
+                <ul class="navbar-links">
+                    <li><a href="#book">Book</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#podcasts">Podcasts</a></li>
+                    <li><a href="https://github.com/tonybaloney" class="icon-link"><i class="fa fa-github"></i></a></li>
+                    <li><a href="https://www.youtube.com/c/AnthonyShaw" class="icon-link"><i class="fa fa-youtube-play"></i></a></li>
+                    <li><a href="/rss.xml" class="icon-link"><i class="fa fa-rss"></i></a></li>
+                    <li><button id="theme-toggle" aria-label="Toggle dark mode"><i class="fa fa-moon-o"></i></button></li>
                 </ul>
             </div>
-            <!-- /.navbar-collapse -->
         </div>
-        <!-- /.container -->
     </nav>
 
     <!-- Page Header -->
@@ -138,10 +100,8 @@
     </header>
 
     <!-- Main Content -->
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <p>Toward the end of 2024, there were a bunch of releases and announcements for new AI models. In particular, there was a lot of discussion about models which can do &ldquo;complex reasoning&rdquo; and &ldquo;chain of thought&rdquo; to solve complex problems. The noisier opinions around AI cover a spectrum from <em>&ldquo;we have almost reached AGI (Artificial General Intelligence)&rdquo;</em> to <em>&ldquo;this thing is a glorified auto-correct&rdquo;</em>. </p>
+    <div class="content-container">
+        <p>Toward the end of 2024, there were a bunch of releases and announcements for new AI models. In particular, there was a lot of discussion about models which can do &ldquo;complex reasoning&rdquo; and &ldquo;chain of thought&rdquo; to solve complex problems. The noisier opinions around AI cover a spectrum from <em>&ldquo;we have almost reached AGI (Artificial General Intelligence)&rdquo;</em> to <em>&ldquo;this thing is a glorified auto-correct&rdquo;</em>. </p>
 <p>I&rsquo;m still somewhere in the middle. I find the idea of anyone using them for <em>complex</em> reasoning quite baffling as I still see large numbers of users struggling to get them to answer simple questions <strong>consistently</strong>. In short, I continue to be surprised and disappointed with LLMs in equal balance. </p>
 <p>I&rsquo;ll work on a demo, try it 10 times, show it to colleagues. Then, when doing the exact same thing on stage, it behaves totally differently. It is frustrating to say the least. For now, I&rsquo;m putting that down to my own lack of skill and the newness of these tools. Especially after watching colleagues masterfully get the same model to produce quality responses to complex inputs.</p>
 <p>One technique that I&rsquo;ve been curious to dig deeper into is this addition to a system prompt: <code>If you don't know the answer, say &lt;the magic word&gt;</code>. </p>
@@ -430,71 +390,45 @@ However, if you provide the attributes of the cards as a list (e.g., number, col
 </code></pre>
 <p>In conclusion, the AI will be a <em>helpul assistant</em> unless you tell it otherwise and a very small Python program could have solved this problem in the first place. </p>
 
-                
-                <H2>Related Posts</H2>
-                <div class="related-posts row">
-                    <div class="col-md-4">
-                        <a href="/posts/performance-benchmarking-llm-models.html">
-                        <div class="related-box">
-                            <img src="/img/posts/llama-race.jpg" alt="Performance Benchmarking LLM Models" />
-                            <div class="title">Performance Benchmarking LLM Models</div>
-                            <div class="subheading">Using the LLM CLI to compare latency and throughput of multiple LLMs</div>
-                            <div class="post-meta"><i>Published August 27, 2025</i></div>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col-md-4">
-                        <a href="/posts/using-llm-in-github-actions.html">
-                        <div class="related-box">
-                            <img src="/img/posts-original/gpt-5-nano.jpg" alt="Using an LLM in GitHub Actions" />
-                            <div class="title">Using an LLM in GitHub Actions</div>
-                            <div class="subheading">Using the LLM CLI in a GitHub Action workflow with GitHub Models</div>
-                            <div class="post-meta"><i>Published August 14, 2025</i></div>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col-md-4">
-                        <a href="/posts/tips-for-getting-a-raise.html">
-                        <div class="related-box">
-                            <img src="/img/home-bg0.jpg" alt="Tips for getting a raise at work" />
-                            <div class="title">Tips for getting a raise at work</div>
-                            <div class="subheading">A breakdown of how increases work (at most companies), how to navigate them and how to convince your boss to pay you more</div>
-                            <div class="post-meta"><i>Published May 7, 2018</i></div>
-                        </div>
-                        </a>
-                    </div>
+        <div class="related-posts">
+            <h2>Related Posts</h2>
+            <div class="related-posts-grid">
+                <a href="/posts/performance-benchmarking-llm-models.html">
+                <div class="related-box">
+                    <img src="/img/posts/llama-race.jpg" alt="Performance Benchmarking LLM Models" />
+                    <div class="title">Performance Benchmarking LLM Models</div>
+                    <div class="subheading">Using the LLM CLI to compare latency and throughput of multiple LLMs</div>
+                    <div class="post-meta"><i>Published August 27, 2025</i></div>
                 </div>
+                </a>
+                <a href="/posts/using-llm-in-github-actions.html">
+                <div class="related-box">
+                    <img src="/img/posts-original/gpt-5-nano.jpg" alt="Using an LLM in GitHub Actions" />
+                    <div class="title">Using an LLM in GitHub Actions</div>
+                    <div class="subheading">Using the LLM CLI in a GitHub Action workflow with GitHub Models</div>
+                    <div class="post-meta"><i>Published August 14, 2025</i></div>
+                </div>
+                </a>
+                <a href="/posts/tips-for-getting-a-raise.html">
+                <div class="related-box">
+                    <img src="/img/home-bg0.jpg" alt="Tips for getting a raise at work" />
+                    <div class="title">Tips for getting a raise at work</div>
+                    <div class="subheading">A breakdown of how increases work (at most companies), how to navigate them and how to convince your boss to pay you more</div>
+                    <div class="post-meta"><i>Published May 7, 2018</i></div>
+                </div>
+                </a>
             </div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <ul class="list-inline text-center">
-                        <li>
-                            <a href="https://youtube.com/c/AnthonyShaw">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-youtube fa-stack-1x fa-inverse"></i>
-                                </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://github.com/tonybaloney">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                                </span>
-                            </a>
-                        </li>
-                    </ul>
-                    <p class="copyright text-muted">Copyright &copy; Anthony Shaw</p>
-                </div>
-            </div>
+    <footer class="footer">
+        <div class="footer-social">
+            <a href="https://youtube.com/c/AnthonyShaw" aria-label="YouTube"><i class="fa fa-youtube"></i></a>
+            <a href="https://github.com/tonybaloney" aria-label="GitHub"><i class="fa fa-github"></i></a>
+            <a href="/rss.xml" aria-label="RSS Feed"><i class="fa fa-rss"></i></a>
         </div>
+        <p class="footer-text">Copyright &copy; Anthony Shaw</p>
     </footer>
 
     <!-- jQuery -->
@@ -503,10 +437,20 @@ However, if you provide the attributes of the cards as a list (e.g., number, col
     <!-- Bootstrap Core JavaScript -->
     <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
 
-    <!-- Theme JavaScript -->
-    <script src="/js/clean-blog.min.js"></script>
-
     <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Mobile menu toggle -->
+    <script>
+    (function() {
+        var navToggle = document.querySelector('.navbar-toggle');
+        var navLinks = document.querySelector('.navbar-links');
+        if (navToggle && navLinks) {
+            navToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('show');
+            });
+        }
+    })();
+    </script>
 
     <script>
     (function() {
@@ -527,7 +471,7 @@ However, if you provide the attributes of the cards as a list (e.g., number, col
         function updateIcon(t) {
             if (!icon) return;
             // sun when dark to indicate clicking will switch to light; moon when light to switch to dark
-            icon.className = t === 'dark' ? 'fa fa-2x fa-sun-o' : 'fa fa-2x fa-moon-o';
+            icon.className = t === 'dark' ? 'fa fa-sun-o' : 'fa fa-moon-o';
         }
         function setTheme(t, save) {
             document.documentElement.setAttribute('data-theme', t);

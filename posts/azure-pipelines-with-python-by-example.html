@@ -44,81 +44,43 @@
     <!-- Bootstrap Core CSS -->
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Theme CSS -->
-    <link href="/css/clean-blog.min.css" rel="stylesheet">
-
     <!-- Blog Post CSS -->
+    <link href="/css/homepage.css" rel="stylesheet">
     <link href="/css/blog-post.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/default.min.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/a11y-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 
-    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/x86asm.min.js"></script>
-    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/python.min.js"></script>
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/x86asm.min.js"></script>
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/python.min.js"></script>
 
 </head>
 
 <body>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header page-scroll">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    Menu <i class="fa fa-bars"></i>
-                </button>
-
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="/#">Home</a>
-                    </li>
-                    <li>
-                        <a href="/#projects">Projects</a>
-                    </li>
-                    <li>
-                        <a href="/#contributions">Contributions</a>
-                    </li>
-                    <li>
-                        <a href="/#courses">Courses</a>
-                    </li>
-                    <li>
-                        <a href="/#podcasts">Podcasts</a>
-                    </li>
-                    <li>
-                        <a href="/#talks">Talks</a>
-                    </li>
-                    <li>
-                        <a href="/#blog">Blog</a>
-                    </li>
-                    <li>
-                        <a href="https://github.com/tonybaloney"><i class='fa fa-2x fa-github'></i></a>
-                    </li>
-                    <li>
-                        <a href="https://www.youtube.com/c/AnthonyShaw"><i class='fa fa-2x fa-youtube-play'></i></a>
-                    </li>
-                    <li>
-                        <a href="/rss.xml"><i class='fa fa-2x fa-rss-square'></i></a>
-                    </li>
-                    <li>
-                        <a href="#" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode"><i class="fa fa-2x fa-moon-o" aria-hidden="true"></i></a>
-                    </li>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-inner">
+                <a href="/" class="navbar-brand"><span class="navbar-brand-symbol">&gt;</span><span class="navbar-brand-text"> tonybaloney</span></a>
+                <ul class="navbar-links">
+                    <li><a href="#book">Book</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#podcasts">Podcasts</a></li>
+                    <li><a href="https://github.com/tonybaloney" class="icon-link"><i class="fa fa-github"></i></a></li>
+                    <li><a href="https://www.youtube.com/c/AnthonyShaw" class="icon-link"><i class="fa fa-youtube-play"></i></a></li>
+                    <li><a href="/rss.xml" class="icon-link"><i class="fa fa-rss"></i></a></li>
+                    <li><button id="theme-toggle" aria-label="Toggle dark mode"><i class="fa fa-moon-o"></i></button></li>
                 </ul>
             </div>
-            <!-- /.navbar-collapse -->
         </div>
-        <!-- /.container -->
     </nav>
 
     <!-- Page Header -->
@@ -138,10 +100,8 @@
     </header>
 
     <!-- Main Content -->
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <p>In this tutorial, I’ll show you <strong>-by example-</strong> how to use Azure Pipelines to automate the testing, validation, and publishing of your Python projects.</p>
+    <div class="content-container">
+        <p>In this tutorial, I’ll show you <strong>-by example-</strong> how to use Azure Pipelines to automate the testing, validation, and publishing of your Python projects.</p>
 <p>Azure Pipelines is a cloud service that supports many environments, languages, and tools. It is configured via a master azure-pipelines.yml YAML file within your project.</p>
 <p>Your project can exist in multiple source repositories, and automated integrations are available for GitHub.</p>
 <p>If you want to see the project layouts and how the configuration looks, everything in this tutorial is on <a href="https://github.com/tonybaloney/azure-pipelines-python-examples">my GitHub repository</a>. It’s licensed as MIT, so you can do with it as you wish!</p>
@@ -572,71 +532,45 @@ jobs:
 <li>Try to avoid using too much bash-scripting in your steps that is specific to Linux, this makes it easier to copy steps for Windows. In PowerShell, many of the commands you would expect in Linux exist, like <code>cd</code> <code>ls</code> <code>mkdir</code> <code>rm</code> .</li>
 </ul>
 
-                
-                <H2>Related Posts</H2>
-                <div class="related-posts row">
-                    <div class="col-md-4">
-                        <a href="/posts/azure-pipelines-autocomplete-in-pycharm.html">
-                        <div class="related-box">
-                            <img src="/img/clouds.jpg" alt="Azure Pipelines autocomplete in PyCharm, IntelliJ, WebStorm, CLion, and Rider" />
-                            <div class="title">Azure Pipelines autocomplete in PyCharm, IntelliJ, WebStorm, CLion, and Rider</div>
-                            <div class="subheading">Learn how to get autocomplete for your Azure Pipelines workflows</div>
-                            <div class="post-meta"><i>Published June 11, 2020</i></div>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col-md-4">
-                        <a href="/posts/django-on-azure-beyond-hello-world.html">
-                        <div class="related-box">
-                            <img src="/img/clouds.jpg" alt="Django on Azure - beyond "hello world"" />
-                            <div class="title">Django on Azure - beyond "hello world"</div>
-                            <div class="subheading">A tutorial on deploying a production-reading Django application on Microsoft Azure</div>
-                            <div class="post-meta"><i>Published April 13, 2020</i></div>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col-md-4">
-                        <a href="/posts/embedding-python-in-dot-net-with-csnakes.html">
-                        <div class="related-box">
-                            <img src="/img/posts/snake-robot.jpeg" alt="Embedding Python into your .NET project with CSnakes" />
-                            <div class="title">Embedding Python into your .NET project with CSnakes</div>
-                            <div class="subheading">A deep-dive into a new integration between .NET and Python</div>
-                            <div class="post-meta"><i>Published October 4, 2024</i></div>
-                        </div>
-                        </a>
-                    </div>
+        <div class="related-posts">
+            <h2>Related Posts</h2>
+            <div class="related-posts-grid">
+                <a href="/posts/azure-pipelines-autocomplete-in-pycharm.html">
+                <div class="related-box">
+                    <img src="/img/clouds.jpg" alt="Azure Pipelines autocomplete in PyCharm, IntelliJ, WebStorm, CLion, and Rider" />
+                    <div class="title">Azure Pipelines autocomplete in PyCharm, IntelliJ, WebStorm, CLion, and Rider</div>
+                    <div class="subheading">Learn how to get autocomplete for your Azure Pipelines workflows</div>
+                    <div class="post-meta"><i>Published June 11, 2020</i></div>
                 </div>
+                </a>
+                <a href="/posts/django-on-azure-beyond-hello-world.html">
+                <div class="related-box">
+                    <img src="/img/clouds.jpg" alt="Django on Azure - beyond "hello world"" />
+                    <div class="title">Django on Azure - beyond "hello world"</div>
+                    <div class="subheading">A tutorial on deploying a production-reading Django application on Microsoft Azure</div>
+                    <div class="post-meta"><i>Published April 13, 2020</i></div>
+                </div>
+                </a>
+                <a href="/posts/embedding-python-in-dot-net-with-csnakes.html">
+                <div class="related-box">
+                    <img src="/img/posts/snake-robot.jpeg" alt="Embedding Python into your .NET project with CSnakes" />
+                    <div class="title">Embedding Python into your .NET project with CSnakes</div>
+                    <div class="subheading">A deep-dive into a new integration between .NET and Python</div>
+                    <div class="post-meta"><i>Published October 4, 2024</i></div>
+                </div>
+                </a>
             </div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <ul class="list-inline text-center">
-                        <li>
-                            <a href="https://youtube.com/c/AnthonyShaw">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-youtube fa-stack-1x fa-inverse"></i>
-                                </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://github.com/tonybaloney">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                                </span>
-                            </a>
-                        </li>
-                    </ul>
-                    <p class="copyright text-muted">Copyright &copy; Anthony Shaw</p>
-                </div>
-            </div>
+    <footer class="footer">
+        <div class="footer-social">
+            <a href="https://youtube.com/c/AnthonyShaw" aria-label="YouTube"><i class="fa fa-youtube"></i></a>
+            <a href="https://github.com/tonybaloney" aria-label="GitHub"><i class="fa fa-github"></i></a>
+            <a href="/rss.xml" aria-label="RSS Feed"><i class="fa fa-rss"></i></a>
         </div>
+        <p class="footer-text">Copyright &copy; Anthony Shaw</p>
     </footer>
 
     <!-- jQuery -->
@@ -645,10 +579,20 @@ jobs:
     <!-- Bootstrap Core JavaScript -->
     <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
 
-    <!-- Theme JavaScript -->
-    <script src="/js/clean-blog.min.js"></script>
-
     <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Mobile menu toggle -->
+    <script>
+    (function() {
+        var navToggle = document.querySelector('.navbar-toggle');
+        var navLinks = document.querySelector('.navbar-links');
+        if (navToggle && navLinks) {
+            navToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('show');
+            });
+        }
+    })();
+    </script>
 
     <script>
     (function() {
@@ -669,7 +613,7 @@ jobs:
         function updateIcon(t) {
             if (!icon) return;
             // sun when dark to indicate clicking will switch to light; moon when light to switch to dark
-            icon.className = t === 'dark' ? 'fa fa-2x fa-sun-o' : 'fa fa-2x fa-moon-o';
+            icon.className = t === 'dark' ? 'fa fa-sun-o' : 'fa fa-moon-o';
         }
         function setTheme(t, save) {
             document.documentElement.setAttribute('data-theme', t);

@@ -44,81 +44,43 @@
     <!-- Bootstrap Core CSS -->
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Theme CSS -->
-    <link href="/css/clean-blog.min.css" rel="stylesheet">
-
     <!-- Blog Post CSS -->
+    <link href="/css/homepage.css" rel="stylesheet">
     <link href="/css/blog-post.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/default.min.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/a11y-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 
-    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/x86asm.min.js"></script>
-    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/python.min.js"></script>
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/x86asm.min.js"></script>
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/python.min.js"></script>
 
 </head>
 
 <body>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header page-scroll">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    Menu <i class="fa fa-bars"></i>
-                </button>
-
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="/#">Home</a>
-                    </li>
-                    <li>
-                        <a href="/#projects">Projects</a>
-                    </li>
-                    <li>
-                        <a href="/#contributions">Contributions</a>
-                    </li>
-                    <li>
-                        <a href="/#courses">Courses</a>
-                    </li>
-                    <li>
-                        <a href="/#podcasts">Podcasts</a>
-                    </li>
-                    <li>
-                        <a href="/#talks">Talks</a>
-                    </li>
-                    <li>
-                        <a href="/#blog">Blog</a>
-                    </li>
-                    <li>
-                        <a href="https://github.com/tonybaloney"><i class='fa fa-2x fa-github'></i></a>
-                    </li>
-                    <li>
-                        <a href="https://www.youtube.com/c/AnthonyShaw"><i class='fa fa-2x fa-youtube-play'></i></a>
-                    </li>
-                    <li>
-                        <a href="/rss.xml"><i class='fa fa-2x fa-rss-square'></i></a>
-                    </li>
-                    <li>
-                        <a href="#" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode"><i class="fa fa-2x fa-moon-o" aria-hidden="true"></i></a>
-                    </li>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-inner">
+                <a href="/" class="navbar-brand"><span class="navbar-brand-symbol">&gt;</span><span class="navbar-brand-text"> tonybaloney</span></a>
+                <ul class="navbar-links">
+                    <li><a href="#book">Book</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#podcasts">Podcasts</a></li>
+                    <li><a href="https://github.com/tonybaloney" class="icon-link"><i class="fa fa-github"></i></a></li>
+                    <li><a href="https://www.youtube.com/c/AnthonyShaw" class="icon-link"><i class="fa fa-youtube-play"></i></a></li>
+                    <li><a href="/rss.xml" class="icon-link"><i class="fa fa-rss"></i></a></li>
+                    <li><button id="theme-toggle" aria-label="Toggle dark mode"><i class="fa fa-moon-o"></i></button></li>
                 </ul>
             </div>
-            <!-- /.navbar-collapse -->
         </div>
-        <!-- /.container -->
     </nav>
 
     <!-- Page Header -->
@@ -138,10 +100,8 @@
     </header>
 
     <!-- Main Content -->
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <p>This year, I&rsquo;ve been working on a new project called <a href="https://tonybaloney.github.io/CSnakes">CSnakes</a>. It&rsquo;s a new way to embed Python into your .NET project. It&rsquo;s a deep integration that allows you to run Python code from within your .NET application without having to shell out to a separate process or use a REST API.</p>
+    <div class="content-container">
+        <p>This year, I&rsquo;ve been working on a new project called <a href="https://tonybaloney.github.io/CSnakes">CSnakes</a>. It&rsquo;s a new way to embed Python into your .NET project. It&rsquo;s a deep integration that allows you to run Python code from within your .NET application without having to shell out to a separate process or use a REST API.</p>
 <h2 id="what-problem-is-this-solving">What problem is this solving?<a class="headerlink" href="#what-problem-is-this-solving" title="Permanent link">&para;</a></h2>
 <p>Python and .NET are pretty different platforms in many ways. Python uses dynamic typing, while .NET uses static typing. Python is interpreted, while .NET is compiled. Python is a language, while .NET is a framework (as my colleague who keeps mentioning F#.NET likes to remind me).</p>
 <p>Because of this and many other differences, Python and .NET have taken hold in different parts of the software development world. Python is popular in data science, machine learning, and web development, while .NET is popular in enterprise software, desktop applications, and games.</p>
@@ -275,71 +235,45 @@ for (int i = 0; i &lt; resultMatrix.Height; i++)
 <h2 id="whats-next">What&rsquo;s next?<a class="headerlink" href="#whats-next" title="Permanent link">&para;</a></h2>
 <p>We&rsquo;re looking for feedback right now. The API is still in beta, so I&rsquo;m all ears on the interface, usability and technical constraints and decisions we&rsquo;ve made. At .NET Conf this year, I&rsquo;ll be showcasing CSnakes with some interesting demos. </p>
 
-                
-                <H2>Related Posts</H2>
-                <div class="related-posts row">
-                    <div class="col-md-4">
-                        <a href="/posts/azure-pipelines-with-python-by-example.html">
-                        <div class="related-box">
-                            <img src="/img/home-bg.jpg" alt="Azure Pipelines with Python - by example" />
-                            <div class="title">Azure Pipelines with Python - by example</div>
-                            <div class="subheading">A tutorial on Microsoft Azure pipelines and how to use it effectively for your Python projects.</div>
-                            <div class="post-meta"><i>Published January 2, 2019</i></div>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col-md-4">
-                        <a href="/posts/running-python-on-dotnet-5-with-pyjion.html">
-                        <div class="related-box">
-                            <img src="/img/posts/turtle-pileup.jpg" alt="Running Python on .NET 5" />
-                            <div class="title">Running Python on .NET 5</div>
-                            <div class="subheading">An update on the Pyjion project to plug a JIT into CPython using the .NET 5 CLR JIT compiler</div>
-                            <div class="post-meta"><i>Published November 11, 2020</i></div>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col-md-4">
-                        <a href="/posts/extending-python-with-assembly.html">
-                        <div class="related-box">
-                            <img src="/img/posts/hammer-screw.jpeg" alt="Writing Python Extensions in Assembly" />
-                            <div class="title">Writing Python Extensions in Assembly</div>
-                            <div class="subheading">A deep-dive technical overview of how you can write CPython extensions in assembly (with a bonus tutorial on assembly programming)</div>
-                            <div class="post-meta"><i>Published August 15, 2020</i></div>
-                        </div>
-                        </a>
-                    </div>
+        <div class="related-posts">
+            <h2>Related Posts</h2>
+            <div class="related-posts-grid">
+                <a href="/posts/azure-pipelines-with-python-by-example.html">
+                <div class="related-box">
+                    <img src="/img/home-bg.jpg" alt="Azure Pipelines with Python - by example" />
+                    <div class="title">Azure Pipelines with Python - by example</div>
+                    <div class="subheading">A tutorial on Microsoft Azure pipelines and how to use it effectively for your Python projects.</div>
+                    <div class="post-meta"><i>Published January 2, 2019</i></div>
                 </div>
+                </a>
+                <a href="/posts/running-python-on-dotnet-5-with-pyjion.html">
+                <div class="related-box">
+                    <img src="/img/posts/turtle-pileup.jpg" alt="Running Python on .NET 5" />
+                    <div class="title">Running Python on .NET 5</div>
+                    <div class="subheading">An update on the Pyjion project to plug a JIT into CPython using the .NET 5 CLR JIT compiler</div>
+                    <div class="post-meta"><i>Published November 11, 2020</i></div>
+                </div>
+                </a>
+                <a href="/posts/extending-python-with-assembly.html">
+                <div class="related-box">
+                    <img src="/img/posts/hammer-screw.jpeg" alt="Writing Python Extensions in Assembly" />
+                    <div class="title">Writing Python Extensions in Assembly</div>
+                    <div class="subheading">A deep-dive technical overview of how you can write CPython extensions in assembly (with a bonus tutorial on assembly programming)</div>
+                    <div class="post-meta"><i>Published August 15, 2020</i></div>
+                </div>
+                </a>
             </div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <ul class="list-inline text-center">
-                        <li>
-                            <a href="https://youtube.com/c/AnthonyShaw">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-youtube fa-stack-1x fa-inverse"></i>
-                                </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://github.com/tonybaloney">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                                </span>
-                            </a>
-                        </li>
-                    </ul>
-                    <p class="copyright text-muted">Copyright &copy; Anthony Shaw</p>
-                </div>
-            </div>
+    <footer class="footer">
+        <div class="footer-social">
+            <a href="https://youtube.com/c/AnthonyShaw" aria-label="YouTube"><i class="fa fa-youtube"></i></a>
+            <a href="https://github.com/tonybaloney" aria-label="GitHub"><i class="fa fa-github"></i></a>
+            <a href="/rss.xml" aria-label="RSS Feed"><i class="fa fa-rss"></i></a>
         </div>
+        <p class="footer-text">Copyright &copy; Anthony Shaw</p>
     </footer>
 
     <!-- jQuery -->
@@ -348,10 +282,20 @@ for (int i = 0; i &lt; resultMatrix.Height; i++)
     <!-- Bootstrap Core JavaScript -->
     <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
 
-    <!-- Theme JavaScript -->
-    <script src="/js/clean-blog.min.js"></script>
-
     <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Mobile menu toggle -->
+    <script>
+    (function() {
+        var navToggle = document.querySelector('.navbar-toggle');
+        var navLinks = document.querySelector('.navbar-links');
+        if (navToggle && navLinks) {
+            navToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('show');
+            });
+        }
+    })();
+    </script>
 
     <script>
     (function() {
@@ -372,7 +316,7 @@ for (int i = 0; i &lt; resultMatrix.Height; i++)
         function updateIcon(t) {
             if (!icon) return;
             // sun when dark to indicate clicking will switch to light; moon when light to switch to dark
-            icon.className = t === 'dark' ? 'fa fa-2x fa-sun-o' : 'fa fa-2x fa-moon-o';
+            icon.className = t === 'dark' ? 'fa fa-sun-o' : 'fa fa-moon-o';
         }
         function setTheme(t, save) {
             document.documentElement.setAttribute('data-theme', t);

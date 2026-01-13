@@ -1,0 +1,1894 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="" name="description">
+    <meta content="" name="author">
+
+    <title>Anthony Shaw's Home Page</title>
+
+    <script>
+    (function() {
+        // Set initial theme as early as possible to avoid flash. Use stored preference if present,
+        // otherwise default to the user's system preference (prefers-color-scheme).
+        var stored = null;
+        try { stored = localStorage.getItem('theme'); } catch (e) { stored = null; }
+        var theme;
+        if (stored === 'light' || stored === 'dark') {
+            theme = stored;
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            theme = 'dark';
+        } else {
+            theme = 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+    </script>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="css/clean-blog.min.css" rel="stylesheet">
+
+    <style>
+    /* Simple CSS variable-based theme with a dark variant. Adjusts background, text, nav, footer and code blocks. */
+    :root {
+        --bg: #ffffff;
+        --text: #222222;
+        --muted: #777777;
+        --link: #337ab7;
+        --navbar-bg: rgba(255,255,255,0.95);
+        --navbar-text: #222222;
+        --code-bg: #f6f8fa;
+        --pre-color: #2e2e2e;
+    }
+    [data-theme='dark'] {
+        --bg: #0b0f17;
+        --text: #e6edf3;
+        --muted: #9aa0a6;
+        --link: #8fc7ff;
+        --navbar-bg: rgba(10,10,10,0.95);
+        --navbar-text: #e6edf3;
+        --code-bg: #282c34;
+        --pre-color: #abb2bf;
+    }
+
+    html, body {
+        background-color: var(--bg) !important;
+        color: var(--text) !important;
+    }
+
+    a, a:link, a:visited { color: var(--link) !important; }
+
+    /* Navbar */
+    .navbar-default { background-color: var(--navbar-bg) !important; border-color: transparent !important; }
+    .navbar-default .navbar-nav>li>a { color: var(--navbar-text) !important; }
+
+    /* Header */
+    .intro-header .site-heading h1, .intro-header .site-heading .subheading { color: var(--text) !important; text-shadow: none !important; }
+
+    /* Footer */
+    footer { color: var(--muted) !important; }
+
+    /* Code / highlight.js */
+    pre, code, .hljs { background: var(--code-bg) !important; color: var(--pre-color) !important; }
+    .hljs { padding: 1em; display:block; overflow-x:auto; }
+
+    /* Toggle button sizing */
+    #theme-toggle { display:inline-flex; align-items:center; justify-content:center; padding:6px; }
+    #theme-toggle i { font-size:1.6em; }
+
+    /* A few token overrides for dark mode highlighting (when highlight.js default theme is used) */
+    [data-theme='dark'] .hljs { background: #282c34 !important; color: #abb2bf !important; }
+    [data-theme='dark'] .hljs-keyword, [data-theme='dark'] .hljs-selector-tag, [data-theme='dark'] .hljs-literal { color: #c678dd; }
+    [data-theme='dark'] .hljs-string, [data-theme='dark'] .hljs-title, [data-theme='dark'] .hljs-name { color: #98c379; }
+    [data-theme='dark'] .hljs-comment, [data-theme='dark'] .hljs-quote { color: #5c6370; font-style: italic; }
+
+    /* Footer icons: ensure they're white on dark */
+    [data-theme='dark'] footer .fa-stack .fa-inverse { color: #ffffff !important; }
+    [data-theme='dark'] footer .fa-stack .fa-circle { color: rgba(255,255,255,0.08) !important; }
+    </style>
+
+    <!-- Custom Fonts -->
+    <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+                <span class="sr-only">Toggle navigation</span>
+                Menu <i class="fa fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#">Home</a>
+                </li>
+                <li>
+                    <a href="#projects">Projects</a>
+                </li>
+                <li>
+                    <a href="#research">Research</a>
+                </li>
+                <li>
+                    <a href="#courses">Courses</a>
+                </li>
+                <li>
+                    <a href="#books">Books</a>
+                </li>
+                <li>
+                    <a href="#podcasts">Podcasts</a>
+                </li>
+                <li>
+                    <a href="#talks">Talks</a>
+                </li>
+                <li>
+                    <a href="#blog">Blog</a>
+                </li>
+                <li>
+                    <a rel="me" href="https://fosstodon.org/@tonybaloney"><i class='fab fa-2x fa-mastodon'></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/tonybaloney"><i class='fa fa-2x fa-github'></i></a>
+                </li>
+                <li>
+                    <a href="https://www.youtube.com/c/AnthonyShaw"><i class='fa fa-2x fa-youtube-play'></i></a>
+                </li>
+                <li>
+                    <a href="/rss.xml"><i class='fa fa-2x fa-rss-square'></i></a>
+                </li>
+                    <li>
+                        <a href="#" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode"><i class="fa fa-2x fa-moon-o" aria-hidden="true"></i></a>
+                    </li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+<!-- Page Header -->
+<!-- Set your background image for this header on the line below. -->
+<header class="intro-header" style="background-image: url('img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="site-heading">
+                    <h1>Anthony Shaw</h1>
+                    <hr class="small">
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        <div class='col-md-2'>
+            <img src='https://gravatar.com/avatar/97015b6d8b78f4695250139ad5c5e752?s=300' style="border-radius: 50%;"/>
+        </div>
+        <div class="col-lg-8 col-lg-offset-2 col-md-10">
+            <h1><a id="about"></a>About me</h1>
+            <p class="post-subtitle">
+                I'm an English expat living in Australia. I'm a proud father of 3 girls and strive to be an
+                <b>active, engaged and responsible</b> member of both my local community and the broader open-source tech community.
+            </p>
+            <p>
+                I work for Microsoft, focused on Python and Open-Sources technologies. I'm also studying a PhD in Computer Science at Macquarie University.
+            </p>
+            <p>
+                I <a href="https://twitter.com/anthonypjshaw">Tweet</a> often, <a href="#blog">blog sometimes</a>
+                and <a href='#talks'>speak often</a>. All of my research and tinkering is Open-Source, I'm an active member of some large
+                open-source projects</a> as well as <a href='#projects'>maintaining my own</a>.
+            </p>
+        </div>
+    </div>
+    <h1><a id="projects"></a>Projects I'm working on at the moment</h1>
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="row">
+
+            <div class="post-preview col-lg-6 col-md-6">
+                <a href="https://github.com/tonybaloney/vscode-pets">
+                    <h2 class="post-title">vscode-pets</h2>
+                    <h3 class="post-subtitle">
+                        Adds playful pets 🦀🐱🐶 in your VS Code window
+                    </h3>
+                </a>
+                <p class="post-meta">
+                    <!-- Place this tag where you want the button to render. -->
+                    <a class="github-button" href="https://github.com/tonybaloney/vscode-pets" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a>
+                </p>
+            </div>
+
+            <div class="post-preview col-lg-6 col-md-6">
+                <a href="https://github.com/tonybaloney/wily">
+                    <h2 class="post-title">wily</h2>
+                    <h3 class="post-subtitle">
+                        A Python application for tracking, reporting on timing and complexity in Python code
+                    </h3>
+                </a>
+                <p class="post-meta">
+                    <!-- Place this tag where you want the button to render. -->
+                    <a class="github-button" href="https://github.com/tonybaloney/wily" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a>
+                </p>
+            </div>
+            </div>
+            <div class="row">
+
+            <div class="post-preview col-lg-6 col-md-6">
+                <a href="https://github.com/tonybaloney/mocker">
+                    <h2 class="post-title">mocker</h2>
+                    <h3 class="post-subtitle">
+                        A Docker-type runtime, written in 100% Python
+                    </h3>
+                </a>
+                <p class="post-meta">
+                    <!-- Place this tag where you want the button to render. -->
+                    <a class="github-button" href="https://github.com/tonybaloney/mocker" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a>
+                </p>
+            </div>
+
+            <div class="post-preview col-lg-6 col-md-6">
+                <a href="https://github.com/tonybaloney/perflint">
+                    <h2 class="post-title">perflint</h2>
+                    <h3 class="post-subtitle">
+                        Python Linter for performance anti patterns
+                    </h3>
+                </a>
+                <p class="post-meta">
+                    <!-- Place this tag where you want the button to render. -->
+                    <a class="github-button" href="https://github.com/tonybaloney/perflint" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a>
+                </p>
+            </div>
+            </div>
+            <div class="row">
+
+            <div class="post-preview col-lg-6 col-md-6">
+                <a href="https://github.com/tonybaloney/pycharm-security">
+                    <h2 class="post-title">pycharm-security</h2>
+                    <h3 class="post-subtitle">
+                        Finds security holes in your Python projects from PyCharm and GitHub
+                    </h3>
+                </a>
+                <p class="post-meta">
+                    <!-- Place this tag where you want the button to render. -->
+                    <a class="github-button" href="https://github.com/tonybaloney/pycharm-security" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a>
+                </p>
+            </div>
+
+            <div class="post-preview col-lg-6 col-md-6">
+                <a href="https://github.com/tonybaloney/cpython-book-samples">
+                    <h2 class="post-title">cpython-book-samples</h2>
+                    <h3 class="post-subtitle">
+                        Sample scripts and examples for my CPython Internals book
+                    </h3>
+                </a>
+                <p class="post-meta">
+                    <!-- Place this tag where you want the button to render. -->
+                    <a class="github-button" href="https://github.com/tonybaloney/cpython-book-samples" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a>
+                </p>
+            </div>
+            </div>
+            <div class="row">
+
+            <div class="post-preview col-lg-6 col-md-6">
+                <a href="https://github.com/tonybaloney/anti-patterns">
+                    <h2 class="post-title">anti-patterns</h2>
+                    <h3 class="post-subtitle">
+                        None
+                    </h3>
+                </a>
+                <p class="post-meta">
+                    <!-- Place this tag where you want the button to render. -->
+                    <a class="github-button" href="https://github.com/tonybaloney/anti-patterns" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a>
+                </p>
+            </div>
+
+            <div class="post-preview col-lg-6 col-md-6">
+                <a href="https://github.com/tonybaloney/rich-bench">
+                    <h2 class="post-title">rich-bench</h2>
+                    <h3 class="post-subtitle">
+                        A little benchmarking tool for Python
+                    </h3>
+                </a>
+                <p class="post-meta">
+                    <!-- Place this tag where you want the button to render. -->
+                    <a class="github-button" href="https://github.com/tonybaloney/rich-bench" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a>
+                </p>
+            </div>
+            </div>
+            <div class="row">
+
+            <div class="post-preview col-lg-6 col-md-6">
+                <a href="https://github.com/tonybaloney/instaviz">
+                    <h2 class="post-title">instaviz</h2>
+                    <h3 class="post-subtitle">
+                        Instant visualization of Python AST and Code Objects
+                    </h3>
+                </a>
+                <p class="post-meta">
+                    <!-- Place this tag where you want the button to render. -->
+                    <a class="github-button" href="https://github.com/tonybaloney/instaviz" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a>
+                </p>
+            </div>
+
+            <div class="post-preview col-lg-6 col-md-6">
+                <a href="https://github.com/tonybaloney/dissy">
+                    <h2 class="post-title">dissy</h2>
+                    <h3 class="post-subtitle">
+                        A TUI disassembler
+                    </h3>
+                </a>
+                <p class="post-meta">
+                    <!-- Place this tag where you want the button to render. -->
+                    <a class="github-button" href="https://github.com/tonybaloney/dissy" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a>
+                </p>
+            </div>
+            </div>
+            <div class="row">
+
+            <div class="post-preview col-lg-6 col-md-6">
+                <a href="https://github.com/tonybaloney/CSnakes">
+                    <h2 class="post-title">CSnakes</h2>
+                    <h3 class="post-subtitle">
+                        None
+                    </h3>
+                </a>
+                <p class="post-meta">
+                    <!-- Place this tag where you want the button to render. -->
+                    <a class="github-button" href="https://github.com/tonybaloney/CSnakes" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a>
+                </p>
+            </div>
+
+            <div class="post-preview col-lg-6 col-md-6">
+                <a href="https://github.com/tonybaloney/ants-azure-demos">
+                    <h2 class="post-title">ants-azure-demos</h2>
+                    <h3 class="post-subtitle">
+                        Collection of PoCs and Azure Demos
+                    </h3>
+                </a>
+                <p class="post-meta">
+                    <!-- Place this tag where you want the button to render. -->
+                    <a class="github-button" href="https://github.com/tonybaloney/ants-azure-demos" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a>
+                </p>
+            </div>
+            </div>
+            <div class="row">
+
+            <div class="post-preview col-lg-6 col-md-6">
+                <a href="https://github.com/tonybaloney/python-assembly-poc">
+                    <h2 class="post-title">python-assembly-poc</h2>
+                    <h3 class="post-subtitle">
+                        None
+                    </h3>
+                </a>
+                <p class="post-meta">
+                    <!-- Place this tag where you want the button to render. -->
+                    <a class="github-button" href="https://github.com/tonybaloney/python-assembly-poc" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a>
+                </p>
+            </div>
+
+            <div class="post-preview col-lg-6 col-md-6">
+                <a href="https://github.com/tonybaloney/requests-staticmock">
+                    <h2 class="post-title">requests-staticmock</h2>
+                    <h3 class="post-subtitle">
+                        A test utility for mocking out requests host from a fixtures directory
+                    </h3>
+                </a>
+                <p class="post-meta">
+                    <!-- Place this tag where you want the button to render. -->
+                    <a class="github-button" href="https://github.com/tonybaloney/requests-staticmock" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a>
+                </p>
+            </div>
+            </div>
+            <div class="row">
+
+            <div class="post-preview col-lg-6 col-md-6">
+                <a href="https://github.com/tonybaloney/django-xss-fuzzer">
+                    <h2 class="post-title">django-xss-fuzzer</h2>
+                    <h3 class="post-subtitle">
+                        An XSS fuzzer for Django
+                    </h3>
+                </a>
+                <p class="post-meta">
+                    <!-- Place this tag where you want the button to render. -->
+                    <a class="github-button" href="https://github.com/tonybaloney/django-xss-fuzzer" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a>
+                </p>
+            </div>
+
+            <div class="post-preview col-lg-6 col-md-6">
+                <a href="https://github.com/tonybaloney/azure-pipelines-python-examples">
+                    <h2 class="post-title">azure-pipelines-python-examples</h2>
+                    <h3 class="post-subtitle">
+                        Example configurations for Azure Build Pipelines for Python
+                    </h3>
+                </a>
+                <p class="post-meta">
+                    <!-- Place this tag where you want the button to render. -->
+                    <a class="github-button" href="https://github.com/tonybaloney/azure-pipelines-python-examples" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a>
+                </p>
+            </div>
+            </div>
+            <div class="row">
+
+            <div class="post-preview col-lg-6 col-md-6">
+                <a href="https://github.com/tonybaloney/hathi">
+                    <h2 class="post-title">hathi</h2>
+                    <h3 class="post-subtitle">
+                        A dictionary attack tool for PostgreSQL and MSSQL
+                    </h3>
+                </a>
+                <p class="post-meta">
+                    <!-- Place this tag where you want the button to render. -->
+                    <a class="github-button" href="https://github.com/tonybaloney/hathi" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a>
+                </p>
+            </div>
+
+            <div class="post-preview col-lg-6 col-md-6">
+                <a href="https://github.com/tonybaloney/pep-explorer">
+                    <h2 class="post-title">pep-explorer</h2>
+                    <h3 class="post-subtitle">
+                        An easy to use online explorer for Python Enhancement Proposals
+                    </h3>
+                </a>
+                <p class="post-meta">
+                    <!-- Place this tag where you want the button to render. -->
+                    <a class="github-button" href="https://github.com/tonybaloney/pep-explorer" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a>
+                </p>
+            </div>
+            </div>
+            <div class="row">
+
+            <div class="post-preview col-lg-6 col-md-6">
+                <a href="https://github.com/tonybaloney/notations">
+                    <h2 class="post-title">notations</h2>
+                    <h3 class="post-subtitle">
+                        Estimating Big-O notations for a given function in Python
+                    </h3>
+                </a>
+                <p class="post-meta">
+                    <!-- Place this tag where you want the button to render. -->
+                    <a class="github-button" href="https://github.com/tonybaloney/notations" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a>
+                </p>
+            </div>
+
+            <div class="post-preview col-lg-6 col-md-6">
+                <a href="https://github.com/tonybaloney/pyinline">
+                    <h2 class="post-title">pyinline</h2>
+                    <h3 class="post-subtitle">
+                        None
+                    </h3>
+                </a>
+                <p class="post-meta">
+                    <!-- Place this tag where you want the button to render. -->
+                    <a class="github-button" href="https://github.com/tonybaloney/pyinline" data-icon="octicon-star" data-show-count="true" aria-label="Star on GitHub">Star</a>
+                </p>
+            </div>
+            </div>
+            <div class="row">
+            </div>
+        </div>
+
+    </div>
+    <h1><a id="research"></a>Research</h1>
+    <p>I'm an Adjunct Fellow and PhD Candidate at <a href="https://researchers.mq.edu.au/en/persons/anthony-shaw">Macquarie University</a> in Sydney Australia. Here is a list of my recent publications.</p>
+    <div class="row">
+        <div class="col-lg-12 col-md-10 col-md-offset-1">
+            
+            <div class="row">
+                <div class="post-preview col-lg-12 col-md-12">
+                    <a href="https://dl.acm.org/doi/10.1145/3543873.3587338">
+                        <h2 class="post-title">Measuring Potential Performance Gains of Python Web Applications with pyUpgradeSim, (WWW '23 Companion: Companion Proceedings of the ACM Web Conference 2023) 30 April 2023</h2>
+                        <h3 class="post-subtitle">
+                            Python is a popular programming language for web development. However, optimizing the performance of Python web applications is a challenging task for developers. This paper presents a new approach to measuring the potential performance gains of upgraded Python web applications. Our approach is based on the provision of an interactive service that assists developers in optimizing their Python code through changes to the underlying system. The service uses profiling and visualization techniques to identify performance bottlenecks. We demonstrate and evaluate the effectiveness of our approach through a series of experiments on real-world Python web applications, measuring performance differences in between versions and the benefits of migrating at a reduced cost. The results show promising improvement in performance without any required code changes.
+                        </h3>
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="post-preview col-lg-12 col-md-12">
+                    <a href="https://doi.org/10.25949/23974764.v1">
+                        <h2 class="post-title">Towards evaluating Python as a suitable data science programming language for modern computing architecture, (Masters Thesis) 11 October 2023</h2>
+                        <h3 class="post-subtitle">
+                            The two most popular Computer Programming languages for Data Science are Python, and R. Both are dynamically typed, interpreted languages. Python first appeared in 1991, and R in 1993. Thirty years later, computing architecture has moved toward parallel computation to compensate for decreased annual performance improvement for CPUs. The performance improvement rates for the period 1986-2003 were 52% per year then declining to 22% from 2003-2015. Modern CPU architecture features multiple cores that can parallelize execution even further with technologies such as Hyper-Threading. Despite this trend, Python and R are tied to their 1990s architectural design and are written with a single-threaded Global Interpreter Lock (Python) or a single-threaded interpreter (R). Furthermore, advancing massively parallel AI and Machine Learning algorithms requires support for implementations in code to leverage hardware with over 100 cores using GPU programming APIs. This research will explore the limitations of dynamically typed, interpreted languages on Data Science engineering. This research will demonstrate what factors are limiting the scalability of Python and what alternatives are being developed. This research will propose where investments in the industry should be placed to ensure long-term support for data mining, processing, and engineering applications. 
+                        </h3>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <h1><a id="books"></a>Books</h1>
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-preview">
+                <a href="https://realpython.com/products/cpython-internals-book/">
+                    <h2 class="post-title">
+                        <img src="https://files.realpython.com/media/cpython-book-3d-no-shadow-trimmed.ff54fb267b79.png" width=150/> CPython Internals
+                    </h2>
+                    <div class="post-subtitle">
+                        <p>Get your guided tour through the Python 3.9 interpreter: Unlock the inner workings of the Python language, compile the Python interpreter from source code, and participate in the development of CPython.
+                            <br/>
+                            Are there certain parts of Python that just seem like magic?
+                            <br/>
+                            This book explains the concepts, ideas, and technicalities of the Python interpreter in an approachable and hands-on fashion.
+                            <br/>
+                            Once you see how Python works at the interpreter level, you can optimize your applications and fully leverage the power of Python.</p>
+                    </div>
+                </a>
+                <p class="post-meta">
+                    <p><a href="https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=301383556&partner=redmist&start=api">This book is also published in Korean as "CPython 파헤치기"</a></p>
+                    <i>Published May 5, 2021</i>
+                </p>
+            </div>
+            <hr>
+        </div>
+    </div>
+
+    <h1><a id="podcasts"></a>Podcasts</h1>
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <table class="table table-responsive table-striped podcast-table">
+                <thead>
+                <tr>
+                    <th>Show</th>
+                    <th>Episode</th>
+                    <th>Title</th>
+                    <th>Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Talk Python to Me</td>
+                    <td>373</td>
+                    <td><a href="https://talkpython.fm/episodes/show/373/reinventing-azures-python-cli">Reinventing Python's Azure CLI</a></td>
+                    <td>July 12th, 2022</td>
+                </tr>
+                <tr>
+                    <td>Hanselminutes</td>
+                    <td>834</td>
+                    <td><a href="https://hanselminutes.com/834/pyjion-a-jit-compiler-for-python-using-net-core-with-anthony-shaw">Pyjion, a JIT compiler for Python using .NET Core with Anthony Shaw</a></td>
+                    <td>March 31st, 2022</td>
+                </tr>
+                <tr>
+                    <td>Talk Python to Me</td>
+                    <td>340</td>
+                    <td><a href="https://talkpython.fm/episodes/show/340/time-to-jit-your-python-with-pyjion">Time to JIT your Python with Pyjion?</a></td>
+                    <td>November 3rd, 2021</td>
+                </tr>
+                <tr>
+                    <td>Python Bytes</td>
+                    <td>256</td>
+                    <td><a href="https://pythonbytes.fm/episodes/show/256/and-the-best-open-source-project-prize-goes-to-">And the best open source project prize goes to...</a></td>
+                    <td>October 29th, 2021</td>
+                </tr>
+                <tr>
+                    <td>Pybites Podcast</td>
+                    <td>11</td>
+                    <td><a href="https://www.pybitespodcast.com/1501156/9083843-039-tackling-big-challenges-and-overcoming-decision-fatigue-with-anthony-shaw">Tackling big challenges and overcoming decision fatigue</a></td>
+                    <td>August 25th, 2021</td>
+                </tr>
+                <tr>
+                    <td>SoloCoder Podcast</td>
+                    <td>58</td>
+                    <td><a href="https://solocoder.com/podcast/a-talented-python-fellow-anthony-shaw">"A Talented Python Fellow"</a></td>
+                    <td>September 22nd, 2020</td>
+                </tr>
+                <tr>
+                    <td>RealPython Podcast</td>
+                    <td>11</td>
+                    <td><a href="https://realpython.com/podcasts/rpp/11/">Advice on Getting Started With Testing in Python</a></td>
+                    <td>May 29th, 2020</td>
+                </tr>
+                <tr>
+                    <td>Talk Python to Me</td>
+                    <td>265</td>
+                    <td><a href="https://talkpython.fm/episodes/show/265/why-is-python-slow">Why is Python slow?</a></td>
+                    <td>May 19th, 2020</td>
+                </tr>
+                <tr>
+                    <td>Test and Code</td>
+                    <td>101</td>
+                    <td><a href="https://testandcode.com/101">Application Security</a></td>
+                    <td>February 25th, 2020</td>
+                </tr>
+                <tr>
+                    <td>Talk Python to Me</td>
+                    <td>240</td>
+                    <td><a href="https://talkpython.fm/episodes/show/240">CPython Source Code deep dive</a></td>
+                    <td>November 10th, 2019</td>
+                </tr>
+                <tr>
+                    <td>Talk Python to Me</td>
+                    <td>214</td>
+                    <td><a href="https://talkpython.fm/episodes/show/214/dive-into-cpython-3-8-and-beyond">Dive into CPython 3.8 and beyond</a></td>
+                    <td>May 8th 2019</td>
+                </tr>
+                <tr>
+                    <td>Podcast.__init__</td>
+                    <td>195</td>
+                    <td><a href="https://www.pythonpodcast.com/wily-code-complexity-episode-195/">Counteracting Code Complexity With Wily</a></td>
+                    <td>January 21st, 2019</td>
+                </tr>
+                <tr>
+                    <td>Talk Python to Me</td>
+                    <td>180</td>
+                    <td><a href="https://talkpython.fm/episodes/show/180/what-s-new-in-python-3-7-and-beyond">What's new in Python 3.7 and beyond</a></td>
+                    <td>October 1st, 2018</td>
+                </tr>
+                <tr>
+                    <td>TechKnow</td>
+                    <td>-</td>
+                    <td><a href="https://www.buzzsprout.com/186269/790610-jobs-of-the-future">Jobs of the future</a></td>
+                    <td>September 4th, 2018</td>
+                </tr>
+                <tr>
+                    <td>Test and Code</td>
+                    <td>46</td>
+                    <td><a href="https://testandcode.com/46">How do you write tests for things that aren’t that easy to write tests for?</a></td>
+                    <td>September 2nd, 2018</td>
+                </tr>
+                <tr>
+                    <td>TechKnow</td>
+                    <td>-</td>
+                    <td><a href="https://www.buzzsprout.com/186269/751024-should-you-learn-to-code">Should you learn to code?</a></td>
+                    <td>July 21, 2018</td>
+                </tr>
+                <tr>
+                    <td>Talk Python to Me</td>
+                    <td>168</td>
+                    <td><a href="https://talkpython.fm/episodes/show/168/10-python-security-holes-and-how-to-plug-them">10 Python security holes and how to plug them</a></td>
+                    <td>June 28, 2018</td>
+                </tr>
+                <tr>
+                    <td>Test and Code</td>
+                    <td>41</td>
+                    <td><a href="https://testandcode.com/41">Testing problems facing DevOps teams</a></td>
+                    <td>April 18, 2018</td>
+                </tr>
+                <tr>
+                    <td>Talk Python to Me</td>
+                    <td>155</td>
+                    <td><a href="https://talkpython.fm/episodes/show/155/practical-steps-for-moving-to-python-3">Practical steps for moving to Python 3</a></td>
+                    <td>February 13, 2018</td>
+                </tr>
+                <tr>
+                    <td>Talk Python to Me</td>
+                    <td>132</td>
+                    <td><a href="https://talkpython.fm/episodes/show/132/contributing-to-open-source">Contributing to Open Source</a></td>
+                    <td>July 27, 2017</td>
+                </tr>
+                <tr>
+                    <td>Podcast.__init__</td>
+                    <td>55</td>
+                    <td><a href="https://www.podcastinit.com/episode-55-libcloud-with-anthony-shaw/">Apache Libcloud</a></td>
+                    <td>May 1st, 2016</td>
+                </tr>
+                <tr>
+                    <td>Developer on Fire</td>
+                    <td>167</td>
+                    <td><a href="https://developeronfire.com/podcast/episode-167-anthony-shaw-innovation-and-inspiration">(Autobiographical interview)</a></td>
+                    <td>September 22nd, 2016</td>
+                </tr>
+                <tr>
+                    <td>FLOSS Weekly</td>
+                    <td>373</td>
+                    <td><a href="https://twit.tv/shows/floss-weekly/episodes/373">Apache Libcloud</a></td>
+                    <td>February 2nd, 2016</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <h1><a id="talks"></a>Conference Talks</h1>
+    <div class="row">
+        <div class="col-lg-4 col-md-4 talk-preview" >
+            <a href="https://youtu.be/mqOQtC9Dt84?t=6850"><img src="img/thumbnails/pyconapac2023.jpg" class="img-thumbnail" /></a>
+        </div>
+        <div class="col-lg-8 col-md-8">
+            <div class="post-preview">
+                <h2 class="post-title">
+                    <a href="https://youtu.be/mqOQtC9Dt84?t=6850"> Parallel code with Python 3.12 sub interpreters</a>
+                </h2>
+                <p>
+                    Python 3.12 comes with an exciting new feature -- sub-interpreters. Sub-interpreters are a new programming model for Python that enable parallel execution of your code, without needing separate processes. In this talk, you will learn about sub-interpreters, how and where to use them.
+                </p>
+                <p class="post-meta">
+                    <i>Recorded October 2023 at PyCon APAC 2023, Tokyo Japan</i>
+                </p>
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-lg-4 col-md-4 talk-preview" >
+            <a href="https://www.youtube.com/watch?v=or3PbMGMz4o&list=PLs4CJRBY5F1KwxIxbTmhN9jX4hBtE-OKJ&index=16"><img src="img/thumbnails/pyconau2023.jpg" class="img-thumbnail" /></a>
+        </div>
+        <div class="col-lg-8 col-md-8">
+            <div class="post-preview">
+                <h2 class="post-title">
+                    <a href="https://www.youtube.com/watch?v=or3PbMGMz4o&list=PLs4CJRBY5F1KwxIxbTmhN9jX4hBtE-OKJ&index=16"> Beat the rush! Designing effective load tests for your web application</a>
+                </h2>
+                <p>
+                    “The website is slow”. These four words can strike fear and dread in the heart of any developer. Load Testing is a tool for preparing your website for high demand, but designing a good load test is a fine-art. In this talk, we'll explore how design effective load tests for web apps in Python
+                </p>
+                <p class="post-meta">
+                    <i>Recorded August 2023 at PyCon Australia 2023, Adelaide Australia</i>
+                </p>
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-lg-4 col-md-4 talk-preview" >
+            <a href="https://www.youtube.com/watch?v=wtBTWFAuE0s&pp=ygUTQW50aG9ueSBTaGF3IFB5dGhvbg%3D%3D"><img src="img/thumbnails/pyconjp2022.jpg" class="img-thumbnail" /></a>
+        </div>
+        <div class="col-lg-8 col-md-8">
+            <div class="post-preview">
+                <h2 class="post-title">
+                    <a href="https://www.youtube.com/watch?v=wtBTWFAuE0s&pp=ygUTQW50aG9ueSBTaGF3IFB5dGhvbg%3D%3D"> What's new in Python 3.11 and Beyond</a>
+                </h2>
+                <p>
+                    3.11 is the latest release of CPython. Scheduled for October 2022, Python 3.11 comes with new language features like exception groups and asyncio task groups. The biggest change in 3.11 compared with 3.10 and below is speed. 3.11 is the fastest version of CPython yet. In this talk, we will showcase benchmarks on Python 3.11’s speed gains and where to expect improvement in your code.
+                </p>
+                <p class="post-meta">
+                    <i>Recorded October 2022 at PyCon JP 2022, Tokyo Japan</i>
+                </p>
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-lg-4 col-md-4 talk-preview" >
+            <a href="https://www.youtube.com/watch?v=kJMyomV0S50"><img src="img/thumbnails/nixconf2021.jpg" class="img-thumbnail" /></a>
+        </div>
+        <div class="col-lg-8 col-md-8">
+            <div class="post-preview">
+                <h2 class="post-title">
+                    <a href="https://www.youtube.com/watch?v=kJMyomV0S50"> What's new in Python 3.11</a>
+                </h2>
+                <p>
+                    Anthony sheds the light on all the new features and powers of Python 3.11, inspects major changes, exceptions, and error handling nuances, and shares invaluable pro tips on the ultimate performance improvement.
+                </p>
+                <p class="post-meta">
+                    <i>Recorded June 2022 at NIX Multiconf, Ukraine (Online)</i>
+                </p>
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-lg-4 col-md-4 talk-preview" >
+            <a href="https://www.youtube.com/watch?v=YY7yJHo0M5I"><img src="img/thumbnails/pyconus2022.jpg" class="img-thumbnail" /></a>
+        </div>
+        <div class="col-lg-8 col-md-8">
+            <div class="post-preview">
+                <h2 class="post-title">
+                    <a href="https://www.youtube.com/watch?v=YY7yJHo0M5I"> Write faster Python! Common performance anti-patterns</a>
+                </h2>
+                <p>
+                    This talk will show small, specific examples of Python code that can be refactored to be faster without compromising on readability. At the start of the talk, I'll explain how to set up a profiler to measure application performance and how to track improvements and regressions.
+                </p>
+                <p class="post-meta">
+                    <i>Recorded May 2022 at PyCon US 2022, Salt Lake City, UT</i>
+                </p>
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-lg-4 col-md-4 talk-preview" >
+            <a href="https://www.youtube.com/watch?v=MFS-nFjr5NU&pp=ygUTQW50aG9ueSBTaGF3IFB5dGhvbg%3D%3D"><img src="img/thumbnails/pyconth2021.jpg" class="img-thumbnail" /></a>
+        </div>
+        <div class="col-lg-8 col-md-8">
+            <div class="post-preview">
+                <h2 class="post-title">
+                    <a href="https://www.youtube.com/watch?v=MFS-nFjr5NU&pp=ygUTQW50aG9ueSBTaGF3IFB5dGhvbg%3D%3D"> Visual Studio Code for Python Developers</a>
+                </h2>
+                <p>
+                    In this talk you will learn how VS Code can be configured, extended, and optimized for a more effective and productive Python development environment. Once finishing this talk, you will be more productive using VS Code.
+                </p>
+                <p class="post-meta">
+                    <i>Recorded November 2021 at PyCon APAC 2021, (online)</i>
+                </p>
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-lg-4 col-md-4 talk-preview" >
+            <a href="https://www.youtube.com/watch?v=wJNO6ZqlXkw"><img src="img/thumbnails/pyconusworkshop2021.jpg" class="img-thumbnail" /></a>
+        </div>
+        <div class="col-lg-8 col-md-8">
+            <div class="post-preview">
+                <h2 class="post-title">
+                    <a href="https://www.youtube.com/watch?v=wJNO6ZqlXkw"> Deploying your Django Application for Scale with Microsoft Azure</a>
+                </h2>
+                <p>
+                    In this workshop, we will talk through scalable Django architecture and how Azure services like load balancing, sharded databases, and functions can be used to scale a Django application from a few to lots of users.
+                </p>
+                <p class="post-meta">
+                    <i>Recorded May 2021 at PyCon US 2021, (online)</i>
+                </p>
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-lg-4 col-md-4 talk-preview" >
+            <a href="https://www.youtube.com/watch?v=YFeUUdKBrJ8"><img src="img/thumbnails/pyconus2021.jpg" class="img-thumbnail" /></a>
+        </div>
+        <div class="col-lg-8 col-md-8">
+            <div class="post-preview">
+                <h2 class="post-title">
+                    <a href="https://www.youtube.com/watch?v=YFeUUdKBrJ8"> Restarting Pyjion, a general purpose JIT for Python- is it worth it?</a>
+                </h2>
+                <p>
+                    In this talk you'll see an update to the Pyjion project, a JIT compiler for CPython byte-code. This project was started 5 years ago but stopped after making no gains in performance. Recent changes to CPython have made optimisations more viable, so now it has been restarted and is showing big performance gains vs. standard CPython with 100% compatibility. Many attempts have been made to build a general purpose JIT for Python and few have succeeded. Is it worth it and what are the gains to be made? This talk will cover the design ideas of a JIT for CPython, optimisations, and future potential.
+                </p>
+                <p class="post-meta">
+                    <i>Recorded May 2021 at PyCon US 2021, (online)</i>
+                </p>
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-lg-4 col-md-4 talk-preview" >
+            <a href="https://www.youtube.com/watch?v=I4nkgJdVZFA"><img src="img/thumbnails/pyconus2020.jpg" class="img-thumbnail" /></a>
+        </div>
+        <div class="col-lg-8 col-md-8">
+            <div class="post-preview">
+                <h2 class="post-title">
+                    <a href="https://www.youtube.com/watch?v=I4nkgJdVZFA"> Why is Python slow?</a>
+                </h2>
+                <p>
+                    When Python completes a comparable application 2–10x slower than another language, why is it slow, and can’t we make it faster? In this talk, we’re going to explore different theories to understand what makes Python slow, what tasks it’s fast at executing, and how you can make it faster. Then, finally, we’ll explore what is coming in future versions of Python that might speed it up once and for all..
+                </p>
+                <p class="post-meta">
+                    <i>Recorded May 2020 at PyCon US 2020, (online)</i>
+                </p>
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-lg-4 col-md-4 talk-preview" >
+            <a href="https://youtube.com/watch?v=I5rL9LrIp0c"><img src="img/thumbnails/pyconafrica2019.jpg" class="img-thumbnail" /></a>
+        </div>
+        <div class="col-lg-8 col-md-8">
+            <div class="post-preview">
+                <h2 class="post-title">
+                    <a href="https://youtube.com/watch?v=I5rL9LrIp0c"> Standing out in a world of 20 million developers.</a>
+                </h2>
+                <p>
+                    In this talk, be inspired to take action to accelerate your career in software development.  Anthony Shaw would discuss how to be unique, why you need to stand out from the crowd, and what it takes to be a globally recognized name in software.
+                </p>
+                <p class="post-meta">
+                    <i>Recorded August 2019 at PyCon Africa, Accra, Ghana</i>
+                </p>
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-lg-4 col-md-4 talk-preview" >
+            <a href="https://www.youtube.com/watch?v=dqdsNoApJ80"><img src="img/thumbnails/pyconus2019.jpg" class="img-thumbnail" /></a>
+        </div>
+        <div class="col-lg-8 col-md-8">
+            <div class="post-preview">
+                <h2 class="post-title">
+                    <a href="https://www.youtube.com/watch?v=dqdsNoApJ80"> Wily Python: Writing simpler and more maintainable Python</a>
+                </h2>
+                <p>
+                    Everyone starts with the best intentions with their Python projects, "this time it's going to be clean, simple and maintainable". But code evolves over time, requirements change and codebases can get messy and complicated quickly. In this talk, you will learn how to use wily to measure and graph how complicated your Python code is and a series of practical techniques to simplify it. wily will show you which parts of your projects are becoming or have become hard to maintain and need a refactor. Once you know where the skeletons are, you will learn practical techniques for refactoring "complex" code and some resources to use to take your refactoring to the next level.
+                </p>
+                <p class="post-meta">
+                    <i>Recorded May 2019 at PyCon US 2019, Cleveland, Ohio</i>
+                </p>
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-lg-4 col-md-4 talk-preview" >
+            <a href="https://www.youtube.com/watch?v=I326bpbdvJo"><img src="img/thumbnails/pyconau2017.jpg" class="img-thumbnail" /></a>
+        </div>
+        <div class="col-lg-8 col-md-8">
+            <div class="post-preview">
+                <h2 class="post-title">
+                    <a href="https://www.youtube.com/watch?v=I326bpbdvJo"> How to write a container daemon in Python</a>
+                </h2>
+                <p>
+                    When the authors of Docker first started, they wrote the Docker daemon in Python. This was later switching for Go, but why? This talk will cover mocker, a container runtime Anthony wrote to understand Docker by rewriting its basic functions in 100% Python. Anthony will walk through how to write a Docker daemon in Python whilst applying it to real problems. Whilst the tool might not be production ready, it demonstrates some patterns, libraries and ideas for working with Docker containers from Python.
+                </p>
+                <p class="post-meta">
+                    <i>Recorded August 2017 at PyCon AU 2017, Melbourne</i>
+                </p>
+            </div>
+        </div>
+    </div>
+    <hr/>
+
+    <h1 class="section-heading"><a id="blog"></a>Blog Posts</h1>
+    <div class="row">
+        <a href="posts/why-isnt-python-async-more-popular.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Python has had async for 10 years -- why isn't it more popular?
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/why-isnt-python-async-more-popular.html">
+                        <p>
+                            A deep-dive into the challenges and misconceptions surrounding async programming in Python
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published September 2, 2025</i>
+                        <span class="label label-default">Python</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/posts/fishing-2015.jpg" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+
+    <div class="row">
+        <a href="posts/performance-benchmarking-llm-models.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Performance Benchmarking LLM Models
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/performance-benchmarking-llm-models.html">
+                        <p>
+                            Using the LLM CLI to compare latency and throughput of multiple LLMs.
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published August 27, 2025</i>
+                        <span class="label label-default">AI</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/posts/llama-race.jpg" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+
+    <div class="row">
+        <a href="posts/using-llm-in-github-actions.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Using an LLM in GitHub Actions
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/using-llm-in-github-actions.html">
+                        <p>
+                            Using the LLM CLI in a GitHub Action workflow with GitHub Models.
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published August 14, 2025</i>
+                        <span class="label label-default">AI</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/posts-original/gpt-5-mini.jpg" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+
+    <div class="row">
+        <a href="posts/embedding-python-in-dot-net-with-csnakes.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Embedding Python into your .NET project with CSnakes
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/embedding-python-in-dot-net-with-csnakes.html">
+                        <p>
+                            A deep-dive into a new integration between .NET and Python.
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published October 4, 2024</i>
+                        <span class="label label-default">Python</span><span class="label label-default">.NET</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/posts/snake-robot.jpeg" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+
+    <div class="row">
+        <a href="posts/using-dotnet-aspire-dashboard-for-python-opentelemetry.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Using the Aspire Dashboard for Python OpenTelemetry tracing, metrics and logs
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/using-dotnet-aspire-dashboard-for-python-opentelemetry.html">
+                        <p>
+                            A short how-to of setting up the Aspire Dashboard to capture traces, metrics, and logs for Python apps
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published April 12, 2024</i>
+                        <span class="label label-default">Python</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/posts/snake-stopwatch.jpg" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="posts/cjk-chinese-japanese-korean-llm-ai-best-practices.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Working with Chinese, Japanese, and Korean text in Generative AI pipelines
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/cjk-chinese-japanese-korean-llm-ai-best-practices.html">
+                        <p>
+                            Best practices for working with CJK text in Large Language Models
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published March 12, 2024</i>
+                        <span class="label label-default">Python</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/posts-original/old_books.jpg" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="posts/python-gets-a-jit.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Python 3.13 gets a JIT
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/python-gets-a-jit.html">
+                        <p>
+                            Reviewing the JIT in Python 3.13
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published January 9, 2024</i>
+                        <span class="label label-default">Python</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/posts/snake_cookie_cutter.jpeg" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="posts/fine-tuning-wsgi-and-asgi-applications.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Fine Tuning Python WSGI and ASGI applications for Flask, Django, and FastAPI
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/fine-tuning-wsgi-and-asgi-applications.html">
+                        <p>
+                            Exploring strategies for optimal Gunicorn, Uvicorn and Hypercorn configurations for Flask, Django, and FastAPI
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published December 20, 2023</i>
+                        <span class="label label-default">Python</span><span class="label label-default">Django</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/posts/python-burger-truck.jpeg" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="posts/sub-interpreter-web-workers.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Running Python Parallel Applications with Sub Interpreters
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/sub-interpreter-web-workers.html">
+                        <p>
+                            An exploration into the possibility of running a parallel application using sub interpreters
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published November 18, 2023</i>
+                        <span class="label label-default">Python</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/posts/four-snakes-cartoon.jpeg" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="posts/python-match-statement.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Python match statement
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/python-match-statement.html">
+                        <p>
+                            What is the match statement in Python and why should you use it
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published May 17, 2022</i>
+                        <span class="label label-default">Python</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/posts/frogs.jpg" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="posts/pypy-in-production.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    PyPy in Production
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/pypy-in-production.html">
+                        <p>
+                            Deploying a real-world Python application with PyPy
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published March 10, 2022</i>
+                        <span class="label label-default">Python</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/posts/benchmark-pypy.png" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="posts/async-test-patterns-for-pytest-and-unittest.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    async test patterns for Pytest
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/async-test-patterns-for-pytest-and-unittest.html">
+                        <p>
+                            Some examples and patterns for testing async code from Pytest
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published August 5, 2021</i>
+                        <span class="label label-default">Pytest</span>
+                        <span class="label label-default">Python</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/posts/danger-snake.jpeg" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="posts/running-python-on-dotnet-5-with-pyjion.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Running Python on .NET 5
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/running-python-on-dotnet-5-with-pyjion.html">
+                        <p>
+                            An update on the Pyjion project to plug a JIT into CPython using the .NET 5 CLR JIT compiler
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published November 11, 2020</i>
+                        <span class="label label-default">.NET</span>
+                        <span class="label label-default">Python</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/posts/turtle-pileup.jpg" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="posts/extending-python-with-assembly.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Writing Python Extensions in Assembly
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/extending-python-with-assembly.html">
+                        <p>
+                            A deep-dive technical overview of how you can write CPython extensions in assembly (with a bonus tutorial on assembly programming)
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published August 18, 2020</i>
+                        <span class="label label-default">Security</span>
+                        <span class="label label-default">Python</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/posts/hammer-screw.jpeg" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="posts/xss-exploitation-in-django.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    XSS Exploitation in Django Applications
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/azure-pipelines-autocomplete-in-pycharm.html">
+                        <p>
+                            A deep-dive on XSS exploitations in Django applications, how to find them and how to fix them
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published July 22, 2020</i>
+                        <span class="label label-default">Security</span>
+                        <span class="label label-default">Django</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/posts/guacamole-dance.gif" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="posts/azure-pipelines-autocomplete-in-pycharm.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Azure Pipelines autocomplete in PyCharm, IntelliJ, WebStorm, CLion, and Rider
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/azure-pipelines-autocomplete-in-pycharm.html">
+                        <p>
+                            Learn how to get autocomplete for your Azure Pipelines workflows.
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published June 11, 2020</i>
+                        <span class="label label-default">DevOps</span>
+                        <span class="label label-default">Azure</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/posts/autocomplete-working.png" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="posts/learning-python.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Learning Python from Scratch
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/learning-python.html">
+                        <p>
+                            If you want to learn Python, where do you start? This article has 10 recommended resources for learning to program in Python.
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published May 28, 2020</i>
+                        <span class="label label-default">Software</span>
+                        <span class="label label-default">Beginners</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/posts/baking-a-cake.jpeg" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="posts/django-on-azure-beyond-hello-world.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Django on Azure - Beyond "Hello World"
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/favourite-python-stories-2019.html">
+                        <p>
+                            A tutorial on deploying a production-reading Django application on Microsoft Azure
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published April 13, 2020</i>
+                        <span class="label label-default">Python</span>
+                        <span class="label label-default">Blogging</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/clouds.jpg" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="posts/favourite-python-stories-2019.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    My favourite Python stories of 2019
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/favourite-python-stories-2019.html">
+                        <p>
+                            Covering some of the top stories I enjoyed reading in 2019
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published December 19, 2019</i>
+                        <span class="label label-default">Python</span>
+                        <span class="label label-default">Blogging</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/home-bg0.jpg" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="https://realpython.com/cpython-source-code-guide/">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Your Guide to the CPython Source Code
+                </h2>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <div class="post-preview">
+                <img src="https://files.realpython.com/media/A-Tourist-Guide-to-the-CPython-Source-Code_Watermarked.5f05a87331ac.jpg" class="img-responsive img-thumbnail" />
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="https://realpython.com/cpython-source-code-guide/">
+                        <p>
+                            Are there certain parts of Python that just seem magic? Like how are dictionaries so much faster than looping over a list to find an item. How does a generator remember the state of the variables each time it yields a value and why do you never have to allocate memory like other languages? It turns out, CPython, the most popular Python runtime is written in human-readable C and Python code. This tutorial will walk you through the CPython source code.
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published August 21, 2019 on <a href="https://realpython.com">RealPython.com</a></i>
+                        <span class="label label-default">Python</span>
+                    </p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="posts/has-the-python-gil-been-slain.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Has the Python GIL been slain?
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/has-the-python-gil-been-slain.html">
+                        <p>
+                            Exploring new features in upcoming Python 3.8 and how they address the GIL.
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published May 15, 2019</i>
+                        <span class="label label-default">Python</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/posts/gil_header.jpeg" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="https://realpython.com/python-refactoring/">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Refactoring Python Applications for Simplicity
+                </h2>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <div class="post-preview">
+                <img src="https://files.realpython.com/media/10-Techniques-for-Simplifying-Your-Python-Code_Watermarked.d01d6875d87f.jpg" class="img-responsive img-thumbnail" />
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="https://realpython.com/python-refactoring/">
+                        <p>
+                            Do you want simpler Python code? You always start a project with the best intentions, a clean codebase, and a nice structure. But over time, there are changes to your apps, and things can get a little messy. Find out how to simplify your code.
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published March 4, 2019 on <a href="https://realpython.com">RealPython.com</a></i>
+                        <span class="label label-default">Python</span>
+                    </p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="posts/a-letter-to-the-python-community-in-africa.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    A letter to the Python community in Africa
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/a-letter-to-the-python-community-in-africa.html">
+                        <p>
+                            Some of the amazing stories from the African continent.
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published January 19, 2019</i>
+                        <span class="label label-default">Python</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/posts/pycon-namibia.jpeg" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="posts/azure-pipelines-with-python-by-example.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Azure Pipelines with Python - by example
+                </h2>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <div class="post-preview">
+                <img src="/img/home-bg.jpg" class="img-responsive img-thumbnail" />
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/azure-pipelines-with-python-by-example.html">
+                        <p>
+                            A tutorial on Microsoft Azure pipelines and how to use it effectively for your Python projects.
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published January 2, 2019</i>
+                        <span class="label label-default">Python</span>
+                        <span class="label label-default">Azure DevOps</span>
+                    </p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="posts/5-coding-projects-to-do-with-kids.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    5 Coding projects to do with kids
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/5-coding-projects-to-do-with-kids.html">
+                        <p>
+                            5 fun and simple coding projects to do with your kids.
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published December 26, 2018</i>
+                        <span class="label label-default">Software</span>
+                        <span class="label label-default">Parenting</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/posts/coding-kids-header.jpeg" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="https://realpython.com/python-testing/">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Getting Started With Testing in Python
+                </h2>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <div class="post-preview">
+                <img src="https://files.realpython.com/media/Getting-Started-with-Testing-in-Python_Watermarked.9f22be97343d.jpg" class="img-responsive img-thumbnail" />
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="https://realpython.com/python-testing/">
+                        <p>
+                            This tutorial is for anyone who has written a fantastic application in Python but hasn’t yet written any tests.
+<br/>
+Testing in Python is a huge topic and can come with a lot of complexity, but it doesn’t need to be hard. You can get started creating simple tests for your application in a few easy steps and then build on it from there.
+<br/>
+In this tutorial, you’ll learn how to create a basic test, execute it, and find the bugs before your users do! You’ll learn about the tools available to write and execute tests, check your application’s performance, and even look for security issues.
+                 </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published September 1, 2018 on <a href="https://realpython.com">RealPython.com</a></i>
+                        <span class="label label-default">Python</span>
+                    </p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="posts/why-is-python-so-slow.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Why is Python so slow?
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/why-is-python-so-slow.html">
+                        <p>
+                            A look into what makes Python slower than other languages.
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published July 16, 2018</i>
+                        <span class="label label-default">Python</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/posts/snail.jpg" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="posts/10-common-security-gotchas-in-python.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    10 common security gotchas in Python and how to avoid them
+                </h2>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <div class="post-preview">
+                    <img src="/img/posts/danger-snake.jpeg" class="img-responsive img-thumbnail" />
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/10-common-security-gotchas-in-python.html">
+                        <p>
+                            A list of common security holes in Python applications, what causes them and how not to make those mistakes.
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published June 18, 2018</i>
+                        <span class="label label-default">Python</span>
+                    </p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="posts/tips-for-getting-a-raise.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Tips for getting a raise
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/tips-for-getting-a-raise.html">
+                        <p>
+                            A breakdown of how increases work (at most companies), how to navigate them and how to convince your boss to pay you more.
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published May 7, 2017</i>
+                        <span class="label label-default">Careers</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/home-bg0.jpg" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <hr/>
+    <div class="row">
+        <a href="posts/modifying-the-python-language-in-6-minutes.html">
+            <div class="col-md-12">
+                <h2 class="post-title">
+                    Modifying the Python language in 6 minutes
+                </h2>
+            </div>
+            <div class="col-lg-8 col-md-8 ">
+                <div class="post-preview">
+                    <a href="posts/modifying-the-python-language-in-6-minutes.html">
+                        <p>
+                            Showing you how to hack the Python grammar and compiler
+                        </p>
+                    </a>
+                    <p class="post-meta">
+                        <i>Published April 17, 2017</i>
+                        <span class="label label-default">Python</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <img src="/img/posts/token-s2.png" class="img-responsive img-thumbnail" />
+            </div>
+        </a>
+    </div>
+    <h1><a id="courses"></a>Courses</h1>
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-preview">
+                <a href="https://www.pluralsight.com/courses/python-whats-new">
+                    <h2 class="post-title">
+                        <img src="https://pluralsight.imgix.net/course-images/python-whats-new-v1.png?w=1078" width=150/> Whats new in Python 3.7 (Pluralsight)
+                    </h2>
+                    <div class="post-subtitle">
+                        <p>At the core of Python programming is a thorough knowledge of Python 3 versions.
+                            In What's New in Python 3.7, you will learn how to use all of Python 3.7's new features.
+                            First, you will learn data classes. Next, you will explore the new breakpoint functionality.
+                            Finally, you will discover how to test the performance of your applications and benefit from Python 3.7's
+                            speed improvements.
+                            When you are finished with this course, you will have a foundational knowledge of Python 3.7
+                            that will help you as you move forward to develop Python 3 applications.</p>
+                    </div>
+                </a>
+                <p class="post-meta">
+                    <i>Published June 1, 2018</i>
+                </p>
+            </div>
+            <hr>
+            <div class="post-preview">
+                <a href="https://www.pluralsight.com/courses/python-2-to-python-3">
+                    <h2 class="post-title">
+                        <img src="https://i.ytimg.com/vi/pp0pTRUO0pQ/maxresdefault.jpg" width=150/> Migrating from Python 2 to Python 3 (Pluralsight)
+                    </h2>
+                    <div class="post-subtitle">
+                        <p>Python 3 has been out for over a decade now and still the majority of production applications are running on Python 2! Python 3 is faster, has some amazing new features like asynchronous programming and type hinting.</p>
+
+                        <p>In this course, we are going to migrate a Python 2 application to Python 3, the right way.</p>
+
+                        <p>Some of the major topics that we will cover include:</p>
+
+                        <ul>
+                            <li>Strategies for porting</li>
+                            <li>Changes to the core types in Python 3</li>
+                            <li>Automated tools and where to use them</li>
+                            <li>Leveraging Python 3 features</li>
+                        </ul>
+
+                        <p>By the end of this course, you’ll know how to migrate any application, big or small, to Python 3.</p>
+                    </div>
+                </a>
+                <p class="post-meta">
+                    <i>Published March 8, 2018</i>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    <li>
+                        <a href="https://youtube.com/c/AnthonyShaw">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-youtube fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/tonybaloney">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+                <p class="copyright text-muted">Copyright &copy; Anthony Shaw 2023. Built using Python and Render Engine</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="vendor/jquery/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+<!-- Theme JavaScript -->
+<script src="js/clean-blog.min.js"></script>
+
+
+<script>
+(function() {
+    // Setup the toggle behavior and persistence. If the user hasn't chosen a preference, the site
+    // follows the system preference (prefers-color-scheme). Stored choice overrides system changes.
+    var toggle = document.getElementById('theme-toggle');
+    var icon = toggle ? toggle.querySelector('i') : null;
+
+    function getStored() {
+        try { return localStorage.getItem('theme'); } catch (e) { return null; }
+    }
+    function setStored(t) {
+        try { localStorage.setItem('theme', t); } catch (e) { }
+    }
+    function systemPrefersDark() {
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    function updateIcon(t) {
+        if (!icon) return;
+        // sun when dark to indicate clicking will switch to light; moon when light to switch to dark
+        icon.className = t === 'dark' ? 'fa fa-2x fa-sun-o' : 'fa fa-2x fa-moon-o';
+    }
+    function setTheme(t, save) {
+        document.documentElement.setAttribute('data-theme', t);
+        updateIcon(t);
+        if (save) setStored(t);
+    }
+
+    if (toggle) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            var current = document.documentElement.getAttribute('data-theme') || (systemPrefersDark() ? 'dark' : 'light');
+            var next = current === 'dark' ? 'light' : 'dark';
+            setTheme(next, true);
+        });
+        // initialize icon from the attribute (which was set early in the head)
+        var initial = document.documentElement.getAttribute('data-theme') || (getStored() || (systemPrefersDark() ? 'dark' : 'light'));
+        updateIcon(initial);
+    }
+
+    // If the user hasn't explicitly set a preference, follow system changes.
+    try {
+        var mq = window.matchMedia('(prefers-color-scheme: dark)');
+        var onChange = function(e) {
+            if (!getStored()) {
+                setTheme(e.matches ? 'dark' : 'light', false);
+            }
+        };
+        if (mq.addEventListener) mq.addEventListener('change', onChange);
+        else if (mq.addListener) mq.addListener(onChange);
+    } catch (e) { }
+})();
+</script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PNMEXCY7DV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PNMEXCY7DV');
+</script>
+
+<!-- Place this tag in your head or just before your close body tag. -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+</body>
+
+</html>

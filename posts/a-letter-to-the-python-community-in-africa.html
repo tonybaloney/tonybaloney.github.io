@@ -44,81 +44,43 @@
     <!-- Bootstrap Core CSS -->
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Theme CSS -->
-    <link href="/css/clean-blog.min.css" rel="stylesheet">
-
     <!-- Blog Post CSS -->
+    <link href="/css/homepage.css" rel="stylesheet">
     <link href="/css/blog-post.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/default.min.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/a11y-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 
-    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/x86asm.min.js"></script>
-    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/python.min.js"></script>
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/x86asm.min.js"></script>
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/python.min.js"></script>
 
 </head>
 
 <body>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header page-scroll">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    Menu <i class="fa fa-bars"></i>
-                </button>
-
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="/#">Home</a>
-                    </li>
-                    <li>
-                        <a href="/#projects">Projects</a>
-                    </li>
-                    <li>
-                        <a href="/#contributions">Contributions</a>
-                    </li>
-                    <li>
-                        <a href="/#courses">Courses</a>
-                    </li>
-                    <li>
-                        <a href="/#podcasts">Podcasts</a>
-                    </li>
-                    <li>
-                        <a href="/#talks">Talks</a>
-                    </li>
-                    <li>
-                        <a href="/#blog">Blog</a>
-                    </li>
-                    <li>
-                        <a href="https://github.com/tonybaloney"><i class='fa fa-2x fa-github'></i></a>
-                    </li>
-                    <li>
-                        <a href="https://www.youtube.com/c/AnthonyShaw"><i class='fa fa-2x fa-youtube-play'></i></a>
-                    </li>
-                    <li>
-                        <a href="/rss.xml"><i class='fa fa-2x fa-rss-square'></i></a>
-                    </li>
-                    <li>
-                        <a href="#" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode"><i class="fa fa-2x fa-moon-o" aria-hidden="true"></i></a>
-                    </li>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-inner">
+                <a href="/" class="navbar-brand"><span class="navbar-brand-symbol">&gt;</span><span class="navbar-brand-text"> tonybaloney</span></a>
+                <ul class="navbar-links">
+                    <li><a href="#book">Book</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#podcasts">Podcasts</a></li>
+                    <li><a href="https://github.com/tonybaloney" class="icon-link"><i class="fa fa-github"></i></a></li>
+                    <li><a href="https://www.youtube.com/c/AnthonyShaw" class="icon-link"><i class="fa fa-youtube-play"></i></a></li>
+                    <li><a href="/rss.xml" class="icon-link"><i class="fa fa-rss"></i></a></li>
+                    <li><button id="theme-toggle" aria-label="Toggle dark mode"><i class="fa fa-moon-o"></i></button></li>
                 </ul>
             </div>
-            <!-- /.navbar-collapse -->
         </div>
-        <!-- /.container -->
     </nav>
 
     <!-- Page Header -->
@@ -138,10 +100,8 @@
     </header>
 
     <!-- Main Content -->
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <p>Greetings from Australia,</p>
+    <div class="content-container">
+        <p>Greetings from Australia,</p>
 <p>I am not an authoritative source on Africa. I am neither an African resident or national. I spend about 1–2 months of the year in South Africa for work but isolated into the office or my hotel.</p>
 <p>Over the last 12 months, I’ve been enraptured with the creativity and passion of the Python community across the African continent and want to use this letter to explore and share some of the amazing things that are happening.</p>
 <p>I believe the broader international Python and Software community can learn a lot from what so many amazing people are doing across Africa.</p>
@@ -263,71 +223,45 @@ Anthony Shaw</p>
 <hr>
 <p>NB: If you want to call out or credit some other initiatives going on, you can submit a Pull-Request to <a href="https://github.com/tonybaloney/tonybaloney.github.io/blob/master/blog/a-letter-to-the-python-community-in-africa.md">this article</a>.</p>
 
-                
-                <H2>Related Posts</H2>
-                <div class="related-posts row">
-                    <div class="col-md-4">
-                        <a href="/posts/favourite-python-stories-2019.html">
-                        <div class="related-box">
-                            <img src="/img/home-bg0.jpg" alt="My favourite Python stories of 2019" />
-                            <div class="title">My favourite Python stories of 2019</div>
-                            <div class="subheading">A collection of the things I really enjoyed reading in 2019</div>
-                            <div class="post-meta"><i>Published December 19, 2019</i></div>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col-md-4">
-                        <a href="/posts/learning-python.html">
-                        <div class="related-box">
-                            <img src="/img/posts/learningpython.jpg" alt="Learning Python from Scratch" />
-                            <div class="title">Learning Python from Scratch</div>
-                            <div class="subheading">If you want to learn Python, where do you start?</div>
-                            <div class="post-meta"><i>Published May 28, 2020</i></div>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col-md-4">
-                        <a href="/posts/has-the-python-gil-been-slain.html">
-                        <div class="related-box">
-                            <img src="/img/posts/gil_header.jpeg" alt="Has the Python GIL been slain?" />
-                            <div class="title">Has the Python GIL been slain?</div>
-                            <div class="subheading">Exploring new features in upcoming Python 3.8 and how they address the GIL.</div>
-                            <div class="post-meta"><i>Published May 15, 2019</i></div>
-                        </div>
-                        </a>
-                    </div>
+        <div class="related-posts">
+            <h2>Related Posts</h2>
+            <div class="related-posts-grid">
+                <a href="/posts/favourite-python-stories-2019.html">
+                <div class="related-box">
+                    <img src="/img/home-bg0.jpg" alt="My favourite Python stories of 2019" />
+                    <div class="title">My favourite Python stories of 2019</div>
+                    <div class="subheading">A collection of the things I really enjoyed reading in 2019</div>
+                    <div class="post-meta"><i>Published December 19, 2019</i></div>
                 </div>
+                </a>
+                <a href="/posts/learning-python.html">
+                <div class="related-box">
+                    <img src="/img/posts/learningpython.jpg" alt="Learning Python from Scratch" />
+                    <div class="title">Learning Python from Scratch</div>
+                    <div class="subheading">If you want to learn Python, where do you start?</div>
+                    <div class="post-meta"><i>Published May 28, 2020</i></div>
+                </div>
+                </a>
+                <a href="/posts/has-the-python-gil-been-slain.html">
+                <div class="related-box">
+                    <img src="/img/posts/gil_header.jpeg" alt="Has the Python GIL been slain?" />
+                    <div class="title">Has the Python GIL been slain?</div>
+                    <div class="subheading">Exploring new features in upcoming Python 3.8 and how they address the GIL.</div>
+                    <div class="post-meta"><i>Published May 15, 2019</i></div>
+                </div>
+                </a>
             </div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <ul class="list-inline text-center">
-                        <li>
-                            <a href="https://youtube.com/c/AnthonyShaw">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-youtube fa-stack-1x fa-inverse"></i>
-                                </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://github.com/tonybaloney">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                                </span>
-                            </a>
-                        </li>
-                    </ul>
-                    <p class="copyright text-muted">Copyright &copy; Anthony Shaw</p>
-                </div>
-            </div>
+    <footer class="footer">
+        <div class="footer-social">
+            <a href="https://youtube.com/c/AnthonyShaw" aria-label="YouTube"><i class="fa fa-youtube"></i></a>
+            <a href="https://github.com/tonybaloney" aria-label="GitHub"><i class="fa fa-github"></i></a>
+            <a href="/rss.xml" aria-label="RSS Feed"><i class="fa fa-rss"></i></a>
         </div>
+        <p class="footer-text">Copyright &copy; Anthony Shaw</p>
     </footer>
 
     <!-- jQuery -->
@@ -336,10 +270,20 @@ Anthony Shaw</p>
     <!-- Bootstrap Core JavaScript -->
     <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
 
-    <!-- Theme JavaScript -->
-    <script src="/js/clean-blog.min.js"></script>
-
     <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Mobile menu toggle -->
+    <script>
+    (function() {
+        var navToggle = document.querySelector('.navbar-toggle');
+        var navLinks = document.querySelector('.navbar-links');
+        if (navToggle && navLinks) {
+            navToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('show');
+            });
+        }
+    })();
+    </script>
 
     <script>
     (function() {
@@ -360,7 +304,7 @@ Anthony Shaw</p>
         function updateIcon(t) {
             if (!icon) return;
             // sun when dark to indicate clicking will switch to light; moon when light to switch to dark
-            icon.className = t === 'dark' ? 'fa fa-2x fa-sun-o' : 'fa fa-2x fa-moon-o';
+            icon.className = t === 'dark' ? 'fa fa-sun-o' : 'fa fa-moon-o';
         }
         function setTheme(t, save) {
             document.documentElement.setAttribute('data-theme', t);
