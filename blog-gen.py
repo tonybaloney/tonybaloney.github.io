@@ -102,7 +102,9 @@ def main():
         print("rendering {0}".format(post))
         with open(post, encoding="utf-8") as post_f:
             _ = _md.convert(post_f.read()) # We only want metadata this time around, Markdown puts it in a module global for some odd reason.
-        url = post.replace(".md", ".html").replace("blog/", "posts/")
+        # Normalize path separators for cross-platform compatibility
+        post_normalized = post.replace("\\", "/")
+        url = post_normalized.replace(".md", ".html").replace("blog/", "posts/")
         meta = {}
         meta['card_image'] = _md.Meta.get('blog_card_image', _md.Meta['blog_header_image'])[0]
         meta['blog_heading'] = _md.Meta['blog_heading'][0]

@@ -48,85 +48,296 @@
     <link href="/css/clean-blog.min.css" rel="stylesheet">
 
     <style>
-    /* Simple CSS variable-based theme with a dark variant. Adjusts background, text, nav, footer and code blocks. */
+    /* ===== Modern CSS Variable Theme ===== */
     :root {
         --bg: #ffffff;
-        --text: #222222;
-        --muted: #777777;
-        --link: #337ab7;
-        --navbar-bg: rgba(255,255,255,0.95);
-        --navbar-text: #222222;
-        --code-bg: #f6f8fa;
-        --pre-color: #2e2e2e;
+        --bg-secondary: #f8fafc;
+        --text: #1a1a2e;
+        --text-secondary: #64748b;
+        --muted: #94a3b8;
+        --link: #2563eb;
+        --link-hover: #1d4ed8;
+        --navbar-bg: rgba(255,255,255,0.85);
+        --navbar-text: #1a1a2e;
+        --code-bg: #f1f5f9;
+        --pre-color: #334155;
+        --border: rgba(0,0,0,0.08);
+        --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+        --shadow-lg: 0 10px 40px rgba(0,0,0,0.1);
+        --radius: 12px;
+        --radius-sm: 8px;
+        --transition: 0.2s ease;
     }
     [data-theme='dark'] {
-        --bg: #0b0f17;
-        --text: #e6edf3;
-        --muted: #9aa0a6;
-        --link: #8fc7ff;
-        --navbar-bg: rgba(10,10,10,0.95);
-        --navbar-text: #e6edf3;
-        --code-bg: #282c34;
-        --pre-color: #abb2bf;
+        --bg: #0f172a;
+        --bg-secondary: #1e293b;
+        --text: #f1f5f9;
+        --text-secondary: #94a3b8;
+        --muted: #64748b;
+        --link: #60a5fa;
+        --link-hover: #93c5fd;
+        --navbar-bg: rgba(15,23,42,0.9);
+        --navbar-text: #f1f5f9;
+        --code-bg: #1e293b;
+        --pre-color: #e2e8f0;
+        --border: rgba(255,255,255,0.08);
+        --shadow: 0 1px 3px rgba(0,0,0,0.3);
+        --shadow-lg: 0 10px 40px rgba(0,0,0,0.4);
     }
 
+    /* ===== Base Typography ===== */
     html, body {
         background-color: var(--bg) !important;
         color: var(--text) !important;
+        font-feature-settings: "kern" 1, "liga" 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
+    body { font-size: 18px; line-height: 1.75; }
+    
+    p { margin: 1.5em 0; }
+    h1, h2, h3, h4, h5, h6 { 
+        margin-top: 2em; 
+        margin-bottom: 0.75em; 
+        line-height: 1.3;
+        letter-spacing: -0.02em;
+    }
+    h2 { font-size: 1.75em; border-bottom: 1px solid var(--border); padding-bottom: 0.3em; }
+    h3 { font-size: 1.4em; }
 
-    a, a:link, a:visited { color: var(--link) !important; }
+    /* ===== Links ===== */
+    a, a:link, a:visited { 
+        color: var(--link) !important; 
+        text-decoration: none;
+        transition: color var(--transition);
+    }
+    a:hover, a:focus { color: var(--link-hover) !important; }
+    p a, li a { text-decoration: underline; text-underline-offset: 2px; }
 
-    /* Navbar */
-    .navbar-default { background-color: var(--navbar-bg) !important; border-color: transparent !important; }
-    .navbar-default .navbar-nav>li>a { color: var(--navbar-text) !important; }
+    /* ===== Navbar ===== */
+    .navbar-default { 
+        background-color: var(--navbar-bg) !important; 
+        border-color: transparent !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+    .navbar-default .navbar-nav>li>a { 
+        color: var(--navbar-text) !important;
+        transition: opacity var(--transition);
+    }
+    .navbar-default .navbar-nav>li>a:hover { opacity: 0.7; }
 
-    /* Header: site heading text should always be light to ensure contrast over background images */
+    /* ===== Header ===== */
+    .intro-header { margin-bottom: 3rem; }
     .intro-header .site-heading h1,
     .intro-header .site-heading .subheading {
         color: #ffffff !important;
-        /* subtle shadow to help legibility on light/detailed background images */
-        text-shadow: 0 1px 3px rgba(0,0,0,0.6) !important;
+        text-shadow: 0 2px 20px rgba(0,0,0,0.5) !important;
+    }
+    .intro-header .site-heading h1 {
+        font-size: 2.5em;
+        letter-spacing: -0.03em;
+        font-weight: 800;
+    }
+    @media (min-width: 768px) {
+        .intro-header .site-heading h1 { font-size: 3.2em; }
+    }
+    hr.small { border-color: rgba(255,255,255,0.4); border-width: 2px; max-width: 80px; }
+
+    /* ===== Content Area ===== */
+    .container { max-width: 800px; }
+
+    /* ===== Code Blocks ===== */
+    pre, code { 
+        font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
+        font-size: 0.875em;
+    }
+    code {
+        background: var(--code-bg) !important;
+        color: var(--pre-color) !important;
+        padding: 0.2em 0.4em;
+        border-radius: 4px;
+    }
+    pre {
+        background: var(--code-bg) !important;
+        border-radius: var(--radius) !important;
+        border: 1px solid var(--border);
+        margin: 1.5em 0;
+        overflow: hidden;
+    }
+    pre code {
+        display: block;
+        padding: 1.25em 1.5em !important;
+        overflow-x: auto;
+        line-height: 1.6;
+        background: transparent !important;
+        border-radius: 0;
+    }
+    .hljs { 
+        background: var(--code-bg) !important; 
+        color: var(--pre-color) !important;
+        padding: 1.25em 1.5em;
     }
 
-    /* Footer */
-    footer { color: var(--muted) !important; }
+    /* Dark mode syntax highlighting */
+    [data-theme='dark'] .hljs { background: #1e293b !important; color: #e2e8f0 !important; }
+    [data-theme='dark'] .hljs-keyword, [data-theme='dark'] .hljs-selector-tag, [data-theme='dark'] .hljs-literal { color: #c792ea; }
+    [data-theme='dark'] .hljs-string, [data-theme='dark'] .hljs-title, [data-theme='dark'] .hljs-name { color: #c3e88d; }
+    [data-theme='dark'] .hljs-comment, [data-theme='dark'] .hljs-quote { color: #676e95; font-style: italic; }
+    [data-theme='dark'] .hljs-number { color: #f78c6c; }
+    [data-theme='dark'] .hljs-function { color: #82aaff; }
+    [data-theme='dark'] .hljs-built_in { color: #ffcb6b; }
 
-    /* Code / highlight.js */
-    pre, code, .hljs { background: var(--code-bg) !important; color: var(--pre-color) !important; }
-    .hljs { padding: 1em; display:block; overflow-x:auto; }
+    /* ===== Blockquotes ===== */
+    blockquote {
+        border-left: 4px solid var(--link);
+        margin: 1.5em 0;
+        padding: 0.5em 0 0.5em 1.5em;
+        color: var(--text-secondary);
+        font-style: italic;
+        background: var(--bg-secondary);
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    [data-theme='dark'] blockquote { color: var(--text-secondary); }
 
-    /* Toggle button sizing */
-    #theme-toggle { display:inline-flex; align-items:center; justify-content:center; padding:6px; }
-    #theme-toggle i { font-size:1.6em; }
+    /* ===== Images ===== */
+    img { 
+        max-width: 100%; 
+        height: auto; 
+        border-radius: var(--radius-sm);
+    }
+    .img-thumbnail {
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+    }
 
-    /* A few token overrides for dark mode highlighting (when highlight.js default theme is used) */
-    [data-theme='dark'] .hljs { background: #282c34 !important; color: #abb2bf !important; }
-    [data-theme='dark'] .hljs-keyword, [data-theme='dark'] .hljs-selector-tag, [data-theme='dark'] .hljs-literal { color: #c678dd; }
-    [data-theme='dark'] .hljs-string, [data-theme='dark'] .hljs-title, [data-theme='dark'] .hljs-name { color: #98c379; }
-    [data-theme='dark'] .hljs-comment, [data-theme='dark'] .hljs-quote { color: #5c6370; font-style: italic; }
+    /* ===== Tables ===== */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.5em 0;
+        font-size: 0.95em;
+    }
+    th, td {
+        padding: 0.75em 1em;
+        border: 1px solid var(--border);
+        text-align: left;
+    }
+    th { background: var(--bg-secondary); font-weight: 600; }
+    tr:hover { background: var(--bg-secondary); }
 
-    /* Footer icons: make sure stacked icons render white on dark theme */
+    /* ===== Footer ===== */
+    footer { 
+        color: var(--muted) !important;
+        border-top: 1px solid var(--border);
+        margin-top: 4rem;
+    }
+    footer .fa-stack { transition: transform var(--transition); }
+    footer .fa-stack:hover { transform: translateY(-2px); }
     [data-theme='dark'] footer .fa-stack .fa-inverse { color: #ffffff !important; }
-    [data-theme='dark'] footer .fa-stack .fa-circle { color: rgba(255,255,255,0.08) !important; }
+    [data-theme='dark'] footer .fa-stack .fa-circle { color: rgba(255,255,255,0.1) !important; }
 
-    /* Related posts card styling */
-    .related-posts { margin-top: 2rem; }
-    .related-posts .related-box { border: 1px solid rgba(0,0,0,0.06); padding: 12px; border-radius: 6px; background: var(--bg); color: var(--text); }
-    [data-theme='dark'] .related-posts .related-box { border-color: rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); }
-    .related-posts .related-box img { width:100%; height:200px; border-radius:4px;  }
-    .related-posts .related-box .title { font-weight:700; margin-top:8px; }
-    .related-posts .related-box .subheading { color: var(--muted); font-size:0.95em; }
-    .related-posts .related-box .post-meta { font-size:0.9em; margin-top:6px; }
+    /* ===== Theme Toggle ===== */
+    #theme-toggle { 
+        display: inline-flex; 
+        align-items: center; 
+        justify-content: center; 
+        padding: 8px;
+        border-radius: 50%;
+        transition: background var(--transition);
+    }
+    #theme-toggle:hover { background: var(--bg-secondary); }
+    #theme-toggle i { font-size: 1.4em; }
 
-    [data-theme='dark'] blockquote { color: #EEE; }
-    blockquote { color: #444; }
+    /* ===== Related Posts ===== */
+    .related-posts { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+    .related-posts h2 { border-bottom: none; margin-top: 0; }
+    .related-posts .related-box { 
+        border: 1px solid var(--border); 
+        padding: 0;
+        border-radius: var(--radius); 
+        background: var(--bg); 
+        color: var(--text);
+        overflow: hidden;
+        transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .related-posts .related-box:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
+    .related-posts a { text-decoration: none !important; }
+    [data-theme='dark'] .related-posts .related-box { 
+        border-color: var(--border); 
+        background: var(--bg-secondary); 
+    }
+    .related-posts .related-box img { 
+        width: 100%; 
+        height: 180px; 
+        object-fit: cover;
+        border-radius: 0;
+    }
+    .related-posts .related-box .title { 
+        font-weight: 700; 
+        margin-top: 0;
+        padding: 1em 1em 0;
+        font-size: 1.05em;
+        line-height: 1.4;
+        color: var(--text) !important;
+    }
+    .related-posts .related-box .subheading { 
+        color: var(--muted); 
+        font-size: 0.9em;
+        padding: 0.25em 1em;
+        line-height: 1.5;
+    }
+    .related-posts .related-box .post-meta { 
+        font-size: 0.85em; 
+        padding: 0.5em 1em 1em;
+        color: var(--muted);
+    }
+
+    /* ===== Utilities ===== */
+    ::selection { background: var(--link); color: white; }
+    ::-moz-selection { background: var(--link); color: white; }
+
+    /* ===== Header Permalinks ===== */
+    .headerlink {
+        font-size: 0.6em;
+        margin-left: 0.5em;
+        opacity: 0;
+        text-decoration: none !important;
+        color: var(--muted) !important;
+        vertical-align: middle;
+        transition: opacity var(--transition);
+    }
+    h1:hover .headerlink,
+    h2:hover .headerlink,
+    h3:hover .headerlink,
+    h4:hover .headerlink,
+    h5:hover .headerlink,
+    h6:hover .headerlink,
+    .headerlink:focus {
+        opacity: 0.5;
+    }
+    .headerlink:hover {
+        opacity: 1 !important;
+        color: var(--link) !important;
+    }
+
+    /* ===== Print Styles ===== */
+    @media print {
+        .navbar, footer, .related-posts, #theme-toggle { display: none !important; }
+        body { font-size: 12pt; }
+        pre { white-space: pre-wrap; word-wrap: break-word; }
+    }
     </style>
 
     <!-- Custom Fonts -->
     <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/default.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js"></script>
@@ -134,12 +345,6 @@
     <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/x86asm.min.js"></script>
     <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/python.min.js"></script>
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
 </head>
 
 <body>
@@ -179,9 +384,6 @@
                     </li>
                     <li>
                         <a href="/#blog">Blog</a>
-                    </li>
-                    <li>
-                        <a href="https://twitter.com/anthonypjshaw"><i class='fa fa-2x fa-twitter'></i></a>
                     </li>
                     <li>
                         <a href="https://github.com/tonybaloney"><i class='fa fa-2x fa-github'></i></a>
@@ -298,14 +500,6 @@ Click on this notification and at the top of the popup, click <strong>&ldquo;New
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <ul class="list-inline text-center">
-                        <li>
-                            <a href="https://twitter.com/anthonypjshaw">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
-                                </span>
-                            </a>
-                        </li>
                         <li>
                             <a href="https://youtube.com/c/AnthonyShaw">
                                 <span class="fa-stack fa-lg">
