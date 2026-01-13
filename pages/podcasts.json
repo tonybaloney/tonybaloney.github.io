@@ -1,0 +1,184 @@
+[
+  {
+    "show": "Talk Python to Me",
+    "episode": "479",
+    "title": "Designing Effective Load Tests for Your Python App",
+    "date": "October 6th, 2024",
+    "url": "https://talkpython.fm/episodes/show/479/designing-effective-load-tests-for-your-python-app"
+  },
+  {
+    "show": "The Python Show",
+    "episode": "29",
+    "title": "CPython Internals with Anthony Shaw",
+    "date": "February 8th, 2024",
+    "url": "https://www.pythonshow.com/p/29-cpython-internals-with-anthony"
+  },
+  {
+    "show": "Talk Python to Me",
+    "episode": "447",
+    "title": "Parallel Python Apps with Sub Interpreters",
+    "date": "February 3rd, 2024",
+    "url": "https://talkpython.fm/episodes/show/447/parallel-python-apps-with-sub-interpreters"
+  },
+  {
+    "show": "Talk Python to Me",
+    "episode": "373",
+    "title": "Reinventing Python's Azure CLI",
+    "date": "July 12th, 2022",
+    "url": "https://talkpython.fm/episodes/show/373/reinventing-azures-python-cli"
+  },
+  {
+    "show": "Hanselminutes",
+    "episode": "834",
+    "title": "Pyjion, a JIT compiler for Python using .NET Core with Anthony Shaw",
+    "date": "March 31st, 2022",
+    "url": "https://hanselminutes.com/834/pyjion-a-jit-compiler-for-python-using-net-core-with-anthony-shaw"
+  },
+  {
+    "show": "Talk Python to Me",
+    "episode": "340",
+    "title": "Time to JIT your Python with Pyjion?",
+    "date": "November 3rd, 2021",
+    "url": "https://talkpython.fm/episodes/show/340/time-to-jit-your-python-with-pyjion"
+  },
+  {
+    "show": "Python Bytes",
+    "episode": "256",
+    "title": "And the best open source project prize goes to...",
+    "date": "October 29th, 2021",
+    "url": "https://pythonbytes.fm/episodes/show/256/and-the-best-open-source-project-prize-goes-to-"
+  },
+  {
+    "show": "Pybites Podcast",
+    "episode": "11",
+    "title": "Tackling big challenges and overcoming decision fatigue",
+    "date": "August 25th, 2021",
+    "url": "https://www.pybitespodcast.com/1501156/9083843-039-tackling-big-challenges-and-overcoming-decision-fatigue-with-anthony-shaw"
+  },
+  {
+    "show": "SoloCoder Podcast",
+    "episode": "58",
+    "title": "A Talented Python Fellow",
+    "date": "September 22nd, 2020",
+    "url": "https://solocoder.com/podcast/a-talented-python-fellow-anthony-shaw"
+  },
+  {
+    "show": "RealPython Podcast",
+    "episode": "11",
+    "title": "Advice on Getting Started With Testing in Python",
+    "date": "May 29th, 2020",
+    "url": "https://realpython.com/podcasts/rpp/11/"
+  },
+  {
+    "show": "Talk Python to Me",
+    "episode": "265",
+    "title": "Why is Python slow?",
+    "date": "May 19th, 2020",
+    "url": "https://talkpython.fm/episodes/show/265/why-is-python-slow"
+  },
+  {
+    "show": "Test and Code",
+    "episode": "101",
+    "title": "Application Security",
+    "date": "February 25th, 2020",
+    "url": "https://testandcode.com/101"
+  },
+  {
+    "show": "Talk Python to Me",
+    "episode": "240",
+    "title": "CPython Source Code deep dive",
+    "date": "November 10th, 2019",
+    "url": "https://talkpython.fm/episodes/show/240"
+  },
+  {
+    "show": "Talk Python to Me",
+    "episode": "214",
+    "title": "Dive into CPython 3.8 and beyond",
+    "date": "May 8th, 2019",
+    "url": "https://talkpython.fm/episodes/show/214/dive-into-cpython-3-8-and-beyond"
+  },
+  {
+    "show": "Podcast.__init__",
+    "episode": "195",
+    "title": "Counteracting Code Complexity With Wily",
+    "date": "January 21st, 2019",
+    "url": "https://www.pythonpodcast.com/wily-code-complexity-episode-195/"
+  },
+  {
+    "show": "Talk Python to Me",
+    "episode": "180",
+    "title": "What's new in Python 3.7 and beyond",
+    "date": "October 1st, 2018",
+    "url": "https://talkpython.fm/episodes/show/180/what-s-new-in-python-3-7-and-beyond"
+  },
+  {
+    "show": "TechKnow",
+    "episode": null,
+    "title": "Jobs of the future",
+    "date": "September 4th, 2018",
+    "url": "https://www.buzzsprout.com/186269/790610-jobs-of-the-future"
+  },
+  {
+    "show": "Test and Code",
+    "episode": "46",
+    "title": "How do you write tests for things that aren't that easy to write tests for?",
+    "date": "September 2nd, 2018",
+    "url": "https://testandcode.com/46"
+  },
+  {
+    "show": "TechKnow",
+    "episode": null,
+    "title": "Should you learn to code?",
+    "date": "July 21st, 2018",
+    "url": "https://www.buzzsprout.com/186269/751024-should-you-learn-to-code"
+  },
+  {
+    "show": "Talk Python to Me",
+    "episode": "168",
+    "title": "10 Python security holes and how to plug them",
+    "date": "June 28th, 2018",
+    "url": "https://talkpython.fm/episodes/show/168/10-python-security-holes-and-how-to-plug-them"
+  },
+  {
+    "show": "Test and Code",
+    "episode": "41",
+    "title": "Testing problems facing DevOps teams",
+    "date": "April 18th, 2018",
+    "url": "https://testandcode.com/41"
+  },
+  {
+    "show": "Talk Python to Me",
+    "episode": "155",
+    "title": "Practical steps for moving to Python 3",
+    "date": "February 13th, 2018",
+    "url": "https://talkpython.fm/episodes/show/155/practical-steps-for-moving-to-python-3"
+  },
+  {
+    "show": "Talk Python to Me",
+    "episode": "132",
+    "title": "Contributing to Open Source",
+    "date": "July 27th, 2017",
+    "url": "https://talkpython.fm/episodes/show/132/contributing-to-open-source"
+  },
+  {
+    "show": "Developer on Fire",
+    "episode": "167",
+    "title": "Innovation and Inspiration (Autobiographical interview)",
+    "date": "September 22nd, 2016",
+    "url": "https://developeronfire.com/podcast/episode-167-anthony-shaw-innovation-and-inspiration"
+  },
+  {
+    "show": "Podcast.__init__",
+    "episode": "55",
+    "title": "Apache Libcloud",
+    "date": "May 1st, 2016",
+    "url": "https://www.podcastinit.com/episode-55-libcloud-with-anthony-shaw/"
+  },
+  {
+    "show": "FLOSS Weekly",
+    "episode": "373",
+    "title": "Apache Libcloud",
+    "date": "February 2nd, 2016",
+    "url": "https://twit.tv/shows/floss-weekly/episodes/373"
+  }
+]

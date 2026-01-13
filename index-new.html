@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta name="description" content="Anthony Shaw - Python developer, author, and open source contributor">
+    <meta name="author" content="Anthony Shaw">
+
+    <title>Anthony Shaw - Python Developer & Author</title>
+
+    <script>
+    (function() {
+        var stored = null;
+        try { stored = localStorage.getItem('theme'); } catch (e) { stored = null; }
+        var theme;
+        if (stored === 'light' || stored === 'dark') {
+            theme = stored;
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            theme = 'dark';
+        } else {
+            theme = 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+    </script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <style>
+    /* ===== CSS Variables ===== */
+    :root {
+        --bg: #fafaf9;
+        --bg-secondary: #f5f5f4;
+        --bg-tertiary: #e7e5e4;
+        --text: #1c1917;
+        --text-secondary: #57534e;
+        --muted: #78716c;
+        --link: #0369a1;
+        --link-hover: #0284c7;
+        --accent: #0f766e;
+        --accent-light: #14b8a6;
+        --border: rgba(0,0,0,0.1);
+        --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+        --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+        --shadow-lg: 0 20px 40px rgba(0,0,0,0.1);
+        --radius: 8px;
+        --radius-sm: 4px;
+        --transition: 0.15s ease;
+        --code-bg: #1e1e1e;
+        --code-green: #4ec9b0;
+        --code-blue: #569cd6;
+        --code-orange: #ce9178;
+    }
+    [data-theme='dark'] {
+        --bg: #0c0c0c;
+        --bg-secondary: #1a1a1a;
+        --bg-tertiary: #262626;
+        --text: #e5e5e5;
+        --text-secondary: #a3a3a3;
+        --muted: #737373;
+        --link: #38bdf8;
+        --link-hover: #7dd3fc;
+        --accent: #2dd4bf;
+        --accent-light: #5eead4;
+        --border: rgba(255,255,255,0.1);
+        --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+        --shadow: 0 4px 6px -1px rgba(0,0,0,0.4);
+        --shadow-lg: 0 20px 40px rgba(0,0,0,0.5);
+        --code-bg: #0d0d0d;
+    }
+
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--text);
+        background: var(--bg);
+        margin: 0;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--link); text-decoration: none; transition: color var(--transition); }
+    a:hover { color: var(--link-hover); }
+    img { max-width: 100%; height: auto; }
+    h1, h2, h3, h4 { 
+        font-weight: 700; 
+        line-height: 1.2; 
+        letter-spacing: -0.02em;
+        margin: 0 0 1rem;
+    }
+    p { margin: 0 0 1rem; }
+
+    /* ===== Layout ===== */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .section { padding: 80px 0; }
+    .section-alt { background: var(--bg-secondary); }
+    .section-title {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+    .section-subtitle {
+        color: var(--text-secondary);
+        text-align: center;
+        font-size: 1.1rem;
+        margin-bottom: 3rem;
+    }
+
+    /* ===== Navigation ===== */
+    .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: var(--bg);
+        border-bottom: 1px solid var(--border);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+    .navbar-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 64px;
+    }
+    .navbar-brand {
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: var(--text) !important;
+    }
+    .navbar-links {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    .navbar-links a {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--text-secondary) !important;
+        border-radius: var(--radius-sm);
+        transition: all var(--transition);
+    }
+    .navbar-links a:hover {
+        color: var(--text) !important;
+        background: var(--bg-secondary);
+    }
+    .navbar-links .icon-link {
+        padding: 8px;
+        font-size: 1.25rem;
+    }
+    #theme-toggle {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: var(--radius-sm);
+        color: var(--text-secondary);
+        transition: all var(--transition);
+    }
+    #theme-toggle:hover { background: var(--bg-secondary); color: var(--text); }
+
+    /* ===== Hero Section ===== */
+    .hero {
+        padding: 140px 0 80px;
+        background: linear-gradient(135deg, var(--bg) 0%, var(--bg-secondary) 100%);
+    }
+    .hero-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: center;
+    }
+    .hero-content h1 {
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+        color: var(--text);
+    }
+    .hero-content h1 .cursor {
+        display: inline-block;
+        width: 3px;
+        height: 0.9em;
+        background: var(--accent);
+        margin-left: 4px;
+        animation: blink 1s step-end infinite;
+        vertical-align: baseline;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+    .hero-content p {
+        font-size: 1.25rem;
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+    }
+    .hero-buttons {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 28px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: var(--radius-sm);
+        transition: all var(--transition);
+        cursor: pointer;
+        border: none;
+    }
+    .btn-primary {
+        background: var(--link);
+        color: white !important;
+    }
+    .btn-primary:hover {
+        background: var(--link-hover);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+    }
+    .btn-secondary {
+        background: var(--bg-tertiary);
+        color: var(--text) !important;
+    }
+    .btn-secondary:hover {
+        background: var(--border);
+    }
+    .hero-image {
+        position: relative;
+    }
+    .avatar-large {
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--bg);
+        box-shadow: var(--shadow-lg);
+    }
+
+    /* ===== Book Feature ===== */
+    .book-feature {
+        background: linear-gradient(135deg, #18181b 0%, #27272a 100%);
+        color: white;
+        border-radius: var(--radius);
+        padding: 60px;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 60px;
+        align-items: center;
+        margin-top: -40px;
+        position: relative;
+        z-index: 10;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    [data-theme='dark'] .book-feature {
+        background: linear-gradient(135deg, #0a0a0a 0%, #171717 100%);
+    }
+    .book-cover {
+        width: 200px;
+        border-radius: var(--radius-sm);
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        transform: perspective(1000px) rotateY(-5deg);
+        transition: transform var(--transition);
+    }
+    .book-cover:hover {
+        transform: perspective(1000px) rotateY(0deg) scale(1.05);
+    }
+    .book-info h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: white;
+    }
+    .book-info p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 1.5rem;
+        line-height: 1.7;
+    }
+    .book-badges {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        background: rgba(255,255,255,0.15);
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    /* ===== Projects Grid ===== */
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 24px;
+    }
+    .project-card {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        transition: all var(--transition);
+    }
+    .project-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--link);
+    }
+    .project-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        background: var(--bg-tertiary);
+    }
+    .project-content {
+        padding: 24px;
+    }
+    .project-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+    .project-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-sm);
+        background: var(--code-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--code-green);
+        font-weight: 500;
+    }
+    .project-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0;
+    }
+    .project-stars {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.875rem;
+        color: var(--muted);
+    }
+    .project-description {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 16px;
+    }
+    .project-tags {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    .tag {
+        padding: 3px 10px;
+        background: var(--bg-tertiary);
+        border-radius: var(--radius-sm);
+        font-size: 0.75rem;
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 400;
+        color: var(--text-secondary);
+    }
+
+    /* ===== Blog Cards ===== */
+    .blog-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 24px;
+    }
+    .blog-card {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        transition: all var(--transition);
+        display: flex;
+        flex-direction: column;
+    }
+    .blog-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
+    .blog-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+    .blog-card-content {
+        padding: 24px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .blog-card-meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+        font-size: 0.875rem;
+        color: var(--muted);
+    }
+    .blog-card h3 {
+        font-size: 1.25rem;
+        margin-bottom: 12px;
+        line-height: 1.4;
+    }
+    .blog-card p {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        flex: 1;
+    }
+    .blog-card-tags {
+        display: flex;
+        gap: 8px;
+        margin-top: auto;
+        padding-top: 16px;
+    }
+
+    /* ===== Podcast Section ===== */
+    .podcast-list {
+        display: grid;
+        gap: 16px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .podcast-item {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 20px;
+        align-items: center;
+        padding: 20px 24px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        transition: all var(--transition);
+    }
+    .podcast-item:hover {
+        border-color: var(--link);
+        box-shadow: var(--shadow);
+    }
+    .podcast-show {
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: var(--accent);
+        min-width: 140px;
+    }
+    .podcast-title {
+        font-weight: 500;
+    }
+    .podcast-date {
+        color: var(--muted);
+        font-size: 0.875rem;
+        white-space: nowrap;
+    }
+
+    /* ===== Footer ===== */
+    .footer {
+        padding: 60px 0;
+        text-align: center;
+        border-top: 1px solid var(--border);
+    }
+    .footer-social {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    .footer-social a {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-secondary);
+        border-radius: 50%;
+        font-size: 1.25rem;
+        color: var(--text-secondary) !important;
+        transition: all var(--transition);
+    }
+    .footer-social a:hover {
+        background: var(--link);
+        color: white !important;
+        transform: translateY(-2px);
+    }
+    .footer-text {
+        color: var(--muted);
+        font-size: 0.875rem;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 900px) {
+        .hero-grid { grid-template-columns: 1fr; text-align: center; }
+        .hero-content h1 { font-size: 2.5rem; }
+        .hero-buttons { justify-content: center; }
+        .hero-image { display: flex; justify-content: center; }
+        .book-feature { 
+            grid-template-columns: 1fr; 
+            text-align: center; 
+            padding: 40px;
+        }
+        .book-cover { margin: 0 auto; }
+        .book-badges { justify-content: center; }
+        .navbar-links { display: none; }
+        .projects-grid, .blog-grid { grid-template-columns: 1fr; }
+        .podcast-item { grid-template-columns: 1fr; gap: 8px; }
+        .podcast-show { min-width: auto; }
+    }
+
+    /* ===== View All Link ===== */
+    .view-all {
+        text-align: center;
+        margin-top: 40px;
+    }
+    .view-all a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        color: var(--link) !important;
+        cursor: pointer;
+    }
+    .view-all a:hover {
+        gap: 12px;
+    }
+
+    /* Hidden articles toggle */
+    .blog-card.hidden-article {
+        display: none;
+    }
+    .blog-grid.show-all .blog-card.hidden-article {
+        display: flex;
+    }
+    .view-all.expanded .show-more {
+        display: none;
+    }
+    .view-all:not(.expanded) .show-less {
+        display: none;
+    }
+
+    /* Hidden podcasts toggle */
+    .podcast-item.hidden-podcast {
+        display: none;
+    }
+    .podcast-list.show-all .podcast-item.hidden-podcast {
+        display: flex;
+    }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="container">
+        <div class="navbar-inner">
+            <a href="#" class="navbar-brand"><span style="color: var(--accent); font-family: 'JetBrains Mono', monospace;">$</span> Anthony Shaw</a>
+            <ul class="navbar-links">
+                <li><a href="#book">Book</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#blog">Blog</a></li>
+                <li><a href="#podcasts">Podcasts</a></li>
+                <li><a href="https://github.com/tonybaloney" class="icon-link"><i class="fa fa-github"></i></a></li>
+                <li><a href="https://www.youtube.com/c/AnthonyShaw" class="icon-link"><i class="fa fa-youtube-play"></i></a></li>
+                <li><a href="/rss.xml" class="icon-link"><i class="fa fa-rss"></i></a></li>
+                <li><button id="theme-toggle" aria-label="Toggle dark mode"><i class="fa fa-moon-o"></i></button></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-grid">
+            <div class="hero-content">
+                <h1>Hi, I'm Anthony<span class="cursor"></span></h1>
+                <p>
+                    Open-Source contributor, author, and Python Engineer at Microsoft. 
+                    I write about Python performance, compiler internals, and low-level optimization. 
+                    Currently researching a PhD in Computer Science at Macquarie University.
+                </p>
+            </div>
+            <div class="hero-image">
+                <img src="https://gravatar.com/avatar/97015b6d8b78f4695250139ad5c5e752?s=300" 
+                     alt="Anthony Shaw" class="avatar-large">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Book Feature -->
+<section class="section">
+    <div class="container">
+        <a href="https://realpython.com/products/cpython-internals-book/" id="book">
+            <div class="book-feature">
+                <img src="https://files.realpython.com/media/cpython-book-3d-no-shadow-trimmed.ff54fb267b79.png" 
+                     alt="CPython Internals Book" class="book-cover">
+                <div class="book-info">
+                    <h2>CPython Internals</h2>
+                    <p>
+                        Get your guided tour through the Python interpreter. Unlock the inner workings 
+                        of the Python language, compile the interpreter from source, and participate 
+                        in the development of CPython. Once you see how Python works at the interpreter level, 
+                        you can optimize your applications and fully leverage the power of Python.
+                    </p>
+                    <div class="book-badges">
+                        <span class="badge"><i class="fa fa-star"></i> Best Seller</span>
+                        <span class="badge"><i class="fa fa-globe"></i> Also in Korean and Mandarin</span>
+                        <span class="badge"><i class="fa fa-calendar"></i> Published 2021</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</section>
+
+<!-- Projects Section -->
+<section class="section section-alt" id="projects">
+    <div class="container">
+        <h2 class="section-title">Projects</h2>
+        <p class="section-subtitle">Open-Source projects I'm currently working on</p>
+        
+        <div class="projects-grid">
+            <!-- VS Code Pets -->
+            <a href="https://github.com/tonybaloney/vscode-pets" class="project-card">
+                <img src="https://raw.githubusercontent.com/tonybaloney/vscode-pets/main/docs/source/_static/winter.gif" 
+                     alt="VS Code Pets" class="project-image">
+                <div class="project-content">
+                    <div class="project-header">
+                        <div class="project-icon">&gt;_</div>
+                        <div>
+                            <h3 class="project-title">VS Code Pets</h3>
+                            <span class="project-stars"><i class="fa fa-star"></i> 3.9k</span>
+                        </div>
+                    </div>
+                    <p class="project-description">
+                        Adds playful, animated pets to your VS Code window. Choose from cats, dogs, snakes, 
+                        crabs, and more! Over 2 million installs. Throw balls, watch them chase, and boost 
+                        your productivity with a little joy.
+                    </p>
+                    <div class="project-tags">
+                        <span class="tag">TypeScript</span>
+                        <span class="tag">VS Code Extension</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- CSnakes -->
+            <a href="https://github.com/tonybaloney/CSnakes" class="project-card">
+                <img src="https://raw.githubusercontent.com/tonybaloney/CSnakes/main/docs/res/logo.jpeg" 
+                     alt="CSnakes" class="project-image" style="object-fit: contain; background: #1e293b; padding: 20px;">
+                <div class="project-content">
+                    <div class="project-header">
+                        <div class="project-icon">C#</div>
+                        <div>
+                            <h3 class="project-title">CSnakes</h3>
+                            <span class="project-stars"><i class="fa fa-star"></i> 1k</span>
+                        </div>
+                    </div>
+                    <p class="project-description">
+                        Embed Python into .NET applications seamlessly. CSnakes uses a source generator 
+                        to create type-safe C# bindings from Python type hints. Supports .NET 8/9, 
+                        Python 3.9-3.13, and free-threading mode.
+                    </p>
+                    <div class="project-tags">
+                        <span class="tag">C#</span>
+                        <span class="tag">.NET</span>
+                        <span class="tag">Python</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Wily -->
+            <a href="https://github.com/tonybaloney/wily" class="project-card">
+                <img src="https://raw.githubusercontent.com/tonybaloney/wily/master/docs/source/_static/wily_report.png" 
+                     alt="Wily" class="project-image">
+                <div class="project-content">
+                    <div class="project-header">
+                        <div class="project-icon">cc</div>
+                        <div>
+                            <h3 class="project-title">Wily</h3>
+                            <span class="project-stars"><i class="fa fa-star"></i> 1.3k</span>
+                        </div>
+                    </div>
+                    <p class="project-description">
+                        Track and report on code complexity over time. Wily analyzes your Git history 
+                        to show how your codebase evolves. Generate reports, graphs, and CI checks for 
+                        maintainability metrics like cyclomatic complexity.
+                    </p>
+                    <div class="project-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Code Quality</span>
+                        <span class="tag">CLI</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Perflint -->
+            <a href="https://github.com/tonybaloney/perflint" class="project-card">
+                <div class="project-image" style="background: linear-gradient(135deg, #18181b 0%, #27272a 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 2rem; font-family: 'JetBrains Mono', monospace; color: #4ec9b0;">perf</span>
+                </div>
+                <div class="project-content">
+                    <div class="project-header">
+                        <div class="project-icon">%t</div>
+                        <div>
+                            <h3 class="project-title">Perflint</h3>
+                            <span class="project-stars"><i class="fa fa-star"></i> 400+</span>
+                        </div>
+                    </div>
+                    <p class="project-description">
+                        A linter for Python performance anti-patterns. Catch common mistakes that slow 
+                        down your code: unnecessary list comprehensions, inefficient loops, and 
+                        suboptimal built-in usage.
+                    </p>
+                    <div class="project-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Linter</span>
+                        <span class="tag">Performance</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- llm-github-models -->
+            <a href="https://github.com/tonybaloney/llm-github-models" class="project-card">
+                <div class="project-image" style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 2rem; font-family: 'JetBrains Mono', monospace; color: #4ec9b0;">llm</span>
+                </div>
+                <div class="project-content">
+                    <div class="project-header">
+                        <div class="project-icon">AI</div>
+                        <div>
+                            <h3 class="project-title">llm-github-models</h3>
+                            <span class="project-stars"><i class="fa fa-star"></i> 94</span>
+                        </div>
+                    </div>
+                    <p class="project-description">
+                        A plugin for Simon Willison's LLM CLI that adds support for 30+ GitHub Models 
+                        including GPT-4o, DeepSeek-R1, Llama, and more. Features streaming, embeddings, 
+                        image attachments, and seamless GitHub Actions integration.
+                    </p>
+                    <div class="project-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">LLM</span>
+                        <span class="tag">GitHub</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- rich-bench -->
+            <a href="https://github.com/tonybaloney/rich-bench" class="project-card">
+                <img src="https://raw.githubusercontent.com/tonybaloney/rich-bench/master/screenshot.png" 
+                     alt="rich-bench" class="project-image">
+                <div class="project-content">
+                    <div class="project-header">
+                        <div class="project-icon">ns</div>
+                        <div>
+                            <h3 class="project-title">rich-bench</h3>
+                            <span class="project-stars"><i class="fa fa-star"></i> 204</span>
+                        </div>
+                    </div>
+                    <p class="project-description">
+                        A beautiful benchmarking tool for Python. Unlike timeit, richbench runs code 
+                        in proper function scopes for realistic performance measurements. Outputs 
+                        colorful comparison tables with profiling support.
+                    </p>
+                    <div class="project-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Benchmarking</span>
+                        <span class="tag">CLI</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="view-all">
+            <a href="https://github.com/tonybaloney?tab=repositories">
+                View all projects <i class="fa fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Blog Section -->
+<section class="section" id="blog">
+    <div class="container">
+        <h2 class="section-title">Blog</h2>
+        
+        <div class="blog-grid">
+            <a href="posts/why-isnt-python-async-more-popular.html" class="blog-card">
+                <img src="/img/posts/fishing-2015.jpg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> Sep 2, 2025</span>
+                        <span><i class="fa fa-clock-o"></i> 15 min read</span>
+                    </div>
+                    <h3>Python has had async for 10 years — why isn't it more popular?</h3>
+                    <p>
+                        Async programming was introduced to Python in 2015 with asyncio. A decade later, 
+                        most Python code is still synchronous. We explore the challenges, misconceptions, 
+                        and ecosystem barriers that have limited async adoption.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Async</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/python-gets-a-jit.html" class="blog-card">
+                <img src="/img/posts/snake_cookie_cutter.jpeg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> Jan 9, 2024</span>
+                        <span><i class="fa fa-clock-o"></i> 12 min read</span>
+                    </div>
+                    <h3>Python 3.13 gets a JIT</h3>
+                    <p>
+                        CPython 3.13 introduces an experimental JIT compiler using a novel "copy-and-patch" 
+                        technique. We break down how it works, what performance gains to expect, and what 
+                        this means for the future of Python performance.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">JIT</span>
+                        <span class="tag">Performance</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/fine-tuning-wsgi-and-asgi-applications.html" class="blog-card">
+                <img src="/img/posts/python-burger-truck.jpeg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> Dec 20, 2023</span>
+                        <span><i class="fa fa-clock-o"></i> 18 min read</span>
+                    </div>
+                    <h3>Fine Tuning Python WSGI and ASGI applications</h3>
+                    <p>
+                        Choosing the right worker count, timeout settings, and process model for Gunicorn, 
+                        Uvicorn, and Hypercorn can dramatically impact your Flask, Django, or FastAPI 
+                        application's performance. Here's how to tune them.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">Django</span>
+                        <span class="tag">FastAPI</span>
+                        <span class="tag">Performance</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/embedding-python-in-dot-net-with-csnakes.html" class="blog-card">
+                <img src="/img/posts/snake-robot.jpeg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> Oct 4, 2024</span>
+                        <span><i class="fa fa-clock-o"></i> 20 min read</span>
+                    </div>
+                    <h3>Embedding Python into your .NET project with CSnakes</h3>
+                    <p>
+                        A deep-dive into CSnakes, a new tool for embedding Python into C# applications. 
+                        Learn how to call Python code from .NET with full type safety, NumPy integration, 
+                        and seamless interop using Python's C-API.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">.NET</span>
+                        <span class="tag">C#</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/sub-interpreter-web-workers.html" class="blog-card">
+                <img src="/img/posts/four-snakes-cartoon.jpeg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> Nov 18, 2023</span>
+                        <span><i class="fa fa-clock-o"></i> 14 min read</span>
+                    </div>
+                    <h3>Running Python Parallel Applications with Sub Interpreters</h3>
+                    <p>
+                        Python 3.12 introduces per-interpreter GIL, enabling true parallelism. We explore 
+                        how to use sub-interpreters for parallel web workers, the current limitations, 
+                        and where this technology is headed.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Concurrency</span>
+                        <span class="tag">GIL</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/has-the-python-gil-been-slain.html" class="blog-card">
+                <img src="/img/posts/gil_header.jpeg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> May 15, 2019</span>
+                        <span><i class="fa fa-clock-o"></i> 10 min read</span>
+                    </div>
+                    <h3>Has the Python GIL been slain?</h3>
+                    <p>
+                        The Global Interpreter Lock has been Python's most controversial feature for decades. 
+                        With sub-interpreters and free-threading on the horizon, we explore what's changing 
+                        and whether the GIL's days are truly numbered.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">GIL</span>
+                        <span class="tag">CPython</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Hidden articles - shown when "View all" is clicked -->
+            <a href="posts/performance-benchmarking-llm-models.html" class="blog-card hidden-article">
+                <img src="/img/posts/llama-race.jpg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> Nov 19, 2024</span>
+                        <span><i class="fa fa-clock-o"></i> 12 min read</span>
+                    </div>
+                    <h3>Performance Benchmarking LLM Models</h3>
+                    <p>
+                        A comprehensive guide to benchmarking local LLM models. Compare throughput, latency, 
+                        and resource usage across different models and hardware configurations.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">LLM</span>
+                        <span class="tag">AI</span>
+                        <span class="tag">Performance</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/using-llm-in-github-actions.html" class="blog-card hidden-article">
+                <img src="/img/posts-original/gpt-5-mini.jpg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> Nov 12, 2024</span>
+                        <span><i class="fa fa-clock-o"></i> 10 min read</span>
+                    </div>
+                    <h3>Using LLMs in GitHub Actions</h3>
+                    <p>
+                        Learn how to integrate LLM capabilities directly into your CI/CD pipelines. 
+                        Automate code reviews, generate documentation, and more with GitHub Actions.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">LLM</span>
+                        <span class="tag">GitHub Actions</span>
+                        <span class="tag">DevOps</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/using-dotnet-aspire-dashboard-for-python-opentelemetry.html" class="blog-card hidden-article">
+                <img src="/img/posts/snake-stopwatch.jpg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> Aug 2024</span>
+                        <span><i class="fa fa-clock-o"></i> 15 min read</span>
+                    </div>
+                    <h3>Using .NET Aspire Dashboard for Python OpenTelemetry</h3>
+                    <p>
+                        The .NET Aspire dashboard is a fantastic tool for visualizing OpenTelemetry data. 
+                        Here's how to use it with your Python applications for distributed tracing.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">OpenTelemetry</span>
+                        <span class="tag">.NET</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/cjk-chinese-japanese-korean-llm-ai-best-practices.html" class="blog-card hidden-article">
+                <img src="/img/posts-original/old_books.jpg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> 2024</span>
+                        <span><i class="fa fa-clock-o"></i> 12 min read</span>
+                    </div>
+                    <h3>CJK (Chinese, Japanese, Korean) LLM Best Practices</h3>
+                    <p>
+                        Working with LLMs in CJK languages presents unique challenges. Learn best practices 
+                        for tokenization, prompting, and evaluation when building multilingual AI applications.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">LLM</span>
+                        <span class="tag">i18n</span>
+                        <span class="tag">AI</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/can-reasoning-models-optimize-20-year-old-code.html" class="blog-card hidden-article">
+                <img src="/img/posts/fishing-2015.jpg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> 2024</span>
+                        <span><i class="fa fa-clock-o"></i> 15 min read</span>
+                    </div>
+                    <h3>Can Reasoning Models Optimize 20-Year-Old Code?</h3>
+                    <p>
+                        An experiment using modern AI reasoning models to optimize legacy Python code. 
+                        Exploring the limits and capabilities of AI-assisted code refactoring.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">AI</span>
+                        <span class="tag">Python</span>
+                        <span class="tag">Refactoring</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/python-match-statement.html" class="blog-card hidden-article">
+                <img src="/img/posts/frogs.jpg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> May 17, 2022</span>
+                        <span><i class="fa fa-clock-o"></i> 10 min read</span>
+                    </div>
+                    <h3>Python match statement</h3>
+                    <p>
+                        Python 3.10 introduced structural pattern matching with the match statement. 
+                        Learn how to use it effectively for cleaner, more expressive code.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Python 3.10</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/pypy-in-production.html" class="blog-card hidden-article">
+                <img src="/img/posts/benchmark-pypy.png" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> Mar 10, 2022</span>
+                        <span><i class="fa fa-clock-o"></i> 12 min read</span>
+                    </div>
+                    <h3>PyPy in Production</h3>
+                    <p>
+                        A real-world case study of deploying PyPy in production. Benchmarks, gotchas, 
+                        and lessons learned from replacing CPython with PyPy.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">PyPy</span>
+                        <span class="tag">Performance</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/async-test-patterns-for-pytest-and-unittest.html" class="blog-card hidden-article">
+                <img src="/img/posts/danger-snake.jpeg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> Aug 5, 2021</span>
+                        <span><i class="fa fa-clock-o"></i> 8 min read</span>
+                    </div>
+                    <h3>Async Test Patterns for Pytest</h3>
+                    <p>
+                        Testing async code can be tricky. Here are patterns and examples for testing 
+                        async functions effectively with pytest and unittest.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Pytest</span>
+                        <span class="tag">Async</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/running-python-on-dotnet-5-with-pyjion.html" class="blog-card hidden-article">
+                <img src="/img/posts/turtle-pileup.jpg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> Nov 11, 2020</span>
+                        <span><i class="fa fa-clock-o"></i> 15 min read</span>
+                    </div>
+                    <h3>Running Python on .NET 5</h3>
+                    <p>
+                        An update on the Pyjion project - plugging a JIT into CPython using the .NET 5 
+                        CLR JIT compiler. Performance results and implementation details.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">.NET</span>
+                        <span class="tag">JIT</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/extending-python-with-assembly.html" class="blog-card hidden-article">
+                <img src="/img/posts/hammer-screw.jpeg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> Aug 18, 2020</span>
+                        <span><i class="fa fa-clock-o"></i> 20 min read</span>
+                    </div>
+                    <h3>Writing Python Extensions in Assembly</h3>
+                    <p>
+                        A deep-dive into writing CPython extensions in x86-64 assembly. Learn about the 
+                        Python C-API, calling conventions, and low-level optimization techniques.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Assembly</span>
+                        <span class="tag">C-API</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/xss-exploitation-in-django.html" class="blog-card hidden-article">
+                <img src="/img/posts/guacamole-dance.gif" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> Jul 22, 2020</span>
+                        <span><i class="fa fa-clock-o"></i> 12 min read</span>
+                    </div>
+                    <h3>XSS Exploitation in Django Applications</h3>
+                    <p>
+                        A deep-dive on XSS vulnerabilities in Django applications. How to find them, 
+                        exploit them for testing, and most importantly - how to fix them.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">Security</span>
+                        <span class="tag">Django</span>
+                        <span class="tag">XSS</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/azure-pipelines-autocomplete-in-pycharm.html" class="blog-card hidden-article">
+                <img src="/img/posts/autocomplete-working.png" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> Jun 11, 2020</span>
+                        <span><i class="fa fa-clock-o"></i> 5 min read</span>
+                    </div>
+                    <h3>Azure Pipelines Autocomplete in JetBrains IDEs</h3>
+                    <p>
+                        Get autocomplete and validation for Azure Pipelines YAML files in PyCharm, 
+                        IntelliJ, WebStorm, and other JetBrains IDEs.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">DevOps</span>
+                        <span class="tag">Azure</span>
+                        <span class="tag">IDE</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/learning-python.html" class="blog-card hidden-article">
+                <img src="/img/posts/baking-a-cake.jpeg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> May 28, 2020</span>
+                        <span><i class="fa fa-clock-o"></i> 10 min read</span>
+                    </div>
+                    <h3>Learning Python from Scratch</h3>
+                    <p>
+                        If you want to learn Python, where do you start? 10 recommended resources for 
+                        beginners, from interactive tutorials to project-based learning.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Beginners</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/django-on-azure-beyond-hello-world.html" class="blog-card hidden-article">
+                <img src="/img/clouds.jpg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> Apr 13, 2020</span>
+                        <span><i class="fa fa-clock-o"></i> 25 min read</span>
+                    </div>
+                    <h3>Django on Azure - Beyond "Hello World"</h3>
+                    <p>
+                        A complete tutorial on deploying a production-ready Django application on 
+                        Microsoft Azure. Database setup, static files, CI/CD, and monitoring.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">Django</span>
+                        <span class="tag">Azure</span>
+                        <span class="tag">DevOps</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/favourite-python-stories-2019.html" class="blog-card hidden-article">
+                <img src="/img/home-bg0.jpg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> Dec 19, 2019</span>
+                        <span><i class="fa fa-clock-o"></i> 8 min read</span>
+                    </div>
+                    <h3>My Favourite Python Stories of 2019</h3>
+                    <p>
+                        A curated collection of the best Python articles, talks, and projects from 2019. 
+                        From performance improvements to community highlights.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Community</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/a-letter-to-the-python-community-in-africa.html" class="blog-card hidden-article">
+                <img src="/img/posts/pycon-namibia.jpeg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> Jan 19, 2019</span>
+                        <span><i class="fa fa-clock-o"></i> 6 min read</span>
+                    </div>
+                    <h3>A Letter to the Python Community in Africa</h3>
+                    <p>
+                        Celebrating the amazing Python community across Africa. Stories from PyCon events, 
+                        growing user groups, and inspiring developers.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Community</span>
+                        <span class="tag">Africa</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/azure-pipelines-with-python-by-example.html" class="blog-card hidden-article">
+                <img src="/img/home-bg.jpg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> Jan 2, 2019</span>
+                        <span><i class="fa fa-clock-o"></i> 15 min read</span>
+                    </div>
+                    <h3>Azure Pipelines with Python - by Example</h3>
+                    <p>
+                        A practical tutorial on Microsoft Azure Pipelines for Python projects. 
+                        Testing, linting, building, and deploying with real-world examples.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Azure</span>
+                        <span class="tag">CI/CD</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/5-coding-projects-to-do-with-kids.html" class="blog-card hidden-article">
+                <img src="/img/posts/coding-kids-header.jpeg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> Dec 26, 2018</span>
+                        <span><i class="fa fa-clock-o"></i> 8 min read</span>
+                    </div>
+                    <h3>5 Coding Projects to Do with Kids</h3>
+                    <p>
+                        Fun and educational coding projects to do with your children. From Scratch games 
+                        to Python adventures - activities for all ages.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">Education</span>
+                        <span class="tag">Kids</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/why-is-python-so-slow.html" class="blog-card hidden-article">
+                <img src="/img/posts/snail.jpg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> Jul 16, 2018</span>
+                        <span><i class="fa fa-clock-o"></i> 12 min read</span>
+                    </div>
+                    <h3>Why is Python so slow?</h3>
+                    <p>
+                        A deep dive into what makes Python slower than compiled languages. Dynamic typing, 
+                        the GIL, interpretation overhead, and what you can do about it.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Performance</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/10-common-security-gotchas-in-python.html" class="blog-card hidden-article">
+                <img src="/img/posts/danger-snake.jpeg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> Jun 18, 2018</span>
+                        <span><i class="fa fa-clock-o"></i> 15 min read</span>
+                    </div>
+                    <h3>10 Common Security Gotchas in Python</h3>
+                    <p>
+                        Common security vulnerabilities in Python applications and how to avoid them. 
+                        Input validation, injection attacks, cryptography mistakes, and more.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Security</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/tips-for-getting-a-raise.html" class="blog-card hidden-article">
+                <img src="/img/posts/fishing-2015.jpg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> May 7, 2017</span>
+                        <span><i class="fa fa-clock-o"></i> 10 min read</span>
+                    </div>
+                    <h3>Tips for Getting a Raise</h3>
+                    <p>
+                        How salary increases work at most companies, how to navigate them, 
+                        and practical advice for convincing your manager to pay you more.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">Career</span>
+                        <span class="tag">Advice</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="posts/vscode-setup.html" class="blog-card hidden-article">
+                <img src="/img/posts/fishing-2015.jpg" alt="">
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span><i class="fa fa-calendar"></i> 2020</span>
+                        <span><i class="fa fa-clock-o"></i> 8 min read</span>
+                    </div>
+                    <h3>My VS Code Setup</h3>
+                    <p>
+                        A walkthrough of my VS Code configuration for Python development. Extensions, 
+                        themes, settings, and productivity tips.
+                    </p>
+                    <div class="blog-card-tags">
+                        <span class="tag">VS Code</span>
+                        <span class="tag">Python</span>
+                        <span class="tag">IDE</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="view-all" id="blog-view-all">
+            <a onclick="toggleAllArticles()" class="show-more">
+                View all articles <i class="fa fa-arrow-down"></i>
+            </a>
+            <a onclick="toggleAllArticles()" class="show-less">
+                Show fewer articles <i class="fa fa-arrow-up"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Podcasts Section -->
+<section class="section section-alt" id="podcasts">
+    <div class="container">
+        <h2 class="section-title">Podcasts</h2>
+        <p class="section-subtitle">Talking about Python on other people's shows</p>
+        
+        <div class="podcast-list" id="podcast-list">
+            <!-- Podcasts loaded dynamically from JSON -->
+        </div>
+
+        <div class="view-all" id="podcast-view-all">
+            <a onclick="toggleAllPodcasts()" class="show-more">
+                View all podcasts <i class="fa fa-arrow-down"></i>
+            </a>
+            <a onclick="toggleAllPodcasts()" class="show-less">
+                Show fewer podcasts <i class="fa fa-arrow-up"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-social">
+            <a href="https://github.com/tonybaloney" aria-label="GitHub"><i class="fa fa-github"></i></a>
+            <a href="https://www.youtube.com/c/AnthonyShaw" aria-label="YouTube"><i class="fa fa-youtube-play"></i></a>
+            <a href="https://fosstodon.org/@tonybaloney" aria-label="Mastodon"><i class="fa fa-comments"></i></a>
+            <a href="/rss.xml" aria-label="RSS Feed"><i class="fa fa-rss"></i></a>
+        </div>
+        <p class="footer-text">
+            © 2026 Anthony Shaw
+        </p>
+    </div>
+</footer>
+
+<!-- Theme Toggle Script -->
+<script>
+(function() {
+    var toggle = document.getElementById('theme-toggle');
+    var icon = toggle ? toggle.querySelector('i') : null;
+
+    function getStored() {
+        try { return localStorage.getItem('theme'); } catch (e) { return null; }
+    }
+    function setStored(t) {
+        try { localStorage.setItem('theme', t); } catch (e) { }
+    }
+    function systemPrefersDark() {
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    function updateIcon(t) {
+        if (!icon) return;
+        icon.className = t === 'dark' ? 'fa fa-sun-o' : 'fa fa-moon-o';
+    }
+    function setTheme(t, save) {
+        document.documentElement.setAttribute('data-theme', t);
+        updateIcon(t);
+        if (save) setStored(t);
+    }
+
+    if (toggle) {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            var current = document.documentElement.getAttribute('data-theme') || (systemPrefersDark() ? 'dark' : 'light');
+            var next = current === 'dark' ? 'light' : 'dark';
+            setTheme(next, true);
+        });
+        var initial = document.documentElement.getAttribute('data-theme') || (getStored() || (systemPrefersDark() ? 'dark' : 'light'));
+        updateIcon(initial);
+    }
+
+    try {
+        var mq = window.matchMedia('(prefers-color-scheme: dark)');
+        var onChange = function(e) {
+            if (!getStored()) {
+                setTheme(e.matches ? 'dark' : 'light', false);
+            }
+        };
+        if (mq.addEventListener) mq.addEventListener('change', onChange);
+        else if (mq.addListener) mq.addListener(onChange);
+    } catch (e) { }
+})();
+
+// Toggle all articles visibility
+function toggleAllArticles() {
+    var blogGrid = document.querySelector('#blog .blog-grid');
+    var viewAllLink = document.getElementById('blog-view-all');
+    
+    if (blogGrid.classList.contains('show-all')) {
+        blogGrid.classList.remove('show-all');
+        viewAllLink.classList.remove('expanded');
+    } else {
+        blogGrid.classList.add('show-all');
+        viewAllLink.classList.add('expanded');
+    }
+}
+
+// Load podcasts from JSON
+(function() {
+    fetch('/pages/podcasts.json')
+        .then(function(response) { return response.json(); })
+        .then(function(podcasts) {
+            var container = document.getElementById('podcast-list');
+            if (!container) return;
+            
+            var html = podcasts.map(function(podcast, index) {
+                var episodeText = podcast.episode ? ' #' + podcast.episode : '';
+                var hiddenClass = index >= 10 ? ' hidden-podcast' : '';
+                return '<a href="' + podcast.url + '" class="podcast-item' + hiddenClass + '" target="_blank" rel="noopener">' +
+                    '<span class="podcast-show">' + podcast.show + episodeText + '</span>' +
+                    '<span class="podcast-title">' + podcast.title + '</span>' +
+                    '<span class="podcast-date">' + podcast.date + '</span>' +
+                '</a>';
+            }).join('');
+            
+            container.innerHTML = html;
+
+            // Hide the toggle if 10 or fewer podcasts
+            var viewAllLink = document.getElementById('podcast-view-all');
+            if (podcasts.length <= 10 && viewAllLink) {
+                viewAllLink.style.display = 'none';
+            }
+        })
+        .catch(function(err) {
+            console.error('Failed to load podcasts:', err);
+        });
+})();
+
+// Toggle all podcasts visibility
+function toggleAllPodcasts() {
+    var podcastList = document.getElementById('podcast-list');
+    var viewAllLink = document.getElementById('podcast-view-all');
+    
+    if (podcastList.classList.contains('show-all')) {
+        podcastList.classList.remove('show-all');
+        viewAllLink.classList.remove('expanded');
+    } else {
+        podcastList.classList.add('show-all');
+        viewAllLink.classList.add('expanded');
+    }
+}
+</script>
+
+<!-- GitHub Buttons -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+</body>
+</html>
