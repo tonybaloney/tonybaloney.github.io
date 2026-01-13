@@ -538,5 +538,5 @@ p { margin: 0 0 1rem; }
     display: none;
 }
 .podcast-list.show-all .podcast-item.hidden-podcast {
-    display: flex;
+    display: grid;
 }
