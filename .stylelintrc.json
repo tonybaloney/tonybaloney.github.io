@@ -1,0 +1,23 @@
+{
+  "rules": {
+    "at-rule-no-unknown": true,
+    "block-no-empty": true,
+    "color-no-invalid-hex": true,
+    "comment-no-empty": true,
+    "declaration-block-no-duplicate-properties": true,
+    "declaration-block-no-shorthand-property-overrides": true,
+    "font-family-no-duplicate-names": true,
+    "function-calc-no-unspaced-operator": true,
+    "keyframe-declaration-no-important": true,
+    "media-feature-name-no-unknown": true,
+    "no-descending-specificity": null,
+    "no-duplicate-at-import-rules": true,
+    "no-duplicate-selectors": true,
+    "property-no-unknown": null,
+    "selector-pseudo-class-no-unknown": true,
+    "selector-pseudo-element-no-unknown": true,
+    "selector-type-no-unknown": true,
+    "string-no-newline": true,
+    "unit-no-unknown": true
+  }
+}

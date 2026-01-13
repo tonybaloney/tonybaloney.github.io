@@ -178,11 +178,6 @@ p { margin: 0 0 1rem; }
     color: var(--text-secondary);
     margin-bottom: 2rem;
 }
-.hero-buttons {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-}
 .btn {
     display: inline-flex;
     align-items: center;
@@ -203,13 +198,6 @@ p { margin: 0 0 1rem; }
     background: var(--link-hover);
     transform: translateY(-2px);
     box-shadow: var(--shadow);
-}
-.btn-secondary {
-    background: var(--bg-tertiary);
-    color: var(--text) !important;
-}
-.btn-secondary:hover {
-    background: var(--border);
 }
 .hero-image {
     position: relative;
@@ -487,7 +475,6 @@ p { margin: 0 0 1rem; }
 @media (max-width: 900px) {
     .hero-grid { grid-template-columns: 1fr; text-align: center; }
     .hero-content h1 { font-size: 2.5rem; }
-    .hero-buttons { justify-content: center; }
     .hero-image { display: flex; justify-content: center; }
     .book-feature { 
         grid-template-columns: 1fr; 

@@ -6,3 +6,6 @@
 node_modules
 __pycache__
 .env
+
+# Generated artifacts
+output/
