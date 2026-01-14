@@ -110,6 +110,20 @@ p { margin: 0 0 1rem; }
 .navbar-brand-text {
     font-family: 'JetBrains Mono', monospace;
 }
+.navbar-cursor {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+.navbar-brand:hover .navbar-cursor {
+    opacity: 1;
+    animation: blink 1s step-end infinite;
+}
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
 .navbar-links {
     display: flex;
     align-items: center;
