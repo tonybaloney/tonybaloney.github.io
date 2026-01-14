@@ -1,6 +1,13 @@
 [
   {
     "show": "Talk Python to Me",
+    "episode": "486",
+    "title": "CSnakes: Embed Python code in .NET",
+    "date": "November 22nd, 2024",
+    "url": "https://talkpython.fm/episodes/show/486/csnakes-embed-python-code-in-.net"
+  },
+  {
+    "show": "Talk Python to Me",
     "episode": "479",
     "title": "Designing Effective Load Tests for Your Python App",
     "date": "October 6th, 2024",

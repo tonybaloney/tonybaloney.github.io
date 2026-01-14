@@ -29,7 +29,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/vendor/font-awesome/css/fontawesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/vendor/font-awesome/css/brands.min.css" rel="stylesheet" type="text/css">
+    <link href="/vendor/font-awesome/css/solid.min.css" rel="stylesheet" type="text/css">
 
     <!-- Homepage CSS -->
     <link href="/css/homepage.css" rel="stylesheet">
@@ -46,10 +48,12 @@
                 <li><a href="#projects">Projects</a></li>
                 <li><a href="#blog">Blog</a></li>
                 <li><a href="#podcasts">Podcasts</a></li>
-                <li><a href="https://github.com/tonybaloney" class="icon-link"><i class="fa fa-github"></i></a></li>
-                <li><a href="https://www.youtube.com/c/AnthonyShaw" class="icon-link"><i class="fa fa-youtube-play"></i></a></li>
-                <li><a href="/rss.xml" class="icon-link"><i class="fa fa-rss"></i></a></li>
-                <li><button id="theme-toggle" aria-label="Toggle dark mode"><i class="fa fa-moon-o"></i></button></li>
+                <li><a href="https://github.com/tonybaloney" class="icon-link"><i class="fa-brands fa-github"></i></a></li>
+                <li><a href="https://www.youtube.com/c/AnthonyShaw" class="icon-link"><i class="fa-brands fa-youtube"></i></a></li>
+                <li><a href="https://fosstodon.org/@tonybaloney" class="icon-link"><i class="fa-brands fa-mastodon"></i></a></li>
+                <li><a href="https://bsky.app/profile/anthonypjshaw.bsky.social" class="icon-link"><i class="fa-brands fa-bluesky"></i></a></li>
+                <li><a href="/rss.xml" class="icon-link"><i class="fa-solid fa-rss"></i></a></li>
+                <li><button id="theme-toggle" aria-label="Toggle dark mode"><i class="fa-solid fa-moon"></i></button></li>
             </ul>
         </div>
     </div>
@@ -870,10 +874,11 @@
 <footer class="footer">
     <div class="container">
         <div class="footer-social">
-            <a href="https://github.com/tonybaloney" aria-label="GitHub"><i class="fa fa-github"></i></a>
-            <a href="https://www.youtube.com/c/AnthonyShaw" aria-label="YouTube"><i class="fa fa-youtube-play"></i></a>
-            <a href="https://fosstodon.org/@tonybaloney" aria-label="Mastodon"><i class="fa fa-comments"></i></a>
-            <a href="/rss.xml" aria-label="RSS Feed"><i class="fa fa-rss"></i></a>
+            <a href="https://github.com/tonybaloney" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+            <a href="https://www.youtube.com/c/AnthonyShaw" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+            <a href="https://fosstodon.org/@tonybaloney" aria-label="Mastodon"><i class="fa-brands fa-mastodon"></i></a>
+            <a href="https://bsky.app/profile/anthonypjshaw.bsky.social" class="icon-link"><i class="fa-brands fa-bluesky"></i></a>
+            <a href="/rss.xml" aria-label="RSS Feed"><i class="fa-solid fa-rss"></i></a>
         </div>
         <p class="footer-text">
             © 2026 Anthony Shaw
@@ -898,7 +903,7 @@
     }
     function updateIcon(t) {
         if (!icon) return;
-        icon.className = t === 'dark' ? 'fa fa-sun-o' : 'fa fa-moon-o';
+        icon.className = t === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
     }
     function setTheme(t, save) {
         document.documentElement.setAttribute('data-theme', t);

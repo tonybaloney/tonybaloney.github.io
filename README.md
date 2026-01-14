@@ -2,7 +2,6 @@ This is my personal website,
 
 See [tonybaloney.github.io](https://tonybaloney.github.io/)
 
+The blog generator script, `blog-gen.py` is MIT licensed, see LICENSE file. Feel free to use it for your own blog generation needs.
 
-## Credits
-
-[Clean Blog](http://startbootstrap.com/template-overviews/clean-blog/) is a stylish, responsive blog theme for [Bootstrap](http://getbootstrap.com/) created by [Start Bootstrap](http://startbootstrap.com/). This theme features a blog homepage, about page, contact page, and an example post page along with a working PHP contact form.
+IT has a nifty cosine similarity calculation that uses Nomic's Embedding model in Ollama to generate related posts based on content.

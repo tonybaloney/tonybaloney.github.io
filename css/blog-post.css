@@ -168,42 +168,6 @@ th, td {
 th { background: var(--bg-secondary); font-weight: 600; }
 tr:hover { background: var(--bg-secondary); }
 
-/* ===== Footer ===== */
-.footer {
-    padding: 60px 0;
-    text-align: center;
-    border-top: 1px solid var(--border);
-    margin-top: 4rem;
-}
-.footer-social {
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-    margin-bottom: 24px;
-}
-.footer-social a {
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--bg-secondary);
-    border-radius: 50%;
-    font-size: 1.25rem;
-    color: var(--text-secondary) !important;
-    transition: all var(--transition);
-    text-decoration: none !important;
-}
-.footer-social a:hover {
-    background: var(--link);
-    color: white !important;
-    transform: translateY(-2px);
-}
-.footer-text {
-    color: var(--muted);
-    font-size: 0.875rem;
-}
-
 /* ===== Related Posts ===== */
 .related-posts { 
     margin-top: 3rem; 

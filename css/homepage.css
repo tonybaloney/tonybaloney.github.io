@@ -134,7 +134,7 @@ p { margin: 0 0 1rem; }
 }
 .navbar-links .icon-link {
     padding: 8px;
-    font-size: 1.25rem;
+    font-size: 20px;
 }
 #theme-toggle {
     background: none;
@@ -457,7 +457,7 @@ p { margin: 0 0 1rem; }
     justify-content: center;
     background: var(--bg-secondary);
     border-radius: 50%;
-    font-size: 1.25rem;
+    font-size: 20px;
     color: var(--text-secondary) !important;
     transition: all var(--transition);
 }
@@ -468,7 +468,7 @@ p { margin: 0 0 1rem; }
 }
 .footer-text {
     color: var(--muted);
-    font-size: 0.875rem;
+    font-size: 18px;
 }
 
 /* ===== Responsive ===== */
