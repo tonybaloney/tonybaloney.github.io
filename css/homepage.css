@@ -414,14 +414,14 @@ p { margin: 0 0 1rem; }
     padding-top: 16px;
 }
 
-/* ===== Podcast Section ===== */
-.podcast-list {
+/* ===== Talks & Podcasts ===== */
+.talk-list, .podcast-list {
     display: grid;
     gap: 16px;
     max-width: 800px;
     margin: 0 auto;
 }
-.podcast-item {
+.talk-item, .podcast-item {
     display: grid;
     grid-template-columns: auto 1fr auto;
     gap: 20px;
@@ -432,9 +432,32 @@ p { margin: 0 0 1rem; }
     border-radius: var(--radius);
     transition: all var(--transition);
 }
-.podcast-item:hover {
+.talk-item:hover, .podcast-item:hover {
     border-color: var(--link);
     box-shadow: var(--shadow);
+}
+.talk-item {
+    grid-template-columns: 1fr auto;
+}
+.talk-title {
+    display: block;
+    font-weight: 600;
+    color: var(--text);
+}
+.talk-meta, .talk-link, .appearance-format {
+    font-size: 0.875rem;
+    color: var(--muted);
+}
+.talk-meta, .appearance-format {
+    display: block;
+    margin-top: 4px;
+}
+.talk-link {
+    color: var(--link);
+}
+.appearance-status {
+    text-align: center;
+    color: var(--muted);
 }
 .podcast-show {
     font-weight: 600;
@@ -499,7 +522,7 @@ p { margin: 0 0 1rem; }
     .book-badges { justify-content: center; }
     .navbar-links { display: none; }
     .projects-grid, .blog-grid { grid-template-columns: 1fr; }
-    .podcast-item { grid-template-columns: 1fr; gap: 8px; }
+    .talk-item, .podcast-item { grid-template-columns: 1fr; gap: 8px; }
     .podcast-show { min-width: auto; }
 }
 
@@ -508,7 +531,7 @@ p { margin: 0 0 1rem; }
     text-align: center;
     margin-top: 40px;
 }
-.view-all a {
+.view-all a, .appearance-toggle {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -516,8 +539,18 @@ p { margin: 0 0 1rem; }
     color: var(--link) !important;
     cursor: pointer;
 }
-.view-all a:hover {
+.view-all a:hover, .appearance-toggle:hover {
     gap: 12px;
+}
+.appearance-toggle {
+    border: 0;
+    padding: 8px;
+    background: transparent;
+    font: inherit;
+}
+.appearance-toggle:focus-visible {
+    outline: 2px solid var(--link);
+    outline-offset: 4px;
 }
 
 /* Hidden articles toggle */
@@ -539,5 +572,12 @@ p { margin: 0 0 1rem; }
     display: none;
 }
 .podcast-list.show-all .podcast-item.hidden-podcast {
+    display: grid;
+}
+
+.talk-item.hidden-talk {
+    display: none;
+}
+.talk-list.show-all .talk-item.hidden-talk {
     display: grid;
 }

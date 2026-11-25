@@ -35,6 +35,7 @@
 
     <!-- Homepage CSS -->
     <link href="/css/homepage.css" rel="stylesheet">
+    <script src="/js/homepage.js" defer></script>
 </head>
 <body>
 
@@ -47,6 +48,7 @@
                 <li><a href="#book">Book</a></li>
                 <li><a href="#projects">Projects</a></li>
                 <li><a href="#blog">Blog</a></li>
+                <li><a href="#talks">Talks</a></li>
                 <li><a href="#podcasts">Podcasts</a></li>
                 <li><a href="https://github.com/tonybaloney" class="icon-link"><i class="fa-brands fa-github"></i></a></li>
                 <li><a href="https://www.youtube.com/c/AnthonyShaw" class="icon-link"><i class="fa-brands fa-youtube"></i></a></li>
@@ -109,7 +111,7 @@
 <section class="section section-alt" id="projects">
     <div class="container">
         <h2 class="section-title">Projects</h2>
-        <p class="section-subtitle">Open-Source projects I'm currently working on</p>
+        <p class="section-subtitle">Open-Source projects I build and maintain</p>
         
         <div class="projects-grid">
             <!-- VS Code Pets -->
@@ -121,7 +123,7 @@
                         <div class="project-icon">&gt;_</div>
                         <div>
                             <h3 class="project-title">VS Code Pets</h3>
-                            <span class="project-stars"><i class="fa fa-star"></i> 3.9k</span>
+                            <span class="project-stars" data-repository="tonybaloney/vscode-pets" title="GitHub stars checked November 25, 2026"><i class="fa fa-star"></i> <span class="star-count">4,205</span></span>
                         </div>
                     </div>
                     <p class="project-description">
@@ -145,7 +147,7 @@
                         <div class="project-icon">C#</div>
                         <div>
                             <h3 class="project-title">CSnakes</h3>
-                            <span class="project-stars"><i class="fa fa-star"></i> 1k</span>
+                            <span class="project-stars" data-repository="tonybaloney/CSnakes" title="GitHub stars checked November 25, 2026"><i class="fa fa-star"></i> <span class="star-count">1,124</span></span>
                         </div>
                     </div>
                     <p class="project-description">
@@ -170,7 +172,7 @@
                         <div class="project-icon">cc</div>
                         <div>
                             <h3 class="project-title">Wily</h3>
-                            <span class="project-stars"><i class="fa fa-star"></i> 1.3k</span>
+                            <span class="project-stars" data-repository="tonybaloney/wily" title="GitHub stars checked November 25, 2026"><i class="fa fa-star"></i> <span class="star-count">1,339</span></span>
                         </div>
                     </div>
                     <p class="project-description">
@@ -196,7 +198,7 @@
                         <div class="project-icon">%t</div>
                         <div>
                             <h3 class="project-title">Perflint</h3>
-                            <span class="project-stars"><i class="fa fa-star"></i> 400+</span>
+                            <span class="project-stars" data-repository="tonybaloney/perflint" title="GitHub stars checked November 25, 2026"><i class="fa fa-star"></i> <span class="star-count">712</span></span>
                         </div>
                     </div>
                     <p class="project-description">
@@ -222,7 +224,7 @@
                         <div class="project-icon">AI</div>
                         <div>
                             <h3 class="project-title">llm-github-models</h3>
-                            <span class="project-stars"><i class="fa fa-star"></i> 94</span>
+                            <span class="project-stars" data-repository="tonybaloney/llm-github-models" title="GitHub stars checked November 25, 2026"><i class="fa fa-star"></i> <span class="star-count">95</span></span>
                         </div>
                     </div>
                     <p class="project-description">
@@ -247,7 +249,7 @@
                         <div class="project-icon">ns</div>
                         <div>
                             <h3 class="project-title">rich-bench</h3>
-                            <span class="project-stars"><i class="fa fa-star"></i> 204</span>
+                            <span class="project-stars" data-repository="tonybaloney/rich-bench" title="GitHub stars checked November 25, 2026"><i class="fa fa-star"></i> <span class="star-count">212</span></span>
                         </div>
                     </div>
                     <p class="project-description">
@@ -262,6 +264,7 @@
                     </div>
                 </div>
             </a>
+
         </div>
 
         <div class="view-all">
@@ -849,24 +852,39 @@
     </div>
 </section>
 
-<!-- Podcasts Section -->
+<!-- Talks Section -->
+<section class="section" id="talks">
+    <div class="container">
+        <h2 class="section-title">Talks &amp; Workshops</h2>
+        <p class="section-subtitle">Conference sessions and workshops on Python, performance, and AI</p>
+        <p class="appearance-status" id="talk-status" role="status">Loading talks...</p>
+        <div class="talk-list" id="talk-list"></div>
+        <div class="view-all" id="talk-view-all" hidden>
+            <button type="button" class="appearance-toggle" aria-controls="talk-list" aria-expanded="false">
+                View all talks <i class="fa fa-arrow-down" aria-hidden="true"></i>
+            </button>
+        </div>
+        <noscript><p class="appearance-status">JavaScript is needed to display the talks list. <a href="/pages/talks.json">Browse the talk data</a>.</p></noscript>
+    </div>
+</section>
+
+<!-- Podcasts and Interviews Section -->
 <section class="section section-alt" id="podcasts">
     <div class="container">
-        <h2 class="section-title">Podcasts</h2>
-        <p class="section-subtitle">Talking about Python on other people's shows</p>
+        <h2 class="section-title">Podcasts &amp; Interviews</h2>
+        <p class="section-subtitle">Talking about Python on other people's shows, in audio and video</p>
         
+        <p class="appearance-status" id="podcast-status" role="status">Loading podcasts and interviews...</p>
         <div class="podcast-list" id="podcast-list">
             <!-- Podcasts loaded dynamically from JSON -->
         </div>
 
-        <div class="view-all" id="podcast-view-all">
-            <a onclick="toggleAllPodcasts()" class="show-more">
-                View all podcasts <i class="fa fa-arrow-down"></i>
-            </a>
-            <a onclick="toggleAllPodcasts()" class="show-less">
-                Show fewer podcasts <i class="fa fa-arrow-up"></i>
-            </a>
+        <div class="view-all" id="podcast-view-all" hidden>
+            <button type="button" class="appearance-toggle" aria-controls="podcast-list" aria-expanded="false">
+                View all appearances <i class="fa fa-arrow-down" aria-hidden="true"></i>
+            </button>
         </div>
+        <noscript><p class="appearance-status">JavaScript is needed to display the appearances list. <a href="/pages/podcasts.json">Browse the appearance data</a>.</p></noscript>
     </div>
 </section>
 
@@ -948,50 +966,6 @@ function toggleAllArticles() {
     }
 }
 
-// Load podcasts from JSON
-(function() {
-    fetch('/pages/podcasts.json')
-        .then(function(response) { return response.json(); })
-        .then(function(podcasts) {
-            var container = document.getElementById('podcast-list');
-            if (!container) return;
-            
-            var html = podcasts.map(function(podcast, index) {
-                var episodeText = podcast.episode ? ' #' + podcast.episode : '';
-                var hiddenClass = index >= 10 ? ' hidden-podcast' : '';
-                return '<a href="' + podcast.url + '" class="podcast-item' + hiddenClass + '" target="_blank" rel="noopener">' +
-                    '<span class="podcast-show">' + podcast.show + episodeText + '</span>' +
-                    '<span class="podcast-title">' + podcast.title + '</span>' +
-                    '<span class="podcast-date">' + podcast.date + '</span>' +
-                '</a>';
-            }).join('');
-            
-            container.innerHTML = html;
-
-            // Hide the toggle if 10 or fewer podcasts
-            var viewAllLink = document.getElementById('podcast-view-all');
-            if (podcasts.length <= 10 && viewAllLink) {
-                viewAllLink.style.display = 'none';
-            }
-        })
-        .catch(function(err) {
-            console.error('Failed to load podcasts:', err);
-        });
-})();
-
-// Toggle all podcasts visibility
-function toggleAllPodcasts() {
-    var podcastList = document.getElementById('podcast-list');
-    var viewAllLink = document.getElementById('podcast-view-all');
-    
-    if (podcastList.classList.contains('show-all')) {
-        podcastList.classList.remove('show-all');
-        viewAllLink.classList.remove('expanded');
-    } else {
-        podcastList.classList.add('show-all');
-        viewAllLink.classList.add('expanded');
-    }
-}
 </script>
 
 <!-- GitHub Buttons -->

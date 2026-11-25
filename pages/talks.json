@@ -1,5 +1,71 @@
 {"talks": [
     {
+        "title": "Is DOOM a Tensor?",
+        "conference": "Microsoft Ignite 2026, San Francisco California",
+        "date": "November 19, 2026",
+        "url": "https://ignite.microsoft.com/en-US/sessions/THR868",
+        "video": "https://ignite.microsoft.com/en-US/sessions/THR868",
+        "description": "Run DOOM inside an AI model to explore tensors, how models process information, and why hardware matters."
+    },
+    {
+        "title": "What should you build when you can build anything?",
+        "conference": "Microsoft Ignite 2026, San Francisco California",
+        "date": "November 18, 2026",
+        "url": "https://ignite.microsoft.com/en-US/sessions/BRK275",
+        "description": "A demo-filled session with Scott Hanselman and Katie Savage on creative projects, Windows, GitHub, open source, and AI-assisted development."
+    },
+    {
+        "title": "Is DOOM a Tensor?",
+        "conference": "Microsoft Build 2026, San Francisco California",
+        "date": "June 3, 2026",
+        "url": "https://build.microsoft.com/en-US/sessions/LIVE165",
+        "video": "https://build.microsoft.com/en-US/sessions/LIVE165",
+        "description": "A conversation with Burke Holland about tensors, machine learning model internals, and using that understanding to improve prompts and code optimization."
+    },
+    {
+        "title": "Are LLMs good software engineers?",
+        "conference": "NDC Sydney 2026, Sydney Australia",
+        "date": "April 23, 2026",
+        "url": "https://ndcsydney.com/agenda/are-llms-good-software-engineers",
+        "description": "An analysis of LLM-generated code, software quality, maintainability, and techniques for improving AI-assisted engineering."
+    },
+    {
+        "title": "Accelerating AI model performance (AMER)",
+        "conference": "Microsoft Reactor, livestream",
+        "date": "November 13, 2025 (UTC)",
+        "url": "https://developer.microsoft.com/en-us/reactor/events/26453/",
+        "description": "A session with Stephen McCullough from NVIDIA on latency, throughput, batching, inference optimization, and benchmarking AI systems."
+    },
+    {
+        "title": "Python and Friends - embedding Python",
+        "conference": "PyCon JP 2025, Hiroshima Japan",
+        "date": "September 26, 2025",
+        "url": "https://2025.pycon.jp/en/timetable/talk/HH9URU",
+        "video": "https://www.youtube.com/watch?v=y2_KP50i3ak",
+        "description": "Explore Python's embedded mode and C-API, using CSnakes to integrate Python code and libraries into C#."
+    },
+    {
+        "title": "Python Meets .NET: Building AI Solutions with Combined Strengths",
+        "conference": "Microsoft Build 2025, Seattle Washington",
+        "date": "May 2025",
+        "video": "https://www.youtube.com/watch?v=fDbCqalegNU",
+        "description": "A session with Scott Hanselman demonstrating how to combine Python's data science and machine learning ecosystem with .NET applications using CSnakes."
+    },
+    {
+        "title": "AI crash course for Python developers",
+        "conference": "PyCon US 2025, Pittsburgh Pennsylvania",
+        "date": "May 14, 2025",
+        "url": "https://pycon-archive.python.org/2025/schedule/presentation/77/",
+        "description": "A hands-on tutorial covering language models, tokens, Markov chains, vector similarity, and practical AI development with Python."
+    },
+    {
+        "title": "Unlocking the Parallel Universe: Subinterpreters and Free-Threading in Python 3.13",
+        "conference": "PyCon US 2024, Pittsburgh Pennsylvania",
+        "date": "May 19, 2024",
+        "url": "https://us.pycon.org/2024/schedule/presentation/128/index.html",
+        "description": "Compare subinterpreters and free-threading, including how both execution models can be combined in a multi-worker ASGI web server."
+    },
+    {
         "title": "Parallel code with Python 3.12 sub interpreters",
         "conference": "PyCon APAC 2023, Tokyo Japan",
         "date": "October 2023",
