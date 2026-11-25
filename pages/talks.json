@@ -1,5 +1,28 @@
 {"talks": [
     {
+        "title": "Is DOOM a Tensor?",
+        "conference": "Microsoft Ignite 2026, San Francisco California",
+        "date": "November 19, 2026",
+        "url": "https://ignite.microsoft.com/en-US/sessions/THR868",
+        "video": "https://ignite.microsoft.com/en-US/sessions/THR868",
+        "description": "Run DOOM inside an AI model to explore tensors, how models process information, and why hardware matters."
+    },
+    {
+        "title": "What should you build when you can build anything?",
+        "conference": "Microsoft Ignite 2026, San Francisco California",
+        "date": "November 18, 2026",
+        "url": "https://ignite.microsoft.com/en-US/sessions/BRK275",
+        "description": "A demo-filled session with Scott Hanselman and Katie Savage on creative projects, Windows, GitHub, open source, and AI-assisted development."
+    },
+    {
+        "title": "Is DOOM a Tensor?",
+        "conference": "Microsoft Build 2026, San Francisco California",
+        "date": "June 3, 2026",
+        "url": "https://build.microsoft.com/en-US/sessions/LIVE165",
+        "video": "https://build.microsoft.com/en-US/sessions/LIVE165",
+        "description": "A conversation with Burke Holland about tensors, machine learning model internals, and using that understanding to improve prompts and code optimization."
+    },
+    {
         "title": "Are LLMs good software engineers?",
         "conference": "NDC Sydney 2026, Sydney Australia",
         "date": "April 23, 2026",
@@ -20,6 +43,13 @@
         "url": "https://2025.pycon.jp/en/timetable/talk/HH9URU",
         "video": "https://www.youtube.com/watch?v=y2_KP50i3ak",
         "description": "Explore Python's embedded mode and C-API, using CSnakes to integrate Python code and libraries into C#."
+    },
+    {
+        "title": "Python Meets .NET: Building AI Solutions with Combined Strengths",
+        "conference": "Microsoft Build 2025, Seattle Washington",
+        "date": "May 2025",
+        "video": "https://www.youtube.com/watch?v=fDbCqalegNU",
+        "description": "A session with Scott Hanselman demonstrating how to combine Python's data science and machine learning ecosystem with .NET applications using CSnakes."
     },
     {
         "title": "AI crash course for Python developers",

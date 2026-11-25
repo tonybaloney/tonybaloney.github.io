@@ -304,14 +304,6 @@ p { margin: 0 0 1rem; }
     object-fit: cover;
     background: var(--bg-tertiary);
 }
-.project-placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 2rem;
-    color: var(--accent);
-}
 .project-content {
     padding: 24px;
 }
