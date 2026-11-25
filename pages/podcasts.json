@@ -1,10 +1,26 @@
 [
   {
+    "show": "On .NET",
+    "episode": null,
+    "title": "Deep .NET - Using AI Python Libraries in .NET Apps with CSnakes",
+    "date": "March 12th, 2025",
+    "format": "Video interview",
+    "url": "https://learn.microsoft.com/en-us/shows/on-dotnet/deep-dotnet-using-ai-python-libraries-in-dotnet-apps-with-csnakes"
+  },
+  {
     "show": "Talk Python to Me",
     "episode": "486",
     "title": "CSnakes: Embed Python code in .NET",
     "date": "November 22nd, 2024",
     "url": "https://talkpython.fm/episodes/show/486/csnakes-embed-python-code-in-.net"
+  },
+  {
+    "show": "On .NET",
+    "episode": null,
+    "title": "A Sneak Peek at CSnakes: Embed Python code in .NET Apps",
+    "date": "October 15th, 2024",
+    "format": "Video interview",
+    "url": "https://learn.microsoft.com/en-us/shows/on-dotnet/a-sneak-peek-at-csnakes-embed-python-code-in-dotnet-apps"
   },
   {
     "show": "Talk Python to Me",

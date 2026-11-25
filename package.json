@@ -24,6 +24,7 @@
     "jquery": "^3.4.1"
   },
   "scripts": {
+    "test:homepage": "node --test tools/homepage.test.cjs",
     "css:lint": "npx --yes stylelint@15.11.0 \"css/**/*.css\" --config .stylelintrc.json --ignore-pattern \"**/*.min.css\" --ignore-pattern \"css/clean-blog*.css\" --allow-empty-input",
     "css:lint:fix": "npx --yes stylelint@15.11.0 \"css/**/*.css\" --config .stylelintrc.json --ignore-pattern \"**/*.min.css\" --ignore-pattern \"css/clean-blog*.css\" --fix --allow-empty-input",
     "css:unused": "npx --yes purgecss@6.0.0 --css \"css/**/*.css\" --content \"index.html\" \"pages/**/*.html\" \"posts/**/*.html\" \"templates/**/*.html\" \"js/**/*.js\" --rejected --rejected-css > output/purgecss-report.json",

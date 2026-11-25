@@ -30,6 +30,7 @@ module.exports = {
       'expanded',
       'hidden-article',
       'hidden-podcast',
+      'hidden-talk',
     ],
   },
 };

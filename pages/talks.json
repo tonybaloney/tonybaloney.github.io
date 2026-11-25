@@ -1,5 +1,41 @@
 {"talks": [
     {
+        "title": "Are LLMs good software engineers?",
+        "conference": "NDC Sydney 2026, Sydney Australia",
+        "date": "April 23, 2026",
+        "url": "https://ndcsydney.com/agenda/are-llms-good-software-engineers",
+        "description": "An analysis of LLM-generated code, software quality, maintainability, and techniques for improving AI-assisted engineering."
+    },
+    {
+        "title": "Accelerating AI model performance (AMER)",
+        "conference": "Microsoft Reactor, livestream",
+        "date": "November 13, 2025 (UTC)",
+        "url": "https://developer.microsoft.com/en-us/reactor/events/26453/",
+        "description": "A session with Stephen McCullough from NVIDIA on latency, throughput, batching, inference optimization, and benchmarking AI systems."
+    },
+    {
+        "title": "Python and Friends - embedding Python",
+        "conference": "PyCon JP 2025, Hiroshima Japan",
+        "date": "September 26, 2025",
+        "url": "https://2025.pycon.jp/en/timetable/talk/HH9URU",
+        "video": "https://www.youtube.com/watch?v=y2_KP50i3ak",
+        "description": "Explore Python's embedded mode and C-API, using CSnakes to integrate Python code and libraries into C#."
+    },
+    {
+        "title": "AI crash course for Python developers",
+        "conference": "PyCon US 2025, Pittsburgh Pennsylvania",
+        "date": "May 14, 2025",
+        "url": "https://pycon-archive.python.org/2025/schedule/presentation/77/",
+        "description": "A hands-on tutorial covering language models, tokens, Markov chains, vector similarity, and practical AI development with Python."
+    },
+    {
+        "title": "Unlocking the Parallel Universe: Subinterpreters and Free-Threading in Python 3.13",
+        "conference": "PyCon US 2024, Pittsburgh Pennsylvania",
+        "date": "May 19, 2024",
+        "url": "https://us.pycon.org/2024/schedule/presentation/128/index.html",
+        "description": "Compare subinterpreters and free-threading, including how both execution models can be combined in a multi-worker ASGI web server."
+    },
+    {
         "title": "Parallel code with Python 3.12 sub interpreters",
         "conference": "PyCon APAC 2023, Tokyo Japan",
         "date": "October 2023",
